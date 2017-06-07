@@ -1,3 +1,4 @@
+set nocompatible
 set encoding=utf-8
 set termguicolors
 syntax on
@@ -29,8 +30,9 @@ Plug 'w0rp/ale'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'valloric/youcompleteme'
+" Plug 'valloric/youcompleteme'
 " Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'pangloss/vim-javascript'
 Plug 'flazz/vim-colorschemes'
 Plug 'felixhummel/setcolors.vim'
@@ -39,9 +41,28 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdcommenter'
-" Plug 'artur-shaik/vim-javacomplete2'
+
+" Autocompletion Plugins
+Plug 'zchee/deoplete-clang'
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'sebastianmarkow/deoplete-rust'
+" Plug 'tweekmonster/deoplete-clang2'
 
 call plug#end()
+
+" Start up Deoplete
+let g:deoplete#enable_at_startup = 1
+
+" Load Deoplete's completion plugins
+"" Clang
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/i386-linux-gnu/libclang-4.0.so.1'
+let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-4.0/lib/clang/4.0.0/include'
+"" TernJS
+let g:tern_request_timeout = 1
+" let g:tern_show_signature_in_pum = '0'
+"" Rust
+let g:deoplete#sources#rust#racer_binary='/home/bats/.cargo/bin/racer'
+let g:deoplete#sources#rust#rust_source_path='/home/bats/src/rust/src'
 
 " Java Omni-completion
 " autocmd FileType java setlocal omnifunc=javacomplete#Complete
@@ -59,8 +80,8 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-hi Normal guibg=NONE ctermbg=NONE
-hi NonText guibg= NONE ctermbg=NONE
+" hi Normal guibg=NONE ctermbg=NONE
+" hi NonText guibg= NONE ctermbg=NONE
 
 " Add an error indicator to Ale
 let g:ale_sign_column_always = 1
@@ -85,6 +106,9 @@ set updatetime=250
 
 " Enable JSDoc syntax highlighting
 let g:javascript_plugin_jsdoc = 1
+
+" Deoplete tab-complete
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
 " Enable NERDTree and Tagbar, recenter the cursor as well
 autocmd vimenter * NERDTree
