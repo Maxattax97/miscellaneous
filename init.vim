@@ -41,12 +41,20 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdcommenter'
+Plug 'sbdchd/neoformat'
+Plug 'elzr/vim-json'
+Plug 'bling/vim-bufferline'
 
 " Autocompletion Plugins
 Plug 'zchee/deoplete-clang'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'sebastianmarkow/deoplete-rust'
 " Plug 'tweekmonster/deoplete-clang2'
+Plug 'shougo/neoinclude.vim'
+" Plug 'c9s/perlomni.vim'
+Plug 'zchee/deoplete-jedi'
+Plug 'shougo/neco-vim'
+Plug 'artur-shaik/vim-javacomplete2'
 
 call plug#end()
 
@@ -65,7 +73,7 @@ let g:deoplete#sources#rust#racer_binary='/home/bats/.cargo/bin/racer'
 let g:deoplete#sources#rust#rust_source_path='/home/bats/src/rust/src'
 
 " Java Omni-completion
-" autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
 " Setup themes
 " set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
@@ -75,6 +83,7 @@ colorscheme minimalist
 " let g:airline_theme='powerlineish'
 let g:airline_theme='minimalist'
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
