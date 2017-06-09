@@ -19,6 +19,9 @@ set cursorline
 set lazyredraw
 set ttyfast
 
+" Additional filetypes
+autocmd BufRead,BufNewFile *.aatstest set filetype=json
+
 " Enable python
 let g:python_host_prog = '/usr/bin/python'
 let g:python3_host_prog = '/usr/bin/python3'
@@ -74,6 +77,12 @@ let g:deoplete#sources#rust#rust_source_path='/home/bats/src/rust/src'
 
 " Java Omni-completion
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+" Ale alias for .aatstest
+" call ale#linter#Define('aatstest', g:aatstest)
+" let ale_linter_aliases = {'json': ['json', 'aatstest']}
+let g:ale_linters = {'aatstest': ['jsonlint']}
+
 
 " Setup themes
 " set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
