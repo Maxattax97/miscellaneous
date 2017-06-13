@@ -86,7 +86,8 @@ call plug#end()
 " THEMES "
 """"""""""
 "" Font
-" set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
+set guifont=DejaVuSansMono\ Nerd\ Font
+"set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
 
 "" Colorscheme
 colorscheme solarized8_dark
