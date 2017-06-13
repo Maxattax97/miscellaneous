@@ -52,6 +52,7 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'sirver/ultisnips' " REQUIRES SOME FURTHER CONFIGURATION & SNIPPETS
 Plug 'honza/vim-snippets'
+Plug 'ervandew/supertab'
 " Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
 " Plug 'airblade/vim-gitgutter'
 " Plug 'scrooloose/syntastic'
@@ -60,8 +61,8 @@ Plug 'honza/vim-snippets'
 
 "" Syntax / File Support
 Plug 'sheerun/vim-polyglot'
-" Plug 'pangloss/vim-javascript'
 " Plug 'elzr/vim-json'
+" Plug 'pangloss/vim-javascript'
 
 "" Autocompletion
 Plug 'zchee/deoplete-clang'
@@ -166,7 +167,7 @@ set updatetime=250
 let g:javascript_plugin_jsdoc = 1
 
 " Ale alias for .aatstest
-let g:ale_linters = {'aatstest': ['jsonlint']}
+" let g:ale_linters = {'aatstest': ['jsonlint']}
 " call ale#linter#Define('aatstest', g:aatstest)
 " let ale_linter_aliases = {'json': ['json', 'aatstest']}
 
