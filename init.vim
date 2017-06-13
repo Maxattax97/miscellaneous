@@ -9,10 +9,11 @@ filetype plugin on
 filetype indent on
 
 "" Format
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set softtabstop=4
+set autoindent smartindent softtabstop=4 tabstop=4 shiftwidth=4
+""" Use Tabs
+set noexpandtab
+""" Use Spaces
+" set expandtab
 
 "" Features
 set number
