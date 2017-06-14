@@ -52,7 +52,6 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'sirver/ultisnips' " REQUIRES SOME FURTHER CONFIGURATION & SNIPPETS
 Plug 'honza/vim-snippets'
-" Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
 " Plug 'airblade/vim-gitgutter'
 " Plug 'scrooloose/syntastic'
 " Plug 'valloric/youcompleteme'
@@ -80,6 +79,16 @@ Plug 'dikiaap/minimalist'
 Plug 'flazz/vim-colorschemes'
 Plug 'felixhummel/setcolors.vim'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
+
+"" Under Investigation
+" Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
+" Plug 'mhinz/vim-startify'
+" Plug 'Shougo/denite.nvim'
+" Plug 'bagrat/vim-workspace'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'vim-scripts/dbext.vim'
+" Debuggers, diagnostics, R language, 
 
 call plug#end()
 
@@ -87,7 +96,7 @@ call plug#end()
 " THEMES "
 """"""""""
 "" Font
-set guifont=DejaVuSansMono\ Nerd\ Font
+set guifont=DejaVuSansMono\ Nerd\ Font\ 9
 "set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
 
 "" Colorscheme
