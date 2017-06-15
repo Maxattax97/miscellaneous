@@ -163,11 +163,27 @@ endfunction
 
 set statusline=%{LinterStatus()}
 
+"""""""""""
+" SIGNIFY "
+""""""""""
+" acurev
+let g:signify_vcs_list = [ 'git', 'perforce' ] ", 'bzr', 'cvs', 'darcs', 'fossil', 'hg', 'rcs', 'svn', 'tfs' ]
+let g:signify_realtime = 1
+" let g:signify_cursorhold_insert = 1
+" let g:signify_cursorhold_normal = 1
+" let g:signify_update_on_bufenter = 0
+" let g:signify_update_on_focusgained = 1
+
 """""""""""""
 " GITGUTTER "
 """""""""""""
 " Set GitGutter's update time to 250ms
 set updatetime=250
+
+"""""""""""""
+" ULTISNIPS "
+"""""""""""""
+let g:UltiSnipsSnippetsDir = '~/.config/nvim/my-snippets'
 
 """""""""""""""""""""""""
 " SYNTAX / FILE SUPPORT "
