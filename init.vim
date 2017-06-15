@@ -53,6 +53,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'sirver/ultisnips' " REQUIRES SOME FURTHER CONFIGURATION & SNIPPETS
 Plug 'honza/vim-snippets'
 Plug 'ervandew/supertab'
+Plug 'godlygeek/tabular'
 " Plug 'airblade/vim-gitgutter'
 " Plug 'scrooloose/syntastic'
 " Plug 'valloric/youcompleteme'
