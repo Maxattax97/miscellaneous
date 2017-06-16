@@ -32,6 +32,9 @@ autocmd BufRead,BufNewFile *.aatstest set filetype=json
 let g:python_host_prog = '/usr/bin/python'
 let g:python3_host_prog = '/usr/bin/python3'
 
+"" Use system clipboard
+set clipboard+=unnamedplus
+
 """"""""""""""""
 " LOAD PLUGINS "
 """"""""""""""""
@@ -44,7 +47,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
-Plug 'mhinz/vim-signify'
+" Plug 'mhinz/vim-signify' " SLOW, BUGGY
 Plug 'scrooloose/nerdcommenter'
 Plug 'sbdchd/neoformat'
 Plug 'bling/vim-bufferline'
@@ -54,7 +57,8 @@ Plug 'sirver/ultisnips' " REQUIRES SOME FURTHER CONFIGURATION & SNIPPETS
 Plug 'honza/vim-snippets'
 Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
-" Plug 'airblade/vim-gitgutter'
+Plug 'xuyuanp/nerdtree-git-plugin'
+Plug 'airblade/vim-gitgutter'
 " Plug 'scrooloose/syntastic'
 " Plug 'valloric/youcompleteme'
 " Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
@@ -77,6 +81,7 @@ Plug 'artur-shaik/vim-javacomplete2'
 
 "" Themes
 Plug 'lifepillar/vim-solarized8'
+Plug 'mhartington/oceanic-next'
 Plug 'dikiaap/minimalist'
 Plug 'flazz/vim-colorschemes'
 Plug 'felixhummel/setcolors.vim'
@@ -103,6 +108,7 @@ set guifont=DejaVuSansMono\ Nerd\ Font\ 9
 
 "" Colorscheme
 colorscheme solarized8_dark
+" colorscheme OceanicNext
 " colorscheme minimalist
 " hi Normal guibg=NONE ctermbg=NONE
 " hi NonText guibg= NONE ctermbg=NONE
@@ -112,6 +118,7 @@ let g:airline_theme='solarized'
 let g:airline_solarized_bg='dark'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
+" let g:airline_theme='oceanicnext'
 " let g:airline_theme='powerlineish'
 " let g:airline_theme='minimalist'
 
@@ -125,7 +132,7 @@ endif
 let g:deoplete#enable_at_startup = 1
 
 " Deoplete tab-complete
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
 "" Deoplete per-autocompleter settings
 """ Clang
@@ -168,7 +175,7 @@ set statusline=%{LinterStatus()}
 " SIGNIFY "
 """"""""""
 " acurev
-let g:signify_vcs_list = [ 'git', 'perforce' ] ", 'bzr', 'cvs', 'darcs', 'fossil', 'hg', 'rcs', 'svn', 'tfs' ]
+let g:signify_vcs_list = [ 'git', 'perforce', 'hg', 'svn','bzr', 'cvs', 'darcs', 'fossil', 'hg', 'rcs', 'svn', 'tfs' ]
 let g:signify_realtime = 1
 " let g:signify_cursorhold_insert = 1
 " let g:signify_cursorhold_normal = 1
@@ -185,6 +192,17 @@ set updatetime=250
 " ULTISNIPS "
 """""""""""""
 let g:UltiSnipsSnippetsDir = '~/.config/nvim/my-snippets'
+" let g:UltiSnipsExpandTrigger = "<tab>"
+" let g:UltiSnipsListSnippets = "<c-tab>"
+" let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+" let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
+
+
+
+""""""""""""
+" SUPERTAB "
+""""""""""""
+" let g:SuperTabDefaultCompletionType = "<C-n>"
 
 """""""""""""""""""""""""
 " SYNTAX / FILE SUPPORT "
