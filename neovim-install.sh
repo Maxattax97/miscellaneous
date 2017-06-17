@@ -5,10 +5,13 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 CLEAR='\033[0m'
 
-if ! [ $(id -u) = 0 ]; then
+if ! [ "$(id -u)" = 0 ]; then
 	echo -e "${RED}Superuser permissions are required to run this script.${CLEAR}"
 	exit 1
 fi
+
+cd "$HOME" || exit # These are for safety.
+clear; clear
 
 echo -e "${BLUE}Checking for the local package manager...${CLEAR}"
 APT_GET_INSTALLED=$(which apt-get)
@@ -20,12 +23,18 @@ CARGO_INSTALLED=$(which cargo)
 if [[ ! -z $APT_GET_INSTALLED ]]; then
 	echo -e "${GREEN}Found apt-get...${CLEAR}"
 	add-apt-repository ppa:neovim-ppa/unstable
+
+	# PPA for Crystal
+	apt-key adv --keyserver keys.gnupg.net --recv-keys 09617FD37CC06B54
+	echo "deb https://dist.crystal-lang.org/apt crystal main" > /etc/apt/sources.list.d/crystal.list
+	
 	apt-get update
 	apt-get upgrade
-	apt-get install neovim
+	apt-get install neovim \
+		gawk shellcheck cppcheck mono-complete mono-msc tidy luarocks # Linters
 
 	if [[ ! -z $NPM_INSTALLED ]]; then
-		apt-get install git npm
+		apt-get install git npm 
 	fi
 
 	if [[ ! -z $CARGO_INSTALLED ]]; then
@@ -34,8 +43,9 @@ if [[ ! -z $APT_GET_INSTALLED ]]; then
 elif [[ ! -z $PACMAN_INSTALLED ]]; then
 	echo -e "${GREEN}Found pacman...${CLEAR}"
 	pacman -Syu
-	pacman -S git neovim python-pip python2-pip ctags clang
-
+	pacman -S --needed git neovim python-pip python2-pip ctags clang \
+		gawk shellcheck cppcheck mono ruby crystal dmd stack ghc elixir go tidy luarocks nim # For Linter support
+	
 	if [[ ! -z $NPM_INSTALLED ]]; then
 		pacman -S git nodejs npm xsel --needed
 	fi
@@ -46,6 +56,10 @@ elif [[ ! -z $PACMAN_INSTALLED ]]; then
 elif [[ ! -z $YUM_INSTALLED ]]; then
 	echo -e "${GREEN}Found yum...${CLEAR}"
 	yum update
+	# yum -y install epel-release
+	yum install cppcheck ShellCheck 
+
+	# DNF?
 
 	if [[ ! -z $NPM_INSTALLED ]]; then
 		echo "Not yet implemented."
@@ -59,15 +73,22 @@ else
 	exit 1;
 fi
 
+stack setup # Install the Haskell toolchain
+stack install Cabal
+
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # TODO: Dynamically update clang paths.
+# Includes:
+#		find /lib*/ -path "*/lib/clang/*/includes/"
+# LibClang:
+#		find /lib*/ -name "libclang*.so*"
 
 # TODO: Install Powerline fonts.
 #	Also set a default Powerline font.
 mkdir -p ~/.local/share/fonts
 cd ~/.local/share/fonts && curl -fLo "DejaVu Sans Mono Nerd Font Complete.ttf" https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf
-fc-cache -f "$font_dir"
+fc-cache -f "$HOME/.local/share/fonts"
 
 cargo install racer
 
@@ -81,6 +102,41 @@ pip3 install neovim
 # TODO: Ruby provider.
 
 # TODO: Symlink/copy the nvimrc to ~/.config/nvim
+
+# Install linters 
+npm install -g coffeescript coffeelint csslint stylelint elm eslint jscs jshint flow-remove-types flow-bin standard jsonlint
+pip install proselint cmakelint cython
+pip2 install ansible-lint
+gem install foodcritic erubi haml_lint mdl
+go get -u github.com/golang/lint/golint
+go get -u github.com/alecthomas/gometalinter # Unstable version
+cabal install hlint
+luarocks install luacheck
+
+# TODO: Examine Standard more closely, seems a little fanatical...
+
+# Build from source
+# Hadolint
+mkdir -p /usr/local/src/hadolint/
+git clone https://github.com/lukasmartinelli/hadolint /usr/local/src/hadolint/
+cd /usr/local/src/hadolint/ || exit
+stack build
+
+# Credo
+mkdir -p /usr/local/src/credo/
+git clone https://github.com/rrrene/credo /usr/local/src/credo/
+cd /usr/local/src/credo/ || exit
+mix deps.get
+mix archive.build
+mix archive.install
+
+# Dogma
+# Skip for now, we have Credo
+
+# TODO: erlc, checkstyle, kotlinc, mlint
+# Bookmark: NIX
+
+cd "$HOME" || exit
 
 nvim -c "PlugInstall" -c "qa"
 

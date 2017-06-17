@@ -126,6 +126,10 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
+"" Bufferline
+let g:airline#extensions#bufferline#enabled = 1
+let g:bufferline_echo = 0 " This will keep your messages from getting quickly hidden.
+
 """"""""""""
 " DEOPLETE "
 """"""""""""
