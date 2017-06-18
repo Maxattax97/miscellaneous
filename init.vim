@@ -59,6 +59,7 @@ Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
 Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
+Plug 'ap/vim-css-color'
 " Plug 'scrooloose/syntastic'
 " Plug 'valloric/youcompleteme'
 " Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
@@ -90,12 +91,35 @@ Plug 'ryanoasis/vim-devicons'
 
 "" Under Investigation
 " Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
+" Plug 'jistr/vim-nerdtree-tabs'
 " Plug 'mhinz/vim-startify'
 " Plug 'Shougo/denite.nvim'
 " Plug 'bagrat/vim-workspace'
 " Plug 'Xuyuanp/nerdtree-git-plugin'
 " Plug 'vim-scripts/dbext.vim'
-" Debuggers, diagnostics, R language, 
+" Plug 'chiel92/vim-autoformat'
+" Plug 'tpope/vim-surround'
+" Plug 'yggdroot/indentline'
+    " OR Plug 'nathanaelkane/vim-indent-guides'
+" Plug 'raimondi/delimitmate'
+" Plug 'terryma/vim-multiple-cursors'
+" Plug 'sjl/gundo.vim'
+" Plug 'tpope/vim-unimpaired'
+" Plug 'tpope/vim-sensible'
+" Plug 'janko-m/vim-test'
+    " WITH Plug 'tpope/dispatch'
+" Plug 'editorconfig/editorconfig-vim'
+" Plug 'luochen1990/rainbow'
+" Plug 'thinca/vim-quickrun'
+" Plug 'bronson/vim-trailing-whitespace'
+" Plug 'plugin/vim-paste-easy'
+" Plug 'godlygeek/csapprox'
+" Plug 'gregsexton/matchtag'
+" Plug 'mattn/emmet-vim'
+" Plug 'yuttie/comfortable-motion.vim' " Debatable, could slow down productivity
+" Debuggers, diagnostics, R language, syntaxes, autocompletes
+" Consider switching to Dein
+" Test over an SSH Connection
 
 call plug#end()
 
