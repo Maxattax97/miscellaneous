@@ -1,3 +1,7 @@
 ### INSTALL/INVESTIGATE LIST ###
 reedes/vim-pencil
 mileszs/ack.vim
+
+### LINKS ###
+https://stackoverflow.com/questions/208193/why-should-i-use-an-ide
+http://hilton.org.uk/blog/source-code-line-length
