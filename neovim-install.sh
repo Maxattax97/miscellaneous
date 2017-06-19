@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Feature list: https://stackoverflow.com/questions/208193/why-should-i-use-an-ide
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -86,9 +88,9 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.g
 
 # TODO: Install Powerline fonts.
 #	Also set a default Powerline font.
-mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts && curl -fLo "DejaVu Sans Mono Nerd Font Complete.ttf" https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf
-fc-cache -f "$HOME/.local/share/fonts"
+mkdir -p /usr/share/fonts
+cd /usr/share/fonts && curl -fLo "DejaVu Sans Mono Nerd Font Complete.ttf" https://raw.githubusercontent.com/ryanoasis/nerd-fonts/1.0.0/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete%20Mono.ttf
+fc-cache -fv
 
 cargo install racer
 

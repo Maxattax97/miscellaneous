@@ -12,6 +12,8 @@ filetype indent on
 set autoindent smartindent softtabstop=4 tabstop=4 shiftwidth=4
 """ Use Tabs
 set noexpandtab
+" set list lcs=tab:\┊\ 
+" let g:indentLine_char = '┊'
 """ Use Spaces
 " set expandtab
 
@@ -60,6 +62,12 @@ Plug 'godlygeek/tabular'
 Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
 Plug 'ap/vim-css-color'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'mhinz/vim-startify'
+Plug 'chiel92/vim-autoformat'
+Plug 'tpope/vim-surround'
+" Plug 'yggdroot/indentline'
+" Plug 'nathanaelkane/vim-indent-guides' 
 " Plug 'scrooloose/syntastic'
 " Plug 'valloric/youcompleteme'
 " Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
@@ -91,15 +99,9 @@ Plug 'ryanoasis/vim-devicons'
 
 "" Under Investigation
 " Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
-" Plug 'jistr/vim-nerdtree-tabs'
-" Plug 'mhinz/vim-startify'
 " Plug 'Shougo/denite.nvim'
 " Plug 'bagrat/vim-workspace'
-" Plug 'Xuyuanp/nerdtree-git-plugin'
 " Plug 'vim-scripts/dbext.vim'
-" Plug 'chiel92/vim-autoformat'
-" Plug 'tpope/vim-surround'
-" Plug 'yggdroot/indentline'
     " OR Plug 'nathanaelkane/vim-indent-guides'
 " Plug 'raimondi/delimitmate'
 " Plug 'terryma/vim-multiple-cursors'
@@ -117,7 +119,7 @@ Plug 'ryanoasis/vim-devicons'
 " Plug 'gregsexton/matchtag'
 " Plug 'mattn/emmet-vim'
 " Plug 'yuttie/comfortable-motion.vim' " Debatable, could slow down productivity
-" Debuggers, diagnostics, R language, syntaxes, autocompletes
+" Debuggers, diagnostics, R language, syntaxes, autocompletes, formatters
 " Consider switching to Dein
 " Test over an SSH Connection
 
@@ -153,6 +155,12 @@ endif
 "" Bufferline
 let g:airline#extensions#bufferline#enabled = 1
 let g:bufferline_echo = 0 " This will keep your messages from getting quickly hidden.
+
+""""""""""""
+" NERDTREE "
+""""""""""""
+" This setting causes issues because new windows do not open as expected in afterward.
+" let g:nerdtree_tabs_open_on_console_startup = 1
 
 """"""""""""
 " DEOPLETE "
@@ -225,8 +233,6 @@ let g:UltiSnipsSnippetsDir = '~/.config/nvim/my-snippets'
 " let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 " let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
-
-
 """"""""""""
 " SUPERTAB "
 """"""""""""
@@ -248,5 +254,5 @@ let g:javascript_plugin_jsdoc = 1
 """""""""""""""""""""""""""
 " Enable NERDTree and Tagbar, recenter the cursor as well
 autocmd vimenter * NERDTree
-autocmd VimEnter * wincmd p
+autocmd vimenter * wincmd p
 autocmd vimenter * Tagbar
