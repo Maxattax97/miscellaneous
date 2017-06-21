@@ -46,8 +46,9 @@ elif [[ ! -z $PACMAN_INSTALLED ]]; then
 	echo -e "${GREEN}Found pacman...${CLEAR}"
 	pacman -Syu
 	pacman -S --needed git neovim python-pip python2-pip ctags clang \
-		gawk shellcheck cppcheck mono ruby crystal dmd stack ghc elixir go tidy luarocks nim # For Linter support
-	
+		gawk shellcheck cppcheck mono ruby crystal dmd stack ghc elixir go tidy luarocks nim \ # For Linter support
+		dcd # For autocmplete support
+
 	if [[ ! -z $NPM_INSTALLED ]]; then
 		pacman -S git nodejs npm xsel --needed
 	fi

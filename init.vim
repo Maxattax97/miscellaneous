@@ -20,12 +20,16 @@ set noexpandtab
 "" Features
 set number
 set whichwrap+=<,>,h,l,[,]
-set cursorline
+set colorcolumn=125
+set cursorline " Slow
+set relativenumber " Slow
 
 "" Graphical
 set termguicolors
 set lazyredraw
-set ttyfast
+" set ttyfast " Enabled by default in Neovim
+" set synmaxcol=125
+" syntax sync minlines=255
 
 "" Additional Filetypes
 autocmd BufRead,BufNewFile *.aatstest set filetype=json
@@ -66,6 +70,8 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'mhinz/vim-startify'
 Plug 'chiel92/vim-autoformat'
 Plug 'tpope/vim-surround'
+Plug 'luochen1990/rainbow'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Plug 'yggdroot/indentline'
 " Plug 'nathanaelkane/vim-indent-guides' 
 " Plug 'scrooloose/syntastic'
@@ -74,19 +80,25 @@ Plug 'tpope/vim-surround'
 
 "" Syntax / File Support
 Plug 'sheerun/vim-polyglot'
+Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 " Plug 'elzr/vim-json'
 " Plug 'pangloss/vim-javascript'
 
 "" Autocompletion
 Plug 'zchee/deoplete-clang'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'wokalski/autocomplete-flow'
 Plug 'sebastianmarkow/deoplete-rust'
 Plug 'shougo/neoinclude.vim'
 Plug 'zchee/deoplete-jedi'
 Plug 'shougo/neco-vim'
 Plug 'artur-shaik/vim-javacomplete2'
+Plug 'landaire/deoplete-d'
+Plug 'othree/csscomplete.vim'
+Plug 'othree/html5.vim'
+Plug 'othree/xml.vim'
+Plug 'c9s/perlomni.vim'
 " Plug 'tweekmonster/deoplete-clang2'
-" Plug 'c9s/perlomni.vim'
 
 "" Themes
 Plug 'lifepillar/vim-solarized8'
@@ -111,7 +123,6 @@ Plug 'ryanoasis/vim-devicons'
 " Plug 'janko-m/vim-test'
     " WITH Plug 'tpope/dispatch'
 " Plug 'editorconfig/editorconfig-vim'
-" Plug 'luochen1990/rainbow'
 " Plug 'thinca/vim-quickrun'
 " Plug 'bronson/vim-trailing-whitespace'
 " Plug 'plugin/vim-paste-easy'
@@ -130,7 +141,6 @@ call plug#end()
 """"""""""
 "" Font
 set guifont=DejaVuSansMono\ Nerd\ Font\ 9
-"set guifont=Ubuntu\ Mono\ derivative\ Powerline\ Regular
 
 "" Colorscheme
 colorscheme solarized8_dark
@@ -167,13 +177,10 @@ let g:bufferline_echo = 0 " This will keep your messages from getting quickly hi
 """"""""""""
 let g:deoplete#enable_at_startup = 1
 
-" Deoplete tab-complete
-" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-
 "" Deoplete per-autocompleter settings
 """ Clang
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/i386-linux-gnu/libclang-4.0.so.1'
-let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-4.0/lib/clang/4.0.0/include'
+let g:deoplete#sources#clang#libclang_path = '/lib/libclang.so' " '/usr/lib/i386-linux-gnu/libclang-4.0.so.1'
+let g:deoplete#sources#clang#clang_header = '/lib/clang/4.0.0/include' " '/usr/lib/llvm-4.0/lib/clang/4.0.0/include'
 
 """ TernJS
 let g:tern_request_timeout = 1
@@ -184,7 +191,25 @@ let g:deoplete#sources#rust#racer_binary='/home/bats/.cargo/bin/racer'
 let g:deoplete#sources#rust#rust_source_path='/home/bats/src/rust/src'
 
 """ Java
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+""" Omnifunctions
+let g:deoplete#omni#functions = {}
+let g:deoplete#omni#functions.java = 'javacomplete#Complete'
+let g:deoplete#omni#functions.javascript = [
+	\ 'tern#Complete',
+	\ 'autocomplete_flow#Complete',
+	\ 'javascriptcomplete#CompleteJS'
+\]
+let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
+let g:deoplete#omni#functions.html = [
+	\ 'htmlcomplete#CompleteTags',
+	\ 'xmlcomplete#CompleteTags'
+\]
+let g:deoplete#omni#functions.xml = 'xmlcomplete#CompleteTags'
+let g:deoplete#omni#functions.perl = 'perlomni#PerlComplete'
+
+set completeopt=menuone,preview
 
 """""""
 " ALE "
@@ -210,7 +235,7 @@ set statusline=%{LinterStatus()}
 """""""""""
 " SIGNIFY "
 """"""""""
-" acurev
+" accurev
 let g:signify_vcs_list = [ 'git', 'perforce', 'hg', 'svn','bzr', 'cvs', 'darcs', 'fossil', 'hg', 'rcs', 'svn', 'tfs' ]
 let g:signify_realtime = 1
 " let g:signify_cursorhold_insert = 1
@@ -233,10 +258,12 @@ let g:UltiSnipsSnippetsDir = '~/.config/nvim/my-snippets'
 " let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 " let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
-""""""""""""
-" SUPERTAB "
-""""""""""""
-" let g:SuperTabDefaultCompletionType = "<C-n>"
+"""""""""""""""""""""""""""""""""""""
+" SUPERTAB (AND COMPLETION HOTKEYS) "
+"""""""""""""""""""""""""""""""""""""
+let g:SuperTabDefaultCompletionType = "<C-x><C-o>"
+let g:UltiSnipsExpandTrigger = "<C-j>"
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 
 """""""""""""""""""""""""
 " SYNTAX / FILE SUPPORT "
