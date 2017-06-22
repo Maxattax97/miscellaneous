@@ -10,6 +10,7 @@ export MANPAGER='less'
 export BROWSER="google-chrome-stable '%' &"
 export PATH=$PATH:/home/max/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
+export TERM="xterm-256color"
 
 # Colors
 RED='\e[0;31m'
@@ -224,6 +225,9 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+# Fix tmux 256 colors:
+alias tmux="tmux -2"
 
 # Display the last two directories relative to the working directory.
 

@@ -107,6 +107,7 @@ Plug 'dikiaap/minimalist'
 Plug 'flazz/vim-colorschemes'
 Plug 'felixhummel/setcolors.vim'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'edkolev/tmuxline.vim'
 Plug 'ryanoasis/vim-devicons'
 
 "" Under Investigation
