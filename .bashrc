@@ -221,6 +221,27 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# if the command-not-found package is installed, use it
+if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
+        function command_not_found_handle {
+                # check because c-n-f could've been removed in the meantime
+                if [ -x /usr/lib/command-not-found ]; then
+                   /usr/lib/command-not-found -- "$1"
+                   return $?
+                elif [ -x /usr/share/command-not-found/command-not-found ]; then
+                   /usr/share/command-not-found/command-not-found -- "$1"
+                   return $?
+				elif [ -x /usr/share/doc/pkgfile/command-not-found.bash ]; then
+					# For Arch based systems (pacman -S pkgfile command-not-found)
+					/usr/share/doc/pkgfile/command-not-found.bash -- "$1"
+					return $?
+                else
+                   printf "%s: command not found\n" "$1" >&2
+                   return 127
+                fi
+        }
+fi
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
