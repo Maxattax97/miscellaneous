@@ -8,7 +8,7 @@ export VISUAL=/usr/bin/nvim # For heavyweight purposes.
 export PAGER='less'
 export MANPAGER='less'
 export BROWSER="google-chrome-stable '%' &"
-export PATH=$PATH:/home/max/bin/
+export PATH=$PATH:$HOME/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 export TERM="xterm-256color"
 
