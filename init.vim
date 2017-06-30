@@ -72,6 +72,7 @@ Plug 'chiel92/vim-autoformat'
 Plug 'tpope/vim-surround'
 Plug 'luochen1990/rainbow'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'shougo/echodoc.vim'
 " Plug 'yggdroot/indentline'
 " Plug 'nathanaelkane/vim-indent-guides' 
 " Plug 'scrooloose/syntastic'
@@ -215,7 +216,10 @@ let g:deoplete#omni#functions.html = [
 let g:deoplete#omni#functions.xml = 'xmlcomplete#CompleteTags'
 let g:deoplete#omni#functions.perl = 'perlomni#PerlComplete'
 
-set completeopt=menuone,preview
+set completeopt=menuone " Preview mode causes flickering
+
+"" Increase command height for echodoc
+set cmdheight=2
 
 """""""
 " ALE "
