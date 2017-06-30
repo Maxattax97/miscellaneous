@@ -248,7 +248,7 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # Fix tmux 256 colors:
-alias tmux="tmux -2"
+alias tmux='tmux -2'
 
 # Display the last two directories relative to the working directory.
 

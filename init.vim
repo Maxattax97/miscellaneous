@@ -107,7 +107,7 @@ Plug 'dikiaap/minimalist'
 Plug 'flazz/vim-colorschemes'
 Plug 'felixhummel/setcolors.vim'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'edkolev/tmuxline.vim'
+Plug 'edkolev/tmuxline.vim'
 Plug 'ryanoasis/vim-devicons'
 
 "" Under Investigation
@@ -166,6 +166,11 @@ endif
 "" Bufferline
 let g:airline#extensions#bufferline#enabled = 1
 let g:bufferline_echo = 0 " This will keep your messages from getting quickly hidden.
+
+"" Tmuxline
+let g:airline#extensions#tmuxline#enabled = 0 " Airline breaks tmuxline for some reason.
+let g:tmuxline_theme = 'vim_statusline_3'
+let g:tmuxline_preset = 'tmux'
 
 """"""""""""
 " NERDTREE "
