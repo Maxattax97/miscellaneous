@@ -250,6 +250,9 @@ alias l='ls -CF'
 # Fix tmux 256 colors:
 alias tmux='tmux -2'
 
+# Clear color codes before clearing:
+alias clear='echo -e "\e[0m" && clear'
+
 # Display the last two directories relative to the working directory.
 
 #export PS1="\[\033[0;32m\]\u@\h \[\033[33m\]\$(pwd)\[\033[0m\] \$ ";
