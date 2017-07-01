@@ -1,0 +1,44 @@
+#!/bin/bash
+
+dont_join=${1:-0};
+
+session="CtlPanel"
+w_htop="Htop"
+w_network="Networking"
+w_logs="Logs"
+w_minecraft="Minecraft"
+
+tmux has-session -t "CtlPanel" 2>/dev/null
+
+if [ "$?" -eq 1 ]; then
+	tmux new-session -d -s "$session" -n "$w_htop"
+	tmux new-window -n "$w_network" -t "$session"
+	tmux new-window -n "$w_logs" -t "$session"
+	tmux new-window -n "$w_minecraft" -t "$session" -c "/home/max/src/miscellaneous/"
+	tmux new-window -t "$session" # Open a bash terminal at the end.
+
+	tmux split-window -h -t "$session:$w_network"
+
+	tmux send-keys -t "$session:$w_htop" "htop" C-m
+	tmux send-keys -t "$session:$w_network.0" "speedometer -r wlp5s0 -t wlp5s0" C-m
+	tmux send-keys -t "$session:$w_network.1" "clear" C-m "sudo iftop" C-m
+	tmux send-keys -t "$session:$w_logs" "clear" C-m "journalctl --system -f" C-m
+	tmux send-keys -t "$session:$w_minecraft" "echo \"Minecraft\"" C-m "pwd" C-m
+
+	if [ "$dont_join" -ne 1 ]; then
+		echo "Attaching to CtlPanel session ..."
+		tmux -2 attach-session -t "$session:$w_htop"
+	fi
+else
+	if [ "$dont_join" -ne 1 ]; then
+		echo "Entering a child CtlPanel session ..."
+		tmux -2 new-session -t "$session:$w_htop"
+	fi
+fi
+
+
+# tmux new-window -n HTOP htop
+#tmux set -g remain-on-exit on
+#tmux selectp -t 0                      
+#tmux split-window -v 'htop'
+# tmux -2 attach-session -t CtlPanel"
