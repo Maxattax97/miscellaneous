@@ -10,7 +10,12 @@ export MANPAGER='less'
 export BROWSER="google-chrome-stable '%' &"
 export PATH=$PATH:$HOME/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
-export TERM="xterm-256color"
+
+# Dynamically set term to the right prefix.
+case $TERM in
+    xterm|screen|tmux|rxvt-unicode)
+        TERM="$TERM-256color";;
+esac
 
 # Colors
 RED='\e[0;31m'
