@@ -25,6 +25,7 @@ set cursorline " Slow
 set relativenumber " Slow
 
 "" Graphical
+" let $NVIM_TUI_ENABLE_CURSOR_SHAPE=0
 set termguicolors
 set lazyredraw
 " set ttyfast " Enabled by default in Neovim

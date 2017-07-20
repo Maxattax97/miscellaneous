@@ -13,7 +13,7 @@ export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 
 # Dynamically set term to the right prefix.
 case $TERM in
-    xterm|screen|tmux|rxvt-unicode)
+    konsole|xterm|screen|tmux|rxvt-unicode)
         TERM="$TERM-256color";;
 esac
 
@@ -353,3 +353,7 @@ if [ "$enable_banner" = yes ]; then
     fi
 fi
 unset enable_banner
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
