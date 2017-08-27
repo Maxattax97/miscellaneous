@@ -258,6 +258,9 @@ alias tmux='tmux -2'
 # Clear color codes before clearing:
 alias clear='echo -e "\e[0m" && clear'
 
+# Typical rsync command
+alias relocate='rsync -avzh --info=progress2'
+
 # Display the last two directories relative to the working directory.
 
 #export PS1="\[\033[0;32m\]\u@\h \[\033[33m\]\$(pwd)\[\033[0m\] \$ ";
