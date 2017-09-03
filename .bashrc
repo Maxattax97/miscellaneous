@@ -356,10 +356,3 @@ if [ "$enable_banner" = yes ]; then
     fi
 fi
 unset enable_banner
-
-if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
-    source "/home/max/.profile"
-fi
-
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
