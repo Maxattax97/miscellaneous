@@ -363,3 +363,7 @@ fi
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [[ -e "$HOME/bin" ]]; then
+	export PATH="$PATH:$HOME/bin"
+fi
