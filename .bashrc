@@ -366,3 +366,6 @@ fi
 if [[ -e "$HOME/bin" ]]; then
 	export PATH="$PATH:$HOME/bin"
 fi
+
+# added by Anaconda3 installer
+export PATH="/home/max/.anaconda3/bin:$PATH"
