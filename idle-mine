@@ -2,8 +2,8 @@
 
 USE_CPU=1
 USE_GPU=1
-POOL="xmr-us-east1.nanopool.org:14444"
-POOL_PASSWORD="x"
+POOL="gulf.moneroocean.stream:10008"
+POOL_PASSWORD="MaxattaxArch"
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
 MINING=0
