@@ -21,7 +21,7 @@ getActiveTime() {
 startMining() {
     MINING=1
     if [ "$USE_CPU" -ge 1 ]; then
-        xmrig -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" -k -B
+        xmrig -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --cpu-priority 1 -k -B
         echo "CPU miner started ..."
     fi
 
