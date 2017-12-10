@@ -7,6 +7,7 @@ w_htop="Htop"
 w_network="Networking"
 w_logs="Logs"
 w_minecraft="Minecraft"
+w_monero="Monero"
 
 network_interface="eno1"
 
@@ -17,6 +18,7 @@ if [ "$?" -eq 1 ]; then
 	tmux new-window -n "$w_network" -t "$session"
 	tmux new-window -n "$w_logs" -t "$session"
 	tmux new-window -n "$w_minecraft" -t "$session" -c "/home/resolute/minecraft"
+	tmux new-window -n "$w_monero" -t "$session"
 	tmux new-window -t "$session" # Open a bash terminal at the end.
 
 	tmux split-window -h -t "$session:$w_network"
@@ -26,6 +28,7 @@ if [ "$?" -eq 1 ]; then
 	tmux send-keys -t "$session:$w_network.1" "clear && sudo iftop" C-m
 	tmux send-keys -t "$session:$w_logs" "clear && journalctl --system -f" C-m
 	tmux send-keys -t "$session:$w_minecraft" "cd memeChat/ && clear && ./run.sh" C-m
+	tmux send-keys -t "$session:$w_monero" "clear && xmrig -o gulf.moneroocean.stream:10008 -u 46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA -p Resolute --cpu-priority 1 -k"
 
 	if [ "$dont_join" -ne 1 ]; then
 		echo "Attaching to CtlPanel session ..."
