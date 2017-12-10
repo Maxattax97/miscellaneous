@@ -14,6 +14,19 @@ INTERVAL=30
 LOCKED_INTERVAL=1
 IDLE_TO_START=10000
 
+# Tmux
+session="Mining"
+w_htop="HTOP"
+w_cpu="CPU"
+w_gpu="GPU"
+
+DEBUG=0
+if [ "$DEBUG" -eq 1 ]; then
+    INTERVAL=1
+    LOCKED_INTERVAL=1
+    IDLE_TO_START=1000
+fi
+
 # TODO: Implement a check for using battery.
 # TODO: Implement a check for SSH sessions.
 
@@ -45,26 +58,73 @@ getLocked() {
     fi
 }
 
+initMining() {
+    tmux has-session -t "$session" 2>/dev/null
+
+    if [ "$?" -ne 1 ]; then
+        log "An idling tmux session already exists; exiting"
+        exit
+    fi
+
+    tmux new-session -d -s "$session" -n "$w_htop"
+    if [ "$USE_CPU" -eq 1 ]; then
+        tmux new-window -n "$w_cpu" -t "$session"
+        tmux send-keys -t "$session:$w_cpu" "clear && xmrig -o $POOL -u $WALLET -p $POOL_PASSWORD --cpu-priority 1 -k" C-m "p" C-m
+    fi
+    if [ "$USE_GPU" -eq 1 ]; then
+        tmux new-window -n "$w_gpu" -t "$session"
+        tmux send-keys -t "$session:$w_gpu" "clear && xmrig-nvidia -o $POOL -u $WALLET -p $POOL_PASSWORD --bfactor 12 --bsleep 1000 -k" C-m "p" C-m
+    fi
+
+    tmux send-keys -t "$session:$w_htop" "htop" C-m
+    #if [ "$USE_CPU" -eq 1 ]; then
+        #tmux send-keys -t "$session:$w_cpu" "clear && xmrig -o $POOL -u $WALLET -p $POOL_PASSWORD --cpu-priority 1 -k" C-m "p" C-m
+    #fi
+    #if [ "$USE_GPU" -eq 1 ]; then
+        #tmux send-keys -t "$session:$w_gpu" "clear && xmrig-nvidia -o $POOL -u $WALLET -p $POOL_PASSWORD --bfactor 12 --bsleep 1000 -k" C-m "p" C-m
+    #fi
+    log "Started background tmux session containing mining programs"
+}
+
+killMining() {
+    if [ "$USE_CPU" -eq 1 ]; then
+        tmux send-keys -t "$session:$w_cpu" C-c
+    fi
+
+    if [ "$USE_GPU" -eq 1 ]; then
+        tmux send-keys -t "$session:$w_gpu" C-c
+    fi
+
+    tmux send-keys -t "$session:$w_htop" C-c
+    tmux kill-session -t "$session"
+}
+
 startMining() {
     MINING=1
     if [ "$USE_CPU" -eq 1 ]; then
-        killall xmrig &> /dev/null
-        xmrig -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --cpu-priority 1 -k -B
+        #killall xmrig &> /dev/null
+        #xmrig -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --cpu-priority 1 -k -B
+        #echo "xmrig -o $POOL -u $WALLET -p $POOL_PASSWORD --cpu-priority 1 -k -B"
+        tmux send-keys -t "$session:$w_cpu" "r" C-m
         log "CPU miner started ..."
     fi
 
     if [ "$USE_GPU" -eq 1 ]; then
-        killall xmrig-nvidia &> /dev/null
+        #killall xmrig-nvidia &> /dev/null
         # Bash forking because the built in -B flag is broken right now.
-        xmrig-nvidia -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --bfactor 12 --bsleep 1000 -k &> /dev/null &
+        #xmrig-nvidia -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --bfactor 12 --bsleep 1000 -k &> /dev/null
+        #echo "xmrig-nvidia -o $POOL -u $WALLET -p $POOL_PASSWORD --bfactor 12 --bsleep 1000 -k &> /dev/null &"
+        tmux send-keys -t "$session:$w_gpu" "r" C-m
         log "GPU miner started ..."
     fi
 }
 
 stopMining() {
     if [ "$MINING" -eq 1 ]; then
-        killall xmrig xmrig-nvidia
-        disown
+        #killall xmrig xmrig-nvidia
+        #disown
+        tmux send-keys -t "$session:$w_cpu" "p" C-m
+        tmux send-keys -t "$session:$w_gpu" "p" C-m
         log "Mining stopped"
         MINING=0
     fi
@@ -104,14 +164,25 @@ tick() {
     fi
 }
 
-while true; do
-    tick
-    if [ "$LOCKED" -eq 0 ]; then
-        sleep "$INTERVAL"
-    elif [ "$LOCKED" -eq 1 ]; then
-        sleep "$LOCKED_INTERVAL"
-    fi
-done
+quit() {
+    killMining
+    log "Killed tmux session and contained miners"
+    exit
+}
 
+main() {
+    initMining
 
+    while true; do
+        tick
+        if [ "$LOCKED" -eq 0 ]; then
+            sleep "$INTERVAL"
+        elif [ "$LOCKED" -eq 1 ]; then
+            sleep "$LOCKED_INTERVAL"
+        fi
+    done
+}
 
+trap quit INT
+
+main
