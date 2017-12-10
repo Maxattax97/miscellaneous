@@ -7,7 +7,9 @@ POOL_PASSWORD="MaxattaxArch"
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
 MINING=0
+IN_USE=0
 LOCKED=0
+SSH_ACTIVE=0
 INTERVAL=30
 LOCKED_INTERVAL=1
 IDLE_TO_START=10000
@@ -21,6 +23,11 @@ timestamp() {
 
 log() {
     echo "$(timestamp) $1"
+}
+
+getActiveSSHSessions() {
+    lines="$(ps aux | grep sshd | wc -l)"
+    echo "$(( (lines - 1) / 2 ))"
 }
 
 getLockedTime() {
@@ -40,14 +47,14 @@ getLocked() {
 
 startMining() {
     MINING=1
-    if [ "$USE_CPU" -ge 1 ]; then
+    if [ "$USE_CPU" -eq 1 ]; then
         killall xmrig &> /dev/null
         xmrig -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --cpu-priority 1 -k -B
         log "CPU miner started ..."
     fi
 
-    if [ "$USE_GPU" -ge 1 ]; then
-        xmrig-nvidia &> /dev/null
+    if [ "$USE_GPU" -eq 1 ]; then
+        killall xmrig-nvidia &> /dev/null
         # Bash forking because the built in -B flag is broken right now.
         xmrig-nvidia -o "$POOL" -u "$WALLET" -p "$POOL_PASSWORD" --bfactor 12 --bsleep 1000 -k &> /dev/null &
         log "GPU miner started ..."
@@ -55,7 +62,7 @@ startMining() {
 }
 
 stopMining() {
-    if [ "$MINING" -ge 1 ]; then
+    if [ "$MINING" -eq 1 ]; then
         killall xmrig xmrig-nvidia
         disown
         log "Mining stopped"
@@ -64,32 +71,44 @@ stopMining() {
 }
 
 tick() {
-    if [ "$(getLocked)" -ge 1 ]; then
-        if [ "$LOCKED" -le 0 ]; then
+    if [ "$(getLocked)" -eq 1 ]; then
+        if [ "$LOCKED" -eq 0 ]; then
             log "Screen has locked"
         fi
 
         LOCKED=1
     else
-        if [ "$LOCKED" -ge 1 ]; then
+        if [ "$LOCKED" -eq 1 ]; then
             log "Screen has unlocked"
         fi
 
         LOCKED=0
     fi
 
-    if [ "$MINING" -le 0 ] && [ "$LOCKED" -ge 1 ] && [ "$(getLockedTime)" -ge "$IDLE_TO_START" ]; then
+    if [ "$(getActiveSSHSessions)" -ge 1 ]; then
+        SSH_ACTIVE=1
+    else
+        SSH_ACTIVE=0
+    fi
+
+    if [ "$SSH_ACTIVE" -eq 1 ] || [ "$LOCKED" -eq 0 ]; then
+        IN_USE=1
+    else
+        IN_USE=0
+    fi
+
+    if [ "$MINING" -eq 0 ] && [ "$IN_USE" -eq 0 ] && [ "$(getLockedTime)" -gt "$IDLE_TO_START" ]; then
         startMining
-    elif [ "$MINING" -ge 1 ] && [ "$LOCKED" -le 0 ] && [ "$(getLockedTime)" -le 0 ]; then
+    elif [ "$MINING" -eq 1 ] && [ "$IN_USE" -eq 1 ] && [ "$(getLockedTime)" -le 0 ]; then
         stopMining
     fi
 }
 
 while true; do
     tick
-    if [ "$LOCKED" -le 0 ]; then
+    if [ "$LOCKED" -eq 0 ]; then
         sleep "$INTERVAL"
-    elif [ "$LOCKED" -ge 1 ]; then
+    elif [ "$LOCKED" -eq 1 ]; then
         sleep "$LOCKED_INTERVAL"
     fi
 done
