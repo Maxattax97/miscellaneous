@@ -4,16 +4,33 @@
 
 # Exports
 export EDITOR=/usr/bin/nano # For lightweight purposes.
-export VISUAL=/usr/bin/nvim # For heavyweight purposes.
+
+# For heavyweight purposes.
+if [[ -x "$(command -v nvim)" ]]; then
+    export VISUAL="/usr/bin/nvim"
+elif [[ -x "$(command -v vim)" ]]; then
+    export VISUAL="/usr/bin/vim"
+else
+    export VISUAL="/usr/bin/nano"
+fi
+
 export PAGER='less'
 export MANPAGER='less'
-export BROWSER="google-chrome-stable '%' &"
+
+if [[ -x "$(command -v firefox)" ]]; then
+    export BROWSER="firefox '%' &"
+elif [[ -x "$(command -v google-chrome-stable)" ]]; then
+    export BROWSER="google-chrome-stable '%' &"
+elif [[ -x "$(command -v chromium)" ]]; then
+    export BROWSER="chromium '%' &"
+fi
+
 export PATH=$PATH:$HOME/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 
 # Dynamically set term to the right prefix.
 case $TERM in
-    xterm|screen|tmux|rxvt-unicode)
+    konsole|xterm|screen|tmux|rxvt-unicode)
         TERM="$TERM-256color";;
 esac
 
@@ -100,9 +117,9 @@ if [ "$color_prompt" = yes ]; then
 
     #PS1="${RESET}${debian_chroot:+($debian_chroot)}${LIGHTGREY}[${DARKGREY}\T${LIGHTGREY}] ${LIGHTGREEN}\u${DARKGREY}@${GREEN}\h${RESET}:${LIGHTBLUE}\w${RESET}\\$\[$(tput sgr0)\]${RESET} " # This string will not work, but is a more human readable version
     #PS1='\[\033[00m\]${debian_chroot:+($debian_chroot)}\[\033[00;37m\][\[\033[01;30m\]\T\[\033[00;37m\]] \[\033[01;32m\]\u\[\033[01;30m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$\[$(tput sgr0)\]\[\033[00m\] '
-    
+
     # [C|R|H|S] = [CPU|RAM|HDD|SSH]
-        
+
     PS1='\[\033[00m\]${debian_chroot:+($debian_chroot)}'
     if [ "$time_indicator" = yes ]; then
         PS1=${PS1}'\[\033[00;37m\][\[\033[01;30m\]\t\[\033[00;37m\]]'
@@ -113,19 +130,19 @@ if [ "$color_prompt" = yes ]; then
 #         cpuLoad=""
 #         ramLoad=""
 #         hddLoad=""
-#         
-#         
+#
+#
 #         # CPU Load
 #         nCpu=$(grep -c 'processor' /proc/cpuinfo)
 #         sLoad=$(( 100 * $nCpu ))
 #         local mLoad=$(( 200 *${nCpu} ))
 #         local lLoad=$(( 400*${nCpu} ))
-#         
+#
 #         load() {
 #             local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 #             echo $((10#$SYSLOAD))
 #         }
-# 
+#
 #         # Returns a color indicating system load.
 #         load_color() {
 #             local SYSLOAD=$(load)
@@ -139,9 +156,9 @@ if [ "$color_prompt" = yes ]; then
 #                 echo -en "\[${GREEN}\]"
 #             fi
 #         }
-#         
+#
 #         cpuLoad=$(load_color)
-#         
+#
 #         # CPU Load
 #         function load()
 #         {
@@ -149,15 +166,15 @@ if [ "$color_prompt" = yes ]; then
 #             # System load of the current host.
 #             echo $((10#$SYSLOAD))       # Convert to decimal.
 #         }
-#         
+#
 #         local nCpu=$(grep -c 'processor' /proc/cpuinfo)
 #         local sLoad=$(( 100*${nCpu} ))
 #         local mLoad=$(( 200*${nCpu} ))
 #         local lLoad=$(( 400*${nCpu} ))
-#         
+#
 #         local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 #         SYSLOAD=$(( 10#$SYSLOAD ))
-#             
+#
 #         if [ ${SYSLOAD} -gt ${lLoad} ]; then
 #             cpuLoad="\[${RED}\]"
 #         elif [ ${SYSLOAD} -gt ${mLoad} ]; then
@@ -167,7 +184,7 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             cpuLoad="\[${GREEN}\]"
 #         fi
-#     
+#
 #         # RAM Load
 #         ramPercent=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
 #         ramPercent=$(( 10#
@@ -180,9 +197,9 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             cpuLoad="\[${GREEN}\]"
 #         fi
-#     
+#
 #         # Free HDD space
-#     
+#
 #         # Secure Connection
 #         if [ -n "${SSH_CONNECTION}" ]; then
 #             connectionSecurity="\[${GREEN}\]"        # Connected remotely via ssh (secure).
@@ -191,14 +208,14 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             connectionSecurity="\[${CYAN}\]"         # Connected on local machine.
 #         fi
-#     
-#     
+#
+#
 #         PS1=${PS1}"\[\033[00;37m\][\[\033[01;30m\]${cpuLoad}C${sep}|${ramLoad}R${sep}|H${sep}|${connectionSecurity}S\[\033[00;37m\]]"
 #     fi
     PS1=${PS1}' \[\033[01;32m\]\u\[\033[01;30m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$\[$(tput sgr0)\]\[\033[00m\] '
-    
+
     _normalPrompt=${PS1}
-    
+
     #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ' # Ubuntu's original
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
@@ -257,6 +274,9 @@ alias tmux='tmux -2'
 
 # Clear color codes before clearing:
 alias clear='echo -e "\e[0m" && clear'
+
+# Typical rsync command
+alias relocate='rsync -avzh --info=progress2'
 
 # Display the last two directories relative to the working directory.
 
@@ -344,7 +364,7 @@ if [ "$enable_banner" = yes ]; then
     #clear; clear
     if hash screenfetch 2>/dev/null; then
         screenfetch -E
-    else 
+    else
         echo -e "${LIGHTBLUE}${BOLD}Welcome back, $USER!${RESET}"
         if hash fortune 2>/dev/null; then
             fortune -s
@@ -353,3 +373,22 @@ if [ "$enable_banner" = yes ]; then
     fi
 fi
 unset enable_banner
+
+if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+    source "/home/$USER/.profile"
+fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [[ -d "$HOME/bin" ]]; then
+	export PATH="$PATH:$HOME/bin"
+fi
+
+if [[ -d "/home/$USER/.anaconda3/bin" ]]; then
+    export PATH="/home/$USER/.anaconda3/bin:$PATH"
+fi
+
+if [[ -d "/opt/cuda/lib64" ]]; then
+    export LD_LIBRARY_PATH="/opt/cuda/lib64"
+fi
+
