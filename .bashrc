@@ -10,6 +10,7 @@ if [[ -x "$(command -v nvim)" ]]; then
     export VISUAL="/usr/bin/nvim"
 elif [[ -x "$(command -v vim)" ]]; then
     export VISUAL="/usr/bin/vim"
+    alias nvim="vim"
 else
     export VISUAL="/usr/bin/nano"
 fi
