@@ -23,9 +23,9 @@ if [ "$?" -eq 1 ]; then
 
 	tmux send-keys -t "$session:$w_htop" "htop" C-m
 	tmux send-keys -t "$session:$w_network.0" "speedometer -r $network_interface -t $network_interface" C-m
-	tmux send-keys -t "$session:$w_network.1" "clear" C-m "sudo iftop" C-m
-	tmux send-keys -t "$session:$w_logs" "clear" C-m "journalctl --system -f" C-m
-	tmux send-keys -t "$session:$w_minecraft" "cd memeChat/" C-m "clear" C-m "./run.sh" C-m
+	tmux send-keys -t "$session:$w_network.1" "clear && sudo iftop" C-m
+	tmux send-keys -t "$session:$w_logs" "clear && journalctl --system -f" C-m
+	tmux send-keys -t "$session:$w_minecraft" "cd memeChat/ && clear && ./run.sh" C-m
 
 	if [ "$dont_join" -ne 1 ]; then
 		echo "Attaching to CtlPanel session ..."
