@@ -26,6 +26,11 @@ elif [[ -x "$(command -v chromium)" ]]; then
     export BROWSER="chromium '%' &"
 fi
 
+# Resolves an occasional issue with screenfetch.
+if [[ -d "/usr/lib/x86_64-linux-gnu/gio/modules/" ]]; then
+    export GIO_EXTRA_MODULES="/usr/lib/x86_64-linux-gnu/gio/modules/"
+fi
+
 export PATH=$PATH:$HOME/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 
@@ -383,9 +388,14 @@ if [[ -d "$HOME/.anaconda3/bin" ]]; then
     export PATH="$HOME/.anaconda3/bin:$PATH"
 fi
 
-if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
-    source "$HOME/.profile"
-fi
+#if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+    #source "$HOME/.profile"
+
+    #if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+        ## Doesn't exist within the profile.
+        #export NEOVIM_STUDIO_PROFILE_SOURCED=1
+    #fi
+#fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
