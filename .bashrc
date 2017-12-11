@@ -388,14 +388,14 @@ if [[ -d "$HOME/.anaconda3/bin" ]]; then
     export PATH="$HOME/.anaconda3/bin:$PATH"
 fi
 
-#if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
-    #source "$HOME/.profile"
+if [ -d "$HOME/.neovim-studio/" ] && [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+    source "$HOME/.profile"
 
-    #if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
-        ## Doesn't exist within the profile.
-        #export NEOVIM_STUDIO_PROFILE_SOURCED=1
-    #fi
-#fi
+    if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+        # Doesn't exist within the profile.
+        export NEOVIM_STUDIO_PROFILE_SOURCED=1
+    fi
+fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
