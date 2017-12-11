@@ -100,9 +100,9 @@ if [ "$color_prompt" = yes ]; then
 
     #PS1="${RESET}${debian_chroot:+($debian_chroot)}${LIGHTGREY}[${DARKGREY}\T${LIGHTGREY}] ${LIGHTGREEN}\u${DARKGREY}@${GREEN}\h${RESET}:${LIGHTBLUE}\w${RESET}\\$\[$(tput sgr0)\]${RESET} " # This string will not work, but is a more human readable version
     #PS1='\[\033[00m\]${debian_chroot:+($debian_chroot)}\[\033[00;37m\][\[\033[01;30m\]\T\[\033[00;37m\]] \[\033[01;32m\]\u\[\033[01;30m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$\[$(tput sgr0)\]\[\033[00m\] '
-    
+
     # [C|R|H|S] = [CPU|RAM|HDD|SSH]
-        
+
     PS1='\[\033[00m\]${debian_chroot:+($debian_chroot)}'
     if [ "$time_indicator" = yes ]; then
         PS1=${PS1}'\[\033[00;37m\][\[\033[01;30m\]\t\[\033[00;37m\]]'
@@ -113,19 +113,19 @@ if [ "$color_prompt" = yes ]; then
 #         cpuLoad=""
 #         ramLoad=""
 #         hddLoad=""
-#         
-#         
+#
+#
 #         # CPU Load
 #         nCpu=$(grep -c 'processor' /proc/cpuinfo)
 #         sLoad=$(( 100 * $nCpu ))
 #         local mLoad=$(( 200 *${nCpu} ))
 #         local lLoad=$(( 400*${nCpu} ))
-#         
+#
 #         load() {
 #             local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 #             echo $((10#$SYSLOAD))
 #         }
-# 
+#
 #         # Returns a color indicating system load.
 #         load_color() {
 #             local SYSLOAD=$(load)
@@ -139,9 +139,9 @@ if [ "$color_prompt" = yes ]; then
 #                 echo -en "\[${GREEN}\]"
 #             fi
 #         }
-#         
+#
 #         cpuLoad=$(load_color)
-#         
+#
 #         # CPU Load
 #         function load()
 #         {
@@ -149,15 +149,15 @@ if [ "$color_prompt" = yes ]; then
 #             # System load of the current host.
 #             echo $((10#$SYSLOAD))       # Convert to decimal.
 #         }
-#         
+#
 #         local nCpu=$(grep -c 'processor' /proc/cpuinfo)
 #         local sLoad=$(( 100*${nCpu} ))
 #         local mLoad=$(( 200*${nCpu} ))
 #         local lLoad=$(( 400*${nCpu} ))
-#         
+#
 #         local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
 #         SYSLOAD=$(( 10#$SYSLOAD ))
-#             
+#
 #         if [ ${SYSLOAD} -gt ${lLoad} ]; then
 #             cpuLoad="\[${RED}\]"
 #         elif [ ${SYSLOAD} -gt ${mLoad} ]; then
@@ -167,7 +167,7 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             cpuLoad="\[${GREEN}\]"
 #         fi
-#     
+#
 #         # RAM Load
 #         ramPercent=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
 #         ramPercent=$(( 10#
@@ -180,9 +180,9 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             cpuLoad="\[${GREEN}\]"
 #         fi
-#     
+#
 #         # Free HDD space
-#     
+#
 #         # Secure Connection
 #         if [ -n "${SSH_CONNECTION}" ]; then
 #             connectionSecurity="\[${GREEN}\]"        # Connected remotely via ssh (secure).
@@ -191,14 +191,14 @@ if [ "$color_prompt" = yes ]; then
 #         else
 #             connectionSecurity="\[${CYAN}\]"         # Connected on local machine.
 #         fi
-#     
-#     
+#
+#
 #         PS1=${PS1}"\[\033[00;37m\][\[\033[01;30m\]${cpuLoad}C${sep}|${ramLoad}R${sep}|H${sep}|${connectionSecurity}S\[\033[00;37m\]]"
 #     fi
     PS1=${PS1}' \[\033[01;32m\]\u\[\033[01;30m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$\[$(tput sgr0)\]\[\033[00m\] '
-    
+
     _normalPrompt=${PS1}
-    
+
     #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ' # Ubuntu's original
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
@@ -347,7 +347,7 @@ if [ "$enable_banner" = yes ]; then
     #clear; clear
     if hash screenfetch 2>/dev/null; then
         screenfetch -E
-    else 
+    else
         echo -e "${LIGHTBLUE}${BOLD}Welcome back, $USER!${RESET}"
         if hash fortune 2>/dev/null; then
             fortune -s
@@ -356,3 +356,7 @@ if [ "$enable_banner" = yes ]; then
     fi
 fi
 unset enable_banner
+
+if [ -d "/home/$USER/anaconda3/bin/" ]; then
+    export PATH="/home/$USER/anaconda3/bin:$PATH"
+fi
