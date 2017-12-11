@@ -4,10 +4,28 @@
 
 # Exports
 export EDITOR=/usr/bin/nano # For lightweight purposes.
-export VISUAL=/usr/bin/nvim # For heavyweight purposes.
+
+# For heavyweight purposes.
+if [[ -x "$(command -v nvim)" ]]; then
+    export VISUAL="/usr/bin/nvim"
+elif [[ -x "$(command -v vim)" ]]; then
+    export VISUAL="/usr/bin/vim"
+    alias nvim="vim"
+else
+    export VISUAL="/usr/bin/nano"
+fi
+
 export PAGER='less'
 export MANPAGER='less'
-export BROWSER="google-chrome-stable '%' &"
+
+if [[ -x "$(command -v firefox)" ]]; then
+    export BROWSER="firefox '%' &"
+elif [[ -x "$(command -v google-chrome-stable)" ]]; then
+    export BROWSER="google-chrome-stable '%' &"
+elif [[ -x "$(command -v chromium)" ]]; then
+    export BROWSER="chromium '%' &"
+fi
+
 export PATH=$PATH:$HOME/bin/
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 
@@ -357,6 +375,24 @@ if [ "$enable_banner" = yes ]; then
 fi
 unset enable_banner
 
-if [ -d "/home/$USER/anaconda3/bin/" ]; then
-    export PATH="/home/$USER/anaconda3/bin:$PATH"
+if [ -d "$HOME/anaconda3/bin/" ]; then
+    export PATH="$HOME/anaconda3/bin:$PATH"
+fi
+
+if [[ -d "$HOME/.anaconda3/bin" ]]; then
+    export PATH="$HOME/.anaconda3/bin:$PATH"
+fi
+
+if [ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]; then
+    source "$HOME/.profile"
+fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [[ -d "$HOME/bin" ]]; then
+	export PATH="$PATH:$HOME/bin"
+fi
+
+if [[ -d "/opt/cuda/lib64" ]]; then
+    export LD_LIBRARY_PATH="/opt/cuda/lib64"
 fi

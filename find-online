@@ -1,0 +1,18 @@
+#!/bin/bash
+
+friends=("aneusted" "aurnes" "yu646" "dkrolopp" "girishg" "liu2034" "buckmast" "reed226" "kleclain" "kkochpat" "patel627" "nquresh" "nurnes" "montgo38" "mocull" "lee2363" "sulli196")
+
+echo "Scanning for online users ..."
+count=0
+
+for user in "${friends[@]}"
+do
+    if [ "$USER" != "$user" ]; then
+        if [ ! -z "$(w | grep "$user")" ]; then
+            echo "$user is online."
+            count="$((count + 1))"
+        fi
+    fi
+done
+
+echo "Scan complete, $count users are online."
