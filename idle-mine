@@ -21,7 +21,7 @@ w_htop="HTOP"
 w_cpu="CPU"
 w_gpu="GPU"
 
-DEBUG=1
+DEBUG=0
 if [ "$DEBUG" -eq 1 ]; then
     INTERVAL=1
     LOCKED_INTERVAL=1
@@ -198,7 +198,7 @@ tick() {
 
     if [ "$MINING" -eq 0 ] && [ "$IN_USE" -eq 0 ] && [ "$(getLockedTime)" -gt "$IDLE_TO_START" ]; then
         startMining
-    elif [ "$MINING" -eq 1 ] && [ "$IN_USE" -eq 1 ] && [ "$(getLockedTime)" -le 0 ]; then
+    elif [ "$MINING" -eq 1 ] && [ "$IN_USE" -eq 1 ]; then
         stopMining
     fi
 }
