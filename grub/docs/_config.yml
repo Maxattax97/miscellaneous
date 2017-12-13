@@ -1,0 +1,33 @@
+# Site settings
+title: MultiBoot USB
+description: >
+  This is a project that contains a collection of GRUB files and scripts that
+  will allow you to create a pendrive capable of booting different ISO files.
+baseurl: ""
+url: ""
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-minimal
+exclude:
+  - CNAME
+  - Gemfile
+  - Gemfile.lock
+
+# Theme settings
+show_downloads: true
+google_analytics: 'UA-91340346-2'
+
+# Kramdown settings
+kramdown:
+  syntax_highlighter_opts:
+    default_lang: shell
+
+# Collections
+collections:
+  linux:
+    output: true
+  unix:
+    output: true
+  misc:
+    output: true
