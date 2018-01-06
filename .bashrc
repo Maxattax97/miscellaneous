@@ -365,6 +365,10 @@ shrink() {
 }
 alias grow='shrink'
 
+fix-keys() {
+    sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com "$(sudo apt update 2>&1 | grep -o '[0-9A-Z]\{16\}$' | xargs)"
+}
+
 # Banner
 if [ "$enable_banner" = yes ]; then
     #clear; clear
