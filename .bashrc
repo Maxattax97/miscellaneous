@@ -31,7 +31,16 @@ if [[ -d "/usr/lib/x86_64-linux-gnu/gio/modules/" ]]; then
     export GIO_EXTRA_MODULES="/usr/lib/x86_64-linux-gnu/gio/modules/"
 fi
 
-export PATH=$PATH:$HOME/bin/
+add-path() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        PATH="${PATH:+"$PATH:"}$1"
+    fi
+}
+
+add-path "$HOME/bin/"
+add-path "/sbin/"
+add-path "/usr/sbin/"
+
 export PROMPT_DIRTRIM=3 # Show the last 3 directories in the prompt.
 
 # Dynamically set term to the right prefix.
