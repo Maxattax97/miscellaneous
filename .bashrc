@@ -351,6 +351,16 @@ starwars() {
     telnet towel.blinkenlights.nl
 }
 
+# Download and run a curl based Party Parrot animation.
+parrot() {
+    curl parrot.live
+}
+
+# Duplicate of parrot()
+party() {
+    parrot
+}
+
 # Ascend the directories X times.
 up() {
     DEEP=$1
@@ -418,4 +428,9 @@ fi
 
 if [[ -d "/opt/cuda/lib64" ]]; then
     export LD_LIBRARY_PATH="/opt/cuda/lib64"
+fi
+if [[ -d "$HOME/.rbenv/" ]]; then
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
+    export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 fi
