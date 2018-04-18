@@ -392,7 +392,7 @@ fix-keys() {
 if [ "$enable_banner" = yes ]; then
     #clear; clear
     if hash screenfetch 2>/dev/null; then
-        screenfetch -E
+        screenfetch -w -d '-pkgs,wm,de,res,gtk;+disk' -E
     else
         echo -e "${LIGHTBLUE}${BOLD}Welcome back, $USER!${RESET}"
         if hash fortune 2>/dev/null; then
@@ -426,9 +426,13 @@ if [[ -d "$HOME/bin" ]]; then
 	export PATH="$PATH:$HOME/bin"
 fi
 
-if [[ -d "/opt/cuda/lib64" ]]; then
-    export LD_LIBRARY_PATH="/opt/cuda/lib64"
+# NVIDIA CUDA
+if [[ -d "/usr/local/cuda/bin" ]]; then
+    export PATH="/usr/local/cuda/bin:$PATH"
+    export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+    # TODO: Set this to dynamically select 32bit path if on a 32bit system.
 fi
+
 if [[ -d "$HOME/.rbenv/" ]]; then
     export PATH="$HOME/.rbenv/bin:$PATH"
     eval "$(rbenv init -)"
