@@ -393,6 +393,12 @@ if [ "$enable_banner" = yes ]; then
     #clear; clear
     if hash screenfetch 2>/dev/null; then
         screenfetch -w -d '-pkgs,wm,de,res,gtk;+disk' -E
+
+        # Fix older versions.
+        if [[ "$?" -ne 0 ]]; then
+            clear
+            screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+        fi
     else
         echo -e "${LIGHTBLUE}${BOLD}Welcome back, $USER!${RESET}"
         if hash fortune 2>/dev/null; then
