@@ -28,17 +28,25 @@ setopt appendhistory autocd beep extendedglob nomatch notify
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
+### INCLUDES ###
+if [[ -e "$HOME/.batsrc" ]]; then
+    source "$HOME/.batsrc"
+fi
+
 ### ZPLUG PACKAGES ###
+if [[ ! -d "$HOME/.zplug" ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+fi
+
 source ~/.zplug/init.zsh
 
 zplug "zplug/zplug", hook-build: "zplug --self-manage"
-
 
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
 
-zplug "igormp/Imp"
+zplug 'mfaerevaag/wd', as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
 
 # Must load last.
 zplug "zsh-users/zsh-syntax-highlighting"
@@ -50,6 +58,8 @@ fi
 zplug load
 
 ### BASH IMPORT ###
+enable_banner="yes"
+
 export EDITOR=/usr/bin/nano # For lightweight purposes.
 
 # For heavyweight purposes.
@@ -267,6 +277,32 @@ if [[ -d "$HOME/.rbenv/" ]]; then
     export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 fi
 
+# Banner
+if [ "$enable_banner" = yes ]; then
+    #clear; clear
+    if command -v screenfetch; then
+        screenfetch -w -d '-pkgs,wm,de,res,gtk;+disk' -E
 
+        # Fix older versions.
+        if [[ "$?" -ne 0 ]]; then
+            clear
+            screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+        fi
+    else
+        echo -e "${LIGHTBLUE}${BOLD}Welcome back, $USER!${RESET}"
+        if hash fortune 2>/dev/null; then
+            fortune -s
+        fi
+        echo ""
+    fi
+fi
+unset enable_banner
 
+bkg=white
 
+ZSH_THEME_GIT_PROMPT_PREFIX=" [%{%B%F{blue}%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%k%b%K{${bkg}}%B%F{green}%}]"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{%F{red}%}*%{%f%k%b%}"
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+
+PROMPT="[%F{white}%*%f] %F{green}%n%f@%F{blue}%M%f%F{gray}:%f%F{magenta}%~%f\$ "
