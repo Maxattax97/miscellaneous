@@ -236,7 +236,7 @@ if [[ ! -d "$HOME/.zplug" ]]; then
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 fi
 
-source ~/.zplug/init.zsh
+source "$HOME/.zplug/init.zsh"
 
 zplug "zplug/zplug", hook-build: "zplug --self-manage"
 
@@ -245,7 +245,7 @@ zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
 zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
 zplug "arzzen/calc.plugin.zsh"
-#zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 # Candidates list
 # fzf,
@@ -263,8 +263,6 @@ zplug load
 if [[ -x "$(command -v screenfetch)" ]]; then
     screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
 fi
-
-
 
 ### LIBRARY ###
 wifi_signal() {
@@ -284,15 +282,6 @@ add-path() {
 add-path "$HOME/bin/"
 add-path "/sbin/"
 add-path "/usr/sbin/"
-
-if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-    source "$HOME/.profile"
-
-    if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-        # Doesn't exist within the profile.
-        export NEOVIM_STUDIO_PROFILE_SOURCED=1
-    fi
-fi
 
 # Join a telnet based movie theater.
 starwars() {
@@ -381,5 +370,14 @@ elif [[ -x "$(command -v chromium)" ]]; then
     export BROWSER="chromium '%' &"
 elif [[ -x "$(command -v google-chrome-stable)" ]]; then
     export BROWSER="google-chrome-stable '%' &"
+fi
+
+if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+    source "$HOME/.profile"
+
+    if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+        # Doesn't exist within the profile.
+        export NEOVIM_STUDIO_PROFILE_SOURCED=1
+    fi
 fi
 
