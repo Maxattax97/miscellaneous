@@ -5,6 +5,12 @@ config_help=true
 
 ## Color Codes
 
+## Dynamically set term to the right prefix.
+case $TERM in
+    konsole|xterm|screen|tmux|rxvt-unicode)
+        export TERM="$TERM-256color";;
+esac
+
 # gen_color <red> <green> <blue> <fg=1 | bg=0> <style>
 gen_color() {
     if [[ "${4:=1}" -eq 1 ]]; then
@@ -73,7 +79,11 @@ setopt appendhistory autocd beep extendedglob nomatch notify
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
-### ZSH SETTINGS ###
+### INCLUDES ###
+if [[ -e "$HOME/.batsrc" ]]; then
+    source "$HOME/.batsrc"
+fi
+
 autoload -Uz promptinit
 promptinit
 
@@ -222,6 +232,10 @@ POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND="237"
 POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND="${PL9K_TEXT_COLOR}"
 
 ### ZPLUG PACKAGES ###
+if [[ ! -d "$HOME/.zplug" ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+fi
+
 source ~/.zplug/init.zsh
 
 zplug "zplug/zplug", hook-build: "zplug --self-manage"
@@ -229,9 +243,9 @@ zplug "zplug/zplug", hook-build: "zplug --self-manage"
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
-zplug "mfaerevaag/wd"
+zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
 zplug "arzzen/calc.plugin.zsh"
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+#zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 # Candidates list
 # fzf,
@@ -250,14 +264,7 @@ if [[ -x "$(command -v screenfetch)" ]]; then
     screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
 fi
 
-if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-    source "$HOME/.profile"
 
-    if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-        # Doesn't exist within the profile.
-        export NEOVIM_STUDIO_PROFILE_SOURCED=1
-    fi
-fi
 
 ### LIBRARY ###
 wifi_signal() {
@@ -277,6 +284,15 @@ add-path() {
 add-path "$HOME/bin/"
 add-path "/sbin/"
 add-path "/usr/sbin/"
+
+if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+    source "$HOME/.profile"
+
+    if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+        # Doesn't exist within the profile.
+        export NEOVIM_STUDIO_PROFILE_SOURCED=1
+    fi
+fi
 
 # Join a telnet based movie theater.
 starwars() {
@@ -344,7 +360,26 @@ alias clear='echo -e "\e[0m" && clear'
 # Typical rsync command
 alias relocate='rsync -avzh --info=progress2'
 
+export EDITOR=/usr/bin/nano # For lightweight purposes.
 
+# For heavyweight purposes.
+if [[ -x "$(command -v nvim)" ]]; then
+    export VISUAL="/usr/bin/nvim"
+elif [[ -x "$(command -v vim)" ]]; then
+    export VISUAL="/usr/bin/vim"
+    alias nvim="vim"
+else
+    export VISUAL="/usr/bin/nano"
+fi
 
+export PAGER='less'
+export MANPAGER='less'
 
+if [[ -x "$(command -v firefox)" ]]; then
+    export BROWSER="firefox '%' &"
+elif [[ -x "$(command -v chromium)" ]]; then
+    export BROWSER="chromium '%' &"
+elif [[ -x "$(command -v google-chrome-stable)" ]]; then
+    export BROWSER="google-chrome-stable '%' &"
+fi
 
