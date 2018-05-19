@@ -250,13 +250,31 @@ zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
 zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
 zplug "arzzen/calc.plugin.zsh"
+zplug "chrissicool/zsh-256color"
+zplug "hlissner/zsh-autopair", defer:2
+# zplug "chrissicool/zsh-bash"
+zplug "stackexchange/blackbox"
+zplug "adolfoabegg/browse-commit"
+zplug "ael-code/zsh-colored-man-pages"
+zplug "tarrasch/zsh-command-not-found"
+zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf
+zplug "b4b4r07/enhancd", use:init.sh
+# Install fzf or fzy
+zplug "wfxr/forgit", defer:1
+zplug "marzocchi/zsh-notify"
+# auto download images
+zplug "lukechilds/zsh-nvm"
+zplug "vifon/deer"
+zplug "gko/ssh-connect"
+zplug "hcgraf/zsh-sudo"
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 # Candidates list
 # fzf,
 
 # Must load last.
-zplug "zsh-users/zsh-syntax-highlighting"
+# zplug "zsh-users/zsh-syntax-highlighting"
+zplug "zdharma/fast-syntax-highlighting"
 
 if ! zplug check; then
     zplug install
@@ -301,17 +319,6 @@ parrot() {
 # Duplicate of parrot()
 party() {
     parrot
-}
-
-# Ascend the directories X times.
-up() {
-    DEEP=$1
-    [ -z "${DEEP}" ] && {
-        DEEP=1
-    }
-    for i in $(seq 1 ${DEEP})
-        do cd ../
-    done;
 }
 
 # Aliases, functions, commands, etc.

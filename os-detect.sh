@@ -4,7 +4,7 @@ set_os_vars(){
 	OS_NAME='Linux'
 
 	# Add in an argument in case we want to check that too.
-	text="$(cat /etc/*-release)$(cat /proc/version)$1"
+	text="$(cat /etc/*-release)$(cat /proc/version)$(lsb_release -i)"
 	text="$(echo "$text" | tr '[:upper:]' '[:lower:]')"
 
 	case "$text" in
@@ -120,4 +120,3 @@ set_os_vars(){
 }
 
 set_os_vars
-
