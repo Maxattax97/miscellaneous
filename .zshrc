@@ -241,46 +241,50 @@ if [[ ! -d "$HOME/.zplug" ]]; then
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 fi
 
-source "$HOME/.zplug/init.zsh"
+if [[ -d "$HOME/.zplug" ]]; then
+    source "$HOME/.zplug/init.zsh"
 
-zplug "zplug/zplug", hook-build: "zplug --self-manage"
+    zplug "zplug/zplug", hook-build: "zplug --self-manage"
 
-zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-autosuggestions"
-zplug "zsh-users/zsh-completions"
-zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
-zplug "arzzen/calc.plugin.zsh"
-zplug "chrissicool/zsh-256color"
-zplug "hlissner/zsh-autopair", defer:2
-# zplug "chrissicool/zsh-bash"
-zplug "stackexchange/blackbox"
-zplug "adolfoabegg/browse-commit"
-zplug "ael-code/zsh-colored-man-pages"
-zplug "tarrasch/zsh-command-not-found"
-zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf
-zplug "b4b4r07/enhancd", use:init.sh
-# Install fzf or fzy
-zplug "wfxr/forgit", defer:1
-zplug "marzocchi/zsh-notify"
-# auto download images
-zplug "lukechilds/zsh-nvm"
-zplug "vifon/deer"
-zplug "gko/ssh-connect"
-zplug "hcgraf/zsh-sudo"
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+    zplug "zsh-users/zsh-history-substring-search"
+    zplug "zsh-users/zsh-autosuggestions"
+    zplug "zsh-users/zsh-completions"
+    zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
+    zplug "arzzen/calc.plugin.zsh"
+    zplug "chrissicool/zsh-256color"
+    zplug "hlissner/zsh-autopair", defer:2
 
-# Candidates list
-# fzf,
+    # Improved bash compatibility
+    # zplug "chrissicool/zsh-bash"
 
-# Must load last.
-# zplug "zsh-users/zsh-syntax-highlighting"
-zplug "zdharma/fast-syntax-highlighting"
+    zplug "stackexchange/blackbox"
+    zplug "tarrasch/zsh-command-not-found"
 
-if ! zplug check; then
-    zplug install
+    # Install fzf or fzy
+    zplug "b4b4r07/enhancd", use:init.sh, hook-load:"ENHANCD_DISABLE_DOT=1"
+
+    # git log = glo; git diff = gd; git add = ga; git ignore = gi
+    zplug "wfxr/forgit", defer:1
+
+    zplug "lukechilds/zsh-nvm"
+    zplug "gko/ssh-connect", as:command
+    zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+
+    # Candidates list
+    # fzf,
+
+    # Must load last.
+    # zplug "zsh-users/zsh-syntax-highlighting"
+    zplug "zdharma/fast-syntax-highlighting", defer:3
+
+    if ! zplug check; then
+        zplug install
+    fi
+
+    zplug load
+else
+    echo "Failed to load zplug plugins."
 fi
-
-zplug load
 
 ### BANNER ###
 if [[ -x "$(command -v screenfetch)" ]]; then
