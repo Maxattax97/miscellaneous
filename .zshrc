@@ -131,7 +131,7 @@ zshrc_powerlevel9k() {
 
     # Intriguing elements
     # detect_virt ssh vi_mode background_jobs load ram icons_test
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time detect_virt ssh_joined context ip load ram_joined battery_joined vcs newline os_icon vi_mode dir dir_writable)
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time detect_virt context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -158,11 +158,8 @@ zshrc_powerlevel9k() {
     POWERLEVEL9K_TIME_BACKGROUND="255"
     POWERLEVEL9K_TIME_FOREGROUND="${PL9K_TEXT_COLOR}"
 
-    POWERLEVEL9K_DETECT_VIRT_BACKGROUND="252"
+    POWERLEVEL9K_DETECT_VIRT_BACKGROUND="249"
     POWERLEVEL9K_DETECT_VIRT_FOREGROUND="${PL9K_TEXT_COLOR}"
-
-    POWERLEVEL9K_SSH_BACKGROUND="249"
-    POWERLEVEL9K_SSH_FOREGROUND="${PL9K_TEXT_COLOR}"
 
     POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND="246"
     POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND="${PL9K_TEXT_COLOR}"
@@ -202,6 +199,9 @@ zshrc_powerlevel9k() {
 
     POWERLEVEL9K_OS_ICON_BACKGROUND="252"
     POWERLEVEL9K_OS_ICON_FOREGROUND="${PL9K_TEXT_COLOR}"
+
+    POWERLEVEL9K_SSH_BACKGROUND="243"
+    POWERLEVEL9K_SSH_FOREGROUND="${PL9K_TEXT_COLOR}"
 
     POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND="237"
     POWERLEVEL9K_VI_MODE_NORMAL_FOREGROUND="${PL9K_BLUE}"
