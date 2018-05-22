@@ -80,6 +80,11 @@ zshrc_source() {
             export NEOVIM_STUDIO_PROFILE_SOURCED=1
         fi
     fi
+
+    if [ -f "${HOME}/.zplug/repos/junegunn/fzf/shell/key-bindings.zsh" ]; then
+        # fzf searches for this, so leave it as it is.
+        [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    fi
 }
 
 zshrc_set_options() {
@@ -238,7 +243,8 @@ zshrc_zplug() {
         zplug "zsh-users/zsh-history-substring-search"
         zplug "zsh-users/zsh-autosuggestions"
         zplug "zsh-users/zsh-completions"
-        zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
+        zplug "mfaerevaag/wd", as:command, use:"wd.sh", \
+            hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
         zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
         zplug "hlissner/zsh-autopair", defer:2
@@ -248,6 +254,9 @@ zshrc_zplug() {
 
         zplug "stackexchange/blackbox"
         zplug "tarrasch/zsh-command-not-found"
+
+        zplug "junegunn/fzf", as:command, rename-to:fzf, \
+            hook-build:"rm ~/.fzf.zsh; ./install --all && source ${HOME}/.fzf.zsh"
 
         # Install fzf or fzy
         zplug "b4b4r07/enhancd", use:init.sh, hook-load:"ENHANCD_DISABLE_DOT=1"
@@ -422,3 +431,4 @@ zshrc_init() {
 }
 
 zshrc_init
+
