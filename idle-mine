@@ -1,7 +1,7 @@
 #!/bin/bash
 
 POOL="gulf.moneroocean.stream:10008"
-POOL_PASSWORD="MaxattaxDebian"
+POOL_PASSWORD="MaxattaxOpenSUSE"
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
 USE_CPU=0
@@ -64,9 +64,10 @@ getLockedTime() {
     if [ "$XDG_CURRENT_DESKTOP" == "GNOME" ]; then
 	rawTime="$(dbus-send --session --dest=org.gnome.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActiveTime | grep uint32 | awk '{ printf $2 };')"
     else
-        rawTime="$(dbus-send --session --dest=org.freedesktop.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/freedesktop/ScreenSaver org.freedesktop.ScreenSaver.GetActive | grep boolean | awk '{ printf $2 };')"
-        ((rawTime /= 1000))
+        rawTime="$(dbus-send --session --dest=org.freedesktop.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/freedesktop/ScreenSaver org.freedesktop.ScreenSaver.GetActiveTime | grep uint32 | awk '{ printf $2 };')"
     fi
+
+    ((rawTime /= 1000))
 
     echo "$rawTime"
 }
@@ -217,6 +218,11 @@ tick() {
         fi
 
         IN_USE=0
+    fi
+
+
+    if [ -n "$DEBUG" ]; then
+        echo "MINING: $MINING | IN_USE: $IN_USE | LOCKED_TIME: $(getLockedTime) | IDLE_TO_START: $IDLE_TO_START"
     fi
 
     if [ "$MINING" -eq 0 ] && [ "$IN_USE" -eq 0 ] && [ "$(getLockedTime)" -gt "$IDLE_TO_START" ]; then
