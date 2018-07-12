@@ -348,6 +348,26 @@ zshrc_load_library() {
             echo "'$1' is not a valid file!"
         fi
     }
+
+    hostdir() {
+        if type "python3" > /dev/null 2>&1; then
+            python3 -m http.server
+        elif type "python" > /dev/null 2>&1; then
+            python -m SimpleHTTPServer
+        fi
+    }
+
+    typewriter() {
+        local message="$1"
+        local i=0
+        while [ "$i" -lt "${#message}" ]; do
+            echo -n "${message:$i:1}"
+            sleep 0.05
+            i="$((i + 1))"
+        done
+
+        printf "\n"
+    }
 }
 
 zshrc_set_aliases() {

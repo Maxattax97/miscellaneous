@@ -1,6 +1,6 @@
 #!/bin/bash
 
-POOL="gulf.moneroocean.stream:10008"
+POOL="gulf.moneroocean.stream:20008"
 POOL_PASSWORD="MaxattaxOpenSUSE"
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
