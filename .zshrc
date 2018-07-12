@@ -427,6 +427,8 @@ zshrc_set_default_programs() {
     elif [[ -x "$(command -v google-chrome-stable)" ]]; then
         export BROWSER="google-chrome-stable '%' &"
     fi
+
+    export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 }
 
 zshrc_init() {
