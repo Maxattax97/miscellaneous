@@ -411,6 +411,21 @@ zshrc_set_default_programs() {
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 }
 
+zshrc_set_environment_variables() {
+
+    if [[ -d "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
+        export NODE_PATH="${NODE_PATH}:/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
+    fi
+
+    if [[ -s "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
+        export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+    fi
+
+    if [[ -d "/home/max/src/depot_tools/" ]]; then
+        export PATH="$PATH:/home/max/src/depot_tools"
+    fi
+}
+
 zshrc_init() {
     zshrc_benchmark_start
 
@@ -421,6 +436,7 @@ zshrc_init() {
     zshrc_set_path
     zshrc_set_aliases
     zshrc_set_default_programs
+    zshrc_set_environment_variables
     zshrc_load_library
 
     zshrc_setup_completion
