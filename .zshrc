@@ -268,7 +268,14 @@ zshrc_zplug() {
         zplug "lukechilds/zsh-nvm"
 
         zplug "gko/ssh-connect", as:command
-        zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+
+        if [[ "$HOST" == "Anspiron-5577" ]]; then
+            echo "POWERLEVEL9K is being rolled back to an older commit for this machine."
+            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, at:c36b47b
+            # My Distro detection commit: fcea56b
+        else
+            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+        fi
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
