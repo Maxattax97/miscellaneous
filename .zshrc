@@ -338,6 +338,11 @@ zshrc_load_library() {
         parrot
     }
 
+    # Login and play/watch Nethack from anywhere.
+    nethack() {
+        telnet nethack.alt.org
+    }
+
     # Aliases, functions, commands, etc.
     extract () {
         if [ -f $1 ] ; then
@@ -360,6 +365,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Host the current directory via HTTP
     hostdir() {
         if type "python3" > /dev/null 2>&1; then
             python3 -m http.server
@@ -368,6 +374,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Type a string of text letter by letter.
     typewriter() {
         local message="$1"
         local i=0
