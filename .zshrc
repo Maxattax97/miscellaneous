@@ -273,13 +273,7 @@ zshrc_zplug() {
 
         zplug "gko/ssh-connect", as:command
 
-        if [[ "$HOST" == "Inspiron-5577" ]]; then
-            echo "POWERLEVEL9K is being rolled back to an older commit for this machine."
-            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, at:c36b47b
-            # My Distro detection commit: fcea56b
-        else
-            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-        fi
+        zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
@@ -338,6 +332,11 @@ zshrc_load_library() {
         parrot
     }
 
+    # Login and play/watch Nethack from anywhere.
+    nethack() {
+        telnet nethack.alt.org
+    }
+
     # Aliases, functions, commands, etc.
     extract () {
         if [ -f $1 ] ; then
@@ -360,6 +359,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Host the current directory via HTTP
     hostdir() {
         if type "python3" > /dev/null 2>&1; then
             python3 -m http.server
@@ -368,6 +368,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Type a string of text letter by letter.
     typewriter() {
         local message="$1"
         local i=0
