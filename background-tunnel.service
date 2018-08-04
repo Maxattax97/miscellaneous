@@ -1,0 +1,10 @@
+[Unit]
+Description=Background VPN Tunnel
+
+[Service]
+ExecStart=/usr/sbin/openvpn --config /home/max/.vpn/background.ovpn
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

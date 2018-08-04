@@ -380,6 +380,12 @@ zshrc_load_library() {
 
         printf "\n"
     }
+
+    repair_nvidia() {
+        if type "zypper" > /dev/null 2>&1; then
+            sudo zypper in -f nvidia-gfxG04-kmp-default
+        fi
+    }
 }
 
 zshrc_set_aliases() {
