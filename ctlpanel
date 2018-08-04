@@ -7,6 +7,7 @@ w_htop="Htop"
 w_network="Networking"
 w_logs="Logs"
 w_minecraft="Minecraft"
+w_minecraft_mod="MinecraftMod"
 w_terraria="Terraria"
 w_factorio="Factorio"
 w_course_watcher="Courses"
@@ -22,6 +23,7 @@ if [ "$?" -eq 1 ]; then
 	tmux new-window -n "$w_network" -t "$session"
 	tmux new-window -n "$w_logs" -t "$session"
 	tmux new-window -n "$w_minecraft" -t "$session" -c "/home/resolute/minecraft"
+	tmux new-window -n "$w_minecraft_mod" -t "$session" -c "/home/resolute/minecraft"
 	tmux new-window -n "$w_terraria" -t "$session" -c "/home/resolute/terraria/tmodloader"
 	tmux new-window -n "$w_course_watcher" -t "$session" -c "/home/resolute/src/purdue-course-watcher"
 	tmux new-window -n "$w_gekko" -t "$session" -c "/home/resolute/src/gekko"
@@ -35,10 +37,11 @@ if [ "$?" -eq 1 ]; then
 	tmux send-keys -t "$session:$w_network.1" "clear && sudo iftop" C-m
 	tmux send-keys -t "$session:$w_logs" "clear && journalctl --system -f" C-m
 	tmux send-keys -t "$session:$w_minecraft" "cd main/ && clear && ./run.sh" C-m
-	tmux send-keys -t "$session:$w_terraria" "clear && ./tModLoaderServer" C-m
+	tmux send-keys -t "$session:$w_minecraft_mod" "cd mainSpigot/ && clear && ./run.sh" C-m
+	tmux send-keys -t "$session:$w_terraria" "clear && ./tModLoaderServer # Disabled in ctlpanel" #C-m
 	tmux send-keys -t "$session:$w_factorio" "clear && journalctl -f -u factorio.service" C-m
 	tmux send-keys -t "$session:$w_course_watcher" "clear && node index.js" C-m
-	tmux send-keys -t "$session:$w_gekko" "clear && node gekko --ui" C-m
+	tmux send-keys -t "$session:$w_gekko" "clear && node gekko --ui # Disabled in ctlpanel" #C-m
 	tmux send-keys -t "$session:$w_monero" "clear && xmrig -o gulf.moneroocean.stream:10008 -u 46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA -p Resolute --cpu-priority 1 -k" C-m
 
 	if [ "$dont_join" -ne 1 ]; then
