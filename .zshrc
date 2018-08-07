@@ -373,6 +373,10 @@ zshrc_load_library() {
 
         printf "\n"
     }
+
+    translate() {
+        gawk -f <(curl -Ls git.io/translate) -- -shell
+    }
 }
 
 zshrc_set_aliases() {
