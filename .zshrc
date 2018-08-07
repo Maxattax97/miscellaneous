@@ -1,6 +1,8 @@
 config_help=false
 config_benchmark=false
 
+zshrc_low_power=false
+
 zshrc_benchmark_start() {
     if ( $config_benchmark ); then
         zmodload zsh/zprof
@@ -17,9 +19,20 @@ zshrc_benchmark_stop() {
 zshrc_detect_term_colors() {
     # Dynamically set term to the right prefix.
     case $TERM in
-        konsole|xterm|screen|tmux|rxvt-unicode)
-            export TERM="$TERM-256color";;
+        *linux*)
+            zshrc_low_power=true
+            echo "Low power mode enabled."
+            ;;
+        *vt100*)
+            zshrc_low_power=true
+            echo "Low power mode enabled."
+            ;;
     esac
+
+    #case $TERM in
+        #konsole|xterm|screen|tmux|rxvt-unicode)
+            #export TERM="$TERM-256color";;
+    #esac
 }
 
 zshrc_setup_completion() {
@@ -232,6 +245,11 @@ zshrc_powerlevel9k() {
 
     POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND="237"
     POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND="${PL9K_TEXT_COLOR}"
+
+    if ($zshrc_low_power); then
+        POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$']'
+        POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'['
+    fi
 }
 
 zshrc_zplug() {
@@ -332,6 +350,11 @@ zshrc_load_library() {
         parrot
     }
 
+    # Login and play/watch Nethack from anywhere.
+    nethack() {
+        telnet nethack.alt.org
+    }
+
     # Aliases, functions, commands, etc.
     extract () {
         if [ -f $1 ] ; then
@@ -354,6 +377,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Host the current directory via HTTP
     hostdir() {
         if type "python3" > /dev/null 2>&1; then
             python3 -m http.server
@@ -362,6 +386,7 @@ zshrc_load_library() {
         fi
     }
 
+    # Type a string of text letter by letter.
     typewriter() {
         local message="$1"
         local i=0
@@ -376,6 +401,16 @@ zshrc_load_library() {
 
     translate() {
         gawk -f <(curl -Ls git.io/translate) -- -shell
+    }
+
+    repair_nvidia() {
+        if type "zypper" > /dev/null 2>&1; then
+            sudo zypper in -f nvidia-gfxG04-kmp-default
+        fi
+    }
+
+    mapscii() {
+        telnet mapscii.me
     }
 }
 

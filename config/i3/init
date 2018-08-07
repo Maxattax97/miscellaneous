@@ -1,0 +1,19 @@
+#! /bin/bash
+
+## Variables ##
+
+## Execution ##
+
+# Compton
+killall -q compton
+while pgrep -x compton >/dev/null; do sleep 0.1s; done
+compton -f -D 2 -i 0.85 -z \
+    --backend glx --glx-no-stencil --glx-no-rebind-pixmap --glx-swap-method exchange \
+    -b
+
+# Polybar / Lemonbar / Yabar / Positron Bar
+
+# Conky
+
+# Dunst
+
