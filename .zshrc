@@ -399,6 +399,10 @@ zshrc_load_library() {
         printf "\n"
     }
 
+    translate() {
+        gawk -f <(curl -Ls git.io/translate) -- -shell
+    }
+
     repair_nvidia() {
         if type "zypper" > /dev/null 2>&1; then
             sudo zypper in -f nvidia-gfxG04-kmp-default
