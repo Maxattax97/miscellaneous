@@ -11,6 +11,13 @@
 # gtop (via npm) - system resource monitor
 # Ranger - file manager
 # playerctl - CLI music player
+# rofi - dmenu replacement
+# polybar - i3bar replacement
+# i3lock-fancy - sophisticated i3lock replacement
+
+# flameshot - screenshot tool
+
+
 
 ## Modifiers
 set $mod Mod4
@@ -18,16 +25,36 @@ set $alt Mod1
 set $esc Escape
 set $ctl Control
 
+
+
 ## Macros
+set $scratch_move sticky enable, move scratchpad
+set $scratch_show scratchpad show, move position center
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
 
 
 ## Settings
-gaps inner 10
+gaps inner 20
+gaps outer 5
 smart_gaps on
 smart_borders on
 
-# Use Mouse+$alt to drag floating windows to their desired position.
-floating_modifier $alt
+# Return to previous workspace by pressing most recent workspace again.
+workspace_auto_back_and_forth yes
+
+popup_during_fullscreen smart
+focus_follows_mouse yes
+focus_on_window_activation focus
+focus_wrapping yes
+
+# Use Mouse+$mod to drag floating windows to their desired position.
+floating_modifier $mod
+
+for_window [class=.*] border pixel 0
+
+
 
 ## Autostart
 # Initialize various subsystems via bash... it's just simpler.
@@ -36,11 +63,15 @@ exec_always bash ~/.config/i3/init
 # Set an autolock timer using a custom screen blur.
 exec xautolock -time 10 -locker ~/.config/i3lock/blurlock
 
+bindsym $mod+$ctl+l exec ~/.config/i3lock/blurlock
+
 # Set left and right monitors.
 exec_always xrandr --output $monitor_left --primary --mode 1920x1200 --pos 0x0 --output $monitor_right --mode 1920x1080 --pos 1920x120
 
 # Set wallpaper that spans both monitors.
 exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationRight.png
+
+
 
 ## Aesthetics / Interface
 #font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -70,7 +101,6 @@ set_from_resource $accent accent #ffffff
 
 new_window normal
 hide_edge_borders vertical
-for_window [class="^.*"] border pixel 1
 
 # Class                 Border  Backgr. Text    Indicator Child_Border
 client.focused          $accent $accent $white $accent $accent
@@ -81,7 +111,17 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       $dim_grey
 
+
+
 ## Windows
+# Kill focused window.
+bindsym $mod+$esc kill
+bindsym $mod+Shift+q kill
+
+# Float on middle click.
+bindsym --whole-window $mod+button2 floating toggle
+
+
 
 ## Workspaces
 set $workspace1 "1"
@@ -93,7 +133,7 @@ set $workspace6 "6"
 set $workspace7 "7"
 set $workspace8 "8"
 set $workspace9 "9"
-set $workspace0 "0"
+set $workspace0 "10"
 
 bindsym $mod+1 workspace $workspace1
 bindsym $mod+2 workspace $workspace2
@@ -106,24 +146,26 @@ bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace0
 
-bindsym $alt+1 move container to workspace $workspace1; workspace $workspace1
-bindsym $alt+2 move container to workspace $workspace2; workspace $workspace2
-bindsym $alt+3 move container to workspace $workspace3; workspace $workspace3
-bindsym $alt+4 move container to workspace $workspace4; workspace $workspace4
-bindsym $alt+5 move container to workspace $workspace5; workspace $workspace5
-bindsym $alt+6 move container to workspace $workspace6; workspace $workspace6
-bindsym $alt+7 move container to workspace $workspace7; workspace $workspace7
-bindsym $alt+8 move container to workspace $workspace8; workspace $workspace8
-bindsym $alt+9 move container to workspace $workspace9; workspace $workspace9
-bindsym $alt+0 move container to workspace $workspace0; workspace $workspace0
+bindsym $mod+Shift+1 move container to workspace $workspace1; workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2; workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3; workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4; workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5; workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6; workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7; workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8; workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9; workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace0; workspace $workspace0
 
 bindsym $mod+$alt+Left workspace prev_on_output
 bindsym $mod+$alt+Right workspace next_on_output
-#bindsym $mod+$alt+j workspace prev_on_output
-#bindsym $mod+$alt+; workspace next_on_output
+bindsym $mod+$alt+j workspace prev_on_output
+bindsym $mod+$alt+semicolon workspace next_on_output
 
 bindsym $mod+Tab workspace back_and_forth
 bindsym $alt+Tab workspace back_and_forth
+
+
 
 ## Monitors
 set $monitor_left DP-4
@@ -140,135 +182,103 @@ workspace $workspace8 output $monitor_right
 workspace $workspace9 output $monitor_right
 workspace $workspace0 output $monitor_right
 
+
+
 ## Assignments
+# Workspaces
+# Signal, Rambox
+# Steam, Discord
+# Firefox
+# Neovim
+# Amarok
+
+assign [class="Firefox"] $workspace1
+
+assign [class="Amarok"] $workspace9
+
+assign [class="Rambox"] $workspace5
+assign [class="Signal"] $workspace0
+
+# Floaters
+for_window [class="Steam"] $floater
+
+
 
 ## Scratchpad
 
+
+
 ## Application Keybindings
-
-## Media Keybindings
-
-## Launcher Keybindings
-
-
-
-#### Old configuration ####
-
-# Use the Super key.
-
-bindsym $mod+$ctl+l exec ~/.config/i3lock/blurlock
-
-bindsym --whole-window $mod+button2 floating toggle
-
-
-# start a terminal
+# Start a terminal.
 bindsym $mod+Return exec i3-sensible-terminal
 
-# kill focused window
-bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
+
+## Media Keybindings
+bindsym $mod+Delete exec playerctl -p amarok previous
+bindsym $mod+End exec playerctl -p amarok play-pause
+bindsym $mod+PageDown exec playerctl -p amarok next
+
+
+
+## Launcher Keybindings (rofi)
+# Start dmenu (a program launcher).
 bindsym $mod+d exec dmenu_run
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
-# change focus
+
+
+## Standard Keybindings
+# Change focus.
 bindsym $mod+j focus left
 bindsym $mod+k focus down
 bindsym $mod+l focus up
 bindsym $mod+semicolon focus right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# move focused window
+# Move focused window.
 bindsym $mod+Shift+j move left
 bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split in horizontal orientation
+# Split in horizontal and vertical orientations.
 bindsym $mod+h split h
-
-# split in vertical orientation
 bindsym $mod+v split v
 
-# enter fullscreen mode for the focused container
+# Enter fullscreen mode for the focused container.
 bindsym $mod+f fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split)
+# Change container layout (stacked, tabbed, toggle split).
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
+# Toggle tiling / floating.
 bindsym $mod+Shift+space floating toggle
 
-# change focus between tiling / floating windows
+# Change focus between tiling / floating windows.
 bindsym $mod+space focus mode_toggle
 
-# focus the parent container
+# Focus the parent container.
 bindsym $mod+a focus parent
 
-# focus the child container
-#bindsym $mod+d focus child
-
-# Define names for default workspaces for which we configure key bindings later on.
-# We use variables to avoid repeating the names in multiple places.
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
-
-# switch to workspace
-#bindsym $mod+1 workspace $ws1
-#bindsym $mod+2 workspace $ws2
-#bindsym $mod+3 workspace $ws3
-#bindsym $mod+4 workspace $ws4
-#bindsym $mod+5 workspace $ws5
-#bindsym $mod+6 workspace $ws6
-#bindsym $mod+7 workspace $ws7
-#bindsym $mod+8 workspace $ws8
-#bindsym $mod+9 workspace $ws9
-#bindsym $mod+0 workspace $ws10
-
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $ws1
-bindsym $mod+Shift+2 move container to workspace $ws2
-bindsym $mod+Shift+3 move container to workspace $ws3
-bindsym $mod+Shift+4 move container to workspace $ws4
-bindsym $mod+Shift+5 move container to workspace $ws5
-bindsym $mod+Shift+6 move container to workspace $ws6
-bindsym $mod+Shift+7 move container to workspace $ws7
-bindsym $mod+Shift+8 move container to workspace $ws8
-bindsym $mod+Shift+9 move container to workspace $ws9
-bindsym $mod+Shift+0 move container to workspace $ws10
-
-# reload the configuration file
+# Reload i3's configuration file.
 bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+
+# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3).
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
+
+# Exit i3 (logs you out of your X session).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-# resize window (you can also use the mouse for that)
+# Resize window (you can also use the mouse for that).
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
@@ -295,8 +305,9 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+## Bars
 # Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# finds out, if available).
 bar {
         status_command i3status
 }
