@@ -308,7 +308,9 @@ zshrc_zplug() {
 }
 
 zshrc_display_banner() {
-    if [[ -x "$(command -v screenfetch)" ]]; then
+    if [[ -x "$(command -v neofetch)" ]]; then
+        neofetch --disable "packages"
+    elif [[ -x "$(command -v screenfetch)" ]]; then
         screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
         echo
     fi
@@ -470,6 +472,12 @@ zshrc_set_default_programs() {
         export BROWSER="chromium '%' &"
     elif [[ -x "$(command -v google-chrome-stable)" ]]; then
         export BROWSER="google-chrome-stable '%' &"
+    fi
+
+    if [[ -x "$(command -v urxvt-256color)" ]]; then
+        export TERMINAL="$(which urxvt-256color)"
+    elif [[ -x "$(command -v konsole)" ]]; then
+        export TERMINAL="$(which konsole)"
     fi
 
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"

@@ -1,0 +1,64 @@
+*accent:    #888888
+*bckgrd:    #1a1a1a
+*select:    #aaaaaa
+
+*background: #1a1a1a
+*foreground: #e4e4e4
+
+!*color0: #000000
+!*color8: #000000
+!*color1: #c86163
+!*color9: #c86163
+!*color2: #63c861
+!*color10: #63c861
+!*color3: #c8c661
+!*color11: #c8c661
+!*color4: #6163c8
+!*color12: #6163c8
+!*color5: #c661c8
+!*color13: #c661c8
+!*color6: #61c8c6
+!*color14: #61c8c6
+!*color7: #ffffff
+!*color15: #ffffff
+
+*color1: #d81d20
+*color9: #d81d20
+*color2: #20d81d
+*color10: #20d81d
+*color3: #d8d51d
+*color11: #d8d51d
+*color4: #1d20d8
+*color12: #1d20d8
+*color5: #d51dd8
+*color13: #d51dd8
+*color6: #1dd8d5
+*color14: #1dd8d5
+*color7: #ffffff
+*color15: #ffffff
+
+URxvt*internalBorder: 			20
+URxvt.intensityStyles:			false
+!URxvt.background: 				#121212
+URxvt*background:               rgba:0000/0000/0000/aaaa
+URxvt.foreground: 				#EDEDED
+URxvt.depth:					32
+URxvt.font: 					xft:Hack Nerd Font Mono:size=9
+URxvt.scrollBar:				false
+URxvt.cursorColor:				white
+URxvt.colorUL:					#61c7c6
+URxvt.keysym.Shift-Control-V: 	eval:paste_clipboard
+URxvt.keysym.Shift-Control-C: 	eval:selection_to_clipboard
+URxvt.iso14755: true
+URxvt.iso14755_52: false
+
+Xft.autohint: 	0
+Xft.antialias: 	1
+Xft.hinting: 	true
+Xft.hintstyle: 	hintslight
+Xft.dpi: 	96
+Xft.rgba: 	rgb
+Xft.lcdfilter: lcddefault
+
+Xcursor.theme: Openzone-Black
+

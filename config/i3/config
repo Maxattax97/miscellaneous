@@ -19,6 +19,7 @@
 
 
 
+
 ## Modifiers
 set $mod Mod4
 set $alt Mod1
@@ -33,6 +34,9 @@ set $scratch_show scratchpad show, move position center
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
+set $floater floating enable, resize set 960 540, move position center
+set $scratch_move sticky enable, move scratchpad
+set $scratch_show scratchpad show, move position center
 
 
 ## Settings
@@ -52,11 +56,23 @@ focus_wrapping yes
 # Use Mouse+$mod to drag floating windows to their desired position.
 floating_modifier $mod
 
-for_window [class=.*] border pixel 0
+for_window [class=.*] border pixel 5
+for_window [class="URxvt"] border pixel 1
+
+# Popups from fullscreen windows will float.
+popup_during_fullscreen smart
+
+focus_follows_mouse yes
+focus_on_window_activation focus
+focus_wrapping yes
+
 
 
 
 ## Autostart
+# Reload X11 defaults
+exec_always xrdb -load ~/.Xdefaults
+
 # Initialize various subsystems via bash... it's just simpler.
 exec_always bash ~/.config/i3/init
 
@@ -64,12 +80,12 @@ exec_always bash ~/.config/i3/init
 exec xautolock -time 10 -locker ~/.config/i3lock/blurlock
 
 bindsym $mod+$ctl+l exec ~/.config/i3lock/blurlock
-
 # Set left and right monitors.
 exec_always xrandr --output $monitor_left --primary --mode 1920x1200 --pos 0x0 --output $monitor_right --mode 1920x1080 --pos 1920x120
 
 # Set wallpaper that spans both monitors.
-exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationRight.png
+#exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationRight.png
+exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockRight.png
 
 
 
@@ -96,20 +112,23 @@ set $blue           #268bd2
 set $cyan           #2aa198
 set $green          #859900
 
-# Poll X11 for an accent color, default to black.
-set_from_resource $accent accent #ffffff
+# Poll X11 for an accent color, default to bright grey.
+#set_from_resource $accent accent #a8a8a8
 
 new_window normal
 hide_edge_borders vertical
 
-# Class                 Border  Backgr. Text    Indicator Child_Border
-client.focused          $accent $accent $white $accent $accent
-client.focused_inactive $grey #5f676a #ffffff #484e50   #5f676a
-client.unfocused        $black #222222 #888888 #292d2e   #222222
-client.urgent           $red #900000 #ffffff #900000   #900000
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+set $color_background $dark_grey
+set $color_text $light_grey
 
-client.background       $dim_grey
+# Class                 Border  Backgr. Text    Indicator Child_Border
+client.focused          $bright_grey $color_background $color_text $bright_grey $bright_grey
+client.focused_inactive $dim_grey $color_background $color_text $dim_grey $dim_grey
+client.unfocused        $black $color_background $color_text $black $black
+client.urgent           $red $color_background $color_text $red $red
+client.placeholder      $dim_grey $color_background $color_text $dim_grey $dim_grey
+
+client.background       $color_background
 
 
 
@@ -191,6 +210,10 @@ workspace $workspace0 output $monitor_right
 # Firefox
 # Neovim
 # Amarok
+# qBittorrent (or something lighter?)
+# Nextcloud
+# ckb-next ... maybe?
+# irsii
 
 assign [class="Firefox"] $workspace1
 
@@ -201,7 +224,7 @@ assign [class="Signal"] $workspace0
 
 # Floaters
 for_window [class="Steam"] $floater
-
+#for_window [class="URxvt"] $floater
 
 
 ## Scratchpad
@@ -210,7 +233,9 @@ for_window [class="Steam"] $floater
 
 ## Application Keybindings
 # Start a terminal.
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec urxvt-256color
+bindsym $mod+$alt+Return exec "XDG_CURRENT_DESKTOP=kde dolphin &"
 
 
 
@@ -261,10 +286,11 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # Toggle tiling / floating.
-bindsym $mod+Shift+space floating toggle
+#bindsym $mod+Shift+space floating toggle
+bindsym $mod+space floating toggle
 
 # Change focus between tiling / floating windows.
-bindsym $mod+space focus mode_toggle
+#bindsym $mod+space focus mode_toggle
 
 # Focus the parent container.
 bindsym $mod+a focus parent
@@ -308,6 +334,9 @@ bindsym $mod+r mode "resize"
 ## Bars
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available).
-bar {
-        status_command i3status
-}
+#bar {
+#   status_command i3status
+#}
+# Now using polybar
+
+
