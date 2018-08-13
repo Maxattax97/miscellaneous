@@ -23,3 +23,9 @@ polybar main &
 
 # Dunst
 
+# ckb-next
+
+killall -q ckb-next
+while pgrep -x ckb-next >/dev/null; do sleep 0.1s; done
+
+ckb-next -b &

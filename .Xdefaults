@@ -41,7 +41,7 @@ URxvt*internalBorder: 			20
 URxvt.intensityStyles:			false
 !URxvt.background: 				#121212
 URxvt*background:               rgba:0000/0000/0000/aaaa
-URxvt.foreground: 				#EDEDED
+URxvt.foreground: 				#BBBBBB
 URxvt.depth:					32
 URxvt.font: 					xft:Hack Nerd Font Mono:size=9
 URxvt.scrollBar:				false
