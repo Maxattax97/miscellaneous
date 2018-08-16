@@ -36,7 +36,6 @@ bindsym $mod+minus scratchpad show
 
 set $floater floating enable, resize set 960 540, move position center
 set $scratch_move sticky enable, move scratchpad
-set $scratch_show scratchpad show, move position center
 
 
 ## Settings
@@ -61,7 +60,6 @@ for_window [class="URxvt"] border pixel 1
 
 # Popups from fullscreen windows will float.
 popup_during_fullscreen smart
-
 focus_follows_mouse yes
 focus_on_window_activation focus
 focus_wrapping yes
@@ -85,7 +83,8 @@ exec_always xrandr --output $monitor_left --primary --mode 1920x1200 --pos 0x0 -
 
 # Set wallpaper that spans both monitors.
 #exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationRight.png
-exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockRight.png
+#exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockRight.png
+exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoRight.png
 
 
 
@@ -290,7 +289,7 @@ bindsym $mod+e layout toggle split
 bindsym $mod+space floating toggle
 
 # Change focus between tiling / floating windows.
-#bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+space focus mode_toggle
 
 # Focus the parent container.
 bindsym $mod+a focus parent
@@ -304,7 +303,6 @@ bindsym $mod+Shift+r restart
 # Exit i3 (logs you out of your X session).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-# Resize window (you can also use the mouse for that).
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 

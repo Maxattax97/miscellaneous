@@ -13,8 +13,6 @@ while pgrep -x compton >/dev/null; do sleep 0.1s; done
     #-b
 compton --opengl --vsync opengl-swc --paint-on-overlay -cCG -r 10 -o 0.5 -l-12 -t-12 -fF -D35 -I0.4 -O0.4 --blur-background --blur-kern 7x7box -b
 
-# Polybar / Lemonbar / Yabar / Positron Bar
-killall -q polybar
 while pgrep -x polybar >/dev/null; do sleep 0.1s; done
 
 polybar main &

@@ -422,7 +422,7 @@ display_volume_level = yes
 #
 display_bitrate = yes
 #
-display_remaining_time = yes
+display_remaining_time = no
 #
 ## Available values: none, basic, extended, perl.
 ##
