@@ -20,9 +20,12 @@ link_source .Xdefaults
 # Dot directories
 mkdir -p "${HOME}/.config/"
 
+mkdir -p "${HOME}/.ncmpcpp"
+link_source "config/ncmpcpp/config" ".ncmpcpp/config"
+
+## ~/.config/
 echo "Backing up ${HOME}/.config ..."
 tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
-
 link_source "config/i3/" ".config/"
 link_source "config/mpd/" ".config/"
 

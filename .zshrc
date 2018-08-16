@@ -293,6 +293,10 @@ zshrc_zplug() {
 
         zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
+        zplug "supercrabtree/k"
+
+        zplug "psprint/zsh-navigation-tools"
+
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
         zplug "zdharma/fast-syntax-highlighting", defer:3
@@ -467,11 +471,11 @@ zshrc_set_default_programs() {
     export MANPAGER="less"
 
     if [[ -x "$(command -v firefox)" ]]; then
-        export BROWSER="firefox '%' &"
+        export BROWSER="firefox"
     elif [[ -x "$(command -v chromium)" ]]; then
-        export BROWSER="chromium '%' &"
+        export BROWSER="chromium"
     elif [[ -x "$(command -v google-chrome-stable)" ]]; then
-        export BROWSER="google-chrome-stable '%' &"
+        export BROWSER="google-chrome-stable"
     fi
 
     if [[ -x "$(command -v urxvt-256color)" ]]; then
