@@ -394,7 +394,7 @@ lastfm_preferred_language = en
 ##
 ## Note: You can define startup screen by choosing screen from the list above.
 ##
-#startup_screen = playlist
+ no7
 #
 ##
 ## Note: You can define startup slave screen by choosing screen from the list

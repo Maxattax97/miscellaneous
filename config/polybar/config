@@ -46,9 +46,10 @@ font-1 = "FreeSans:style=Regular:size=10"
 ;font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 ;font-2 = siji:pixelsize=10;1
 
-modules-left = filesystem xbacklight volume xkeyboard memory cpu wlan eth battery temperature date powermenu
+modules-left = xwindow xkeyboard filesystem mpd xbacklight backlight-acpi wlan eth battery temperature
 modules-center = i3
-modules-right =
+modules-right = volume memory cpu wlan eth battery temperature date powermenu
+
 
 tray-position = right
 tray-padding = 2
@@ -56,15 +57,15 @@ tray-transparent = false
 tray-background = ${colors.background}
 
 ;wm-restack = bspwm
-;wm-restack = i3
+wm-restack = i3
 
 ;override-redirect = true
 
 ;scroll-up = bspwm-desknext
 ;scroll-down = bspwm-deskprev
 
-;scroll-up = i3wm-wsnext
-;scroll-down = i3wm-wsprev
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
 
 cursor-click = pointer
 cursor-scroll = ns-resize
@@ -75,6 +76,8 @@ cursor-scroll = ns-resize
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:30:...%
+
+
 
 [module/xkeyboard]
 type = internal/xkeyboard
@@ -92,6 +95,8 @@ label-indicator-margin = 1
 label-indicator-background = ${colors.secondary}
 label-indicator-underline = ${colors.secondary}
 
+
+
 [module/filesystem]
 type = internal/fs
 interval = 25
@@ -101,6 +106,8 @@ mount-0 = /
 label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
+
+
 
 [module/bspwm]
 type = internal/bspwm
@@ -172,6 +179,8 @@ icon-next = 
 label-song-maxlen = 25
 label-song-ellipsis = true
 
+
+
 [module/xbacklight]
 type = internal/xbacklight
 
@@ -189,10 +198,14 @@ bar-empty = ─
 bar-empty-font = 0
 bar-empty-foreground = ${colors.foreground-alt}
 
+
+
 [module/backlight-acpi]
 inherit = module/xbacklight
 type = internal/backlight
 card = intel_backlight
+
+
 
 [module/cpu]
 type = internal/cpu
@@ -202,6 +215,8 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #f90000
 label = %percentage:2%%
 
+
+
 [module/memory]
 type = internal/memory
 interval = 2
@@ -210,9 +225,11 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
 label = %percentage_used%%
 
+
+
 [module/wlan]
 type = internal/network
-interface = net1
+interface = ${env:WIFI_INTERFACE:wlan0}
 interval = 3.0
 
 format-connected = <ramp-signal> <label-connected>
@@ -232,9 +249,11 @@ ramp-signal-3 = 
 ramp-signal-4 = 
 ramp-signal-foreground = ${colors.foreground-alt}
 
+
+
 [module/eth]
 type = internal/network
-interface = net0
+interface = ${env:ETH_INTERFACE:wlan0}
 interval = 3.0
 
 format-connected-underline = #55aa55
@@ -247,6 +266,8 @@ format-disconnected =
 ;format-disconnected-underline = ${self.format-connected-underline}
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
+
+
 
 [module/date]
 type = internal/date
@@ -263,6 +284,8 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #0a6cf5
 
 label = %date% %time%
+
+
 
 [module/volume]
 type = internal/volume
@@ -292,6 +315,8 @@ bar-volume-empty = ─
 bar-volume-empty-font = 0
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
+
+
 [module/battery]
 type = internal/battery
 battery = BAT0
@@ -319,6 +344,8 @@ animation-charging-2 = 
 animation-charging-foreground = ${colors.foreground-alt}
 animation-charging-framerate = 750
 
+
+
 [module/temperature]
 type = internal/temperature
 thermal-zone = 0
@@ -337,6 +364,8 @@ ramp-0 = 
 ramp-1 = 
 ramp-2 = 
 ramp-foreground = ${colors.foreground-alt}
+
+
 
 [module/powermenu]
 type = custom/menu
@@ -367,12 +396,16 @@ menu-2-0-exec = sudo poweroff
 menu-2-1 = cancel
 menu-2-1-exec = menu-open-0
 
+
+
 [settings]
 screenchange-reload = true
 ;compositing-background = xor
 ;compositing-background = screen
 ;compositing-foreground = source
 ;compositing-border = over
+
+
 
 [global/wm]
 margin-top = 5
