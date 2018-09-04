@@ -489,16 +489,22 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
 
-    if [[ -d "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
-        export NODE_PATH="${NODE_PATH}:/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
+    if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
+        export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
     fi
 
-    if [[ -s "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
-        export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+    if [[ -s "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
+        export P4IGNORE="${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
     fi
 
-    if [[ -d "/home/max/src/depot_tools/" ]]; then
-        export PATH="$PATH:/home/max/src/depot_tools"
+    if [[ -d "${HOME}/src/depot_tools/" ]]; then
+        export PATH="$PATH:${HOME}/src/depot_tools"
+    fi
+
+    if [[ -d "${HOME}/.anaconda2/bin" ]]; then
+        export PATH="${PATH}:${HOME}/.anaconda2/bin"
+    elif [[ -d "${HOME}/anaconda2/bin" ]]; then
+        export PATH="${PATH}:${HOME}/anaconda2/bin"
     fi
 }
 
