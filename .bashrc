@@ -444,3 +444,6 @@ if [[ -d "$HOME/.rbenv/" ]]; then
     eval "$(rbenv init -)"
     export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 fi
+
+# added by Anaconda2 installer
+#export PATH="/home/max/.anaconda2/bin:$PATH"

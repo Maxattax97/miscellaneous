@@ -55,8 +55,9 @@ focus_wrapping yes
 # Use Mouse+$mod to drag floating windows to their desired position.
 floating_modifier $mod
 
-for_window [class=.*] border pixel 5
-for_window [class="URxvt"] border pixel 1
+for_window [class=.*] border pixel 1
+#for_window [class="URxvt"] border pixel 1
+#for_window [class="Steam"] border pixel 1
 
 # Popups from fullscreen windows will float.
 popup_during_fullscreen smart
@@ -86,6 +87,8 @@ exec_always xrandr --output $monitor_left --primary --mode 1920x1200 --pos 0x0 -
 #exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockRight.png
 exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoRight.png
 
+exec gtk-launch org.signal.Signal
+exec urxvt -e ncmpcpp
 
 
 ## Aesthetics / Interface
@@ -212,17 +215,20 @@ workspace $workspace0 output $monitor_right
 # qBittorrent (or something lighter?)
 # Nextcloud
 # ckb-next ... maybe?
-# irsii
+# irsii / weechat
 
 assign [class="Firefox"] $workspace1
 
-assign [class="Amarok"] $workspace9
+assign [class="Steam"] $workspace9
+assign [class="discord"] $workspace9
 
 assign [class="Rambox"] $workspace5
 assign [class="Signal"] $workspace0
+assign [class="qBittorrent"] $workspace0
+assign [class="Nextcloud"] $workspace0
 
 # Floaters
-for_window [class="Steam"] $floater
+#for_window [class="Steam"] $floater
 #for_window [class="URxvt"] $floater
 
 
