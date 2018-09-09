@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=OptimizeBattery
+GenericName=Optimize Battery
+Comment=Optimizes battery usage on an Acer laptop
+Exec=/home/max/src/miscellaneous/scripts/optimize-battery.sh
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true
