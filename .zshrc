@@ -319,6 +319,11 @@ zshrc_display_banner() {
         screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
         echo
     fi
+
+    if [[ -x "$(command -v mikaelasay)" ]]; then
+        mikaelasay
+        echo
+    fi
 }
 
 zshrc_set_path() {
