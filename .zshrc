@@ -1,6 +1,8 @@
 config_help=false
 config_benchmark=false
 
+zshrc_low_power=false
+
 zshrc_benchmark_start() {
     if ( $config_benchmark ); then
         zmodload zsh/zprof
@@ -17,9 +19,20 @@ zshrc_benchmark_stop() {
 zshrc_detect_term_colors() {
     # Dynamically set term to the right prefix.
     case $TERM in
-        konsole|xterm|screen|tmux|rxvt-unicode)
-            export TERM="$TERM-256color";;
+        *linux*)
+            zshrc_low_power=true
+            echo "Low power mode enabled."
+            ;;
+        *vt100*)
+            zshrc_low_power=true
+            echo "Low power mode enabled."
+            ;;
     esac
+
+    #case $TERM in
+        #konsole|xterm|screen|tmux|rxvt-unicode)
+            #export TERM="$TERM-256color";;
+    #esac
 }
 
 zshrc_setup_completion() {
@@ -136,7 +149,8 @@ zshrc_powerlevel9k() {
 
     # Intriguing elements
     # detect_virt ssh vi_mode background_jobs load ram icons_test
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time detect_virt context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
+    #
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip vcs load ram_joined battery_joined newline os_icon ssh vi_mode dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -232,6 +246,11 @@ zshrc_powerlevel9k() {
 
     POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND="237"
     POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND="${PL9K_TEXT_COLOR}"
+
+    if ($zshrc_low_power); then
+        POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$']'
+        POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'['
+    fi
 }
 
 zshrc_zplug() {
@@ -275,6 +294,10 @@ zshrc_zplug() {
 
         zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
+        zplug "supercrabtree/k"
+
+        zplug "psprint/zsh-navigation-tools"
+
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
         zplug "zdharma/fast-syntax-highlighting", defer:3
@@ -290,8 +313,15 @@ zshrc_zplug() {
 }
 
 zshrc_display_banner() {
-    if [[ -x "$(command -v screenfetch)" ]]; then
+    if [[ -x "$(command -v neofetch)" ]]; then
+        neofetch --disable "packages"
+    elif [[ -x "$(command -v screenfetch)" ]]; then
         screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+        echo
+    fi
+
+    if [[ -x "$(command -v mikaelasay)" ]]; then
+        mikaelasay
         echo
     fi
 }
@@ -380,6 +410,20 @@ zshrc_load_library() {
 
         printf "\n"
     }
+
+    translate() {
+        gawk -f <(curl -Ls git.io/translate) -- -shell
+    }
+
+    repair_nvidia() {
+        if type "zypper" > /dev/null 2>&1; then
+            sudo zypper in -f nvidia-gfxG04-kmp-default
+        fi
+    }
+
+    mapscii() {
+        telnet mapscii.me
+    }
 }
 
 zshrc_set_aliases() {
@@ -433,11 +477,17 @@ zshrc_set_default_programs() {
     export MANPAGER="less"
 
     if [[ -x "$(command -v firefox)" ]]; then
-        export BROWSER="firefox '%' &"
+        export BROWSER="firefox"
     elif [[ -x "$(command -v chromium)" ]]; then
-        export BROWSER="chromium '%' &"
+        export BROWSER="chromium"
     elif [[ -x "$(command -v google-chrome-stable)" ]]; then
-        export BROWSER="google-chrome-stable '%' &"
+        export BROWSER="google-chrome-stable"
+    fi
+
+    if [[ -x "$(command -v urxvt-256color)" ]]; then
+        export TERMINAL="$(which urxvt-256color)"
+    elif [[ -x "$(command -v konsole)" ]]; then
+        export TERMINAL="$(which konsole)"
     fi
 
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
@@ -445,16 +495,22 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
 
-    if [[ -d "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
-        export NODE_PATH="${NODE_PATH}:/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
+    if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
+        export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
     fi
 
-    if [[ -s "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
-        export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+    if [[ -s "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
+        export P4IGNORE="${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
     fi
 
-    if [[ -d "/home/max/src/depot_tools/" ]]; then
-        export PATH="$PATH:/home/max/src/depot_tools"
+    if [[ -d "${HOME}/src/depot_tools/" ]]; then
+        export PATH="$PATH:${HOME}/src/depot_tools"
+    fi
+
+    if [[ -d "${HOME}/.anaconda2/bin" ]]; then
+        export PATH="${PATH}:${HOME}/.anaconda2/bin"
+    elif [[ -d "${HOME}/anaconda2/bin" ]]; then
+        export PATH="${PATH}:${HOME}/anaconda2/bin"
     fi
 }
 

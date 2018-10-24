@@ -1,0 +1,346 @@
+# i3 config file (v4)
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+# Much of this inspired by https://github.com/bresilla/dotfiles
+
+## Install ...
+# Compton - Compositor
+# Nitrogen - wallpaper manager
+# feh - for setting wallpapers
+# xautolock - automatically lock system
+# imagemagick - for blurring blurlock
+# gtop (via npm) - system resource monitor
+# Ranger - file manager
+# playerctl - CLI music player
+# rofi - dmenu replacement
+# polybar - i3bar replacement
+# i3lock-fancy - sophisticated i3lock replacement
+
+# flameshot - screenshot tool
+
+
+
+
+## Modifiers
+set $mod Mod4
+set $alt Mod1
+set $esc Escape
+set $ctl Control
+
+
+
+## Macros
+set $scratch_move sticky enable, move scratchpad
+set $scratch_show scratchpad show, move position center
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+set $floater floating enable, resize set 960 540, move position center
+set $scratch_move sticky enable, move scratchpad
+
+
+## Settings
+gaps inner 20
+gaps outer 5
+smart_gaps on
+smart_borders on
+
+# Return to previous workspace by pressing most recent workspace again.
+workspace_auto_back_and_forth yes
+
+popup_during_fullscreen smart
+focus_follows_mouse yes
+focus_on_window_activation focus
+focus_wrapping yes
+
+# Use Mouse+$mod to drag floating windows to their desired position.
+floating_modifier $mod
+
+for_window [class=.*] border pixel 1
+#for_window [class="URxvt"] border pixel 1
+#for_window [class="Steam"] border pixel 1
+
+# Popups from fullscreen windows will float.
+popup_during_fullscreen smart
+focus_follows_mouse yes
+focus_on_window_activation focus
+focus_wrapping yes
+
+
+
+
+## Autostart
+# Reload X11 defaults
+exec_always xrdb -load ~/.Xdefaults
+
+# Initialize various subsystems via bash... it's just simpler.
+exec_always bash ~/.config/i3/init
+
+# Set an autolock timer using a custom screen blur.
+exec xautolock -time 10 -locker ~/.config/i3lock/blurlock
+
+bindsym $mod+$ctl+l exec ~/.config/i3lock/blurlock
+# Set left and right monitors.
+exec_always xrandr --output $monitor_left --primary --mode 1920x1200 --pos 0x0 --output $monitor_right --mode 1920x1080 --pos 1920x120
+
+# Set wallpaper that spans both monitors.
+#exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/ResearchStationRight.png
+#exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/SimpleDockRight.png
+exec_always feh --bg-fill /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoLeft.png /home/max/Nextcloud/Max/Pictures/Wallpapers/Slices/MilkyPanoRight.png
+
+exec gtk-launch org.signal.Signal
+exec urxvt -e ncmpcpp
+
+
+## Aesthetics / Interface
+#font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango:Hack Nerd Font Mono, TerminessTTF Nerd Font Mono, FreeSans, monospace 10
+
+# Colors            0123456789abcdef
+set $black          #000000
+set $dark_grey      #2a2a2a
+set $dim_grey       #545454
+set $grey           #7e7e7e
+set $bright_grey    #a8a8a8
+set $light_grey     #d2d2d2
+set $white          #ffffff
+
+# Currently Solarized colors.
+set $yellow         #b58900
+set $orange         #cb4b16
+set $red            #dc322f
+set $magenta        #d33682
+set $violet         #6c71c4
+set $blue           #268bd2
+set $cyan           #2aa198
+set $green          #859900
+
+# Poll X11 for an accent color, default to bright grey.
+#set_from_resource $accent accent #a8a8a8
+
+new_window normal
+hide_edge_borders vertical
+
+set $color_background $dark_grey
+set $color_text $light_grey
+
+# Class                 Border  Backgr. Text    Indicator Child_Border
+client.focused          $bright_grey $color_background $color_text $bright_grey $bright_grey
+client.focused_inactive $dim_grey $color_background $color_text $dim_grey $dim_grey
+client.unfocused        $black $color_background $color_text $black $black
+client.urgent           $red $color_background $color_text $red $red
+client.placeholder      $dim_grey $color_background $color_text $dim_grey $dim_grey
+
+client.background       $color_background
+
+
+
+## Windows
+# Kill focused window.
+bindsym $mod+$esc kill
+bindsym $mod+Shift+q kill
+
+# Float on middle click.
+bindsym --whole-window $mod+button2 floating toggle
+
+
+
+## Workspaces
+set $workspace1 "1"
+set $workspace2 "2"
+set $workspace3 "3"
+set $workspace4 "4"
+set $workspace5 "5"
+set $workspace6 "6"
+set $workspace7 "7"
+set $workspace8 "8"
+set $workspace9 "9"
+set $workspace0 "10"
+
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
+bindsym $mod+0 workspace $workspace0
+
+bindsym $mod+Shift+1 move container to workspace $workspace1; workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2; workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3; workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4; workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5; workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6; workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7; workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8; workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9; workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace0; workspace $workspace0
+
+bindsym $mod+$alt+Left workspace prev_on_output
+bindsym $mod+$alt+Right workspace next_on_output
+bindsym $mod+$alt+j workspace prev_on_output
+bindsym $mod+$alt+semicolon workspace next_on_output
+
+bindsym $mod+Tab workspace back_and_forth
+bindsym $alt+Tab workspace back_and_forth
+
+
+
+## Monitors
+set $monitor_left DP-4
+set $monitor_right DVI-I-0
+
+workspace $workspace1 output $monitor_left
+workspace $workspace2 output $monitor_left
+workspace $workspace3 output $monitor_left
+workspace $workspace4 output $monitor_left
+workspace $workspace5 output $monitor_left
+workspace $workspace6 output $monitor_right
+workspace $workspace7 output $monitor_right
+workspace $workspace8 output $monitor_right
+workspace $workspace9 output $monitor_right
+workspace $workspace0 output $monitor_right
+
+
+
+## Assignments
+# Workspaces
+# Signal, Rambox
+# Steam, Discord
+# Firefox
+# Neovim
+# Amarok
+# qBittorrent (or something lighter?)
+# Nextcloud
+# ckb-next ... maybe?
+# irsii / weechat
+
+assign [class="Firefox"] $workspace1
+
+assign [class="Steam"] $workspace9
+assign [class="discord"] $workspace9
+
+assign [class="Rambox"] $workspace5
+assign [class="Signal"] $workspace0
+assign [class="qBittorrent"] $workspace0
+assign [class="Nextcloud"] $workspace0
+
+# Floaters
+#for_window [class="Steam"] $floater
+#for_window [class="URxvt"] $floater
+
+
+## Scratchpad
+
+
+
+## Application Keybindings
+# Start a terminal.
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec urxvt-256color
+bindsym $mod+$alt+Return exec "XDG_CURRENT_DESKTOP=kde dolphin &"
+
+
+
+## Media Keybindings
+bindsym $mod+Delete exec playerctl -p amarok previous
+bindsym $mod+End exec playerctl -p amarok play-pause
+bindsym $mod+PageDown exec playerctl -p amarok next
+
+
+
+## Launcher Keybindings (rofi)
+# Start dmenu (a program launcher).
+bindsym $mod+d exec dmenu_run
+
+
+
+## Standard Keybindings
+# Change focus.
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move focused window.
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Split in horizontal and vertical orientations.
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+# Enter fullscreen mode for the focused container.
+bindsym $mod+f fullscreen toggle
+
+# Change container layout (stacked, tabbed, toggle split).
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Toggle tiling / floating.
+#bindsym $mod+Shift+space floating toggle
+bindsym $mod+space floating toggle, resize set 960 540, move position center
+
+# Change focus between tiling / floating windows.
+bindsym $mod+Shift+space focus mode_toggle
+
+# Focus the parent container.
+bindsym $mod+a focus parent
+
+# Reload i3's configuration file.
+bindsym $mod+Shift+c reload
+
+# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3).
+bindsym $mod+Shift+r restart
+
+# Exit i3 (logs you out of your X session).
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+## Bars
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available).
+#bar {
+#   status_command i3status
+#}
+# Now using polybar
+
+

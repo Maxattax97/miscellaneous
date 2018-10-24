@@ -1,19 +1,45 @@
-# Multiboot USB
+# Max's Miscellaneous Files (or `dotfiles` to most)
+## Screenshots
 
-<http://mbusb.aguslr.com/>
+Not yet available.
 
-## About
+## Installation
 
-This is a project that contains a collection of [GRUB][] files and scripts that will allow you to create a pendrive capable of booting [different ISO files][isos].
+Execute:
+```
+$ ./install.sh
+```
 
-![Demo GIF](docs/assets/img/demo.gif "Demo")
+To link all of my configurations to your home. Performing a `git pull` within
+this repository then automatically gives you the latest version of these
+files.
 
+## Overview
 
-## Documentation
+This repository contains configurations for:
+ - `i3wm`
+ - `mpd`
+ - `grub`
 
-Visit the [project's website for more information][website].
+It has scripts pertaining to:
+ - Background OpenVPN tunnels
+ - OS detection
+ - Internet speed testing
+ - 256 color support
+ - Complete system installation (the essentials)
+ - Automated Nerd font installation
 
+Some other things it contains are:
+ - Assorted language samples (for tests / syntax highlighting)
+ - Spotify ad-block list
 
-[grub]: https://www.gnu.org/software/grub/
-[isos]: http://mbusb.aguslr.com/isos.html
-[website]: http://mbusb.aguslr.com/
+## Credits
+
+`i3` environment inspired by [Bresilla](https://github.com/bresilla/dotfiles/).
+
+I use [Neovim Studio](https://github.com/Maxattax97/Neovim-Studio) for all my text editing needs.
+
+I use [OPM](https://github.com/Maxattax97/opm) to manage packages across distributions portably.
+
+Check out my website at [maxocull.com](https://www.maxocull.com/)!
+

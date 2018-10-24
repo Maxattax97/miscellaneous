@@ -1,0 +1,33 @@
+#! /bin/bash
+
+## Variables ##
+export MONITOR=DP-4
+export WIFI_INTERFACE=wlp5s0
+export ETH_INTERFACE=enp0s31f6
+
+## Execution ##
+
+# Compton
+killall -q compton
+while pgrep -x compton >/dev/null; do sleep 0.1s; done
+#compton -f -D 2 -i 0.85 -z \
+    #--backend glx --glx-no-stencil --glx-no-rebind-pixmap --glx-swap-method exchange \
+    #-b
+compton --opengl --vsync opengl-swc --paint-on-overlay -cCG -r 10 -o 0.5 -l-12 -t-12 -fF -D35 -I0.4 -O0.4 --blur-background --blur-kern 7x7box -b
+
+# Polybar
+killall -q polybar
+while pgrep -x polybar >/dev/null; do sleep 0.1s; done
+
+polybar main &
+
+# Conky
+
+# Dunst
+
+# ckb-next
+
+killall -q ckb-next
+while pgrep -x ckb-next >/dev/null; do sleep 0.1s; done
+
+ckb-next -b &
