@@ -150,7 +150,7 @@ zshrc_powerlevel9k() {
     # Intriguing elements
     # detect_virt ssh vi_mode background_jobs load ram icons_test
     #
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip vcs load ram_joined battery_joined newline os_icon ssh vi_mode dir dir_writable)
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -512,6 +512,23 @@ zshrc_set_environment_variables() {
     elif [[ -d "${HOME}/anaconda2/bin" ]]; then
         export PATH="${PATH}:${HOME}/anaconda2/bin"
     fi
+
+    # >>> conda init >>>
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$(CONDA_REPORT_ERRORS=false '/home/max/.anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        \eval "$__conda_setup"
+    else
+        if [ -f "${HOME}/.anaconda3/etc/profile.d/conda.sh" ]; then
+            . "${HOME}/.anaconda3/etc/profile.d/conda.sh"
+            CONDA_CHANGEPS1=false conda activate base
+        else
+            \export PATH="${PATH}:${HOME}/.anaconda3/bin"
+            \export PATH="${PATH}:${HOME}/anaconda3/bin"
+        fi
+    fi
+    unset __conda_setup
+    # <<< conda init <<<
 }
 
 zshrc_init() {
