@@ -40,9 +40,9 @@ if [ "$?" -eq 1 ]; then
 	tmux send-keys -t "$session:$w_minecraft_mod" "cd mainSpigot/ && clear && ./run.sh" C-m
 	tmux send-keys -t "$session:$w_terraria" "clear && ./tModLoaderServer # Disabled in ctlpanel" #C-m
 	tmux send-keys -t "$session:$w_factorio" "clear && journalctl -f -u factorio.service" C-m
-	tmux send-keys -t "$session:$w_course_watcher" "clear && node index.js" C-m
+	tmux send-keys -t "$session:$w_course_watcher" "clear && node index.js # Disabled in ctlpanel" #C-m
 	tmux send-keys -t "$session:$w_gekko" "clear && node gekko --ui # Disabled in ctlpanel" #C-m
-	tmux send-keys -t "$session:$w_monero" "clear && xmrig -o gulf.moneroocean.stream:10008 -u 46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA -p Resolute --cpu-priority 1 -k" C-m
+	tmux send-keys -t "$session:$w_monero" "clear && xmrig -o gulf.moneroocean.stream:10008 -u 46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA -p Resolute --cpu-priority 1 -k # Disabled in ctlpanel" #C-m
 
 	if [ "$dont_join" -ne 1 ]; then
 		echo "Attaching to CtlPanel session ..."
