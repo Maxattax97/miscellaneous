@@ -149,7 +149,8 @@ zshrc_powerlevel9k() {
 
     # Intriguing elements
     # detect_virt ssh vi_mode background_jobs load ram icons_test
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time detect_virt context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
+    #
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip vcs load ram_joined battery_joined newline os_icon ssh vi_mode dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -316,6 +317,11 @@ zshrc_display_banner() {
         neofetch --disable "packages"
     elif [[ -x "$(command -v screenfetch)" ]]; then
         screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+        echo
+    fi
+
+    if [[ -x "$(command -v mikaelasay)" ]]; then
+        mikaelasay
         echo
     fi
 }

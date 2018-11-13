@@ -1,0 +1,7 @@
+config.trim_on_minimize true
+browser.cache.memory.capacity -1
+browser.cache.disk.enable false
+browser.cache.memory.enable true
+browser.sessionstore.interval 300000
+
+Install and enable profile-sync-daemon (available on Github)

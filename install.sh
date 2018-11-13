@@ -29,6 +29,7 @@ tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
 link_source "config/i3/" ".config/"
 link_source "config/mpd/" ".config/"
 link_source "config/polybar/" ".config/"
+link_source "config/psd/" ".config/"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
