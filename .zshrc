@@ -542,6 +542,12 @@ zshrc_set_environment_variables() {
     elif [[ -d "${HOME}/anaconda2/bin" ]]; then
         export PATH="${PATH}:${HOME}/anaconda2/bin"
     fi
+
+    if [[ -d "/usr/lib/oracle/12.1/client64" ]]; then
+        export ORACLE_HOME="/usr/lib/oracle/12.1/client64"
+        export PATH="${PATH}:${ORACLE_HOME}/bin"
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${ORACLE_HOME}/lib"
+    fi
 }
 
 zshrc_init() {
