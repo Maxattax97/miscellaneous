@@ -424,6 +424,36 @@ zshrc_load_library() {
     mapscii() {
         telnet mapscii.me
     }
+
+    bomb() {
+        bomb | bomb &
+    }
+
+    tone() {
+        (speaker-test --frequency $1 --test sine > /dev/null 2>&1) &
+        pid=$!
+        sleep 0.${2}s
+        kill -13 $pid
+    }
+
+    waitonline() {
+        echo "Waiting for online access ..."
+        failing=true
+        while "$failing"; do
+            ping 8.8.8.8 -c 1 -W 2 > /dev/null 2>&1
+            success="$?"
+            if [ "$success" -eq 0 ]; then
+                printf "\n"
+                echo "Internet access has been restored!"
+                notify-send --urgency=normal --icon=gtk-network "Online" "Internet access has been restored."
+                tone 500 400; tone 1000 400; tone 2000 400
+                failing=false
+            else
+                printf "."
+                sleep 1
+            fi
+        done
+    }
 }
 
 zshrc_set_aliases() {
@@ -529,6 +559,12 @@ zshrc_set_environment_variables() {
     fi
     unset __conda_setup
     # <<< conda init <<<
+
+    if [[ -d "/usr/lib/oracle/12.1/client64" ]]; then
+        export ORACLE_HOME="/usr/lib/oracle/12.1/client64"
+        export PATH="${PATH}:${ORACLE_HOME}/bin"
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${ORACLE_HOME}/lib"
+    fi
 }
 
 zshrc_init() {
