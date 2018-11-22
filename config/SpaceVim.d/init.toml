@@ -1,0 +1,120 @@
+#=============================================================================
+# dark_powered.toml --- dark powered configuration example for SpaceVim
+# Copyright (c) 2016-2017 Wang Shidong & Contributors
+# Author: Wang Shidong < wsdjeg at 163.com >
+# URL: https://spacevim.org
+# License: GPLv3
+#=============================================================================
+
+# All SpaceVim option below [option] section
+[options]
+    # Bootstrap hooks
+    bootstrap_before = "bootstrap#before"
+    bootstrap_after = "bootstrap#after"
+
+    # Aesthetic
+    colorscheme = "NeoSolarized"
+    colorscheme_default = "desert"
+    background = "dark"
+    enable_guicolors = true
+    statusline_separator = "arrow"
+    statusline_inactive_separator = "arrow"
+    enable_tabline_filetype_icon = true
+    enable_statusline_display_mode = false # ???
+    error_symbol = "x"
+    warning_symbol = "!"
+    info_symbol = "i"
+    buffer_index_type = 2
+
+    # Automation
+    autocomplete_parens = true
+    
+    # Tooling
+    filemanager = "nerdtree"
+
+    # Code
+    enable_neomake = false
+    enable_ale = true
+    lint_on_the_fly = true
+    default_indent = 4
+    expand_tab = true
+    max_column = 80
+
+    # Plugins
+    disabled_plugins = [
+        "Clamp" # Prefer clangd via LSP
+    ]
+
+[[layers]]
+    name = "autocomplete"
+    auto-completion-return-key-behavior = "smart"
+    auto-completion-tab-key-behavior = "cycle"
+    auto-completion-delay = 10
+    # TODO: Battery conservation by delayed autocompletion.
+    # https://github.com/w0rp/ale#faq-my-battery-is-sad
+    # TODO: Install LSP's
+[[layers]]
+    # SPC '
+    name = "shell"
+    default_position = "top"
+    default_height = 65
+[[layers]]
+    name = "colorscheme"
+[[layers]]
+    # SPC g .
+    name = "VersionControl"
+[[layers]]
+    # SPC g
+    name = "git"
+[[layers]]
+    # SPC g h
+    name = "github"
+    # TODO: Setup Github token login
+[[layers]]
+    # SPC e
+    name = "checkers"
+    # TODO: Battery conservation by delayed linting.
+    # TODO: Install individual linters?
+[[layers]]
+    name = "ui"
+[[layers]]
+    name = "tools"
+[[layers]]
+    # Install: dnf install global global-ctags
+    name = "tags"
+[[layers]]
+    # CTL p
+    name = "denite"
+[[layers]]
+    # SPC d
+    name = "debug"
+[[layers]]
+    name = "edit"
+[[layers]]
+    # SPC f
+    name = "sudo"
+[[layers]]
+    # CTL <h|j|k|l>
+    name = "tmux"
+
+[[layers]]
+    name = "lsp"
+    filetypes = [
+        "c" # Install: dnf install clang-tools-extra
+    ]
+
+[[layers]]
+    # Install: pip install flake8 yapf autoflake isort
+    name = "lang#python"
+    format-on-save = 1
+[[layers]]
+    # Install: dnf install clang clang-libs 
+    name = "lang#c"
+    clang_executable = "/usr/bin/clang"
+    libclang_path = "/usr/lib64/libclang.so.7"
+    [layer.clang_std]
+        c = "gnu11"
+        cpp = "gnu++11"
+        objc = "gnu11"
+        objcpp = "gnu++11"
+

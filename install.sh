@@ -23,7 +23,9 @@ mkdir -p "${HOME}/.config/"
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" ".ncmpcpp/config"
 
-## ~/.config/
+link_source "config/SpaceVim.d" ".SpaceVim.d"
+
+# ~/.config/
 echo "Backing up ${HOME}/.config ..."
 tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
 link_source "config/i3/" ".config/"

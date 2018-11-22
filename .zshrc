@@ -329,24 +329,20 @@ zshrc_display_banner() {
 zshrc_set_path() {
     add_path() {
         if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-            PATH="${PATH:+"$PATH:"}$1"
+            export PATH="${PATH:+"$PATH:"}$1"
         fi
     }
 
-    add_path "$HOME/bin/"
+    add_path "${HOME}/bin/"
     add_path "/sbin/"
     add_path "/usr/sbin/"
+    add_path "${HOME}/.SpaceVim/bin/"
+    add_path "${HOME}/src/depot_tools/"
+    add_path "${HOME}/.anaconda2/bin/"
+    add_path "${HOME}/anaconda2/bin/"
 }
 
 zshrc_load_library() {
-    wifi_signal() {
-        local signal=$(nmcli -t device wifi | grep '^*' | awk -F':' '{print $6}')
-        local color="yellow"
-        [[ $signal -gt 75 ]] && color="green"
-        [[ $signal -lt 50 ]] && color="red"
-        echo -n "%F{$color}\uf1eb" # \uf1eb is 
-    }
-
     # Join a telnet based movie theater.
     starwars() {
         telnet towel.blinkenlights.nl
@@ -493,6 +489,9 @@ zshrc_set_default_programs() {
     # For heavyweight purposes.
     if [[ -x "$(command -v nvim)" ]]; then
         export VISUAL="/usr/bin/nvim"
+        if [[ -d "${HOME}/.SpaceVim" ]]; then
+            alias vim="nvim"
+        fi
     elif [[ -x "$(command -v vim)" ]]; then
         export VISUAL="/usr/bin/vim"
         alias nvim="vim"
@@ -531,16 +530,6 @@ zshrc_set_environment_variables() {
 
     if [[ -s "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
         export P4IGNORE="${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
-    fi
-
-    if [[ -d "${HOME}/src/depot_tools/" ]]; then
-        export PATH="$PATH:${HOME}/src/depot_tools"
-    fi
-
-    if [[ -d "${HOME}/.anaconda2/bin" ]]; then
-        export PATH="${PATH}:${HOME}/.anaconda2/bin"
-    elif [[ -d "${HOME}/anaconda2/bin" ]]; then
-        export PATH="${PATH}:${HOME}/anaconda2/bin"
     fi
 
     # >>> conda init >>>
