@@ -16,6 +16,7 @@ link_source .zshrc
 link_source .tmux.conf
 link_source .tmuxline.conf
 link_source .Xdefaults
+link_source .eslintrc.json
 
 # Dot directories
 mkdir -p "${HOME}/.config/"

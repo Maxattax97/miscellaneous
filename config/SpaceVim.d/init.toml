@@ -72,9 +72,9 @@
     # TODO: Setup Github token login
 [[layers]]
     # SPC e
+    # Install: npm install -g eslint eslint-config-airbnb
     name = "checkers"
     # TODO: Battery conservation by delayed linting.
-    # TODO: Install individual linters?
 [[layers]]
     name = "ui"
 [[layers]]
@@ -100,8 +100,14 @@
 [[layers]]
     name = "lsp"
     filetypes = [
-        "c" # Install: dnf install clang-tools-extra
+        "c", # Install: dnf install clang-tools-extra
+        "sh", # Install: npm install -g bash-language-server
+        "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs 
+        "javascript", # Install: npm install -g javascript-typescript-langserver 
     ]
+    [layers.override_cmd]
+        dockerfile = ["docker-langserver", "--stdio"]
+    # TODO: Battery saving techniques.
 
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
@@ -117,4 +123,8 @@
         cpp = "gnu++11"
         objc = "gnu11"
         objcpp = "gnu++11"
-
+[[layers]]
+    name = "lang#sh"
+[[layers]]
+    # SPC j
+    name = "lang#javascript"

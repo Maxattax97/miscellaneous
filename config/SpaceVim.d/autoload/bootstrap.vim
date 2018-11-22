@@ -1,3 +1,8 @@
+" TODO LIST
+" Spell checking: spell spelllang=en_us
+" Cursor line wrapping
+" Merge configuration with Neovim Studio
+
 func! bootstrap#before() abort
     " echom "Loading bootstrap configuration ..."
 endf
