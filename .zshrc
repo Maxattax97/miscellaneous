@@ -147,10 +147,14 @@ zshrc_powerlevel9k() {
     POWERLEVEL9K_PROMPT_ON_NEWLINE=false
     #POWERLEVEL9K_RPROMPT_ON_NEWLINE=false
 
-    # Intriguing elements
-    # detect_virt ssh vi_mode background_jobs load ram icons_test
-    #
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
+    # Intriguing elements:
+    # detect_virt
+
+    # Featureful but slow variant:
+    # POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
+    # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
+    
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time vcs newline os_icon ssh dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -288,7 +292,9 @@ zshrc_zplug() {
         zplug "wfxr/forgit", defer:1
 
         export NVM_LAZY_LOAD=true
-        zplug "lukechilds/zsh-nvm"
+        export NVM_CACHE_LOAD=true
+        # zplug "lukechilds/zsh-nvm"
+        zplug "maxattax97/zsh-nvm"
 
         zplug "gko/ssh-connect", as:command
 
