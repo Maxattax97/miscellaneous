@@ -98,6 +98,10 @@ zshrc_source() {
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
     fi
+    
+    if [[ -e "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh" ]]; then
+        source "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh"
+    fi
 }
 
 zshrc_set_options() {
@@ -244,6 +248,26 @@ zshrc_powerlevel9k() {
 
     POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_BACKGROUND="243"
     POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="${PL9K_RED}"
+
+    if (( ${+functions[rtab]} )); then
+        # POWERLEVEL9K_CUSTOM_RTAB_DIR="echo \${RTAB_PWD}"
+        POWERLEVEL9K_CUSTOM_RTAB_DIR="echo \$(rtab -l -t)"
+        POWERLEVEL9K_CUSTOM_RTAB_DIR_FOREGROUND="${POWERLEVEL9K_DIR_DEFAULT_FOREGROUND}"
+        POWERLEVEL9K_CUSTOM_RTAB_DIR_BACKGROUND="${POWERLEVEL9K_DIR_DEFAULT_BACKGROUND}"
+        # TODO: Make this dynamically replace dir with custom_rtab_dir
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time vcs newline os_icon ssh custom_rtab_dir dir_writable)
+        # typeset -a chpwd_functions
+        # chpwd_functions+=(_rtab_pwd_update)
+        # function _rtab_pwd_update() {
+            # export RTAB_PWD=$(rtab -l -t)
+        # }
+        # _rtab_pwd_update
+    fi
+
+    # typeset -gA p10k_opts
+    # p10k_opts=(
+        # p10ks_cwd ';;;;rtab;-t;-l'
+    # )
 
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND="240"
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND="${PL9K_TEXT_COLOR}"
@@ -455,6 +479,13 @@ zshrc_load_library() {
                 sleep 1
             fi
         done
+    }
+
+    dockerclean() {
+        echo "Cleaning Docker images and containers ..."
+        sudo docker rm $(sudo docker ps -a -q)
+        sudo docker rmi $(docker images -q)
+        echo "Docker cleaned." 
     }
 }
 
