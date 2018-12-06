@@ -20,6 +20,9 @@ func! bootstrap#before() abort
 endf
 
 func! bootstrap#after() abort
+    " let g:spacevim_statusline_unicode_symbols = 0
+    " let g:spacevim_windows_index_type = 3
+    " let g:spacevim_buffer_index_type = 4
     " echom "Bootstrap configuration loaded."
 endf
 
