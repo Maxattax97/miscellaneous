@@ -2,7 +2,7 @@
 " Spell checking: spell spelllang=en_us
 " Cursor line wrapping
 " Merge configuration with Neovim Studio
-
+" Plugins: vim-sleuth, vim-lastplace 
 func! bootstrap#before() abort
     let g:startify_custom_header = [
         \ '       _   __                _         ',
@@ -16,16 +16,16 @@ func! bootstrap#before() abort
         \ '   /____/\__/\__,_/\__,_/_/\____/      ',
         \ '                                       ',
         \ ]
-    " echom "Loading bootstrap configuration ..."
 endf
 
 func! bootstrap#after() abort
-    " let g:spacevim_statusline_unicode_symbols = 0
-    " let g:spacevim_windows_index_type = 3
-    " let g:spacevim_buffer_index_type = 4
-    " echom "Bootstrap configuration loaded."
+    " Keep lines above or below the cursor at all times.
+    set scrolloff=7
+    set colorcolumn=80,125
+
+    let g:ale_fixers = {
+    \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \   'javascript': ['eslint'],
+    \   'python': ['black'],
+    \}
 endf
-
-" echom "Bootstrapping defined in bootstrap configuration."
-
-
