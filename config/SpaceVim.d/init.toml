@@ -28,13 +28,13 @@
 
     # Automation
     autocomplete_parens = true
-    
+
     # Tooling
     filemanager = "nerdtree"
 
     # Code
-    enable_neomake = false
-    enable_ale = true
+    enable_neomake = false 
+    enable_ale = true 
     lint_on_the_fly = true
     default_indent = 4
     expand_tab = true
@@ -42,11 +42,13 @@
 
     # Plugins
     disabled_plugins = [
-        "Clamp" # Prefer clangd via LSP
+        "Clamp" # Prefer ~clangd~ cquery via LSP
     ]
 
 [[custom_plugins]]
     name = "tpope/vim-sleuth"
+[[custom_plugins]]
+    name = "sheerun/vim-polyglot"
 
 [[layers]]
     name = "autocomplete"
@@ -103,29 +105,33 @@
 [[layers]]
     name = "lsp"
     filetypes = [
-        "c", # Install: dnf install clang-tools-extra
+        # "c", # Install: dnf install clang-tools-extra
         "sh", # Install: npm install -g bash-language-server
-        "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs 
-        "javascript", # Install: npm install -g javascript-typescript-langserver 
+        "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
+        "javascript", # Install: npm install -g javascript-typescript-langserver
+        "c", # Install: cquery (https://github.com/cquery-project)
+        "cpp"
     ]
     [layers.override_cmd]
         dockerfile = ["docker-langserver", "--stdio"]
+        c = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        cpp = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
     # TODO: Battery saving techniques.
 
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
     name = "lang#python"
     format-on-save = 1
-[[layers]]
-    # Install: dnf install clang clang-libs 
-    name = "lang#c"
-    clang_executable = "/usr/bin/clang"
-    libclang_path = "/usr/lib64/libclang.so.7"
-    [layer.clang_std]
-        c = "gnu11"
-        cpp = "gnu++11"
-        objc = "gnu11"
-        objcpp = "gnu++11"
+#[[layers]]
+    ## Install: dnf install clang clang-libs
+    #name = "lang#c"
+    #clang_executable = "/usr/bin/clang"
+    #libclang_path = "/usr/lib64/libclang.so.7"
+    #[layer.clang_std]
+        #c = "gnu11"
+        #cpp = "gnu++11"
+        #objc = "gnu11"
+        #objcpp = "gnu++11"
 [[layers]]
     name = "lang#sh"
 [[layers]]

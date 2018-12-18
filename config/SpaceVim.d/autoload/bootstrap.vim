@@ -23,9 +23,22 @@ func! bootstrap#after() abort
     set scrolloff=7
     set colorcolumn=80,125
 
+    " Wrap around lines in insert mode.
+    set whichwrap+=<,>,h,l,[,]
+
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],
     \   'javascript': ['eslint'],
     \   'python': ['black'],
     \}
+    
+    " let g:signify_sign_add               = '+'
+    " let g:signify_sign_delete            = '_'
+    " let g:signify_sign_delete_first_line = '‾'
+    let g:signify_sign_change            = '~'
+    " let g:signify_sign_changedelete = g:signify_sign_change
+
+    nnoremap <silent> <leader>lh :call LanguageClient_textDocument_hover()<CR>
+    nnoremap <silent> <leader>ld :call LanguageClient_textDocument_definition()<CR>
+    nnoremap <silent> <leader>lr :call LanguageClient_textDocument_rename()<CR>
 endf
