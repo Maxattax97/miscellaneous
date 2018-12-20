@@ -31,12 +31,22 @@ func! bootstrap#after() abort
     \   'javascript': ['eslint'],
     \   'python': ['black'],
     \}
+
+    " Disable ALE for C/C++, use LSP exclusively.
+    let g:ale_linters = {
+    \   'c': [],
+    \   'cpp': [],
+    \}
+    
+    " let g:ale_sign_column_always = 1
     
     " let g:signify_sign_add               = '+'
     " let g:signify_sign_delete            = '_'
     " let g:signify_sign_delete_first_line = '‾'
     let g:signify_sign_change            = '~'
     " let g:signify_sign_changedelete = g:signify_sign_change
+
+    call SpaceVim#mapping#space#def('nmap', ['c', '<CR>'], '<Plug>NERDCommenterToggle', 'toggle the comments on the selected line(s)', 0, 1)
 
     nnoremap <silent> <leader>lh :call LanguageClient_textDocument_hover()<CR>
     nnoremap <silent> <leader>ld :call LanguageClient_textDocument_definition()<CR>
