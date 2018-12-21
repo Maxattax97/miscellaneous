@@ -25,6 +25,9 @@ func! bootstrap#after() abort
 
     " Wrap around lines in insert mode.
     set whichwrap+=<,>,h,l,[,]
+    
+    " Raise cmdheight so echodoc can display function parameters.
+    set cmdheight=2
 
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -47,7 +50,7 @@ func! bootstrap#after() abort
     " let g:signify_sign_changedelete = g:signify_sign_change
 
     call SpaceVim#mapping#space#def('nmap', ['c', '<CR>'], '<Plug>NERDCommenterToggle', 'toggle the comments on the selected line(s)', 0, 1)
-
+    
     nnoremap <silent> <leader>lh :call LanguageClient_textDocument_hover()<CR>
     nnoremap <silent> <leader>ld :call LanguageClient_textDocument_definition()<CR>
     nnoremap <silent> <leader>lr :call LanguageClient_textDocument_rename()<CR>
