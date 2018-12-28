@@ -29,6 +29,10 @@ func! bootstrap#after() abort
     " Raise cmdheight so echodoc can display function parameters.
     set cmdheight=2
 
+    " Default to case insensitive searches.
+    set ignorecase
+    set smartcase
+
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],
     \   'javascript': ['eslint'],
@@ -37,8 +41,8 @@ func! bootstrap#after() abort
 
     " Disable ALE for C/C++, use LSP exclusively.
     let g:ale_linters = {
-    \   'c': [],
-    \   'cpp': [],
+    \   'c': ['cquery'],
+    \   'cpp': ['cquery'],
     \}
     
     " let g:ale_sign_column_always = 1

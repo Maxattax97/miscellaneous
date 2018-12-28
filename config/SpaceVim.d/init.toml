@@ -42,7 +42,7 @@
 
     # Plugins
     disabled_plugins = [
-        "Clamp" # Prefer ~clangd~ cquery via LSP
+        "Clamp" # Prefer cquery via LSP
     ]
 
 [[custom_plugins]]
