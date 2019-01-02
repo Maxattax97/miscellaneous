@@ -371,6 +371,7 @@ zshrc_set_path() {
     add_path "${HOME}/src/depot_tools/"
     add_path "${HOME}/.anaconda2/bin/"
     add_path "${HOME}/anaconda2/bin/"
+    add_path "${HOME}/src/cquery/build/release/bin/"
 }
 
 zshrc_load_library() {

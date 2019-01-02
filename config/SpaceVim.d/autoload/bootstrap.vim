@@ -41,8 +41,8 @@ func! bootstrap#after() abort
 
     " Disable ALE for C/C++, use LSP exclusively.
     let g:ale_linters = {
-    \   'c': ['cquery'],
-    \   'cpp': ['cquery'],
+    \   'c': [],
+    \   'cpp': [],
     \}
     
     " let g:ale_sign_column_always = 1

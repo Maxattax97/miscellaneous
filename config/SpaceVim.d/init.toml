@@ -114,8 +114,8 @@
     ]
     [layers.override_cmd]
         dockerfile = ["docker-langserver", "--stdio"]
-        c = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
-        cpp = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
     # TODO: Battery saving techniques.
 
 [[layers]]
