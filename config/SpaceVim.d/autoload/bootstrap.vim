@@ -4,6 +4,9 @@
 " Merge configuration with Neovim Studio
 " Plugins: vim-sleuth, vim-lastplace 
 func! bootstrap#before() abort
+    set modeline
+    set modelines=5
+    
     let g:startify_custom_header = [
         \ '       _   __                _         ',
         \ '      / | / /__  ____ _   __(_)___ ___ ',

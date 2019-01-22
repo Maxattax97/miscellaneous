@@ -1,0 +1,10 @@
+[Unit]
+Description=Optimizes Acer Laptop power usage
+
+[Service]
+ExecStart=/bin/bash /home/max/src/scripts/optimize-battery.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
