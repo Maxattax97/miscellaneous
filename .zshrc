@@ -364,12 +364,14 @@ zshrc_set_path() {
     }
 
     add_path "${HOME}/bin/"
+    add_path "${HOME}/.local/bin/"
     add_path "/sbin/"
     add_path "/usr/sbin/"
     add_path "${HOME}/.SpaceVim/bin/"
     add_path "${HOME}/src/depot_tools/"
     add_path "${HOME}/.anaconda2/bin/"
     add_path "${HOME}/anaconda2/bin/"
+    add_path "${HOME}/src/cquery/build/release/bin/"
 }
 
 zshrc_load_library() {
@@ -443,7 +445,7 @@ zshrc_load_library() {
 
     repair_nvidia() {
         if type "zypper" > /dev/null 2>&1; then
-            sudo zypper in -f nvidia-gfxG04-kmp-default
+            sudo zypper in -f nvidia-gfxG05-kmp-default
         fi
     }
 
