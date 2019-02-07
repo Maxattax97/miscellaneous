@@ -42,7 +42,8 @@
 
     # Plugins
     disabled_plugins = [
-        "Clamp" # Prefer ~clangd~ cquery via LSP
+        "Clamp", # Prefer ~clangd~ cquery via LSP
+        "javacomplete2" # Prefer eclipse jdt
     ]
 
 [[custom_plugins]]
@@ -110,18 +111,22 @@
         "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
         "javascript", # Install: npm install -g javascript-typescript-langserver
         "c", # Install: cquery (https://github.com/cquery-project)
-        "cpp"
+        "cpp",
+        "java" # Install: eclipse-jdt (https://github.com/eclipse/eclipse.jdt.ls)
     ]
     [layers.override_cmd]
         dockerfile = ["docker-langserver", "--stdio"]
-        c = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
-        cpp = ["/home/max/src/cquery-latest/build/release/bin/cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        java = ["eclipse-jdt"]
     # TODO: Battery saving techniques.
 
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
     name = "lang#python"
     format-on-save = 1
+# [[layers]]
+    # name = "lang#java"
 #[[layers]]
     ## Install: dnf install clang clang-libs
     #name = "lang#c"

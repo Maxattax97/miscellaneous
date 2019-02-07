@@ -1,7 +1,7 @@
 config_help=false
 config_benchmark=false
-
 zshrc_low_power=false
+zshrc_dropping_mode=false
 
 zshrc_benchmark_start() {
     if ( $config_benchmark ); then
@@ -16,8 +16,7 @@ zshrc_benchmark_stop() {
     fi
 }
 
-zshrc_detect_term_colors() {
-    # Dynamically set term to the right prefix.
+zshrc_probe() {
     case $TERM in
         *linux*)
             zshrc_low_power=true
@@ -28,11 +27,6 @@ zshrc_detect_term_colors() {
             echo "Low power mode enabled."
             ;;
     esac
-
-    #case $TERM in
-        #konsole|xterm|screen|tmux|rxvt-unicode)
-            #export TERM="$TERM-256color";;
-    #esac
 }
 
 zshrc_setup_completion() {
@@ -275,10 +269,119 @@ zshrc_powerlevel9k() {
     POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND="237"
     POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND="${PL9K_TEXT_COLOR}"
 
-    if ($zshrc_low_power); then
+    if ( $zshrc_low_power ); then
         POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$']'
         POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'['
     fi
+}
+
+zshrc_raw_prompt() {
+    prompt adam2
+    # Prompt based on grml's and ArchISO's.
+    # BLUE=$'%{\e[1;34m%}'
+    # RED=$'%{\e[1;31m%}'
+    # GREEN=$'%{\e[1;32m%}'
+    # CYAN=$'%{\e[1;36m%}'
+    # WHITE=$'%{\e[1;37m%}'
+    # MAGENTA=$'%{\e[1;35m%}'
+    # YELLOW=$'%{\e[1;33m%}'
+    # NO_COLOR=$'%{\e[0m%}'
+    #
+    # # secondary prompt, printed when the shell needs more information to complete a
+    # # command.
+    # PS2='\`%_> '
+    # # selection prompt used within a select loop.
+    # PS3='?# '
+    # # the execution trace prompt (setopt xtrace). default: '+%N:%i>'
+    # PS4='+%N:%i:%_> '
+    #
+    # # Some additional features to use with our prompt:
+    # #
+    # #    - battery status
+    # #    - debian_chroot
+    # #    - vcs_info setup and version specific fixes
+    #
+    # # set variable debian_chroot if running in a chroot with /etc/debian_chroot
+    # if [[ -z "$debian_chroot" ]] && [[ -r /etc/debian_chroot ]] ; then
+    #     debian_chroot=$(</etc/debian_chroot)
+    # fi
+    #
+    # # gather version control information for inclusion in a prompt
+    #
+    # if zrcautoload vcs_info; then
+    #     # `vcs_info' in zsh versions 4.3.10 and below have a broken `_realpath'
+    #     # function, which can cause a lot of trouble with our directory-based
+    #     # profiles. So:
+    #     if [[ ${ZSH_VERSION} == 4.3.<-10> ]] ; then
+    #         function VCS_INFO_realpath () {
+    #             setopt localoptions NO_shwordsplit chaselinks
+    #             ( builtin cd -q $1 2> /dev/null && pwd; )
+    #         }
+    #     fi
+    #
+    #     zstyle ':vcs_info:*' max-exports 2
+    #
+    #     if [[ -o restricted ]]; then
+    #         zstyle ':vcs_info:*' enable NONE
+    #     fi
+    # fi
+    #
+    # typeset -A grml_vcs_coloured_formats
+    # typeset -A grml_vcs_plain_formats
+    #
+    # grml_vcs_plain_formats=(
+    #     format "(%s%)-[%b] "    "zsh: %r"
+    #     actionformat "(%s%)-[%b|%a] " "zsh: %r"
+    #     rev-branchformat "%b:%r"
+    # )
+    #
+    # grml_vcs_coloured_formats=(
+    #     format "${MAGENTA}(${NO_COLOR}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${MAGENTA}]${NO_COLOR} "
+    #     actionformat "${MAGENTA}(${NO_COLOR}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${YELLOW}|${RED}%a${MAGENTA}]${NO_COLOR} "
+    #     rev-branchformat "%b${RED}:${YELLOW}%r"
+    # )
+    #
+    # typeset GRML_VCS_COLOUR_MODE=xxx
+    #
+    # grml_vcs_info_toggle_colour () {
+    #     emulate -L zsh
+    #     if [[ $GRML_VCS_COLOUR_MODE == plain ]]; then
+    #         grml_vcs_info_set_formats coloured
+    #     else
+    #         grml_vcs_info_set_formats plain
+    #     fi
+    #     return 0
+    # }
+    #
+    # grml_vcs_info_set_formats () {
+    #     emulate -L zsh
+    #     #setopt localoptions xtrace
+    #     local mode=$1 AF F BF
+    #     if [[ $mode == coloured ]]; then
+    #         AF=${grml_vcs_coloured_formats[actionformat]}
+    #         F=${grml_vcs_coloured_formats[format]}
+    #         BF=${grml_vcs_coloured_formats[rev-branchformat]}
+    #         GRML_VCS_COLOUR_MODE=coloured
+    #     else
+    #         AF=${grml_vcs_plain_formats[actionformat]}
+    #         F=${grml_vcs_plain_formats[format]}
+    #         BF=${grml_vcs_plain_formats[rev-branchformat]}
+    #         GRML_VCS_COLOUR_MODE=plain
+    #     fi
+    #
+    #     zstyle ':vcs_info:*'              actionformats "$AF" "zsh: %r"
+    #     zstyle ':vcs_info:*'              formats       "$F"  "zsh: %r"
+    #     zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat  "$BF"
+    #     return 0
+    # }
+    #
+    # # Change vcs_info formats for the grml prompt. The 2nd format sets up
+    # # $vcs_info_msg_1_ to contain "zsh: repo-name" used to set our screen title.
+    # if [[ "$TERM" == dumb ]] ; then
+    #     grml_vcs_info_set_formats plain
+    # else
+    #     grml_vcs_info_set_formats coloured
+    # fi
 }
 
 zshrc_zplug() {
@@ -322,7 +425,9 @@ zshrc_zplug() {
 
         zplug "gko/ssh-connect", as:command
 
-        zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+        if ( ! "$zshrc_low_power" ); then
+            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+        fi
 
         zplug "supercrabtree/k"
 
@@ -343,15 +448,20 @@ zshrc_zplug() {
 }
 
 zshrc_display_banner() {
-    if [[ -x "$(command -v neofetch)" ]]; then
-        neofetch --disable "packages"
-    elif [[ -x "$(command -v screenfetch)" ]]; then
-        screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
-        echo
-    fi
+    if ( ! "$zshrc_low_power" ); then
+        if [[ -x "$(command -v neofetch)" ]]; then
+            neofetch --disable "packages"
+        elif [[ -x "$(command -v screenfetch)" ]]; then
+            screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+            echo
+        fi
 
-    if [[ -x "$(command -v mikaelasay)" ]]; then
-        mikaelasay
+        if [[ -x "$(command -v mikaelasay)" ]]; then
+            mikaelasay
+            echo
+        fi
+    else
+        echo "Entering low power mode ..."
         echo
     fi
 }
@@ -371,6 +481,8 @@ zshrc_set_path() {
     add_path "${HOME}/src/depot_tools/"
     add_path "${HOME}/.anaconda2/bin/"
     add_path "${HOME}/anaconda2/bin/"
+    add_path "${HOME}/src/cquery/build/release/bin/"
+    add_path "${HOME}/.adb-fastboot/platform-tools/"
 }
 
 zshrc_load_library() {
@@ -488,6 +600,131 @@ zshrc_load_library() {
         sudo docker rmi $(docker images -q)
         echo "Docker cleaned." 
     }
+
+    batterylinux() {
+        GRML_BATTERY_LEVEL=''
+        local batteries bat capacity
+        batteries=( /sys/class/power_supply/BAT*(N) )
+        if (( $#batteries > 0 )) ; then
+            for bat in $batteries ; do
+                if [[ -e $bat/capacity ]]; then
+                    capacity=$(< $bat/capacity)
+                else
+                    typeset -F energy_full=$(< $bat/energy_full)
+                    typeset -F energy_now=$(< $bat/energy_now)
+                    typeset -i capacity=$(( 100 * $energy_now / $energy_full))
+                fi
+                case $(< $bat/status) in
+                Charging)
+                    GRML_BATTERY_LEVEL+=" ^"
+                    ;;
+                Discharging)
+                    if (( capacity < 20 )) ; then
+                        GRML_BATTERY_LEVEL+=" !v"
+                    else
+                        GRML_BATTERY_LEVEL+=" v"
+                    fi
+                    ;;
+                *) # Full, Unknown
+                    GRML_BATTERY_LEVEL+=" ="
+                    ;;
+                esac
+                GRML_BATTERY_LEVEL+="${capacity}%%"
+            done
+        fi
+    }
+
+    batteryopenbsd() {
+        GRML_BATTERY_LEVEL=''
+        local bat batfull batwarn batnow num
+        for num in 0 1 ; do
+            bat=$(sysctl -n hw.sensors.acpibat${num} 2>/dev/null)
+            if [[ -n $bat ]]; then
+                batfull=${"$(sysctl -n hw.sensors.acpibat${num}.amphour0)"%% *}
+                batwarn=${"$(sysctl -n hw.sensors.acpibat${num}.amphour1)"%% *}
+                batnow=${"$(sysctl -n hw.sensors.acpibat${num}.amphour3)"%% *}
+                case "$(sysctl -n hw.sensors.acpibat${num}.raw0)" in
+                    *" discharging"*)
+                        if (( batnow < batwarn )) ; then
+                            GRML_BATTERY_LEVEL+=" !v"
+                        else
+                            GRML_BATTERY_LEVEL+=" v"
+                        fi
+                        ;;
+                    *" charging"*)
+                        GRML_BATTERY_LEVEL+=" ^"
+                        ;;
+                    *)
+                        GRML_BATTERY_LEVEL+=" ="
+                        ;;
+                esac
+                GRML_BATTERY_LEVEL+="${$(( 100 * batnow / batfull ))%%.*}%%"
+            fi
+        done
+    }
+
+    batteryfreebsd() {
+        GRML_BATTERY_LEVEL=''
+        local num
+        local -A table
+        for num in 0 1 ; do
+            table=( ${=${${${${${(M)${(f)"$(acpiconf -i $num 2>&1)"}:#(State|Remaining capacity):*}%%( ##|%)}//:[ $'\t']##/@}// /-}//@/ }} )
+            if [[ -n $table ]] && [[ $table[State] != "not-present" ]] ; then
+                case $table[State] in
+                    *discharging*)
+                        if (( $table[Remaining-capacity] < 20 )) ; then
+                            GRML_BATTERY_LEVEL+=" !v"
+                        else
+                            GRML_BATTERY_LEVEL+=" v"
+                        fi
+                        ;;
+                    *charging*)
+                        GRML_BATTERY_LEVEL+=" ^"
+                        ;;
+                    *)
+                        GRML_BATTERY_LEVEL+=" ="
+                        ;;
+                esac
+                GRML_BATTERY_LEVEL+="$table[Remaining-capacity]%%"
+            fi
+        done
+    }
+
+    batterydarwin() {
+        GRML_BATTERY_LEVEL=''
+        local -a table
+        table=( ${$(pmset -g ps)[(w)7,8]%%(\%|);} )
+        if [[ -n $table[2] ]] ; then
+            case $table[2] in
+                charging)
+                    GRML_BATTERY_LEVEL+=" ^"
+                    ;;
+                discharging)
+                    if (( $table[1] < 20 )) ; then
+                        GRML_BATTERY_LEVEL+=" !v"
+                    else
+                        GRML_BATTERY_LEVEL+=" v"
+                    fi
+                    ;;
+                *)
+                    GRML_BATTERY_LEVEL+=" ="
+                    ;;
+            esac
+            GRML_BATTERY_LEVEL+="$table[1]%%"
+        fi
+    }
+
+    battery() {
+        if islinux ; then
+            batterylinux
+        elif isopenbsd ; then
+            batteryopenbsd
+        elif isfreebsd ; then
+            batteryfreebsd
+        elif isdarwin ; then
+            batterydarwin
+        fi
+    }
 }
 
 zshrc_set_aliases() {
@@ -561,6 +798,8 @@ zshrc_set_default_programs() {
 }
 
 zshrc_set_environment_variables() {
+    CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
+    CPU_THREADS="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
         export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
@@ -592,12 +831,24 @@ zshrc_set_environment_variables() {
         export PATH="${PATH}:${ORACLE_HOME}/bin"
         export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${ORACLE_HOME}/lib"
     fi
+
+    # Gentoo users say number of threads + 1 -- this fills out the maximal amount of CPU usage.
+    # Number of cores alone leaves enough CPU to process other things... like a desktop environment.
+    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_CORES}"
+}
+
+zshrc_drop_mode() {
+    zshrc_low_power=true
+    zshrc_dropping_mode=true
+    zshrc_init
 }
 
 zshrc_init() {
     zshrc_benchmark_start
 
-    zshrc_detect_term_colors
+    if ( ! $zshrc_dropping_mode ); then
+        zshrc_probe
+    fi
     zshrc_display_banner
 
     zshrc_source
@@ -610,8 +861,19 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_set_options
     zshrc_autoload
-    zshrc_powerlevel9k
-    zshrc_zplug
+    if ( ! $zshrc_low_power ); then
+        zshrc_powerlevel9k
+    else
+        zshrc_raw_prompt
+    fi
+
+    if ( ! $zshrc_dropping_mode ); then
+        zshrc_zplug
+    fi
+
+    if ( $zshrc_dropping_mode ); then
+        zshrc_dropping_mode=false
+    fi
 
     zshrc_benchmark_stop
 }

@@ -1,0 +1,14 @@
+# Sets the preferred syntax for dissasembled code to Intel.
+e asm.syntax = intel
+
+# Print pseudo code to correspond to assembly.
+e asm.pseudo = true
+
+# Show comments to the right of disassembly if it fits.
+e asm.cmt.right = true
+
+# Use UTF-8 characters such as arrows.
+e scr.utf8 = true
+
+# Theme up the terminal.
+# eco solarized
