@@ -4,6 +4,9 @@
 " Merge configuration with Neovim Studio
 " Plugins: vim-sleuth, vim-lastplace 
 func! bootstrap#before() abort
+    set modeline
+    set modelines=5
+    
     let g:startify_custom_header = [
         \ '       _   __                _         ',
         \ '      / | / /__  ____ _   __(_)___ ___ ',
@@ -28,6 +31,10 @@ func! bootstrap#after() abort
     
     " Raise cmdheight so echodoc can display function parameters.
     set cmdheight=2
+
+    " Default to case insensitive searches.
+    set ignorecase
+    set smartcase
 
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],

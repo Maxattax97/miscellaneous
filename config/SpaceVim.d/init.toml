@@ -120,7 +120,6 @@
         cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
         java = ["eclipse-jdt"]
     # TODO: Battery saving techniques.
-
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
     name = "lang#python"
