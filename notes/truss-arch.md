@@ -1,7 +1,11 @@
+Configure all of this using a system like KBuild?
+
 # Base
  - AwesomeWM, possibly i3-gaps
  - Updated fork of Compton compositor, possibly Kawase blur
  - LightDM with lots of customization?
+ - Zen (Performance) or Hardened (Security) patched Linux Kernel
+ - Refind bootloader?
 
 # Security
  - Consistent use of GPG keys, including signed email and git commits
@@ -59,7 +63,7 @@
 
 # Primary Applications
  - Urxvt
- - Firefox (with theme tweaks, RAM optimization)
+ - Firefox Nightly (with theme tweaks, RAM optimization)
  - Steam
  - Signal
  - Rambox
@@ -81,7 +85,7 @@
 # Functions
  - Idle target service which triggers things like crypto mining
  - Powersaves based on hardware profile
- - Ability to switch to light mode with an easy toggle (e.g. on key combo) with possibly day-night cycle
- - Pacman optimizations, including automated mirror selection
+ - Stretch: Ability to switch to light mode with an easy toggle (e.g. on key combo) with possibly day-night cycle
+ - Pacman optimizations, including automated mirror selection, and placement of cache.
  - Scheduled BTRFS scrubbing
  - Factors taken to improve SSD life
