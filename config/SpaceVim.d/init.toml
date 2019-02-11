@@ -28,6 +28,7 @@
 
     # Automation
     autocomplete_parens = true
+    # autocomplete_method = "coc" # :call coc#util#build()
 
     # Tooling
     filemanager = "nerdtree"

@@ -17,9 +17,10 @@ Configure all of this using a system like KBuild?
  - UFW
  - A custom DNS with DNSSEC, DNSCrypt, etc.
  - Background OpenVPN tunnel?
+ - Stretch: Prevent rubber hose attacks via hidden volumes 
  - Stretch: SELinux
     - If not this, then AppArmor?
- - Stretch: Buy a Radeon graphics card to use FLOSS drivers
+ - Stretch: Buy a Radeon graphics card to use FLOSS drivers (AMD Radeon VII)
 
 # Aesthetic
  - Solarized Dark theme throughout, with hints of Solarized Light where needed (e.g. Firefox?)
@@ -43,7 +44,7 @@ Configure all of this using a system like KBuild?
      - Stretch: geolocation
      - Stretch: circular process tree (front and center)
      - Stetch: music beat wave indicator
- - Custom Plymouth and GRUB themes
+ - Custom Plymouth and GRUB/Refind themes
  - FreeFont or Roboto, Hack Nerd Font
  - Papirus icon theme, Possibly some variant of La Capitaine
  - Top, left aligned system bars
@@ -53,6 +54,8 @@ Configure all of this using a system like KBuild?
 # Terminal Loadout
  - ZSH
  - Tmux
+     - nearly everywhere
+     - possibly started at boot
  - Neovim
  - Ranger
  - ncmpcpp + mpd
@@ -63,6 +66,7 @@ Configure all of this using a system like KBuild?
 
 # Primary Applications
  - Urxvt
+ - Rofi
  - Firefox Nightly (with theme tweaks, RAM optimization)
  - Steam
  - Signal
@@ -71,6 +75,7 @@ Configure all of this using a system like KBuild?
 
 # Workflow
  - Internet
+     - Firefox
  - Gaming
      - Steam
      - Discord
@@ -85,7 +90,8 @@ Configure all of this using a system like KBuild?
 # Functions
  - Idle target service which triggers things like crypto mining
  - Powersaves based on hardware profile
- - Stretch: Ability to switch to light mode with an easy toggle (e.g. on key combo) with possibly day-night cycle
  - Pacman optimizations, including automated mirror selection, and placement of cache.
  - Scheduled BTRFS scrubbing
  - Factors taken to improve SSD life
+ - Store sensitive configuration in ZSH's blackbox.
+ - Stretch: Ability to switch to light mode with an easy toggle (e.g. on key combo) with possibly day-night cycle
