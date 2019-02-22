@@ -52,6 +52,8 @@
     name = "tpope/vim-sleuth"
 [[custom_plugins]]
     name = "sheerun/vim-polyglot"
+[[custom_plugins]]
+    name = "sirtaj/vim-openscad"
 
 [[layers]]
     name = "autocomplete"
