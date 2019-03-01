@@ -54,6 +54,8 @@
     name = "sheerun/vim-polyglot"
 [[custom_plugins]]
     name = "sirtaj/vim-openscad"
+[[custom_plugins]]
+    name = "tpope/vim-abolish"
 
 [[layers]]
     name = "autocomplete"
@@ -111,11 +113,13 @@
     name = "lsp"
     filetypes = [
         # "c", # Install: dnf install clang-tools-extra
+        # "python" # Install: pip install --user 'python-language-server[all]'
         "sh", # Install: npm install -g bash-language-server
         "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
         "javascript", # Install: npm install -g javascript-typescript-langserver
         "c", # Install: cquery (https://github.com/cquery-project)
         "cpp",
+        "openscad",
         "java" # Install: eclipse-jdt (https://github.com/eclipse/eclipse.jdt.ls)
     ]
     [layers.override_cmd]
@@ -123,6 +127,8 @@
         c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
         cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
         java = ["eclipse-jdt"]
+        openscad = ["python3", "/home/max/src/openscad-lsp/openscad-lsp/__main__.py"]
+        # python = ["pyls", "--check-parent-process"]
     # TODO: Battery saving techniques.
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
@@ -145,3 +151,9 @@
 [[layers]]
     # SPC j
     name = "lang#javascript"
+[[layers]]
+    # Install: npm install -g remark remark-cli remark-stringify
+    name = "lang#markdown"
+[[layers]]
+    # Install: npm install -g typescript javascript-typescript-langserver
+    name = "lang#typescript"
