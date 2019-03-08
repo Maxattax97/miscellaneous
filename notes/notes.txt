@@ -5,3 +5,6 @@ mileszs/ack.vim
 ### LINKS ###
 https://stackoverflow.com/questions/208193/why-should-i-use-an-ide
 http://hilton.org.uk/blog/source-code-line-length
+
+You forgot how to fix your DNS at home again huh?
+You can find the list here: /etc/resolv.conf

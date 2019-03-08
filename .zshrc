@@ -802,7 +802,7 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
     CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
-    CPU_THREADS="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
+    CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
         export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
@@ -837,7 +837,8 @@ zshrc_set_environment_variables() {
 
     # Gentoo users say number of threads + 1 -- this fills out the maximal amount of CPU usage.
     # Number of cores alone leaves enough CPU to process other things... like a desktop environment.
-    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_CORES}"
+    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_THREADS}"
+    export NUMCPU="${CPU_THREADS}"
 }
 
 zshrc_drop_mode() {
