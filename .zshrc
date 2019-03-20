@@ -152,7 +152,7 @@ zshrc_powerlevel9k() {
     # POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
     # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
     
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time vcs newline os_icon ssh dir dir_writable)
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time virtualenv vcs newline os_icon ssh dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
     POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
@@ -207,13 +207,16 @@ zshrc_powerlevel9k() {
     POWERLEVEL9K_RAM_FOREGROUND="${PL9K_TEXT_COLOR}"
 
     POWERLEVEL9K_BATTERY_CHARGED_BACKGROUND="240"
-    POWERLEVEL9K_BATTERY_CHARGED_FOREGROUND="${PL9K_TEXT_COLOR}"
+    POWERLEVEL9K_BATTERY_CHARGED_FOREGROUND="${PL9K_TEXT_INVERSE_COLOR}"
     POWERLEVEL9K_BATTERY_DISCONNECTED_BACKGROUND="240"
     POWERLEVEL9K_BATTERY_DISCONNECTED_FOREGROUND="${PL9K_BLUE}"
     POWERLEVEL9K_BATTERY_CHARGING_BACKGROUND="240"
     POWERLEVEL9K_BATTERY_CHARGING_FOREGROUND="${PL9K_GREEN}"
     POWERLEVEL9K_BATTERY_LOW_BACKGROUND="240"
     POWERLEVEL9K_BATTERY_LOW_FOREGROUND="${PL9K_RED}"
+
+    POWERLEVEL9K_VIRTUALENV_BACKGROUND="240"
+    POWERLEVEL9K_VIRTUALENV_FOREGROUND="${PL9K_TEXT_INVERSE_COLOR}"
 
     POWERLEVEL9K_VCS_CLEAN_BACKGROUND="237"
     POWERLEVEL9K_VCS_CLEAN_FOREGROUND="${PL9K_TEXT_INVERSE_COLOR}"
@@ -799,7 +802,7 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
     CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
-    CPU_THREADS="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
+    CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
         export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
@@ -834,7 +837,8 @@ zshrc_set_environment_variables() {
 
     # Gentoo users say number of threads + 1 -- this fills out the maximal amount of CPU usage.
     # Number of cores alone leaves enough CPU to process other things... like a desktop environment.
-    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_CORES}"
+    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_THREADS}"
+    export NUMCPU="${CPU_THREADS}"
 }
 
 zshrc_drop_mode() {
