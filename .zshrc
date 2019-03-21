@@ -92,7 +92,7 @@ zshrc_source() {
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
     fi
-    
+
     if [[ -e "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh" ]]; then
         source "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh"
     fi
@@ -151,7 +151,7 @@ zshrc_powerlevel9k() {
     # Featureful but slow variant:
     # POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time context ip load ram_joined battery_joined vcs newline os_icon ssh vi_mode dir dir_writable)
     # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
-    
+
     POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time virtualenv vcs newline os_icon ssh dir dir_writable)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs command_execution_time)
 
@@ -601,7 +601,7 @@ zshrc_load_library() {
         echo "Cleaning Docker images and containers ..."
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
-        echo "Docker cleaned." 
+        echo "Docker cleaned."
     }
 
     batterylinux() {
@@ -841,6 +841,12 @@ zshrc_set_environment_variables() {
     export NUMCPU="${CPU_THREADS}"
 }
 
+zshrc_setup_tmux() {
+    if [[ ! -d "${HOME}/.tmux/plugins/tpm" ]] && [[ -x "$(command -v git)" ]]; then
+       git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
+    fi
+}
+
 zshrc_drop_mode() {
     zshrc_low_power=true
     zshrc_dropping_mode=true
@@ -867,6 +873,7 @@ zshrc_init() {
     zshrc_autoload
     if ( ! $zshrc_low_power ); then
         zshrc_powerlevel9k
+        zshrc_setup_tmux
     else
         zshrc_raw_prompt
     fi
@@ -883,4 +890,3 @@ zshrc_init() {
 }
 
 zshrc_init
-
