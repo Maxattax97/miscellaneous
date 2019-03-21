@@ -28,15 +28,15 @@
 
     # Automation
     autocomplete_parens = true
-    # autocomplete_method = "coc" # :call coc#util#build()
+    autocomplete_method = "coc" # :call coc#util#build()
     windows_smartclose = "" 
 
     # Tooling
     filemanager = "nerdtree"
 
     # Code
-    enable_neomake = false 
-    enable_ale = true 
+    enable_neomake = false
+    enable_ale = true
     lint_on_the_fly = true
     default_indent = 4
     expand_tab = true
@@ -56,6 +56,8 @@
     name = "sirtaj/vim-openscad"
 [[custom_plugins]]
     name = "tpope/vim-abolish"
+[[custom_plugins]]
+    name = "tclem/vim-arduino"
 
 [[layers]]
     name = "autocomplete"
@@ -112,30 +114,32 @@
 [[layers]]
     name = "lsp"
     filetypes = [
-        # "c", # Install: dnf install clang-tools-extra
-        # "python" # Install: pip install --user 'python-language-server[all]'
-        "sh", # Install: npm install -g bash-language-server
+        ## "python" # Install: pip install --user 'python-language-server[all]'
+        ## "openscad",
+        ## "json",
+        # "sh", # Install: npm install -g bash-language-server
         "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
-        "javascript", # Install: npm install -g javascript-typescript-langserver
-        "c", # Install: cquery (https://github.com/cquery-project)
-        "cpp",
-        "openscad",
-        "java" # Install: eclipse-jdt (https://github.com/eclipse/eclipse.jdt.ls)
+        # "javascript", # Install: npm install -g javascript-typescript-langserver
+        # "c", # Install: cquery (https://github.com/cquery-project)
+        # "cpp",
+        # "java" # Install: eclipse-jdt (https://github.com/eclipse/eclipse.jdt.ls)
     ]
     [layers.override_cmd]
+        ## python = ["pyls", "--check-parent-process"]
+        # json = ["python3", "/home/max/src/pygls/examples/json-extension/server/__main__.py"]
+        # openscad = ["tcp://127.0.0.1:2087"]
         dockerfile = ["docker-langserver", "--stdio"]
-        c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
-        cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
-        java = ["eclipse-jdt"]
-        openscad = ["python3", "/home/max/src/openscad-lsp/openscad-lsp/__main__.py"]
-        # python = ["pyls", "--check-parent-process"]
+        # c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        # cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
+        # java = ["eclipse-jdt"]
     # TODO: Battery saving techniques.
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
     name = "lang#python"
     format-on-save = 1
-# [[layers]]
-    # name = "lang#java"
+[[layers]]
+    name = "lang#java"
+    enable = false
 #[[layers]]
     ## Install: dnf install clang clang-libs
     #name = "lang#c"
@@ -150,6 +154,7 @@
     name = "lang#sh"
 [[layers]]
     # SPC j
+    enable = false
     name = "lang#javascript"
 [[layers]]
     # Install: npm install -g remark remark-cli remark-stringify
