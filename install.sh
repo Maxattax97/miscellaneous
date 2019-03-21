@@ -26,6 +26,8 @@ link_source "config/ncmpcpp/config" ".ncmpcpp/config"
 
 link_source "config/SpaceVim.d" ".SpaceVim.d"
 
+git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
+
 # ~/.config/
 echo "Backing up ${HOME}/.config ..."
 tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
