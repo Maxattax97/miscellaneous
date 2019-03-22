@@ -841,12 +841,6 @@ zshrc_set_environment_variables() {
     export NUMCPU="${CPU_THREADS}"
 }
 
-zshrc_setup_tmux() {
-    if [[ ! -d "${HOME}/.tmux/plugins/tpm" ]] && [[ -x "$(command -v git)" ]]; then
-       git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
-    fi
-}
-
 zshrc_drop_mode() {
     zshrc_low_power=true
     zshrc_dropping_mode=true
@@ -873,7 +867,6 @@ zshrc_init() {
     zshrc_autoload
     if ( ! $zshrc_low_power ); then
         zshrc_powerlevel9k
-        zshrc_setup_tmux
     else
         zshrc_raw_prompt
     fi
