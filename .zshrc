@@ -29,6 +29,12 @@ zshrc_probe() {
     esac
 }
 
+zshrc_enter_tmux() {
+    if [[ -n "$DISPLAY" ]] && [[ -x "$(command -v tmux)" ]]; then
+        test -z "$TMUX" && (tmux attach || tmux new-session -s "Main")
+    fi
+}
+
 zshrc_setup_completion() {
     zstyle ':completion:*' auto-description '\ %d'
 
@@ -853,6 +859,9 @@ zshrc_init() {
     if ( ! $zshrc_dropping_mode ); then
         zshrc_probe
     fi
+
+    zshrc_enter_tmux
+
     zshrc_display_banner
 
     zshrc_source
