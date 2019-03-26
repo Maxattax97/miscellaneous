@@ -1,7 +1,9 @@
 # Max's Miscellaneous Files (or `dotfiles` to most)
 ## Screenshots
 
-Not yet available.
+![Tmux, Zsh, Neovim 1](assets/TmuxOne.png)
+
+![Tmux, Zsh, Neovim 2](assets/TmuxTwo.png)
 
 ## Installation
 
@@ -42,4 +44,3 @@ I use [Neovim Studio](https://github.com/Maxattax97/Neovim-Studio) for all my te
 I use [OPM](https://github.com/Maxattax97/opm) to manage packages across distributions portably.
 
 Check out my website at [maxocull.com](https://www.maxocull.com/)!
-
