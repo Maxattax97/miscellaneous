@@ -465,10 +465,10 @@ zshrc_display_banner() {
             echo
         fi
 
-        if [[ -x "$(command -v mikaelasay)" ]]; then
-            mikaelasay
-            echo
-        fi
+        # if [[ -x "$(command -v mikaelasay)" ]]; then
+        #     mikaelasay
+        #     echo
+        # fi
     else
         echo "Entering low power mode ..."
         echo
