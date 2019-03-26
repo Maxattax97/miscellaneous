@@ -31,7 +31,31 @@ zshrc_probe() {
 
 zshrc_enter_tmux() {
     if [[ -n "$DISPLAY" ]] && [[ -x "$(command -v tmux)" ]]; then
-        test -z "$TMUX" && (tmux attach || tmux new-session -s "Main")
+        local session_count=$(tmux ls | grep "^Main" | wc -l)
+        if [[ "$session_count" == "0" ]]; then
+            # echo "Launching tmux base session $base_session ..."
+            tmux new-session -s Main
+        else
+            # Make sure we are not already in a tmux session
+            if [[ -z "$TMUX" ]]; then
+                # Session id is date and time to prevent conflict
+                local session_id="$(date +%Y%m%d%H%M%S)"
+
+                # Create a new session (without attaching it) and link to base session
+                # to share windows
+                tmux new-session -d -t Main -s "$session_id"
+                # if [[ "$2" == "1" ]]; then
+                #     # Create a new window in that session
+                #     tmux new-window
+                # fi
+
+                # Attach to the new session & kill it once orphaned
+                tmux attach-session -t "$session_id" \; set-option destroy-unattached
+            fi
+        fi
+
+
+        # test -z "$TMUX" && (tmux attach || tmux new-session -s "Main")
     fi
 }
 
@@ -465,10 +489,10 @@ zshrc_display_banner() {
             echo
         fi
 
-        # if [[ -x "$(command -v mikaelasay)" ]]; then
-        #     mikaelasay
-        #     echo
-        # fi
+        if [[ -x "$(command -v mikaelasay)" ]] && [[ "$CHASSIS" -ne "laptop" ]]; then
+            mikaelasay
+            echo
+        fi
     else
         echo "Entering low power mode ..."
         echo
@@ -845,6 +869,24 @@ zshrc_set_environment_variables() {
     # Number of cores alone leaves enough CPU to process other things... like a desktop environment.
     export MAKEFLAGS="${MAKEFLAGS} -j${CPU_THREADS}"
     export NUMCPU="${CPU_THREADS}"
+
+    # Get the physical form factor of the machine.
+    local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
+    local chassis_name=""
+
+    case "$chassis_type" in
+        8|9|10|14)
+            chassis_name="laptop"
+            ;;
+        3|4|5|6|7|12|13|16|17|18|19|20|21|22|23|24)
+            chassis_name="desktop"
+            ;;
+        *)
+            chassis_name="unknown"
+            ;;
+    esac
+
+    export CHASSIS="$chassis_name"
 }
 
 zshrc_drop_mode() {
@@ -860,15 +902,14 @@ zshrc_init() {
         zshrc_probe
     fi
 
+    zshrc_set_environment_variables
     zshrc_enter_tmux
-
     zshrc_display_banner
 
     zshrc_source
     zshrc_set_path
     zshrc_set_aliases
     zshrc_set_default_programs
-    zshrc_set_environment_variables
     zshrc_load_library
 
     zshrc_setup_completion
