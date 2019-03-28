@@ -489,7 +489,7 @@ zshrc_display_banner() {
             echo
         fi
 
-        if [[ -x "$(command -v mikaelasay)" ]] && [[ "$CHASSIS" -ne "laptop" ]]; then
+        if [[ -x "$(command -v mikaelasay)" ]] && [[ "$CHASSIS" != "laptop" ]]; then
             mikaelasay
             echo
         fi

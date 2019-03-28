@@ -147,6 +147,11 @@ func! bootstrap#after() abort
     "     call coc#add_extension(extension)
     " endfor
 
+    " Jump to next item in snippets with Tab.
+    " let g:UltiSnipsJumpForwardTrigger="<tab>"
+    " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+    " imap <Tab> <Plug>(neosnippet_jump)
+
     if g:bootstrap_pre_exec
         echom('Pre-execution bootstrap completed.')
     endif
