@@ -98,12 +98,12 @@ func! bootstrap#after() abort
 
     inoremap <silent><expr> <c-space> coc#refresh()
 
-    " call coc#config('coc.preferences', {
-    "     \ "autoTrigger": "always",
-    "     \ "maxCompleteItemCount": 10,
-    "     \ "codeLens.enable": 1,
-    "     \ "diagnostic.virtualText": 1,
-    "     \})
+    call coc#config('coc.preferences', {
+        \ "autoTrigger": "always",
+        \ "maxCompleteItemCount": 10,
+        \ "codeLens.enable": 1,
+        \ "diagnostic.virtualText": 1,
+        \})
 
     " \ 'coc-prettier',
     " \ 'coc-imselect',

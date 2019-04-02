@@ -120,7 +120,7 @@
         ## "openscad",
         ## "json",
         # "sh", # Install: npm install -g bash-language-server
-        "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
+        # "dockerfile", # Install: npm install -g dockerfile-language-server-nodejs
         # "javascript", # Install: npm install -g javascript-typescript-langserver
         # "c", # Install: cquery (https://github.com/cquery-project)
         # "cpp",
@@ -130,13 +130,14 @@
         ## python = ["pyls", "--check-parent-process"]
         # json = ["python3", "/home/max/src/pygls/examples/json-extension/server/__main__.py"]
         # openscad = ["tcp://127.0.0.1:2087"]
-        dockerfile = ["docker-langserver", "--stdio"]
+        # dockerfile = ["docker-langserver", "--stdio"]
         # c = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
         # cpp = ["cquery", "--log-file=/tmp/cquery.log", '--init={"cacheDirectory":"/tmp/cquery/", "completion": {"filterAndSort": false}}']
         # java = ["eclipse-jdt"]
     # TODO: Battery saving techniques.
 [[layers]]
     # Install: pip install flake8 yapf autoflake isort
+    enable = false
     name = "lang#python"
     format-on-save = 1
 [[layers]]
@@ -153,6 +154,7 @@
         #objc = "gnu11"
         #objcpp = "gnu++11"
 [[layers]]
+    enable = false
     name = "lang#sh"
 [[layers]]
     # SPC j
@@ -160,7 +162,18 @@
     name = "lang#javascript"
 [[layers]]
     # Install: npm install -g remark remark-cli remark-stringify
+    enable = false
     name = "lang#markdown"
 [[layers]]
     # Install: npm install -g typescript javascript-typescript-langserver
+    enable = false
     name = "lang#typescript"
+[[layers]]
+    # Install: curl https://sh.rustup.rs -sSf | sh
+    # Install: rustup component add rust-src
+    # Install: cargo install racer
+    enable = false
+    name = "lang#rust"
+    recommended-style = true
+[[layers]]
+    name = "lang#r"
