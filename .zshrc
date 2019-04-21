@@ -617,6 +617,7 @@ zshrc_set_path() {
     add_path "${HOME}/anaconda2/bin/"
     add_path "${HOME}/src/cquery/build/release/bin/"
     add_path "${HOME}/.adb-fastboot/platform-tools/"
+    add_path "${HOME}/.cargo/bin/"
 }
 
 zshrc_load_library() {
@@ -1035,3 +1036,5 @@ zshrc_init() {
 }
 
 zshrc_init
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
