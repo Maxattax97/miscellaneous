@@ -45,6 +45,9 @@ func! bootstrap#after() abort
     set ignorecase
     set smartcase
 
+    " Decrease idle time.
+    set updatetime=350
+
     " Enable automated fixing.
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -151,6 +154,9 @@ func! bootstrap#after() abort
     " let g:UltiSnipsJumpForwardTrigger="<tab>"
     " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     " imap <Tab> <Plug>(neosnippet_jump)
+
+    let g:AutoHighlight_ClearOnCursorMoved = 1
+    let g:AutoHighlight_ClearOnWindowExit = 1
 
     if g:bootstrap_pre_exec
         echom('Pre-execution bootstrap completed.')

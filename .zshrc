@@ -694,6 +694,13 @@ zshrc_set_path() {
     add_path "${HOME}/src/cquery/build/release/bin/"
     add_path "${HOME}/.adb-fastboot/platform-tools/"
     add_path "${HOME}/.cargo/bin/"
+    add_path "/usr/local/go/bin/"
+
+    if [ -n "$GOPATH" ]; then
+        add_path "${GOPATH}/bin/"
+    else
+        add_path "${HOME}/go/bin/"
+    fi
 }
 
 zshrc_load_library() {

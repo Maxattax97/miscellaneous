@@ -60,6 +60,8 @@
     name = "tclem/vim-arduino"
 [[custom_plugins]]
     name = "tmux-plugins/vim-tmux-focus-events"
+[[custom_plugins]]
+    name = "lygaret/autohighlight.vim"
 
 [[layers]]
     name = "autocomplete"
