@@ -37,7 +37,7 @@
 *color7: #ffffff
 *color15: #ffffff
 
-URxvt*internalBorder: 			20
+!URxvt*internalBorder: 			20
 URxvt.intensityStyles:			false
 !URxvt.background: 				#121212
 URxvt*background:               rgba:0000/0000/0000/aaaa
@@ -51,13 +51,17 @@ URxvt.keysym.Shift-Control-V: 	eval:paste_clipboard
 URxvt.keysym.Shift-Control-C: 	eval:selection_to_clipboard
 URxvt.iso14755: true
 URxvt.iso14755_52: false
+URxvt.letterSpace: -1
+URxvt.lineSpace: 0
 
 Xft.autohint: 	0
 Xft.antialias: 	1
 Xft.hinting: 	true
-Xft.hintstyle: 	hintslight
+!Xft.hintstyle: 	hintslight
+Xft.hintstyle:  hintfull	
 Xft.dpi: 	96
-Xft.rgba: 	rgb
+!Xft.rgba: 	rgb
+Xft.rgba: 	none	
 Xft.lcdfilter: lcddefault
 
 Xcursor.theme: Openzone-Black

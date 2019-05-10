@@ -39,7 +39,7 @@ zshrc_enter_tmux() {
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
                 # Session id is date and time to prevent conflict
-                local session_id="$(date +%Y%m%d%H%M%S)"
+                local session_id="$(date +%H%M%S)"
 
                 # Create a new session (without attaching it) and link to base session
                 # to share windows
@@ -638,6 +638,8 @@ zshrc_zplug() {
         if ( ! "$zshrc_low_power" ); then
             zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
         fi
+
+        # zplug "ael-code/zsh-colored-man-pages"
 
         zplug "supercrabtree/k"
 
