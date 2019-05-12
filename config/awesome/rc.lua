@@ -178,11 +178,10 @@ awful.screen.connect_for_each_screen(function(s)
        "game",
        "social",
        "office",
-       "5",
        "6",
        "7",
        "8",
-       "9"
+       "9",
     }
 
     local l = awful.layout.suit
@@ -197,7 +196,6 @@ awful.screen.connect_for_each_screen(function(s)
        l.fair.horizontal,
        l.fair.horizontal,
        l.fair.horizontal,
-       l.fair.horizontal
     }
 
     awful.tag(names, s, layouts)
@@ -529,7 +527,8 @@ awful.rules.rules = {
     { rule_any = {
         class = {
           "Steam",
-          "xterm-256color"},
+          "xterm-256color",
+          "St"},
        },
        properties = { titlebars_enabled = false }
     }
