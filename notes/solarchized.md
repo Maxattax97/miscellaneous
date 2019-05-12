@@ -1,11 +1,11 @@
 Configure all of this using a system like KBuild?
 
 # Base
- - AwesomeWM, possibly i3-gaps
- - Updated fork of Compton compositor, possibly Kawase blur
+ - X AwesomeWM
+ - X Updated fork of Compton compositor, possibly Kawase blur
  - LightDM with lots of customization?
  - Zen (Performance) or Hardened (Security) patched Linux Kernel
- - Refind bootloader?
+ - X Refind bootloader?
 
 # Security
  - Consistent use of GPG keys, including signed email and git commits
@@ -17,7 +17,7 @@ Configure all of this using a system like KBuild?
  - UFW
  - A custom DNS with DNSSEC, DNSCrypt, etc.
  - Background OpenVPN tunnel?
- - Stretch: Prevent rubber hose attacks via hidden volumes 
+ - Stretch: Prevent rubber hose attacks via hidden volumes
  - Stretch: SELinux
     - If not this, then AppArmor?
  - Stretch: Buy a Radeon graphics card to use FLOSS drivers (AMD Radeon VII)
@@ -60,7 +60,7 @@ Configure all of this using a system like KBuild?
  - Ranger
  - ncmpcpp + mpd
  - gtop
- - Weechat 
+ - Weechat
  - Neomutt + Protonmail Bridge
  - (torrent client)
 

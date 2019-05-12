@@ -2,6 +2,8 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+-- Install from luarocks: lain
+local lain = require("lain")
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -23,7 +25,7 @@ require("awful.hotkeys_popup.keys")
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
-                     title = "Oops, there were errors during startup!",
+                     title = "Configuration errors were found.",
                      text = awesome.startup_errors })
 end
 
@@ -36,7 +38,7 @@ do
         in_error = true
 
         naughty.notify({ preset = naughty.config.presets.critical,
-                         title = "Oops, an error happened!",
+                         title = "A runtime error has occurred.",
                          text = tostring(err) })
         in_error = false
     end)
@@ -503,6 +505,7 @@ awful.rules.rules = {
           "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
           "veromix",
+          "Steam",
           "xtightvncviewer"},
 
         -- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -521,6 +524,15 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = true }
     },
+
+    -- Remove titlebars from a few windows.
+    { rule_any = {
+        class = {
+          "Steam",
+          "xterm-256color"},
+       },
+       properties = { titlebars_enabled = false }
+    }
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },

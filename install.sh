@@ -37,6 +37,9 @@ link_source "config/polybar/" ".config/"
 link_source "config/psd/" ".config/"
 link_source "config/compton/" ".config/"
 link_source "config/awesome/" ".config/"
+link_source "config/gtk-3.0/" ".config/"
+link_source "config/ranger/" ".config/"
+link_source "config/rofi/" ".config/"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
