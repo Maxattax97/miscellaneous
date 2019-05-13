@@ -1,9 +1,15 @@
-*accent:    #888888
-*bckgrd:    #1a1a1a
-*select:    #aaaaaa
+/*
+ * Don't forget to run:
+ * xrdb -load ~/.Xdefaults
+ * after changing values.
+ */
 
-*background: #1a1a1a
-*foreground: #e4e4e4
+! *accent:    #888888
+! *bckgrd:    #1a1a1a
+! *select:    #aaaaaa
+!
+! *background: #1a1a1a
+! *foreground: #e4e4e4
 
 !*color0: #000000
 !*color8: #000000
@@ -22,20 +28,20 @@
 !*color7: #ffffff
 !*color15: #ffffff
 
-*color1: #d81d20
-*color9: #d81d20
-*color2: #20d81d
-*color10: #20d81d
-*color3: #d8d51d
-*color11: #d8d51d
-*color4: #1d20d8
-*color12: #1d20d8
-*color5: #d51dd8
-*color13: #d51dd8
-*color6: #1dd8d5
-*color14: #1dd8d5
-*color7: #ffffff
-*color15: #ffffff
+! *color1: #d81d20
+! *color9: #d81d20
+! *color2: #20d81d
+! *color10: #20d81d
+! *color3: #d8d51d
+! *color11: #d8d51d
+! *color4: #1d20d8
+! *color12: #1d20d8
+! *color5: #d51dd8
+! *color13: #d51dd8
+! *color6: #1dd8d5
+! *color14: #1dd8d5
+! *color7: #ffffff
+! *color15: #ffffff
 
 !URxvt*internalBorder: 			20
 URxvt.intensityStyles:			false
@@ -54,15 +60,18 @@ URxvt.iso14755_52: false
 URxvt.letterSpace: -1
 URxvt.lineSpace: 0
 
+/* See section in sts config.h that describes XResources (~L175) */
+st.borderpx: 0
+st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
+
 Xft.autohint: 	0
 Xft.antialias: 	1
 Xft.hinting: 	true
 !Xft.hintstyle: 	hintslight
-Xft.hintstyle:  hintfull	
+Xft.hintstyle:  hintfull
 Xft.dpi: 	96
 !Xft.rgba: 	rgb
-Xft.rgba: 	none	
+Xft.rgba: 	none
 Xft.lcdfilter: lcddefault
 
 Xcursor.theme: Openzone-Black
-

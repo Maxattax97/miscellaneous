@@ -1,0 +1,4 @@
+/* For tiling WM's */
+.solid-csd headerbar .title {
+    font-size: 0;
+}
