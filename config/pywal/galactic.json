@@ -1,0 +1,27 @@
+{
+    "wallpaper": "/home/max/Pictures/demo.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#1b1b1b",
+        "foreground": "#e2e2e2",
+        "cursor": "#e2e2e2"
+    },
+    "colors": {
+        "color0": "#1b1b1b",
+        "color1": "#b60461",
+        "color2": "#426902",
+        "color3": "#924901",
+        "color4": "#086789",
+        "color5": "#553bff",
+        "color6": "#056b5d",
+        "color7": "#ababab",
+        "color8": "#474747",
+        "color9": "#fe4594",
+        "color10": "#66a003",
+        "color11": "#dd7202",
+        "color12": "#0e9dd0",
+        "color13": "#9e7cfe",
+        "color14": "#13a38f",
+        "color15": "#e2e2e2"
+    }
+}

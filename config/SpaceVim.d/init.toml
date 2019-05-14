@@ -62,6 +62,10 @@
     name = "tmux-plugins/vim-tmux-focus-events"
 [[custom_plugins]]
     name = "lygaret/autohighlight.vim"
+[[custom_plugins]]
+    name = "lifepillar/vim-colortemplate"
+[[custom_plugins]]
+    name = "flazz/vim-colorschemes"
 
 [[layers]]
     name = "autocomplete"
