@@ -12,24 +12,43 @@ local local_path = gfs.get_configuration_dir().."theme/"
 
 local theme = {}
 
+theme.colorscheme = {
+    base03 = "#1b1b1b",
+    base02 = "#303030",
+    base01 = "#474747",
+    base00 = "#5e5e5e",
+    base0 = "#919191",
+    base1 = "#ababab",
+    base2 = "#c6c6c6",
+    base3 = "#e2e2e2",
+    yellow = "#a68f01",
+    orange = "#dd7202",
+    red  = "#ff511a",
+    magenta = "#fe3bb9",
+    violet = "#cc62fe",
+    blue = "#3294ff",
+    cyan = "#07a38f",
+    green = "#4ca340",
+}
+
 theme.font          = "FreeSans 11"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#535d6c"
-theme.bg_urgent     = "#ff0000"
-theme.bg_minimize   = "#444444"
+theme.bg_normal     = theme.colorscheme.base02
+theme.bg_focus      = theme.colorscheme.base03
+theme.bg_urgent     = theme.colorscheme.red
+theme.bg_minimize   = theme.colorscheme.base02
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#aaaaaa"
-theme.fg_focus      = "#ffffff"
-theme.fg_urgent     = "#ffffff"
-theme.fg_minimize   = "#ffffff"
+theme.fg_normal     = theme.colorscheme.base3
+theme.fg_focus      = theme.colorscheme.blue
+theme.fg_urgent     = theme.colorscheme.base3
+theme.fg_minimize   = theme.colorscheme.base1
 
 theme.useless_gap   = dpi(5)
 theme.border_width  = dpi(1)
-theme.border_normal = "#000000"
-theme.border_focus  = "#ffffff"
-theme.border_marked = "#888888"
+theme.border_normal = theme.colorscheme.base03
+theme.border_focus  = theme.colorscheme.base1
+theme.border_marked = theme.colorscheme.base0
 
 -- There are other variable sets
 -- overriding the default one when
@@ -98,7 +117,16 @@ theme.titlebar_maximized_button_focus_inactive  = local_path.."titlebar/maximize
 theme.titlebar_maximized_button_normal_active = local_path.."titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active  = local_path.."titlebar/maximized_focus_active.png"
 
-theme.wallpaper = local_path.."background.jpg"
+-- theme.wallpaper = local_path.."background.jpg"
+theme.wallpaper = function(s)
+    if s == 1 then
+        return "/home/max/Pictures/Splits/Left/calm.jpg"
+    elseif s == 2 then
+        return "/home/max/Pictures/Splits/Right/calm.jpg"
+    end
+
+    return "/home/max/Pictures/Splits/Both/anemones.jpg"
+end
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = local_path.."layouts/fairhw.png"

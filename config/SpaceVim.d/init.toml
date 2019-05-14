@@ -13,7 +13,7 @@
     bootstrap_after = "bootstrap#after"
 
     # Aesthetic
-    colorscheme = "NeoSolarized"
+    colorscheme = "galactic" # "NeoSolarized"
     colorscheme_default = "desert"
     background = "dark"
     enable_guicolors = true
@@ -66,7 +66,13 @@
     name = "lifepillar/vim-colortemplate"
 [[custom_plugins]]
     name = "flazz/vim-colorschemes"
+[[custom_plugins]]
+    name = "maxattax97/vim-galactic"
 
+[[layers]]
+    # Disable statusline in favor of airline.
+    name = "core#statusline"
+    enable = false
 [[layers]]
     name = "autocomplete"
     auto-completion-return-key-behavior = "smart"
