@@ -75,15 +75,15 @@ Configure all of this using a system like KBuild?
 
 # Workflow
  - Internet
-     - Firefox
+     - X Firefox
  - Gaming
-     - Steam
+     - X Steam
      - Discord
  - Social
      - Signal
      - Rambox
  - Network Services
-     - Nextcloud
+     - X Nextcloud
      - Torrent
  - Pre-align some terminals with programs to edges of workspaces, leaving open room
 
