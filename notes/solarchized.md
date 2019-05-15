@@ -8,7 +8,7 @@ Configure all of this using a system like KBuild?
  - X Refind bootloader?
 
 # Security
- - Consistent use of GPG keys, including signed email and git commits
+ - X Consistent use of GPG keys, including signed email and git commits
  - LUKS encryption: BTRFS root FS with automated snapshots, EXT4 for everything else.
  - Encrypted boot for GRUB?
  - USBGuard
@@ -45,19 +45,19 @@ Configure all of this using a system like KBuild?
      - Stretch: circular process tree (front and center)
      - Stetch: music beat wave indicator
  - Custom Plymouth and GRUB/Refind themes
- - FreeFont or Roboto, Hack Nerd Font
- - Papirus icon theme, Possibly some variant of La Capitaine
+ - X FreeFont or Roboto, Hack Nerd Font
+ - X Papirus icon theme, Possibly some variant of La Capitaine
  - Top, left aligned system bars
- - dmenu-type application access
- - Glass fade (Kawase?)
+ - dmenu-type / rofi application access
+ - X Glass fade (Kawase?)
 
 # Terminal Loadout
- - ZSH
- - Tmux
+ - X ZSH
+ - X Tmux
      - nearly everywhere
      - possibly started at boot
- - Neovim
- - Ranger
+ - X Neovim
+ - X Ranger
  - ncmpcpp + mpd
  - gtop
  - Weechat
