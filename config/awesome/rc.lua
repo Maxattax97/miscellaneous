@@ -531,11 +531,17 @@ awful.rules.rules = {
           "St"},
        },
        properties = { titlebars_enabled = false }
-    }
+    },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    { rule = { class = "Firefox" },
+      properties = { screen = 1, tag = "web" } },
+
+    { rule = { class = "Steam" },
+      properties = { screen = 2, tag = "game" } },
+
+    { rule = { class = "Nextcloud" },
+      properties = { screen = 2, tag = "office" } },
 }
 -- }}}
 
@@ -602,3 +608,20 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+local function run_once(cmd_arr)
+    for _, cmd in ipairs(cmd_arr) do
+        local findme = cmd
+        local firstspace = cmd:find(' ')
+        if firstspace then
+            findme = cmd:sub(0, firstspace - 1)
+        end
+        awful.spawn.with_shell(string.format('pgrep -u $USER -x %s > /dev/null || (%s)', findme, cmd))
+    end
+end
+
+run_once({'xrdb -load ~/.Xdefaults'})
+run_once({'compton --config ~/.config/compton/compton.conf'})
+run_once({'firefox'})
+run_once({'steam'})
+run_once({'nextcloud'})

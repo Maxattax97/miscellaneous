@@ -1,0 +1,9 @@
+{
+    "suggest.enablePreview": true,
+    "suggest.maxCompleteItemCount": 15,
+    "suggest.echodocSupport": true,
+    "diagnostic.checkCurrentLine": true,
+    "diagnostic.displayByAle": true,
+    "codeLens.enable": true,
+    "coc.preferences.extensionUpdateCheck": "weekly"
+}

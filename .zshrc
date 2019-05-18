@@ -701,6 +701,8 @@ zshrc_set_path() {
     add_path "${HOME}/.adb-fastboot/platform-tools/"
     add_path "${HOME}/.cargo/bin/"
     add_path "/usr/local/go/bin/"
+    add_path "${HOME}/.gem/ruby/2.6.0/bin/"
+    add_path "/usr/lib/gem/ruby/2.6.0/bin/"
 
     if [ -n "$GOPATH" ]; then
         add_path "${GOPATH}/bin/"
