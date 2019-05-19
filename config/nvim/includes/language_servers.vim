@@ -36,4 +36,10 @@ let g:coc_global_extensions = [
     "\ 'coc-neoinclude', " Install via plugin manager.
     "\ 'coc-word',
 
+" INSTALL: npm install -g --local bash-language-server
+" INSTALL: yay -S ccls
+" INSTALL: go get -u golang.org/x/tools/cmd/gopls
+" INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp
+"          luarocks install --local luacheck lcf
+
 "call coc#add_extension('coc-dictionary')

@@ -1,4 +1,5 @@
-" Modules ----------{{{
+" vim: set foldmethod=marker:
+" Modules {{{
 " A UI to display Dein updates.
 call dein#add('wsdjeg/dein-ui.vim')
 
@@ -23,10 +24,10 @@ call dein#add('jistr/vim-nerdtree-tabs')
 call dein#add('majutsushi/tagbar')
 
 " Integrated Git commands and change indicator.
-call dein#add('tpope/vim-fugitive')
-call dein#add('airblade/vim-gitgutter')
+call dein#add('mhinz/vim-signify')
+"call dein#add('airblade/vim-gitgutter') " Removed in favor of Signify.
 
-" Combine all autocompletion into a single keymap.
+"Combine all autocompletion into a single keymap.
 "call dein#add('ervandew/supertab')
 
 " Efficient commenting.
@@ -42,13 +43,84 @@ call dein#add('shougo/denite.nvim')
 call dein#add('lifepillar/vim-colortemplate')
 " }}}
 
-" Tim Pope Collection ----------{{{\
+" Tim Pope Collection {{{
+" Git wrapper with Github support.
+call dein#add('tpope/vim-fugitive')
+call dein#add('tpope/vim-rhubarb')
 
+" Efficiently surround text.
+call dein#add('tpope/vim-surround')
+
+" Automatically detect indent type and width.
+call dein#add('tpope/vim-sleuth')
+
+" Efficiently move between buffers, among other things.
+call dein#add('tpope/vim-unimpaired')
+
+" Default settings for Vim that just make sense.
+call dein#add('tpope/vim-sensible')
+
+" Asynchronous compiling and unit testing.
+call dein#add('tpope/vim-dispatch')
+
+" Access databases from within vim.
+call dein#add('tpope/vim-dadbod')
+
+" Smart, in-depth search and replace.
+call dein#add('tpope/vim-abolish')
+
+" Repeat any command.
+call dein#add('tpope/vim-repeat')
+
+" UNIX commands.
+call dein#add('tpope/vim-eunuch')
+
+" Automatically managed Vim sessions.
+call dein#add('tpope/vim-obsession')
+
+" Automatically end control structures in launguages that use 'end' keywords.
+"call dein#add('tpope/vim-endwise')
+
+" Project management for standardized directory structures.
+call dein#add('tpope/vim-projectionist')
+
+"" Concise date-time management.
+call dein#add('tpope/vim-speeddating')
+
+" Shell-like simple line operations, e.g. Ctrl-A to return to beginning of
+" line.
+call dein#add('tpope/vim-rsi')
+
+"" Call Tmux from Vim.
+call dein#add('tpope/vim-tbone')
+
+"" Better JSON manipulation from within Vim.
+call dein#add('tpope/vim-jdaddy')
+
+"" tpope's colorscheme, mimicking MacOS's.
+call dein#add('tpope/vim-vividchalk')
+
+"" Improved unicode handling.
+call dein#add('tpope/vim-characterize')
+
+"" Edit images... inside Vim.
+call dein#add('tpope/vim-afterimage')
+
+"" Scan include paths and whatnot.
+call dein#add('tpope/vim-apathy')
+
+"" .env and Procfile support.
+call dein#add('tpope/vim-dotenv')
 " }}}
 
-" Autocompletion ----------{{{
+" Autocompletion {{{
 " Include/import files from headers for autocompletion, etc.
-"call dein#add('shougo/neoinclude.vim')
+call dein#add('shougo/neoinclude.vim')
+call dein#add('jsfaint/coc-neoinclude')
+
+" VimL support.
+call dein#add('shougo/neco-vim')
+call dein#add('neoclide/coc-neco')
 
 " C languages
 "call dein#add('zchee/deoplete-clang')
@@ -72,23 +144,17 @@ call dein#add('lifepillar/vim-colortemplate')
 
 " Vimscript
 "call dein#add('shougo/neco-vim')
-call dein#add('shougo/neoinclude.vim')
-call dein#add('shougo/neco-vim')
-call dein#add('neoclide/coc-neco')
-call dein#add('jsfaint/coc-neoinclude')
 
 " Godot's GDScript
-call dein#add('calviken/vim-gdscript3')
+"call dein#add('calviken/vim-gdscript3')
 
 " Web languages (HTML, CSS, XML, XHTML, ...)
-call dein#add('othree/csscomplete.vim')
-call dein#add('othree/html5.vim')
-call dein#add('othree/xml.vim')
+"call dein#add('othree/csscomplete.vim')
+"call dein#add('othree/html5.vim')
+"call dein#add('othree/xml.vim')
 " }}}
 
-
-
-" Syntax / File Support ----------{{{
+" Syntax / File Support {{{
 " Syntax support for a huge number of languages.
 call dein#add('sheerun/vim-polyglot')
 
@@ -97,9 +163,7 @@ call dein#add('vim-perl/vim-perl')
 ", { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 " }}}
 
-
-
-" Aesthetics ----------{{{
+" Aesthetics {{{
 " Informational and sexy statusline.
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
@@ -124,9 +188,7 @@ call dein#add('ryanoasis/vim-devicons')
 call dein#add('nathanaelkane/vim-indent-guides')
 " }}}
 
-
-
-" Miscellaneous ----------{{{
+" Miscellaneous {{{
 " Open the to the last cursor position you were at in a file.
 call dein#add('farmergreg/vim-lastplace')
 
@@ -136,65 +198,24 @@ call dein#add('farmergreg/vim-lastplace')
 " Previews CSS colors.
 call dein#add('ap/vim-css-color')
 
-" Efficiently surround text.
-call dein#add('tpope/vim-surround')
-
 " Automatically swap between absolute and relative line numbering.
 call dein#add('jeffkreeftmeijer/vim-numbertoggle')
 
-" Automatically detect indent type and width.
-call dein#add('tpope/vim-sleuth')
-
 " Automatically add the { to your }.
-call dein#add('jiangmiao/auto-pairs')
+" Causes me more strain than aid.
+"call dein#add('jiangmiao/auto-pairs')
 
-" Efficiently move between buffers, among other things.
-call dein#add('tpope/vim-unimpaired')
 
 " Color enclosing characters for easy reading.
 call dein#add('junegunn/rainbow_parentheses.vim')
+
+" View Vim's internal undo tree.
+call dein#add('simnalamburt/vim-mundo')
+
 " }}}
 
-
-" In Development ----------{{{
-" Code formatter engine.
-" TODO: Needs formatters.
-"call dein#add('sbdchd/neoformat')
-"call dein#add('chiel92/vim-autoformat')
-
-" Snippet engine.
-" TODO: Requires further configuration and snippets.
-"call dein#add('sirver/ultisnips')
-
-" TODO: ... does this even work?
-"call dein#add('luochen1990/rainbow')
-
-
-" Vim-Eclim
-" }}}
-
-" Disabled ---------{{{
-"call dein#add('edkolev/tmuxline.vim')
-
-" Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'mhinz/vim-signify'
-" Plug 'elzr/vim-json'
-" Plug 'pangloss/vim-javascript'
-" Plug 'artur-shaik/vim-javacomplete2'
-" Plug 'tweekmonster/deoplete-clang2'
-
-" Needs Investigation
-" Plug 'idanarye/vim-dutyl' " Requires DMD and DCD
-" Plug 'metakirby5/codi' " INVESTIGATE REPL DEPENDENCIES
-" Plug 'bagrat/vim-workspace'
-" Plug 'vim-scripts/dbext.vim'
-    " OR Plug 'nathanaelkane/vim-indent-guides'
-" Plug 'raimondi/delimitmate'
+" Disabled {{{
 " Plug 'terryma/vim-multiple-cursors'
-" Plug 'sjl/gundo.vim'
-" Plug 'tpope/vim-sensible'
-" Plug 'janko-m/vim-test'
-    " WITH Plug 'tpope/dispatch'
 " Plug 'editorconfig/editorconfig-vim'
 " Plug 'thinca/vim-quickrun'
 " Plug 'bronson/vim-trailing-whitespace'

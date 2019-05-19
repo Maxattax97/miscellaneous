@@ -1,9 +1,35 @@
 {
-    "suggest.enablePreview": true,
-    "suggest.maxCompleteItemCount": 15,
-    "suggest.echodocSupport": true,
+    "coc.preferences.extensionUpdateCheck": "weekly",
+    "codeLens.enable": true,
     "diagnostic.checkCurrentLine": true,
     "diagnostic.displayByAle": true,
-    "codeLens.enable": true,
-    "coc.preferences.extensionUpdateCheck": "weekly"
+    "languageserver": {
+        "bash": {
+            "args": ["start"],
+            "command": "bash-language-server",
+            "filetypes": ["sh"],
+            "ignoredRootPaths": ["~"]
+        },
+        "ccls": {
+            "command": "ccls",
+            "filetypes": ["c", "cpp", "objc", "objcpp"],
+            "initializationOptions": {"cache": {"directory": "/tmp/ccls"}},
+            "rootPatterns": [
+                ".ccls",
+                "compile_commands.json",
+                ".vim/",
+                ".git/",
+                ".hg/"
+            ]
+        },
+        "golang": {
+            "command": "gopls",
+            "filetypes": ["go"],
+            "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"]
+        },
+        "lua": {"command": "lua-lsp", "filetypes": ["lua"]}
+    },
+    "suggest.echodocSupport": true,
+    "suggest.enablePreview": true,
+    "suggest.maxCompleteItemCount": 15
 }
