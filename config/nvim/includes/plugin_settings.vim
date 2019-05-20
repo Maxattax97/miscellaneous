@@ -69,6 +69,14 @@ let g:startify_custom_header = [
 " }}}
 
 " Syntax / File Support {{{
+" Go {{{
+let g:go_code_completion_enabled = 1
+let g:go_metalinter_autosave = 0
+let g:go_metalinter_enabled = []
+let g:go_metalinter_disabled = ['vet', 'golint', 'errcheck']
+let g:go_fmt_fail_silently = 1
+" }}}
+
 " }}}
 
 " Miscellaneous {{{

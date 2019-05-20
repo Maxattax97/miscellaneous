@@ -50,8 +50,8 @@ set modelines=5
 set foldmethod=indent
 set foldnestmax=3
 
-" Split from left to right, top to bottom.
-set splitbelow splitright
+" Open splits on the top, and right sides. 
+set splitright
 
 " }}}
 

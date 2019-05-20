@@ -31,5 +31,5 @@
     },
     "suggest.echodocSupport": true,
     "suggest.enablePreview": true,
-    "suggest.maxCompleteItemCount": 15
+    "suggest.maxCompleteItemCount": 30
 }

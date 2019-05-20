@@ -161,6 +161,12 @@ call dein#add('sheerun/vim-polyglot')
 " Improved Perl support.
 call dein#add('vim-perl/vim-perl')
 ", { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
+
+" Improved Go support with commands.
+" Not being used for linting / autocompletion.
+" INSTALL: :GoInstallBinaries
+call dein#add('fatih/vim-go')
+
 " }}}
 
 " Aesthetics {{{
