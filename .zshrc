@@ -34,7 +34,7 @@ zshrc_enter_tmux() {
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
-            tmux new-session -s Main
+            tmux -2 new-session -s Main
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -43,14 +43,14 @@ zshrc_enter_tmux() {
 
                 # Create a new session (without attaching it) and link to base session
                 # to share windows
-                tmux new-session -d -t Main -s "$session_id"
+                tmux -2 new-session -d -t Main -s "$session_id"
                 # if [[ "$2" == "1" ]]; then
                 #     # Create a new window in that session
                 #     tmux new-window
                 # fi
 
                 # Attach to the new session & kill it once orphaned
-                tmux attach-session -t "$session_id" \; set-option destroy-unattached
+                tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
             fi
         fi
 
@@ -978,13 +978,20 @@ zshrc_set_aliases() {
     alias l='ls -CF'
 
     # Fix tmux 256 colors:
-    alias tmux='tmux -2'
+    #if [[ -x "$(command -v tmux-next)" ]]; then
+        #alias tmux='tmux-next -2'
+    #else
+        alias tmux='tmux -2'
+    #fi
 
     # Clear color codes before clearing:
     alias clear='echo -e "\e[0m" && clear'
 
     # Typical rsync command
     alias relocate='rsync -avzh --info=progress2'
+
+    # Add progress indicator because I always forget.
+    alias dd='dd status=progress'
 }
 
 zshrc_set_default_programs() {

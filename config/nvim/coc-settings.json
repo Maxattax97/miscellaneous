@@ -31,5 +31,6 @@
     },
     "suggest.echodocSupport": true,
     "suggest.enablePreview": true,
-    "suggest.maxCompleteItemCount": 30
+    "suggest.maxCompleteItemCount": 30,
+    "suggest.timeout": 5000
 }

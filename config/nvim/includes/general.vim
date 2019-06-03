@@ -20,6 +20,23 @@ set updatetime=250
 
 " Enable some mouse control.
 set mouse=a
+
+" Setup backup(, swap, undo) files.
+set directory=$HOME/.cache/nvim/swap/
+set backupdir=$HOME/.cache/nvim/backup/
+set undodir=$HOME/.cache/nvim/undo/
+
+if !isdirectory(&backupdir)
+    call mkdir(&backupdir, "p")
+endif
+
+if !isdirectory(&directory)
+    call mkdir(&directory, "p")
+endif
+
+if !isdirectory(&undodir)
+    call mkdir(&undodir, "p")
+endif
 " }}}
 
 " File Format {{{
@@ -50,7 +67,7 @@ set modelines=5
 set foldmethod=indent
 set foldnestmax=3
 
-" Open splits on the top, and right sides. 
+" Open splits on the top, and right sides.
 set splitright
 
 " }}}
