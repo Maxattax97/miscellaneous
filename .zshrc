@@ -61,6 +61,8 @@ zshrc_enter_tmux() {
 
 # Adapted from oh-my-zsh: https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/termsupport.zsh
 zshrc_auto_window_title() {
+    DISABLE_AUTO_TITLE=false
+
     function title {
         emulate -L zsh
         setopt prompt_subst
@@ -640,7 +642,7 @@ zshrc_zplug() {
         zplug "gko/ssh-connect", as:command
 
         if ( ! "$zshrc_low_power" ); then
-            zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+            zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
         fi
 
         # zplug "ael-code/zsh-colored-man-pages"
