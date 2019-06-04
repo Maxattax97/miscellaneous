@@ -992,6 +992,7 @@ zshrc_set_aliases() {
 
     # Add progress indicator because I always forget.
     alias dd='dd status=progress'
+    alias sudo dd='sudo dd status=progress'
 }
 
 zshrc_set_default_programs() {

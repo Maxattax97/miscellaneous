@@ -21,6 +21,9 @@ noremap <F5> :make<CR>
 " Bind ALE format, fix, etc. to F4.
 nnoremap <F4> <Plug>(ale_fix)
 
+" Bind Mundo history to F6
+nnoremap <F6> :MundoToggle<CR>
+
 " Map block comment to Leader-c
 " nnoremap <Leader>c<CR> <Plug>NERDCommenterToggle
 " vnoremap <Leader>c<CR> <Plug>NERDCommenterToggle
