@@ -320,8 +320,15 @@ globalkeys = gears.table.join(
               {description = "decrease the number of master clients", group = "layout"}),
     awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
               {description = "increase the number of columns", group = "layout"}),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
-              {description = "decrease the number of columns", group = "layout"}),
+    --awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
+              --{description = "decrease the number of columns", group = "layout"}),
+
+    awful.key({ modkey, "Control" }, "l",
+      function()
+         awful.util.spawn("sync")
+         awful.util.spawn("xautolock -locknow")
+      end, {description = "lock the screen"}),
+
     awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
@@ -626,3 +633,5 @@ run_once({'firefox'})
 run_once({'steam'})
 run_once({'nextcloud'})
 run_once({'nm-applet'})
+run_once({'light-locker --lock-on-suspend'})
+run_once({'~/.config/awesome/scripts/locker.sh'})

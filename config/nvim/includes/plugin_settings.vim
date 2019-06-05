@@ -81,7 +81,7 @@ let g:go_fmt_fail_silently = 1
 
 " Miscellaneous {{{
 " Enable rainbow parenthesization.
-call rainbow_parentheses#activate()
+"call rainbow_parentheses#activate()
 
 " Enable indent guides.
 let g:indent_guides_enable_on_vim_startup = 1
