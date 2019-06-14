@@ -1,0 +1,9 @@
+download-full-page yes
+auto-reload yes
+
+color listnormal          white  black 
+color listfocus           blue  color240   bold
+color listnormal_unread   magenta black 
+color listfocus_unread    red color240   bold
+color info                green  black   bold
+color article             white   black
