@@ -42,6 +42,7 @@ link_source "config/ranger/" ".config/"
 link_source "config/rofi/" ".config/"
 link_source "config/nvim/" ".config/"
 link_source "config/newsboat/" ".config/"
+link_source "config/zathura/" ".config/"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
