@@ -20,7 +20,10 @@ let g:ale_fix_on_save = 1
 " Signify {{{
 let g:signify_vcs_list = [ 'git', 'perforce', 'hg', 'svn' ]
 
-let g:signify_realtime = 1
+" Real time automatically saves/writes the file each time you idle, exit
+" buffer, etc. This causes issues with ALE's auto fixers, e.g. removing
+" trailing lines and trimming whitespace.
+let g:signify_realtime = 0
 let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 let g:signify_sign_delete_first_line = '-'

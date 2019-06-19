@@ -25,6 +25,7 @@ set mouse=a
 set directory=$HOME/.cache/nvim/swap/
 set backupdir=$HOME/.cache/nvim/backup/
 set undodir=$HOME/.cache/nvim/undo/
+set undofile
 
 if !isdirectory(&backupdir)
     call mkdir(&backupdir, "p")
