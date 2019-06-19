@@ -953,6 +953,43 @@ zshrc_load_library() {
             batterydarwin
         fi
     }
+
+    aes256encrypt() {
+        if [ -e "$1" ]; then
+            openssl enc -in "${1}" -out "${1}.aes256" -e -aes256
+        else
+            echo "Cannot find file ${1}" 1>&2
+        fi
+    }
+
+    aes256decrypt() {
+        if [ -e "$1" ]; then
+            openssl enc -in "${1}" -out "${1}.decrypted" -d -aes256
+        else
+            echo "Cannot find file ${1}" 1>&2
+        fi
+    }
+
+    infect() {
+        local target_host="$1"
+        local target_port="${2:-22}"
+
+        mkdir -p /tmp/infect
+        cp ~/.zshrc /tmp/infect/
+        cp ~/.bashrc /tmp/infect/
+        cp ~/.tmux.conf /tmp/infect/
+        cp -r ~/.config/nvim/ /tmp/infect/
+        cp -r ~/.config/ranger/ /tmp/infect/
+        cp ~/src/miscellaneous/scripts/infect.sh /tmp/.infect.sh
+        echo "source ~/.config/nvim/init.vim" > /tmp/infect/.vimrc
+
+        tar -C /tmp/infect -czf /tmp/.infect.tar.gz .
+
+        scp -P "${target_port}" /tmp/.infect.tar.gz /tmp/.infect.sh "${target_host}:~/"
+        ssh "${target_host}" -p "${target_port}" ~/.infect.sh
+    }
+
+    # TODO: bats.infect for those annoying low level AATS RMCU's.
 }
 
 zshrc_set_aliases() {
