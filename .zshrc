@@ -34,7 +34,8 @@ zshrc_enter_tmux() {
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
-            tmux -2 new-session -s Main
+            tmux -2 new-session -s Main \; \
+                send-keys 'gotop || gtop || htop || top' C-m \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
