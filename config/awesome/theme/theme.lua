@@ -119,13 +119,14 @@ theme.titlebar_maximized_button_focus_active  = local_path.."titlebar/maximized_
 
 -- theme.wallpaper = local_path.."background.jpg"
 theme.wallpaper = function(s)
-    if s == 1 then
-        return "/home/max/Pictures/Splits/Left/calm.jpg"
-    elseif s == 2 then
-        return "/home/max/Pictures/Splits/Right/calm.jpg"
-    end
+    --if s == 1 then
+        --return "/home/max/Pictures/Splits/Left/calm.jpg"
+    --elseif s == 2 then
+        --return "/home/max/Pictures/Splits/Right/calm.jpg"
+    --end
 
-    return "/home/max/Pictures/Splits/Both/anemones.jpg"
+    --return "/home/max/Pictures/Splits/Both/anemones.jpg"
+    return local_path.."background.jpg"
 end
 
 -- You can use your own layout icons like this:
