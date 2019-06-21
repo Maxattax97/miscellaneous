@@ -306,6 +306,10 @@ zshrc_source() {
     if [[ -e "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh" ]]; then
         source "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh"
     fi
+
+    if [ -s "$HOME/.luaver/luaver" ]; then
+        source "$HOME/.luaver/luaver"
+    fi
 }
 
 zshrc_set_options() {
@@ -706,6 +710,8 @@ zshrc_set_path() {
     add_path "/usr/local/go/bin/"
     add_path "${HOME}/.gem/ruby/2.6.0/bin/"
     add_path "/usr/lib/gem/ruby/2.6.0/bin/"
+    add_path "$HOME/.yarn/bin"
+    add_path "$HOME/.config/yarn/global/node_modules/.bin"
 
     if [ -n "$GOPATH" ]; then
         add_path "${GOPATH}/bin/"
@@ -805,10 +811,11 @@ zshrc_load_library() {
     }
 
     waitonline() {
+        local target=${1:-8.8.8.8}
         echo "Waiting for online access ..."
         failing=true
         while "$failing"; do
-            ping 8.8.8.8 -c 1 -W 2 > /dev/null 2>&1
+            ping "$target" -c 1 -W 2 > /dev/null 2>&1
             success="$?"
             if [ "$success" -eq 0 ]; then
                 printf "\n"
@@ -1177,5 +1184,3 @@ zshrc_init() {
 }
 
 zshrc_init
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
