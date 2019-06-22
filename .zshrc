@@ -498,111 +498,6 @@ zshrc_powerlevel9k() {
 
 zshrc_raw_prompt() {
     prompt adam2
-    # Prompt based on grml's and ArchISO's.
-    # BLUE=$'%{\e[1;34m%}'
-    # RED=$'%{\e[1;31m%}'
-    # GREEN=$'%{\e[1;32m%}'
-    # CYAN=$'%{\e[1;36m%}'
-    # WHITE=$'%{\e[1;37m%}'
-    # MAGENTA=$'%{\e[1;35m%}'
-    # YELLOW=$'%{\e[1;33m%}'
-    # NO_COLOR=$'%{\e[0m%}'
-    #
-    # # secondary prompt, printed when the shell needs more information to complete a
-    # # command.
-    # PS2='\`%_> '
-    # # selection prompt used within a select loop.
-    # PS3='?# '
-    # # the execution trace prompt (setopt xtrace). default: '+%N:%i>'
-    # PS4='+%N:%i:%_> '
-    #
-    # # Some additional features to use with our prompt:
-    # #
-    # #    - battery status
-    # #    - debian_chroot
-    # #    - vcs_info setup and version specific fixes
-    #
-    # # set variable debian_chroot if running in a chroot with /etc/debian_chroot
-    # if [[ -z "$debian_chroot" ]] && [[ -r /etc/debian_chroot ]] ; then
-    #     debian_chroot=$(</etc/debian_chroot)
-    # fi
-    #
-    # # gather version control information for inclusion in a prompt
-    #
-    # if zrcautoload vcs_info; then
-    #     # `vcs_info' in zsh versions 4.3.10 and below have a broken `_realpath'
-    #     # function, which can cause a lot of trouble with our directory-based
-    #     # profiles. So:
-    #     if [[ ${ZSH_VERSION} == 4.3.<-10> ]] ; then
-    #         function VCS_INFO_realpath () {
-    #             setopt localoptions NO_shwordsplit chaselinks
-    #             ( builtin cd -q $1 2> /dev/null && pwd; )
-    #         }
-    #     fi
-    #
-    #     zstyle ':vcs_info:*' max-exports 2
-    #
-    #     if [[ -o restricted ]]; then
-    #         zstyle ':vcs_info:*' enable NONE
-    #     fi
-    # fi
-    #
-    # typeset -A grml_vcs_coloured_formats
-    # typeset -A grml_vcs_plain_formats
-    #
-    # grml_vcs_plain_formats=(
-    #     format "(%s%)-[%b] "    "zsh: %r"
-    #     actionformat "(%s%)-[%b|%a] " "zsh: %r"
-    #     rev-branchformat "%b:%r"
-    # )
-    #
-    # grml_vcs_coloured_formats=(
-    #     format "${MAGENTA}(${NO_COLOR}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${MAGENTA}]${NO_COLOR} "
-    #     actionformat "${MAGENTA}(${NO_COLOR}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${YELLOW}|${RED}%a${MAGENTA}]${NO_COLOR} "
-    #     rev-branchformat "%b${RED}:${YELLOW}%r"
-    # )
-    #
-    # typeset GRML_VCS_COLOUR_MODE=xxx
-    #
-    # grml_vcs_info_toggle_colour () {
-    #     emulate -L zsh
-    #     if [[ $GRML_VCS_COLOUR_MODE == plain ]]; then
-    #         grml_vcs_info_set_formats coloured
-    #     else
-    #         grml_vcs_info_set_formats plain
-    #     fi
-    #     return 0
-    # }
-    #
-    # grml_vcs_info_set_formats () {
-    #     emulate -L zsh
-    #     #setopt localoptions xtrace
-    #     local mode=$1 AF F BF
-    #     if [[ $mode == coloured ]]; then
-    #         AF=${grml_vcs_coloured_formats[actionformat]}
-    #         F=${grml_vcs_coloured_formats[format]}
-    #         BF=${grml_vcs_coloured_formats[rev-branchformat]}
-    #         GRML_VCS_COLOUR_MODE=coloured
-    #     else
-    #         AF=${grml_vcs_plain_formats[actionformat]}
-    #         F=${grml_vcs_plain_formats[format]}
-    #         BF=${grml_vcs_plain_formats[rev-branchformat]}
-    #         GRML_VCS_COLOUR_MODE=plain
-    #     fi
-    #
-    #     zstyle ':vcs_info:*'              actionformats "$AF" "zsh: %r"
-    #     zstyle ':vcs_info:*'              formats       "$F"  "zsh: %r"
-    #     zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat  "$BF"
-    #     return 0
-    # }
-    #
-    # # Change vcs_info formats for the grml prompt. The 2nd format sets up
-    # # $vcs_info_msg_1_ to contain "zsh: repo-name" used to set our screen title.
-    # if [[ "$TERM" == dumb ]] ; then
-    #     grml_vcs_info_set_formats plain
-    # else
-    #     grml_vcs_info_set_formats coloured
-    # fi
 }
 
 zshrc_zplug() {
@@ -837,131 +732,6 @@ zshrc_load_library() {
         echo "Docker cleaned."
     }
 
-    batterylinux() {
-        GRML_BATTERY_LEVEL=''
-        local batteries bat capacity
-        batteries=( /sys/class/power_supply/BAT*(N) )
-        if (( $#batteries > 0 )) ; then
-            for bat in $batteries ; do
-                if [[ -e $bat/capacity ]]; then
-                    capacity=$(< $bat/capacity)
-                else
-                    typeset -F energy_full=$(< $bat/energy_full)
-                    typeset -F energy_now=$(< $bat/energy_now)
-                    typeset -i capacity=$(( 100 * $energy_now / $energy_full))
-                fi
-                case $(< $bat/status) in
-                Charging)
-                    GRML_BATTERY_LEVEL+=" ^"
-                    ;;
-                Discharging)
-                    if (( capacity < 20 )) ; then
-                        GRML_BATTERY_LEVEL+=" !v"
-                    else
-                        GRML_BATTERY_LEVEL+=" v"
-                    fi
-                    ;;
-                *) # Full, Unknown
-                    GRML_BATTERY_LEVEL+=" ="
-                    ;;
-                esac
-                GRML_BATTERY_LEVEL+="${capacity}%%"
-            done
-        fi
-    }
-
-    batteryopenbsd() {
-        GRML_BATTERY_LEVEL=''
-        local bat batfull batwarn batnow num
-        for num in 0 1 ; do
-            bat=$(sysctl -n hw.sensors.acpibat${num} 2>/dev/null)
-            if [[ -n $bat ]]; then
-                batfull=${"$(sysctl -n hw.sensors.acpibat${num}.amphour0)"%% *}
-                batwarn=${"$(sysctl -n hw.sensors.acpibat${num}.amphour1)"%% *}
-                batnow=${"$(sysctl -n hw.sensors.acpibat${num}.amphour3)"%% *}
-                case "$(sysctl -n hw.sensors.acpibat${num}.raw0)" in
-                    *" discharging"*)
-                        if (( batnow < batwarn )) ; then
-                            GRML_BATTERY_LEVEL+=" !v"
-                        else
-                            GRML_BATTERY_LEVEL+=" v"
-                        fi
-                        ;;
-                    *" charging"*)
-                        GRML_BATTERY_LEVEL+=" ^"
-                        ;;
-                    *)
-                        GRML_BATTERY_LEVEL+=" ="
-                        ;;
-                esac
-                GRML_BATTERY_LEVEL+="${$(( 100 * batnow / batfull ))%%.*}%%"
-            fi
-        done
-    }
-
-    batteryfreebsd() {
-        GRML_BATTERY_LEVEL=''
-        local num
-        local -A table
-        for num in 0 1 ; do
-            table=( ${=${${${${${(M)${(f)"$(acpiconf -i $num 2>&1)"}:#(State|Remaining capacity):*}%%( ##|%)}//:[ $'\t']##/@}// /-}//@/ }} )
-            if [[ -n $table ]] && [[ $table[State] != "not-present" ]] ; then
-                case $table[State] in
-                    *discharging*)
-                        if (( $table[Remaining-capacity] < 20 )) ; then
-                            GRML_BATTERY_LEVEL+=" !v"
-                        else
-                            GRML_BATTERY_LEVEL+=" v"
-                        fi
-                        ;;
-                    *charging*)
-                        GRML_BATTERY_LEVEL+=" ^"
-                        ;;
-                    *)
-                        GRML_BATTERY_LEVEL+=" ="
-                        ;;
-                esac
-                GRML_BATTERY_LEVEL+="$table[Remaining-capacity]%%"
-            fi
-        done
-    }
-
-    batterydarwin() {
-        GRML_BATTERY_LEVEL=''
-        local -a table
-        table=( ${$(pmset -g ps)[(w)7,8]%%(\%|);} )
-        if [[ -n $table[2] ]] ; then
-            case $table[2] in
-                charging)
-                    GRML_BATTERY_LEVEL+=" ^"
-                    ;;
-                discharging)
-                    if (( $table[1] < 20 )) ; then
-                        GRML_BATTERY_LEVEL+=" !v"
-                    else
-                        GRML_BATTERY_LEVEL+=" v"
-                    fi
-                    ;;
-                *)
-                    GRML_BATTERY_LEVEL+=" ="
-                    ;;
-            esac
-            GRML_BATTERY_LEVEL+="$table[1]%%"
-        fi
-    }
-
-    battery() {
-        if islinux ; then
-            batterylinux
-        elif isopenbsd ; then
-            batteryopenbsd
-        elif isfreebsd ; then
-            batteryfreebsd
-        elif isdarwin ; then
-            batterydarwin
-        fi
-    }
-
     aes256encrypt() {
         if [ -e "$1" ]; then
             openssl enc -in "${1}" -out "${1}.aes256" -e -aes256
@@ -1005,7 +775,8 @@ zshrc_set_aliases() {
     #   sleep 10; alert
     alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-    # enable color support of ls and also add handy aliases
+    # Enable color support of ls and also add handy aliases.
+    export CLICOLOR=1 # For macOS VM's ... Dumb it's not enabled by default.
     if [ -x /usr/bin/dircolors ]; then
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
         alias ls='ls --color=auto'
@@ -1081,8 +852,11 @@ zshrc_set_default_programs() {
 }
 
 zshrc_set_environment_variables() {
-    CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
-    CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
+
+    if [[ "$(uname)" != "Darwin" ]]; then
+        CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
+        CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
+    fi
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
         export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
@@ -1121,20 +895,22 @@ zshrc_set_environment_variables() {
     export NUMCPU="${CPU_THREADS}"
 
     # Get the physical form factor of the machine.
-    local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
-    local chassis_name=""
+    if [[ "$(uname)" != "Darwin" ]]; then
+        local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
+        local chassis_name=""
 
-    case "$chassis_type" in
-        8|9|10|14)
-            chassis_name="laptop"
-            ;;
-        3|4|5|6|7|12|13|16|17|18|19|20|21|22|23|24)
-            chassis_name="desktop"
-            ;;
-        *)
-            chassis_name="unknown"
-            ;;
-    esac
+        case "$chassis_type" in
+            8|9|10|14)
+                chassis_name="laptop"
+                ;;
+            3|4|5|6|7|12|13|16|17|18|19|20|21|22|23|24)
+                chassis_name="desktop"
+                ;;
+            *)
+                chassis_name="unknown"
+                ;;
+        esac
+    fi
 
     export CHASSIS="$chassis_name"
 }
