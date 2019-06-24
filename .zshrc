@@ -52,11 +52,14 @@ zshrc_enter_tmux() {
 
                 # Attach to the new session & kill it once orphaned
                 tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+            else
+                zshrc_display_banner
             fi
         fi
 
-
         # test -z "$TMUX" && (tmux attach || tmux new-session -s "Main")
+    else
+        zshrc_display_banner
     fi
 }
 
@@ -930,7 +933,7 @@ zshrc_init() {
 
     zshrc_set_environment_variables
     zshrc_enter_tmux
-    zshrc_display_banner
+    #zshrc_display_banner
 
     zshrc_source
     zshrc_set_path
