@@ -35,7 +35,7 @@ zshrc_enter_tmux() {
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
             tmux -2 new-session -s Main \; \
-                send-keys 'gotop || gtop || htop || top' C-m \;
+                send-keys 'gotop' C-m \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -754,6 +754,12 @@ zshrc_load_library() {
     infect() {
         local target_host="$1"
         local target_port="${2:-22}"
+        local target_user="${3}"
+
+        local host_user_str=""
+        if [ -n "$target_user" ]; then
+            host_user_str="$target_user@"
+        fi
 
         mkdir -p /tmp/infect
         cp ~/.zshrc /tmp/infect/
@@ -767,7 +773,7 @@ zshrc_load_library() {
         tar -C /tmp/infect -czf /tmp/.infect.tar.gz .
 
         scp -P "${target_port}" /tmp/.infect.tar.gz /tmp/.infect.sh "${target_host}:~/"
-        ssh "${target_host}" -p "${target_port}" ~/.infect.sh
+        ssh "${target_user}${target_host}" -p "${target_port}" "/home/${target_user:-${USER}}/.infect.sh"
     }
 
     # TODO: bats.infect for those annoying low level AATS RMCU's.
