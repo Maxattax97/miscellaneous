@@ -90,4 +90,11 @@ let g:go_fmt_fail_silently = 1
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
+
+" Disable arrow keys (and others) by default. Re-enable with :HardTimeToggle
+let g:hardtime_default_on = 1
+let g:list_of_normal_keys = ['<UP>', '<DOWN>', '<LEFT>', '<RIGHT>']
+let g:list_of_visual_keys = ['<UP>', '<DOWN>', '<LEFT>', '<RIGHT>']
+let g:list_of_insert_keys = ['<UP>', '<DOWN>', '<LEFT>', '<RIGHT>']
+let g:list_of_disabled_keys = []
 " }}}

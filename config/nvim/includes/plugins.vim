@@ -218,6 +218,9 @@ call dein#add('junegunn/rainbow_parentheses.vim')
 " View Vim's internal undo tree.
 call dein#add('simnalamburt/vim-mundo')
 
+" Stop using arrow keys! And other keys inneficiently.
+call dein#add('takac/vim-hardtime')
+
 " }}}
 
 " Disabled {{{
