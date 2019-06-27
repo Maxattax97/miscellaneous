@@ -640,24 +640,91 @@ zshrc_load_library() {
     }
 
     # Aliases, functions, commands, etc.
-    extract () {
-        if [ -f $1 ] ; then
-            case $1 in
-                *.tar.bz2)   tar xvjf $1    ;;
-                *.tar.gz)    tar xvzf $1    ;;
-                *.bz2)       bunzip2 $1     ;;
-                *.rar)       unrar x $1       ;;
-                *.gz)        gunzip $1      ;;
-                *.tar)       tar xvf $1     ;;
-                *.tbz2)      tar xvjf $1    ;;
-                *.tgz)       tar xvzf $1    ;;
-                *.zip)       unzip $1       ;;
-                *.Z)         uncompress $1  ;;
-                *.7z)        7z x $1        ;;
-                *)           echo "Unknown filetype for '$1'" ;;
-            esac
+
+    # From https://github.com/xvoland/Extract/blob/master/extract.sh
+    # TODO: Add support for cpio, ar, iso
+    # TODO: Add progress bar, remove verbose flag
+    function extract {
+        if [ -z "$1" ]; then
+            # display usage if no parameters given
+            echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+            echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+            return 1
         else
-            echo "'$1' is not a valid file!"
+            for n in $@
+            do
+            if [ -f "$n" ] ; then
+                case "${n%,}" in
+                    *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
+                                tar xvf "$n"       ;;
+                    *.lzma)      unlzma ./"$n"      ;;
+                    *.bz2)       bunzip2 ./"$n"     ;;
+                    *.rar)       unrar x -ad ./"$n" ;;
+                    *.gz)        gunzip ./"$n"      ;;
+                    *.zip)       unzip ./"$n"       ;;
+                    *.z)         uncompress ./"$n"  ;;
+                    *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
+                                7z x ./"$n"        ;;
+                    *.xz)        unxz ./"$n"        ;;
+                    *.exe)       cabextract ./"$n"  ;;
+                    *)
+                                echo "extract: '$n' - unknown archive method"
+                                return 1
+                                ;;
+                esac
+            else
+                echo "'$n' - file does not exist"
+                return 1
+            fi
+            done
+        fi
+    }
+
+    function compress {
+        if [ -z "$1" ]; then
+            # display usage if no parameters given
+            echo "Usage: compress <path/directory> <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz>"
+            return 1
+        else
+            input=$1
+            output=$2
+            # TODO: Add support for single files (in addition to directories).
+            if [ -d "$input" ] || [ -f "$input" ] ; then
+                case "${output%,}" in
+                    *.tar)
+                                tar cf "$output" "$input"  ;;
+                    *.tar.gz|*.tgz)
+                                tar zcf "$output" "$input" ;;
+                    *.tar.bz2|*.tbz2)
+                                tar jcf "$output" "$input" ;;
+                    *.tar.xz|*.txz)
+                                tar Jcf "$output" "$input" ;;
+                    *.tar.lzma|*.tlzma)
+                                tar cf "$output" --lzma "$input"  ;;
+                    # TODO: Finish these below.
+                    *.bz2)
+                                bzip2 ./"$n"                ;;
+                    *.rar)
+                                rar x -ad ./"$n"            ;;
+                    *.gz)
+                                gzip ./"$n"                 ;;
+                    *.zip)
+                                zip ./"$n"                  ;;
+                    *.z)
+                                compress ./"$n"             ;;
+                    *.7z)
+                                7z a ./"$n"                 ;;
+                    *.xz)
+                                xz ./"$n"                   ;;
+                    *)
+                                echo "compress: '$output' - unknown archive method"
+                                return 1
+                                ;;
+                esac
+            else
+                echo "'$n' - file does not exist"
+                return 1
+            fi
         fi
     }
 
