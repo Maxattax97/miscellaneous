@@ -35,7 +35,7 @@ zshrc_enter_tmux() {
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
             tmux -2 new-session -s Main \; \
-                send-keys 'gotop' C-m \;
+                send-keys 'forever gotop' C-m \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -644,11 +644,11 @@ zshrc_load_library() {
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
     # TODO: Add support for cpio, ar, iso
     # TODO: Add progress bar, remove verbose flag
-    function extract {
+    inflate() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
-            echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-            echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+            echo "Usage: inflate <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+            echo "       inflate <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
             return 1
         else
             for n in $@
@@ -668,7 +668,7 @@ zshrc_load_library() {
                     *.xz)        unxz ./"$n"        ;;
                     *.exe)       cabextract ./"$n"  ;;
                     *)
-                                echo "extract: '$n' - unknown archive method"
+                                echo "inflate: '$n' - unknown archive method"
                                 return 1
                                 ;;
                 esac
@@ -680,10 +680,10 @@ zshrc_load_library() {
         fi
     }
 
-    function compress {
+    squeeze() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
-            echo "Usage: compress <path/directory> <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz>"
+            echo "Usage: squeeze <path/directory> <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz>"
             return 1
         else
             input=$1
@@ -717,12 +717,12 @@ zshrc_load_library() {
                     *.xz)
                                 xz ./"$n"                   ;;
                     *)
-                                echo "compress: '$output' - unknown archive method"
+                                echo "squeeze: '$output' - unknown archive method"
                                 return 1
                                 ;;
                 esac
             else
-                echo "'$n' - file does not exist"
+                echo "'$input' - file does not exist"
                 return 1
             fi
         fi
@@ -844,6 +844,68 @@ zshrc_load_library() {
     }
 
     # TODO: bats.infect for those annoying low level AATS RMCU's.
+
+
+    forever() {
+        cmd_base="$1"
+        cmd_args=$@
+
+        while true; do
+            $cmd_args
+            exit_code=$?
+            if [ "$exit_code" != 0 ]; then
+                echo "$1 has crashed, restarting ..."
+                sleep 1
+            else
+                echo "Exiting due to success exit code"
+                return
+            fi
+        done
+    }
+
+    d2h() {
+        dec=$1
+        printf "${dec} -> 0x%x\n" "${dec}"
+    }
+
+    h2d() {
+        hex=$1
+        if [[ "${hex:0:2}" != "0x" ]]; then
+            hex="0x${hex}"
+        fi
+        printf "${hex} -> %d\n" "${hex}"
+    }
+
+    # TODO: Make this filter (but not destroy) any input.
+    humanize() {
+        for B in "${@:-$(</dev/stdin)}"; do
+            [ $B -lt 1024 ] && echo ${B} B && break
+            KB=$(((B+512)/1024))
+            [ $KB -lt 1024 ] && echo ${KB} KiB && break
+            MB=$(((KB+512)/1024))
+            [ $MB -lt 1024 ] && echo ${MB} MiB && break
+            GB=$(((MB+512)/1024))
+            [ $GB -lt 1024 ] && echo ${GB} GiB && break
+            echo $(((GB+512)/1024)) TiB
+        done
+    }
+
+    dehumanize() {
+        for v in "${@:-$(</dev/stdin)}"; do
+            echo $v | awk \
+            'BEGIN{IGNORECASE = 1}
+            function printpower(n,b,p) {printf "%u\n", n*b^p; next}
+            /[0-9]$/{print $1;next};
+            /K(iB)?$/{printpower($1,  2, 10)};
+            /M(iB)?$/{printpower($1,  2, 20)};
+            /G(iB)?$/{printpower($1,  2, 30)};
+            /T(iB)?$/{printpower($1,  2, 40)};
+            /KB$/{    printpower($1, 10,  3)};
+            /MB$/{    printpower($1, 10,  6)};
+            /GB$/{    printpower($1, 10,  9)};
+            /TB$/{    printpower($1, 10, 12)}'
+        done
+    }
 }
 
 zshrc_set_aliases() {
