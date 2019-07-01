@@ -864,21 +864,30 @@ zshrc_load_library() {
     }
 
     d2h() {
-        dec=$1
-        printf "${dec} -> 0x%x\n" "${dec}"
+        for dec in "${@:-$(</dev/stdin)}"; do
+            printf "0x%x\n" "${dec}"
+        done
     }
 
     h2d() {
-        hex=$1
-        if [[ "${hex:0:2}" != "0x" ]]; then
-            hex="0x${hex}"
-        fi
-        printf "${hex} -> %d\n" "${hex}"
+        for hex in "${@:-$(</dev/stdin)}"; do
+            if [[ "${hex:0:2}" != "0x" ]]; then
+                hex="0x${hex}"
+                printf "$hex -> " > /dev/stderr
+            fi
+            printf "%d\n" "${hex}"
+        done
     }
+
+    alias x2d='h2d'
+    alias d2x='d2h'
 
     # TODO: Make this filter (but not destroy) any input.
     humanize() {
         for B in "${@:-$(</dev/stdin)}"; do
+            if [[ "${hex:0:2}" != "0x" ]]; then
+                B="$(h2d "${B}")"
+            fi
             [ $B -lt 1024 ] && echo ${B} B && break
             KB=$(((B+512)/1024))
             [ $KB -lt 1024 ] && echo ${KB} KiB && break
