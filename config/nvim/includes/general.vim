@@ -69,7 +69,7 @@ set foldmethod=indent
 set foldnestmax=3
 
 " Open splits on the top, and right sides.
-set splitright
+"set splitright
 
 " }}}
 
