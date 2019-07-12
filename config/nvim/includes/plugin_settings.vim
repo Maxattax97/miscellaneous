@@ -4,13 +4,34 @@ let g:ale_sign_column_always = 1
 
 " Enable virtualtext.
 let g:ale_virtualtext_cursor = 1
+let g:ale_virtualtext_prefix = ' ]] '
+
+let g:ale_c_clangformat_options = '-style=file -assume-filename=file.js'
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
-\   'jsx': ['eslint'],
+\   'javascript': ['clang-format', 'eslint'],
+\   'typescript': ['clang-format', 'eslint'],
+\   'jsx': ['clang-format', 'eslint'],
 \   'python': ['black'],
+\}
+
+" Disable ALE for C/C++, Python, use LSP exclusively.
+let g:ale_linters = {
+\   'c': [],
+\   'cpp': [],
+\   'python': [],
+\   'java': [],
+\   'json': [],
+\   'javascript': [],
+\   'typescript': [],
+\   'jsx': [],
+\   'css': [],
+\   'html': [],
+\   'ruby': [],
+\   'rust': [],
+\   'go': [],
+\   'yaml': [],
 \}
 
 " Automatically fix on save.
@@ -83,8 +104,18 @@ let g:go_fmt_fail_silently = 1
 " }}}
 
 " Miscellaneous {{{
+"let g:neoformat_javascript_clangformat = {
+            "\ 'exe': 'clang-format',
+            "\ 'args': ['-style=file', '-assume-filename=file.js'],
+            "\ 'stdin': 1
+            "\ }
+
+"let g:neoformat_enabled_javascript = ['clangformat']
+
 " Enable rainbow parenthesization.
-"call rainbow_parentheses#activate()
+call rainbow_parentheses#activate()
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+let g:rainbow#blacklist = [242, 243, 246, 247]
 
 " Enable indent guides.
 let g:indent_guides_enable_on_vim_startup = 1

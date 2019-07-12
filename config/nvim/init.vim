@@ -1,3 +1,4 @@
+" vim: set foldmethod=marker:
 if &compatible
     set nocompatible
 endif

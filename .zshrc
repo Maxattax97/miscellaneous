@@ -288,9 +288,10 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
-    if [[ -e "$HOME/.batsrc" ]]; then
-        source "$HOME/.batsrc"
-    fi
+    # Now using zshrc_batsdevrc.
+    #if [[ -e "$HOME/.batsrc" ]]; then
+        #source "$HOME/.batsrc"
+    #fi
 
     if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
         source "$HOME/.profile"
@@ -1092,6 +1093,137 @@ zshrc_set_environment_variables() {
     export CHASSIS="$chassis_name"
 }
 
+zshrc_batsdevrc() {
+    if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
+        # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
+
+        bats_run() {
+            echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
+            bash -c "source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
+        }
+
+        bats.p4v() {
+            bats_run "bats.p4v $*"
+        }
+
+        bats.update-docker-containers() {
+            bats_run "bats.update-docker-containers $*"
+        }
+
+        bats.docker-run-aatsv4() {
+            bats_run "bats.docker-run-aatsv4 $*"
+        }
+
+        bats.docker-build() {
+            bats_run "bats.docker-build $*"
+        }
+
+        bats.docker-run() {
+            bats_run "bats.docker-run $*"
+        }
+
+        bats.docker-run-x86() {
+            bats_run "bats.docker-run-x86 $*"
+        }
+
+        bats.docker-run-arm() {
+            bats_run "bats.docker-run-arm $*"
+        }
+
+        bats.docker-run-crosstoolchains() {
+            bats_run "bats.docker-run-crosstoolchains $*"
+        }
+
+        bats.docker-run-crossarm() {
+            bats_run "bats.docker-run-crossarm $*"
+        }
+
+        bats.docker-run-node() {
+            bats_run "bats.docker-run-node $*"
+        }
+
+        bats.docker-run-x86ubuntu() {
+            bats_run "bats.docker-run-x86ubuntu $*"
+        }
+
+        bats.docker-run-automatedtesting() {
+            bats_run "bats.docker-run-automatedtesting $*"
+        }
+
+        bats.build() {
+            bats_run "bats.build $*"
+        }
+
+        bats.radiokeys() {
+            bats_run "bats.radiokeys $*"
+        }
+
+        bats.compile-all() {
+            bats_run "bats.compile-all $*"
+        }
+
+        bats.compile-x86() {
+            bats_run "bats.compile-x86 $*"
+        }
+
+        bats.compile-arm() {
+            bats_run "bats.compile-arm $*"
+        }
+
+        bats._portknock() {
+            bats_run "bats._portknock $*"
+        }
+
+        bats._passwordseed() {
+            bats_run "bats._passwordseed $*"
+        }
+
+        bats._rootpasswordfromseed() {
+            bats_run "bats._rootpasswordfromseed $*"
+        }
+
+        bats._devpasswordfromseed() {
+            bats_run "bats._devpasswordfromseed $*"
+        }
+
+        bats.ssh() {
+            bats_run "bats.ssh $*"
+        }
+
+        bats.scp() {
+            bats_run "bats.scp $*"
+        }
+
+        bats.pw() {
+            bats_run "bats.pw $*"
+        }
+
+        bats.portforwardssh() {
+            bats_run "bats.portforwardssh $*"
+        }
+
+        bats.http-server() {
+            bats_run "bats.http-server $*"
+        }
+
+        bats.https-server() {
+            bats_run "bats.https-server $*"
+        }
+
+        bats.http-get() {
+            bats_run "bats.http-get $*"
+        }
+
+        bats.https-get() {
+            bats_run "bats.https-get $*"
+        }
+
+        bats.usbserial() {
+            bats_run "bats.usbserial $*"
+        }
+    fi
+}
+
 zshrc_drop_mode() {
     zshrc_low_power=true
     zshrc_dropping_mode=true
@@ -1110,6 +1242,7 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_source
+    zshrc_batsdevrc
     zshrc_set_path
     zshrc_set_aliases
     zshrc_set_default_programs
