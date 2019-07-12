@@ -656,21 +656,39 @@ zshrc_load_library() {
             if [ -f "$n" ] ; then
                 case "${n%,}" in
                     *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-                                tar xvf "$n"       ;;
-                    *.lzma)      unlzma ./"$n"      ;;
-                    *.bz2)       bunzip2 ./"$n"     ;;
-                    *.rar)       unrar x -ad ./"$n" ;;
-                    *.gz)        gunzip ./"$n"      ;;
-                    *.zip)       unzip ./"$n"       ;;
-                    *.z)         uncompress ./"$n"  ;;
+                        tar xvf "$n"
+                        ;;
+                    *.lzma)
+                        unlzma ./"$n"
+                        ;;
+                    *.bz2)
+                        bunzip2 ./"$n"
+                        ;;
+                    *.rar)
+                        unrar x -ad ./"$n"
+                        ;;
+                    *.gz)
+                        gunzip ./"$n"
+                        ;;
+                    *.zip)
+                        unzip ./"$n"
+                        ;;
+                    *.z)
+                        uncompress ./"$n"
+                        ;;
                     *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                                7z x ./"$n"        ;;
-                    *.xz)        unxz ./"$n"        ;;
-                    *.exe)       cabextract ./"$n"  ;;
+                        7z x ./"$n"
+                        ;;
+                    *.xz)
+                        unxz ./"$n"
+                        ;;
+                    *.exe)
+                        cabextract ./"$n"
+                        ;;
                     *)
-                                echo "inflate: '$n' - unknown archive method"
-                                return 1
-                                ;;
+                        echo "inflate: '$n' - unknown archive method"
+                        return 1
+                        ;;
                 esac
             else
                 echo "'$n' - file does not exist"
@@ -692,34 +710,46 @@ zshrc_load_library() {
             if [ -d "$input" ] || [ -f "$input" ] ; then
                 case "${output%,}" in
                     *.tar)
-                                tar cf "$output" "$input"  ;;
+                        tar cf "$output" "$input"
+                        ;;
                     *.tar.gz|*.tgz)
-                                tar zcf "$output" "$input" ;;
+                        tar zcf "$output" "$input"
+                        ;;
                     *.tar.bz2|*.tbz2)
-                                tar jcf "$output" "$input" ;;
+                        tar jcf "$output" "$input"
+                        ;;
                     *.tar.xz|*.txz)
-                                tar Jcf "$output" "$input" ;;
+                        tar Jcf "$output" "$input"
+                        ;;
                     *.tar.lzma|*.tlzma)
-                                tar cf "$output" --lzma "$input"  ;;
-                    # TODO: Finish these below.
+                        tar cf "$output" --lzma "$input"
+                        ;;
                     *.bz2)
-                                bzip2 ./"$n"                ;;
+                        bzip2 ./"$n"
+                        ;;
+                    # TODO: Finish these below.
                     *.rar)
-                                rar x -ad ./"$n"            ;;
+                        rar x -ad ./"$n"
+                        ;;
                     *.gz)
-                                gzip ./"$n"                 ;;
+                        gzip ./"$n"
+                        ;;
                     *.zip)
-                                zip ./"$n"                  ;;
+                        zip ./"$n"
+                        ;;
                     *.z)
-                                compress ./"$n"             ;;
+                        compress ./"$n"
+                        ;;
                     *.7z)
-                                7z a ./"$n"                 ;;
+                        7z a ./"$n"
+                        ;;
                     *.xz)
-                                xz ./"$n"                   ;;
+                        xz ./"$n"
+                        ;;
                     *)
-                                echo "squeeze: '$output' - unknown archive method"
-                                return 1
-                                ;;
+                        echo "squeeze: '$output' - unknown archive method"
+                        return 1
+                        ;;
                 esac
             else
                 echo "'$input' - file does not exist"
