@@ -6,7 +6,8 @@ call dein#add('wsdjeg/dein-ui.vim')
 " An autocompletion engine.
 "call dein#add('shougo/deoplete.nvim')
 " INSTALL: yarn
-call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
+"call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
+call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
 
 " Display function arguments in command bar. Works with deoplete.
 " TODO: Not displaying?
@@ -152,6 +153,8 @@ call dein#add('neoclide/coc-neco')
 "call dein#add('othree/csscomplete.vim')
 "call dein#add('othree/html5.vim')
 "call dein#add('othree/xml.vim')
+
+"call dein#add('sbdchd/neoformat')
 " }}}
 
 " Syntax / File Support {{{

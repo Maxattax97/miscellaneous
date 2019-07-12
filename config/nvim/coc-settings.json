@@ -3,6 +3,9 @@
     "codeLens.enable": true,
     "diagnostic.checkCurrentLine": true,
     "diagnostic.displayByAle": true,
+    "diagnostic.warningSign": ">>",
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextPrefix": " ]] ",
     "languageserver": {
         "bash": {
             "args": ["start"],

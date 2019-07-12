@@ -84,6 +84,8 @@ noremap <leader><CR> :Denite buffer file/rec tag<CR>
 nmap <leader>c<CR> <Plug>NERDCommenterToggle
 vmap <leader>c<CR> <Plug>NERDCommenterToggle
 
-" Map ALE error jumping.
+" Map ALE and CoC error jumping.
 nmap <silent> <leader>e <Plug>(ale_next_wrap)
 nmap <silent> <leader><S-e> <Plug>(ale_previous_wrap)
+"nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
+"nmap <silent> <leader><S-e> <Plug>(coc-diagnostic-prev)
