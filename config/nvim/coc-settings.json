@@ -1,6 +1,6 @@
 {
     "coc.preferences.extensionUpdateCheck": "weekly",
-    "codeLens.enable": true,
+    "codeLens.enable": false,
     "diagnostic.checkCurrentLine": true,
     "diagnostic.displayByAle": true,
     "diagnostic.warningSign": ">>",
