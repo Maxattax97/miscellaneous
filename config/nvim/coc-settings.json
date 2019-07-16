@@ -34,6 +34,7 @@
     },
     "suggest.echodocSupport": true,
     "suggest.enablePreview": true,
-    "suggest.maxCompleteItemCount": 30,
-    "suggest.timeout": 5000
+    "suggest.maxCompleteItemCount": 50,
+    "suggest.timeout": 5000,
+    "javascript.validate.enable": false
 }
