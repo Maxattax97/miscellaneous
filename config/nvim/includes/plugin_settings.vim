@@ -6,7 +6,8 @@ let g:ale_sign_column_always = 1
 let g:ale_virtualtext_cursor = 1
 let g:ale_virtualtext_prefix = ' ]] '
 
-let g:ale_c_clangformat_options = '-style=file -assume-filename=file.js'
+let g:ale_javascript_clangformat_options = '-style=file -assume-filename=file.js'
+"let g:ale_c_clangformat_options = '-style=file'
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
