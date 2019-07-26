@@ -6,14 +6,14 @@ let g:ale_sign_column_always = 1
 let g:ale_virtualtext_cursor = 1
 let g:ale_virtualtext_prefix = ' ]] '
 
-let g:ale_javascript_clangformat_options = '-style=file -assume-filename=file.js'
+"let g:ale_javascript_clangformat_options = '-style=file -assume-filename=file.js'
 "let g:ale_c_clangformat_options = '-style=file'
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['clang-format', 'eslint'],
-\   'typescript': ['clang-format', 'eslint'],
-\   'jsx': ['clang-format', 'eslint'],
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
+\   'jsx': ['eslint'],
 \   'python': ['black'],
 \}
 
@@ -105,6 +105,8 @@ let g:go_fmt_fail_silently = 1
 " }}}
 
 " Miscellaneous {{{
+" Causes broken highlighted curly braces.
+let g:polyglot_disabled = ['jsx']
 "let g:neoformat_javascript_clangformat = {
             "\ 'exe': 'clang-format',
             "\ 'args': ['-style=file', '-assume-filename=file.js'],

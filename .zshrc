@@ -1037,7 +1037,11 @@ zshrc_set_environment_variables() {
     fi
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
-        export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
+        export PERFORCE_WORKSPACE="${HOME}/Perforce/mocull/"
+        export _code_path="${PERFORCE_WORKSPACE}/Engineering/Software/Linux/Code"
+        #export NODE_PATH="${NODE_PATH}:${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib"
+        export NODE_PATH="${_code_path}/node_modules_dev/node_modules:${_code_path}/AATSV4/Lib:${_code_path}/AATSV4/node_modules"
+        export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
     fi
 
     if [[ -s "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
@@ -1220,6 +1224,10 @@ zshrc_batsdevrc() {
 
         bats.usbserial() {
             bats_run "bats.usbserial $*"
+        }
+
+        bats.install-dev-node-modules() {
+            bats_run "bats.install-dev-node-modules $*"
         }
     fi
 }

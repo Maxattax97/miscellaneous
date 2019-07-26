@@ -170,6 +170,8 @@ call dein#add('vim-perl/vim-perl')
 " INSTALL: :GoInstallBinaries
 call dein#add('fatih/vim-go')
 
+" Adds support for Apache Avro's IDL files.
+call dein#add('gurpreetatwal/vim-avro')
 " }}}
 
 " Aesthetics {{{
