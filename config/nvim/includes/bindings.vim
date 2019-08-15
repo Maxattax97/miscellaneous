@@ -24,6 +24,9 @@ nnoremap <F4> <Plug>(ale_fix)
 " Bind Mundo history to F6
 nnoremap <F6> :MundoToggle<CR>
 
+" Format the buffer.
+nnoremap <F12> :ALEFix<CR>
+
 " Map block comment to Leader-c
 " nnoremap <Leader>c<CR> <Plug>NERDCommenterToggle
 " vnoremap <Leader>c<CR> <Plug>NERDCommenterToggle
@@ -78,8 +81,9 @@ function! s:show_documentation()
     endif
 endfunction
 
-" Map Denite fuzzy search to act like ~CtrlP~ a friggin' boss.
-noremap <leader><CR> :Denite buffer file/rec tag<CR>
+noremap <leader><CR> :Denite buffer tag file_mru file/rec<CR>
+noremap <leader>\ :Denite tag buffer grep:. file_mru file/rec<CR>
+noremap <leader>; :Denite buffer tag file_mru line<CR>
 
 nmap <leader>c<CR> <Plug>NERDCommenterToggle
 vmap <leader>c<CR> <Plug>NERDCommenterToggle

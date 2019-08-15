@@ -989,6 +989,8 @@ zshrc_set_aliases() {
     alias sudo dd='sudo dd status=progress'
 
     alias gpg='gpg2 --with-subkey-fingerprints'
+
+    alias please='sudo'
 }
 
 zshrc_set_default_programs() {
@@ -1104,6 +1106,9 @@ zshrc_batsdevrc() {
         bats_run() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
             bash -c "source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
+        }
+        bats.install-vscode-extensions() {
+            bats_run "bats.install-vscode-extensions $*"
         }
 
         bats.p4v() {

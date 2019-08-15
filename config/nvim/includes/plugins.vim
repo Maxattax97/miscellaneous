@@ -38,7 +38,12 @@ call dein#add('scrooloose/nerdcommenter')
 call dein#add('godlygeek/tabular')
 
 " Asynchronous fuzzy finder.
+" INSTALL: pip3 install pynvim
+" INSTALL: cargo install ripgrep
 call dein#add('shougo/denite.nvim')
+
+" file_mru plugin for Denite.
+call dein#add('shougo/neomru.vim')
 
 " Vim colortemplate generator.
 call dein#add('lifepillar/vim-colortemplate')
