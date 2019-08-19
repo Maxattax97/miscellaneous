@@ -1,3 +1,4 @@
+" vim: foldmethod=marker
 " ALE {{{
 " Add an error indicator to ALE.
 let g:ale_sign_column_always = 1
@@ -113,7 +114,7 @@ try
 "   --glob:  Include or exclues files for searching that match the given glob
 "            (aka ignore .git files)
 "
-call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git'])
+call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git', '--glob', '!node_modules'])
 
 " Use ripgrep in place of "grep"
 call denite#custom#var('grep', 'command', ['rg'])
@@ -142,6 +143,10 @@ call denite#custom#source(
 \ 'tag', 'sorters', ['sorter/sublime'])
 call denite#custom#source(
 \ 'buffer', 'sorters', ['sorter/sublime'])
+call denite#custom#source(
+\ 'file_mru', 'sorters', ['sorter/sublime'])
+call denite#custom#source(
+\ 'help', 'sorters', ['sorter/help'])
 
 " Custom options for Denite
 "   auto_resize             - Auto resize the Denite window height automatically.
@@ -178,6 +183,62 @@ call s:profile(s:denite_options)
 catch
   echom 'Denite not installed, skipping configuration.'
 endtry
+" }}}
+
+" Vista {{{
+" INSTALL: https://github.com/universal-ctags/ctags
+let g:vista_default_executive = 'ctags'
+let g:vista_icon_indent = ['▸ ', '▸ ']
+let g:vista#renderer#enable_icon = 1
+let g:vista_executive_for = {
+ \ 'javascript': 'coc',
+ \ 'typescript': 'coc',
+ \ 'jsx': 'coc',
+ \ 'ruby': 'coc',
+ \ 'python': 'coc',
+ \ 'java': 'coc',
+ \ 'rust': 'coc',
+ \ 'html': 'coc',
+ \ 'php': 'coc',
+ \ 'fsharp': 'coc'
+ \ }
+
+let g:vista_echo_cursor_strategy = 'floating_win'
+" }}}
+
+" Defx {{{
+"call defx#custom#column('icon', {
+ "\ 'directory_icon': '▸',
+ "\ 'opened_icon': '▾',
+ "\ 'root_icon': ' ',
+ "\ })
+
+"call defx#custom#column('mark', {
+ "\ 'readonly_icon': '✗',
+ "\ 'selected_icon': '✓',
+ "\ })
+
+"nnoremap <silent><buffer><expr> <CR>
+ "\ defx#is_directory() ?
+ "\ defx#do_action('open') :
+ "\ defx#do_action('multi', ['drop', 'quit'])
+
+
+call defx#custom#option('_', 'drives', [
+ \ expand('~/Downloads'), expand('~')
+ \ ])
+
+silent! call defx#custom#option('_', {
+ \ 'columns': 'indent:git:icons:filename',
+ \ 'winwidth': 35,
+ \ 'split': 'vertical',
+ \ 'direction': 'topleft',
+ \ 'ignored_files': '',
+ \ 'show_ignored_files': v:true,
+ \ 'toggle': v:true,
+ \ 'buffer_name': 'Defx'
+ \ })
+
 " }}}
 
 " Miscellaneous {{{

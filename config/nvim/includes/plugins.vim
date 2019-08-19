@@ -17,12 +17,18 @@ call dein#add('shougo/echodoc.vim')
 call dein#add('w0rp/ale')
 
 " Access project files in side-bar.
-call dein#add('scrooloose/nerdtree')
-call dein#add('xuyuanp/nerdtree-git-plugin')
-call dein#add('jistr/vim-nerdtree-tabs')
+"call dein#add('scrooloose/nerdtree')
+"call dein#add('xuyuanp/nerdtree-git-plugin')
+"call dein#add('jistr/vim-nerdtree-tabs')
+call dein#add('shougo/defx.nvim')
+call dein#add('kristijanhusak/defx-git')
+call dein#add('kristijanhusak/defx-icons')
 
 " Access function tags in side-bar.
-call dein#add('majutsushi/tagbar')
+"call dein#add('majutsushi/tagbar')
+
+" Access function, module, class, variable, etc. tags in side-bar with LSP.
+call dein#add('liuchengxu/vista.vim')
 
 " Integrated Git commands and change indicator.
 call dein#add('mhinz/vim-signify')

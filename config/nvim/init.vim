@@ -18,6 +18,7 @@ if dein#load_state('~/.cache/dein')
     call dein#add('~/.cache/dein/repos/repos/github.com/Shougo/dein.vim')
     call dein#add('Shougo/dein.vim')
 
+    " TODO: Migrate plugins to init.vim file so they are sourced properly?
     source ~/.config/nvim/includes/plugins.vim
 
     call dein#end()

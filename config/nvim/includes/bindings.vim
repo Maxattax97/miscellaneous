@@ -1,3 +1,4 @@
+" vim: foldmethod=marker
 " Map leader
 let mapleader = " "
 "nnoremap <Space> <nop>
@@ -9,11 +10,13 @@ nnoremap <S-Tab> <C-w><S-w>
 " Map Ctrl-Z to a no-op so I don't screw up an background the process.
 nnoremap <c-z> <nop>
 
-" Bind NerdTree to F2
-noremap <F2> :NERDTreeToggle<CR>
+" Bind NerdTree or Defx to F2
+"noremap <F2> :NERDTreeToggle<CR>
+noremap <F2> :Defx<CR>
 
-" Bind Tagbar to F3
-noremap <F3> :TagbarToggle<CR>
+" Bind Tagbar or Vista to F3
+"noremap <F3> :TagbarToggle<CR>
+noremap <F3> :Vista<CR>
 
 " Bind make to F5
 noremap <F5> :make<CR>
@@ -81,9 +84,9 @@ function! s:show_documentation()
     endif
 endfunction
 
-noremap <leader><CR> :Denite buffer tag file_mru file/rec<CR>
-noremap <leader>\ :Denite tag buffer grep:. file_mru file/rec<CR>
-noremap <leader>; :Denite buffer tag file_mru line<CR>
+noremap <leader><CR> :Denite buffer tag file_mru file/rec help<CR>
+noremap <leader>\g :Denite tag buffer grep:. file_mru file/rec<CR>
+noremap <leader>\h :Denite help<CR>
 
 nmap <leader>c<CR> <Plug>NERDCommenterToggle
 vmap <leader>c<CR> <Plug>NERDCommenterToggle
@@ -93,3 +96,6 @@ nmap <silent> <leader>e <Plug>(ale_next_wrap)
 nmap <silent> <leader><S-e> <Plug>(ale_previous_wrap)
 "nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
 "nmap <silent> <leader><S-e> <Plug>(coc-diagnostic-prev)
+
+" Always open help vertically.
+"cnoremap help vert help

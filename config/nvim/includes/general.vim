@@ -1,4 +1,4 @@
-" vim: set foldmethod=marker:
+" vim: foldmethod=marker
 " General {{{
 " Make controls more comfortable for line wrapping.
 set backspace=eol,start,indent
