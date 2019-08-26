@@ -16,6 +16,7 @@ let g:ale_fixers = {
 \   'typescript': ['eslint'],
 \   'jsx': ['eslint'],
 \   'python': ['black'],
+\   'rust': ['rustfmt'],
 \}
 
 " Disable ALE for C/C++, Python, use LSP exclusively.

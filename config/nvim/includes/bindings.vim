@@ -16,7 +16,7 @@ noremap <F2> :Defx<CR>
 
 " Bind Tagbar or Vista to F3
 "noremap <F3> :TagbarToggle<CR>
-noremap <F3> :Vista<CR>
+noremap <F3> :Vista!!<CR>
 
 " Bind make to F5
 noremap <F5> :make<CR>

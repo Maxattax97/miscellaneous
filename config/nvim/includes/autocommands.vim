@@ -6,7 +6,6 @@ augroup neovim_studio_filetypes
     autocmd BufRead,BufNewFile *.colortemplate set filetype=colortemplate
 augroup end
 
-
 augroup neovim_studio_coc
     autocmd!
     " Hover on cursor hold.
@@ -85,11 +84,11 @@ augroup neovim_studio_defx
 			\ defx#is_directory()
 				\ ? defx#do_action('open_or_close_tree')
 				\ : defx#do_action('drop')
-		nnoremap <buffer><silent><expr> s
+		nnoremap <buffer><silent><expr> v
 			\ defx#is_directory()
 				\ ? defx#do_action('open_or_close_tree')
 				\ : defx#do_action('drop', 'vsplit')
-		nnoremap <buffer><silent><expr> i
+		nnoremap <buffer><silent><expr> s
 			\ defx#is_directory()
 				\ ? defx#do_action('open_or_close_tree')
 				\ : defx#do_action('drop', 'split')
@@ -118,6 +117,7 @@ augroup neovim_studio_defx
 		nnoremap <buffer><silent><expr> <C-g> defx#do_action('print')
 		nnoremap <buffer><silent><expr> zh defx#do_action('toggle_ignored_files')
 		nnoremap <buffer><silent><expr> ypf defx#do_action('yank_path')
+		nnoremap <buffer><silent><expr> q defx#do_action('quit')
 
 		" Custom
 		nnoremap <buffer><silent><expr> gl defx#do_action('call', 'DefxTmuxExplorer')
@@ -131,3 +131,9 @@ augroup neovim_studio_defx
 		endfunction
 	endfunction
 augroup end
+
+"augroup neovim_studio_auto_open
+    "autocmd!
+    "autocmd VimEnter * Vista
+    "autocmd VimEnter * Defx
+"augroup end
