@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib/AATS/Radio'
-let g:netrw_dirhist_2='/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4'
-let g:netrw_dirhist_3='/home/max/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Apps/AATS'

@@ -293,14 +293,14 @@ zshrc_source() {
         #source "$HOME/.batsrc"
     #fi
 
-    if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-        source "$HOME/.profile"
+    #if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+        #source "$HOME/.profile"
 
-        if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-            # Doesn't exist within the profile.
-            export NEOVIM_STUDIO_PROFILE_SOURCED=1
-        fi
-    fi
+        #if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
+            ## Doesn't exist within the profile.
+            #export NEOVIM_STUDIO_PROFILE_SOURCED=1
+        #fi
+    #fi
 
     if [ -f "${HOME}/.zplug/repos/junegunn/fzf/shell/key-bindings.zsh" ]; then
         # fzf searches for this, so leave it as it is.
@@ -1096,12 +1096,23 @@ zshrc_set_environment_variables() {
         esac
     fi
 
+    if [[ -d "$HOME/go" ]]; then
+        export GOPATH="$HOME/go"
+    fi
+
     export CHASSIS="$chassis_name"
 }
 
 zshrc_batsdevrc() {
     if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
+        _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
+        export GOROOT="${_code_path}/.local/go/"
+        export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
+        export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"
+
+        export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
+        export PATH="${_code_path}/.local/go/bin/:$PATH"
 
         bats_run() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
