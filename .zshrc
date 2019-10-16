@@ -1113,6 +1113,7 @@ zshrc_batsdevrc() {
 
         export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
         export PATH="${_code_path}/.local/go/bin/:$PATH"
+        export PATH="${_code_path}/gocode/vendor/bin:$PATH"
 
         bats_run() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
@@ -1212,6 +1213,10 @@ zshrc_batsdevrc() {
 
         bats.scp() {
             bats_run "bats.scp $*"
+        }
+
+        bats.dupe-aatsv4() {
+            bats_run "bats.dupe-aatsv4 $*"
         }
 
         bats.pw() {
