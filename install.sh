@@ -67,3 +67,21 @@ link_source "bin/restart-kde"
 link_source "bin/logout-kde"
 
 echo "Environment installation complete"
+
+read -r -p "Would you like attempt an install of common utilities? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "(command -v dnf)" ]]; then
+            dnf install -y neovim tmux htop git curl
+        fi
+
+        if [[ ! -d "${HOME}/.cache/dein" ]]; then
+            curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh "${HOME}/.cache/dein"
+        fi
+
+        git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/"
+        ;;
+    *)
+        echo "Skipping utility installation"
+        ;;
+esac
