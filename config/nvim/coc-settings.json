@@ -36,6 +36,8 @@
     "suggest.enablePreview": true,
     "suggest.maxCompleteItemCount": 50,
     "suggest.timeout": 5000,
-    "javascript.validate.enable": false,
-    "python.pythonPath": "python3"
+    "python.pythonPath": "python3",
+    "eslint.nodePath": "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/node_modules_dev",
+    "eslint.packageManager": "yarn",
+    "javascript.validate.enable": false
 }
