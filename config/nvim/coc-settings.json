@@ -36,5 +36,6 @@
     "suggest.enablePreview": true,
     "suggest.maxCompleteItemCount": 50,
     "suggest.timeout": 5000,
-    "javascript.validate.enable": false
+    "javascript.validate.enable": false,
+    "python.pythonPath": "python3"
 }
