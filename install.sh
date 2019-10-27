@@ -75,11 +75,19 @@ case "$response" in
             dnf install -y neovim tmux htop git curl
         fi
 
+	# TODO: install LTS node via NVM which is installed via ZSH.
+
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
-            curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh "${HOME}/.cache/dein"
+            mkdir -p "${HOME}/.cache/dein"
+            curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
+            # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh /tmp/.dein_installer.sh && sh /tmp/.dein_installer.sh "${HOME}/.cache/dein"
+	    # rm -rf /tmp/.dein_installer.sh
         fi
 
-        git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/"
+        if [[ ! -s "${HOME}/bin/gotop" ]]; then
+            git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/"
+            rm -rf /tmp/gotop
+        fi
         ;;
     *)
         echo "Skipping utility installation"
