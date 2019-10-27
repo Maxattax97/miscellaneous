@@ -1,6 +1,9 @@
 config_help=false
 config_benchmark=false
-zshrc_low_power=false
+if [[ -z "$zshrc_low_power" ]]; then
+    # Allow low power mode to propagte up TMUX.
+    zshrc_low_power=false
+fi
 zshrc_dropping_mode=false
 
 zshrc_benchmark_start() {
@@ -19,11 +22,11 @@ zshrc_benchmark_stop() {
 zshrc_probe() {
     case $TERM in
         *linux*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
         *vt100*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
     esac
