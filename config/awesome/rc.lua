@@ -187,15 +187,24 @@ awful.screen.connect_for_each_screen(function(s)
     local l = awful.layout.suit
 
     local layouts = {
-       l.fair.horizontal,
+       l.spiral,
        l.max.fullscreen,
        l.floating,
-       l.fair,
-       l.fair,
-       l.fair.horizontal,
-       l.fair.horizontal,
-       l.fair.horizontal,
-       l.fair.horizontal,
+       l.spiral,
+       l.spiral,
+       l.spiral,
+       l.spiral,
+       l.spiral,
+       l.spiral,
+       --l.fair.horizontal,
+       --l.max.fullscreen,
+       --l.floating,
+       --l.fair,
+       --l.fair,
+       --l.fair.horizontal,
+       --l.fair.horizontal,
+       --l.fair.horizontal,
+       --l.fair.horizontal,
     }
 
     awful.tag(names, s, layouts)
