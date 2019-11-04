@@ -15,6 +15,7 @@ let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \   'typescript': ['eslint'],
 \   'jsx': ['eslint'],
+\   'json': ['jq'],
 \   'python': ['black'],
 \   'rust': ['rustfmt'],
 \}

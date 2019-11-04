@@ -34,8 +34,22 @@ zshrc_enter_tmux() {
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
+            # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
-                send-keys 'forever gotop' C-m \;
+                send-keys 'htop' C-m \; \
+                split-window -v \; \
+                send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
+                send-keys 'gotop' C-m l l \; \
+                split-window -h \; \
+                send-keys 'ctop' C-m \; \
+                select-pane -t 1 \; \
+                new-window \;
+
+                #send-keys 'weechat' C-m \; \
+                #split-window -h \; \
+                #send-keys 'newsboat' C-m \; \
+                #select-pane -t 1 \; \
+                #new-window \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -83,7 +97,11 @@ zshrc_auto_window_title() {
                 print -Pn "\e]1;$1:q\a" # set tab name
                 ;;
             screen*|tmux*)
-                print -Pn "\ek$1:q\e\\" # set screen hardstatus
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                    print -Pn "\ekSYS\e\\" # set screen hardstatus
+                else
+                    print -Pn "\ek$1:q\e\\" # set screen hardstatus
+                fi
                 ;;
             *)
                 if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then

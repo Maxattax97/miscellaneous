@@ -97,7 +97,12 @@ URxvt.iso14755_52: false
 URxvt.letterSpace: -1
 URxvt.lineSpace: 0
 
+xterm*selectToClipboard: true
+xterm*disallowedWindowOps: 20,21,SetXProp
+
 /* See section in sts config.h that describes XResources (~L175) */
+st*selectToClipboard: true
+st*disallowedWindowOps: 20,21,SetXProp
 st*background: S_base3
 st.borderpx: 0
 st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
