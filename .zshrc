@@ -42,12 +42,13 @@ zshrc_enter_tmux() {
             tmux -2 new-session -s Main \; \
                 send-keys 'htop' C-m \; \
                 split-window -v \; \
-                send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
                 send-keys 'gotop' C-m l l \; \
                 split-window -h \; \
                 send-keys 'ctop' C-m \; \
                 select-pane -t 1 \; \
                 new-window \;
+
+                #send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
 
                 #send-keys 'weechat' C-m \; \
                 #split-window -h \; \
@@ -98,8 +99,12 @@ zshrc_auto_window_title() {
 
         case "$TERM" in
             cygwin|xterm*|putty*|rxvt*|ansi)
-                print -Pn "\e]2;$2:q\a" # set window name
-                print -Pn "\e]1;$1:q\a" # set tab name
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                    print -Pn "\ekSYS\e\\" # set screen hardstatus
+                else
+                    print -Pn "\e]2;$2:q\a" # set window name
+                    print -Pn "\e]1;$1:q\a" # set tab name
+                fi
                 ;;
             screen*|tmux*)
                 if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
@@ -1311,6 +1316,10 @@ zshrc_init() {
     zshrc_set_options
     zshrc_autoload
     if ( ! $zshrc_low_power ); then
+        # Do this for now instead of `export TERM=xterm-256color` to avoid
+        # annoying ZSH message. using xterm will break vim colors, and change
+        # functionality of many other programs to not work.
+        POWERLEVEL9K_IGNORE_TERM_COLORS=true
         zshrc_powerlevel9k
     else
         zshrc_raw_prompt
