@@ -1,6 +1,9 @@
 config_help=false
 config_benchmark=false
-zshrc_low_power=false
+if [[ -z "$zshrc_low_power" ]]; then
+    # Allow low power mode to propagte up TMUX.
+    zshrc_low_power=false
+fi
 zshrc_dropping_mode=false
 
 zshrc_benchmark_start() {
@@ -19,18 +22,19 @@ zshrc_benchmark_stop() {
 zshrc_probe() {
     case $TERM in
         *linux*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
         *vt100*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
     esac
 }
 
 zshrc_enter_tmux() {
-    if [[ -n "$DISPLAY" ]] && [[ -x "$(command -v tmux)" ]]; then
+    # [[ -n "$DISPLAY" ]] &&
+    if [[ -x "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
@@ -54,6 +58,7 @@ zshrc_enter_tmux() {
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
                 # Session id is date and time to prevent conflict
+                # TODO: Make session number more... meaningful?
                 local session_id="$(date +%H%M%S)"
 
                 # Create a new session (without attaching it) and link to base session
@@ -1009,6 +1014,12 @@ zshrc_set_aliases() {
     alias gpg='gpg2 --with-subkey-fingerprints'
 
     alias please='sudo'
+
+    # Docker commands
+    alias dcp='docker-compose -f /opt/docker-compose.yml '
+    alias dcpull='docker-compose -f /opt/docker-compose.yml pull --parallel'
+    alias dclogs='docker-compose -f /opt/docker-compose.yml logs -tf --tail="50" '
+    alias dtail='docker logs -tf --tail="50" "$@"'
 }
 
 zshrc_set_default_programs() {
