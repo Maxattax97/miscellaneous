@@ -72,9 +72,11 @@ read -r -p "Would you like to attempt an install of common utilities? [y/N] " re
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "(command -v dnf)" ]]; then
-            sudo dnf install -y neovim tmux htop git curl
+            sudo dnf install -y neovim tmux htop git curl ripgrep
         elif [[ -x "(command -v apt)" ]]; then
-            sudo apt install -y neovim tmux htop git curl
+            sudo apt install -y neovim tmux htop git curl ripgrep
+        elif [[ -x "(command -v pacman)" ]]; then
+            sudo pacman -S neovim tmux htop git curl ripgrep
         fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
