@@ -1,6 +1,9 @@
 config_help=false
 config_benchmark=false
-zshrc_low_power=false
+if [[ -z "$zshrc_low_power" ]]; then
+    # Allow low power mode to propagte up TMUX.
+    zshrc_low_power=false
+fi
 zshrc_dropping_mode=false
 
 zshrc_benchmark_start() {
@@ -19,11 +22,11 @@ zshrc_benchmark_stop() {
 zshrc_probe() {
     case $TERM in
         *linux*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
         *vt100*)
-            zshrc_low_power=true
+            export zshrc_low_power=true
             echo "Low power mode enabled."
             ;;
     esac
@@ -35,8 +38,23 @@ zshrc_enter_tmux() {
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
             # echo "Launching tmux base session $base_session ..."
+            # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
-                send-keys 'forever gotop' C-m \;
+                send-keys 'htop' C-m \; \
+                split-window -v \; \
+                send-keys 'gotop' C-m l l \; \
+                split-window -h \; \
+                send-keys 'ctop' C-m \; \
+                select-pane -t 1 \; \
+                new-window \;
+
+                #send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
+
+                #send-keys 'weechat' C-m \; \
+                #split-window -h \; \
+                #send-keys 'newsboat' C-m \; \
+                #select-pane -t 1 \; \
+                #new-window \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -81,11 +99,19 @@ zshrc_auto_window_title() {
 
         case "$TERM" in
             cygwin|xterm*|putty*|rxvt*|ansi)
-                print -Pn "\e]2;$2:q\a" # set window name
-                print -Pn "\e]1;$1:q\a" # set tab name
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                    print -Pn "\ekSYS\e\\" # set screen hardstatus
+                else
+                    print -Pn "\e]2;$2:q\a" # set window name
+                    print -Pn "\e]1;$1:q\a" # set tab name
+                fi
                 ;;
             screen*|tmux*)
-                print -Pn "\ek$1:q\e\\" # set screen hardstatus
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                    print -Pn "\ekSYS\e\\" # set screen hardstatus
+                else
+                    print -Pn "\ek$1:q\e\\" # set screen hardstatus
+                fi
                 ;;
             *)
                 if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
@@ -1290,6 +1316,10 @@ zshrc_init() {
     zshrc_set_options
     zshrc_autoload
     if ( ! $zshrc_low_power ); then
+        # Do this for now instead of `export TERM=xterm-256color` to avoid
+        # annoying ZSH message. using xterm will break vim colors, and change
+        # functionality of many other programs to not work.
+        POWERLEVEL9K_IGNORE_TERM_COLORS=true
         zshrc_powerlevel9k
     else
         zshrc_raw_prompt
