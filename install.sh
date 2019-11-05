@@ -72,11 +72,11 @@ read -r -p "Would you like to attempt an install of common utilities? [y/N] " re
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "(command -v dnf)" ]]; then
-            dnf install -y neovim tmux htop git curl ripgrep python3 pip3
+            dnf install -y neovim tmux htop git curl ripgrep python3
         elif [[ -x "(command -v apt)" ]]; then
-            sudo apt install -y neovim tmux htop git curl ripgrep
+            sudo apt install -y neovim tmux htop git curl ripgrep python3
         elif [[ -x "(command -v pacman)" ]]; then
-            sudo pacman -S neovim tmux htop git curl ripgrep
+            sudo pacman -S neovim tmux htop git curl ripgrep python
         fi
 
         if [[ -x "(command -v pip2)" ]]; then
