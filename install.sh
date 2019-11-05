@@ -72,10 +72,25 @@ read -r -p "Would you like attempt an install of common utilities? [y/N] " respo
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "(command -v dnf)" ]]; then
-            dnf install -y neovim tmux htop git curl
+            dnf install -y neovim tmux htop git curl python3 pip3
+        fi
+
+        if [[ -x "(command -v pip2)" ]]; then
+            pip2 install neovim
+        fi
+
+        if [[ -x "(command -v pip3)" ]]; then
+            pip3 install neovim
         fi
 
 	# TODO: install LTS node via NVM which is installed via ZSH.
+        if [[ -x "(command -v npm)" ]]; then
+            npm install -g neovim
+        fi
+
+        if [[ -x "(command -v gem)" ]]; then
+            gem install neovim
+        fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
             mkdir -p "${HOME}/.cache/dein"
