@@ -76,6 +76,10 @@ nnoremap <silent> <leader>lK :call <SID>show_documentation()<CR>
 nnoremap <silent> <leader>lc<CR> :<C-u>CocList commands<CR>
 nnoremap <silent> <leader>l<CR> :<C-u>CocList<CR>
 
+" Map to JS 'private variable' notation; snake case preceeded by underscore.
+"nmap cr  <Plug>(abolish-coerce)iw
+"nnoremap <leader>rps <Plug>(abolish-coerce)s
+
 function! s:show_documentation()
     if (index(['vim', 'help'], &filetype) >= 0)
         execute 'h '.expand('<cword>')
@@ -99,3 +103,8 @@ nmap <silent> <leader><S-e> <Plug>(ale_previous_wrap)
 
 " Always open help vertically.
 "cnoremap help vert help
+
+" Paste the original thing you copied, not the think you pasted over!
+xnoremap <leader>P "0p
+nnoremap <leader>P "0p
+vnoremap <leader>P "0p
