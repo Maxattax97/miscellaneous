@@ -116,21 +116,24 @@ case "$response" in
         ;;
 esac
 
-if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
     read -r -p "Would you like to setup Git? [y/N] " response
     case "$response" in
         [yY][eE][sS]|[yY])
-            ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
-            eval "$(ssh-agent -s)"
-            ssh-add "${HOME}/.ssh/id_rsa"
-            xclip -sel clip < "${HOME}/.ssh/id_rsa.pub"
+            printf "[user]\n\tuser = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
+
+            if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
+                ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
+                eval "$(ssh-agent -s)"
+                ssh-add "${HOME}/.ssh/id_rsa"
+            fi
+
+            xclip -sel clip < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
             cat "${HOME}/.ssh/id_rsa.pub"
             ;;
         *)
             echo "Skipping Git setup"
             ;;
     esac
-fi
 
 read -r -p "Would you like to setup system permissions? [y/N] " response
 case "$response" in
