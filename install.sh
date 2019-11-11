@@ -71,28 +71,28 @@ echo "Environment installation complete"
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
-        if [[ -x "(command -v dnf)" ]]; then
-            dnf install -y neovim tmux htop git curl ripgrep python3
-        elif [[ -x "(command -v apt)" ]]; then
-            sudo apt install -y neovim tmux htop git curl ripgrep python3
-        elif [[ -x "(command -v pacman)" ]]; then
-            sudo pacman -S neovim tmux htop git curl ripgrep python
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip
+        elif [[ -x "$(command -v apt)" ]]; then
+            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -S zsh neovim tmux htop git curl ripgrep python nodejs xclip
         fi
 
-        if [[ -x "(command -v pip2)" ]]; then
-            pip2 install neovim
+        if [[ -x "$(command -v pip2)" ]]; then
+            pip2 install --user neovim
         fi
 
-        if [[ -x "(command -v pip3)" ]]; then
-            pip3 install neovim
+        if [[ -x "$(command -v pip3)" ]]; then
+            pip3 install --user neovim
         fi
 
 	# TODO: install LTS node via NVM which is installed via ZSH.
-        if [[ -x "(command -v npm)" ]]; then
-            npm install -g neovim
+        if [[ -x "$(command -v npm)" ]]; then
+            npm install -g neovim || sudo npm install -g neovim
         fi
 
-        if [[ -x "(command -v gem)" ]]; then
+        if [[ -x "$(command -v gem)" ]]; then
             gem install neovim
         fi
 
@@ -108,8 +108,36 @@ case "$response" in
 
         # TODO: Automatically update the version.
         wget https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -O "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+
+        chsh -s /bin/zsh "${USER}"
         ;;
     *)
         echo "Skipping utility installation"
+        ;;
+esac
+
+if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
+    read -r -p "Would you like to setup Git? [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
+            eval "$(ssh-agent -s)"
+            ssh-add "${HOME}/.ssh/id_rsa"
+            xclip -sel clip < "${HOME}/.ssh/id_rsa.pub"
+            cat "${HOME}/.ssh/id_rsa.pub"
+            ;;
+        *)
+            echo "Skipping Git setup"
+            ;;
+    esac
+fi
+
+read -r -p "Would you like to setup system permissions? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        sudo usermod -a -G docker "$USER"
+        ;;
+    *)
+        echo "Skipping permission setup"
         ;;
 esac
