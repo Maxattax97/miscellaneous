@@ -115,8 +115,10 @@ try
 "   --files: Print each file that would be searched (but don't search)
 "   --glob:  Include or exclues files for searching that match the given glob
 "            (aka ignore .git files)
+"   -i for insensitive instead of -S for smart case because Denite will sort
+"   it on it's own using sublime sorter.
 "
-call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git', '--glob', '!node_modules'])
+call denite#custom#var('file/rec', 'command', ['rg', '-i', '--files', '--glob', '!.git', '--glob', '!node_modules', '--max-filesize', '50K'])
 
 " Use ripgrep in place of "grep"
 call denite#custom#var('grep', 'command', ['rg'])
