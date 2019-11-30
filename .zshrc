@@ -1141,6 +1141,7 @@ zshrc_batsdevrc() {
     if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
+        _perforce_workspace_path="$HOME/Perforce/mocull"
         export GOROOT="${_code_path}/.local/go/"
         export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
         export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"
@@ -1153,6 +1154,15 @@ zshrc_batsdevrc() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
             bash -c "source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
         }
+
+        bats.code() {
+            cd "${_code_path}/"
+        }
+
+        bats.imx() {
+            cd "${_perforce_workspace_path}/Engineering/Software/Linux/iMX6QuadLinux/Angstrom/"
+        }
+
         bats.install-vscode-extensions() {
             bats_run "bats.install-vscode-extensions $*"
         }
