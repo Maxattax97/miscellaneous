@@ -1,7 +1,9 @@
 [Unit]
-Description=Optimizes Acer Laptop power usage
+Description=Optimizes Laptop power usage
 
 [Service]
+# These script requires sudo, so it may have to be moved to e.g. /opt/
+# Won't exist here if your drive is encrypted (at boot time).
 ExecStart=/bin/bash /home/max/src/miscellaneous/scripts/optimize-battery.sh
 User=root
 Group=root

@@ -140,7 +140,12 @@ esac
 read -r -p "Would you like to setup system permissions? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
+        # TODO: Check that these are correct groupadd commands.
+        sudo groupadd -r docker
         sudo usermod -a -G docker "$USER"
+
+        sudo groupadd -r wireshark
+        sudo usermod -a -G wireshark "$USER"
         ;;
     *)
         echo "Skipping permission setup"
