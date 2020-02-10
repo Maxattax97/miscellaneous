@@ -202,6 +202,7 @@ call dein#add('lifepillar/vim-solarized8')
 call dein#add('mhartington/oceanic-next')
 call dein#add('dikiaap/minimalist')
 call dein#add('flazz/vim-colorschemes')
+call dein#add('srcery-colors/srcery-vim')
 
 " Icons for filetypes, Git, and more.
 call dein#add('ryanoasis/vim-devicons')

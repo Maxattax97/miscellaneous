@@ -1,4 +1,53 @@
-https://www.archlinux.org/feeds/news/ "tech"
-# https://news.ycombinator.com/rss
-http://feeds.reuters.com/reuters/topNews
-http://10.2.0.152:8080/rssAll
+# http://10.2.0.152:8080/rssAll
+
+# Economics
+## Cryptocurrency
+https://coindesk.com/rss "~CoinDesk" "economics" "computer"
+## Economist International
+http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
+## Reuters Business
+http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
+
+# STEM
+## Motherboard
+http://motherboard.vice.com/rss "~Motherboard" "news" "stem"
+## The Register
+http://www.theregister.co.uk/excerpts.rss "~The Register" "news" "stem"
+## The Verge
+http://www.theverge.com/rss/full.xml "~The Verge" "news" "stem"
+## Wired
+http://feeds.wired.com/wired/index "~Wired" "news" "stem"
+## Ars Technica
+http://feeds.arstechnica.com/arstechnica/index/ "~Ars Technica" "news" "stem"
+## Hacker News
+http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
+## Popular Mechanics
+http://www.popularmechanics.com/rss/ "~Popular Mechanics" "news" "stem"
+## Scientific American
+http://rss.sciam.com/ScientificAmerican-News "~Scientific American" "news"
+## Sky & Telescope
+http://www.skyandtelescope.com/MostRecent.rss "~Sky and Telescope" "news"
+
+# World
+## Reuters Top
+http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world"
+## The Independent
+http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
+## Reason
+https://reason.com/rss/ "~Reason" "news" "politics" "world"
+
+# Security
+## Krebs
+http://krebsonsecurity.com/feed "~Krebs on Security" "security" "computer"
+## Troy Hunt
+https://www.troyhunt.com/rss/ "~Troy Hunt" "security" "computer"
+## Schneier
+https://schneier.com/blog/atom.xml "~Schneier" "security" "computer"
+## Dark Reading
+https://www.darkreading.com/rss_simple.asp "~Dark Reading" "security" "computer"
+## Naked Security
+https://nakedsecurity.sophos.com/feed "~Naked Security" "security" "computer"
+## Arch Linux
+https://www.archlinux.org/feeds/news/ "~Arch Linux" "security" "computer"
+## Alpine Linux
+https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"

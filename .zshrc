@@ -46,15 +46,16 @@ zshrc_enter_tmux() {
                 split-window -h \; \
                 send-keys 'ctop' C-m \; \
                 select-pane -t 1 \; \
+                new-window \; \
+                send-keys 'weechat' C-m \; \
+                split-window -h \; \
+                resize-pane -x 80 \; \
+                send-keys 'newsboat' C-m 'R' \; \
+                select-pane -t 1 \; \
                 new-window \;
 
                 #send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
 
-                #send-keys 'weechat' C-m \; \
-                #split-window -h \; \
-                #send-keys 'newsboat' C-m \; \
-                #select-pane -t 1 \; \
-                #new-window \;
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -101,6 +102,8 @@ zshrc_auto_window_title() {
             cygwin|xterm*|putty*|rxvt*|ansi)
                 if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
+                elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
+                    print -Pn "\ekCOM\e\\" # set screen hardstatus
                 else
                     print -Pn "\e]2;$2:q\a" # set window name
                     print -Pn "\e]1;$1:q\a" # set tab name
@@ -109,6 +112,8 @@ zshrc_auto_window_title() {
             screen*|tmux*)
                 if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
+                elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
+                    print -Pn "\ekCOM\e\\" # set screen hardstatus
                 else
                     print -Pn "\ek$1:q\e\\" # set screen hardstatus
                 fi
