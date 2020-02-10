@@ -36,6 +36,10 @@ link_source "config/ncmpcpp/config" ".ncmpcpp/config"
 
 link_source "config/SpaceVim.d" ".SpaceVim.d"
 
+# Configure secured password (not included in this repo) with:
+# /secure set freenode mypassword
+link_source "config/weechat/" ".weechat"
+
 if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
     git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
 fi
