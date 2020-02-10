@@ -1000,9 +1000,7 @@ zshrc_set_aliases() {
     fi
 
     # some more ls aliases
-    alias ll='ls -alF'
-    alias la='ls -A'
-    alias l='ls -CF'
+    alias l='k -Ah --no-vcs' # ls -lah
 
     # Fix tmux 256 colors:
     #if [[ -x "$(command -v tmux-next)" ]]; then
@@ -1268,6 +1266,10 @@ zshrc_batsdevrc() {
             bats_run "bats.dupe-aatsv4 $*"
         }
 
+        bats.install-aatsv4() {
+            bats_run "bats.install-aatsv4 $*"
+        }
+
         bats.pw() {
             bats_run "bats.pw $*"
         }
@@ -1298,6 +1300,10 @@ zshrc_batsdevrc() {
 
         bats.install-dev-node-modules() {
             bats_run "bats.install-dev-node-modules $*"
+        }
+
+        bats.udp-listen() {
+            bats_run "bats.udp-listen $*"
         }
     fi
 }
