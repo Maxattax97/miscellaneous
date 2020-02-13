@@ -15,6 +15,12 @@ augroup neovim_studio_coc
     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
+augroup neovim_studio_english_spelling
+    autocmd!
+    autocmd FileType gitcommit,latex,tex,md,markdown setlocal spell
+    autocmd BufRead,BufNewFile *.md setlocal spell
+augroup end
+
 augroup neovim_studio_denite
     " Define mappings while in 'filter' mode
     "   <C-o>         - Switch to normal mode inside of search results

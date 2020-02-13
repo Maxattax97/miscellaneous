@@ -1,48 +1,41 @@
 # http://10.2.0.152:8080/rssAll
 
-# Economics
-## Cryptocurrency
-https://coindesk.com/rss "~CoinDesk" "economics" "computer"
-## Economist International
-http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
-## Reuters Business
-http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
-
-# STEM
-## Motherboard
-http://motherboard.vice.com/rss "~Motherboard" "news" "stem"
-## The Register
-http://www.theregister.co.uk/excerpts.rss "~The Register" "news" "stem"
-## The Verge
-http://www.theverge.com/rss/full.xml "~The Verge" "news" "stem"
-## Wired
-http://feeds.wired.com/wired/index "~Wired" "news" "stem"
-## Ars Technica
-http://feeds.arstechnica.com/arstechnica/index/ "~Ars Technica" "news" "stem"
-## Hacker News
-http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
-## Popular Mechanics
-http://www.popularmechanics.com/rss/ "~Popular Mechanics" "news" "stem"
-## Scientific American
-http://rss.sciam.com/ScientificAmerican-News "~Scientific American" "news"
-## Sky & Telescope
-http://www.skyandtelescope.com/MostRecent.rss "~Sky and Telescope" "news"
-
-# World
 ## Reuters Top
 http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world"
+## Reuters Business
+http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
+## Economist International
+http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
 ## The Independent
 http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
 ## Reason
 https://reason.com/rss/ "~Reason" "news" "politics" "world"
-
-# Security
+## Hacker News
+http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
+## Motherboard
+http://motherboard.vice.com/rss "~Motherboard" "news" "stem"
+## Wired
+http://feeds.wired.com/wired/index "~Wired" "news" "stem"
+## The Verge
+http://www.theverge.com/rss/full.xml "~The Verge" "news" "stem"
+## The Register
+http://www.theregister.co.uk/excerpts.rss "~The Register" "news" "stem"
+## Ars Technica
+http://feeds.arstechnica.com/arstechnica/index/ "~Ars Technica" "news" "stem"
 ## Krebs
 http://krebsonsecurity.com/feed "~Krebs on Security" "security" "computer"
 ## Troy Hunt
 https://www.troyhunt.com/rss/ "~Troy Hunt" "security" "computer"
 ## Schneier
 https://schneier.com/blog/atom.xml "~Schneier" "security" "computer"
+## Cryptocurrency
+https://coindesk.com/rss "~CoinDesk" "economics" "computer"
+## Popular Mechanics
+http://www.popularmechanics.com/rss/ "~Popular Mechanics" "news" "stem"
+## Scientific American
+http://rss.sciam.com/ScientificAmerican-News "~Scientific American" "news"
+## Sky & Telescope
+http://www.skyandtelescope.com/MostRecent.rss "~Sky and Telescope" "news"
 ## Dark Reading
 https://www.darkreading.com/rss_simple.asp "~Dark Reading" "security" "computer"
 ## Naked Security
