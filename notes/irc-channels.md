@@ -1,0 +1,8 @@
+
+# Freenode
+
+- #gpsd
+
+# EFNet
+
+- #archivebot

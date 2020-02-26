@@ -1,6 +1,7 @@
 download-full-page yes
 auto-reload yes
 reload-time 30
+keep-articles-days 7
 
 color listnormal          white  black
 color listfocus           blue  color240   bold

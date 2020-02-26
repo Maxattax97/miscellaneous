@@ -48,8 +48,7 @@ zshrc_enter_tmux() {
                 select-pane -t 1 \; \
                 new-window \; \
                 send-keys 'weechat' C-m \; \
-                split-window -h \; \
-                resize-pane -x 80 \; \
+                split-window -h -p 35 \; \
                 send-keys 'newsboat' C-m 'R' \; \
                 select-pane -t 1 \; \
                 new-window \;
