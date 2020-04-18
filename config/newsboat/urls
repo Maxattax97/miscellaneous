@@ -6,8 +6,6 @@ http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world
 http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
 ## Economist International
 http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
-## The Independent
-http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
 ## Reason
 https://reason.com/rss/ "~Reason" "news" "politics" "world"
 ## Hacker News
@@ -44,3 +42,14 @@ https://nakedsecurity.sophos.com/feed "~Naked Security" "security" "computer"
 https://www.archlinux.org/feeds/news/ "~Arch Linux" "security" "computer"
 ## Alpine Linux
 https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"
+
+## The Independent - not least-biased
+#http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
+
+### Need to generate RSS feeds for:
+## Associated Press
+## C-Span
+## Pew Research
+## Gallup
+## Transparency International (Transparency.org)
+## Others from: https://mediabiasfactcheck.com/filtered-search/

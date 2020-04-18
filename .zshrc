@@ -48,8 +48,7 @@ zshrc_enter_tmux() {
                 select-pane -t 1 \; \
                 new-window \; \
                 send-keys 'weechat' C-m \; \
-                split-window -h \; \
-                resize-pane -x 80 \; \
+                split-window -h -p 35 \; \
                 send-keys 'newsboat' C-m 'R' \; \
                 select-pane -t 1 \; \
                 new-window \;
@@ -1014,6 +1013,7 @@ zshrc_set_aliases() {
 
     # Typical rsync command
     alias relocate='rsync -avzh --info=progress2'
+    alias network-relocate='rsync -azP --delete --info=progress2'
 
     # Add progress indicator because I always forget.
     alias dd='dd status=progress'
@@ -1028,6 +1028,9 @@ zshrc_set_aliases() {
     alias dcpull='docker-compose -f /opt/docker-compose.yml pull --parallel'
     alias dclogs='docker-compose -f /opt/docker-compose.yml logs -tf --tail="50" '
     alias dtail='docker logs -tf --tail="50" "$@"'
+
+    # Clipboard
+    alias clip='xclip -selection clipboard'
 }
 
 zshrc_set_default_programs() {

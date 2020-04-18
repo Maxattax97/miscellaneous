@@ -76,12 +76,13 @@ echo "Environment installation complete"
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
+        # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip
+            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip
+            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -S zsh neovim tmux htop git curl ripgrep python nodejs xclip
+            sudo pacman -S zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -112,6 +113,7 @@ case "$response" in
         git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
 
         # TODO: Automatically update the version.
+        # TODO: Detect architecture of local system and grab the right binary.
         wget https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -O "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
 
         chsh -s /bin/zsh "${USER}"
