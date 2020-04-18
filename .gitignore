@@ -4,3 +4,6 @@ config/nvim/.netrwhist
 config/weechat/logs
 config/weechat/*.log
 config/weechat/sec.conf
+/.blackbox/pubring.gpg~
+/.blackbox/pubring.kbx~
+/.blackbox/secring.gpg
