@@ -8,3 +8,4 @@ config/weechat/sec.conf
 /.blackbox/pubring.kbx~
 /.blackbox/secring.gpg
 /config/weechat/certs/Maxattax.cer
+/config/weechat/certs/Maxattax.pem
