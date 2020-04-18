@@ -1,3 +1,4 @@
 config/weechat/certs/Maxattax.cer
 config/weechat/certs/Maxattax.key
 config/weechat/certs/Maxattax.pem
+config/weechat/sec.conf
