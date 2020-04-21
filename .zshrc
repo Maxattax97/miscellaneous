@@ -1020,6 +1020,7 @@ zshrc_set_aliases() {
     alias sudo dd='sudo dd status=progress'
 
     alias gpg='gpg2 --with-subkey-fingerprints'
+    alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
 
     alias please='sudo'
 
