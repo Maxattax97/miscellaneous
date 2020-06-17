@@ -11,15 +11,15 @@ https://reason.com/rss/ "~Reason" "news" "politics" "world"
 ## Hacker News
 http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
 ## Motherboard
-http://motherboard.vice.com/rss "~Motherboard" "news" "stem"
+http://motherboard.vice.com/rss "~Motherboard" "stem"
 ## Wired
-http://feeds.wired.com/wired/index "~Wired" "news" "stem"
+http://feeds.wired.com/wired/index "~Wired" "stem"
 ## The Verge
-http://www.theverge.com/rss/full.xml "~The Verge" "news" "stem"
+http://www.theverge.com/rss/full.xml "~The Verge" "stem"
 ## The Register
-http://www.theregister.co.uk/excerpts.rss "~The Register" "news" "stem"
+http://www.theregister.co.uk/excerpts.rss "~The Register" "stem"
 ## Ars Technica
-http://feeds.arstechnica.com/arstechnica/index/ "~Ars Technica" "news" "stem"
+http://feeds.arstechnica.com/arstechnica/index/ "~Ars Technica" "stem"
 ## Krebs
 http://krebsonsecurity.com/feed "~Krebs on Security" "security" "computer"
 ## Troy Hunt
@@ -29,11 +29,11 @@ https://schneier.com/blog/atom.xml "~Schneier" "security" "computer"
 ## Cryptocurrency
 https://coindesk.com/rss "~CoinDesk" "economics" "computer"
 ## Popular Mechanics
-http://www.popularmechanics.com/rss/ "~Popular Mechanics" "news" "stem"
+http://www.popularmechanics.com/rss/ "~Popular Mechanics" "stem"
 ## Scientific American
-http://rss.sciam.com/ScientificAmerican-News "~Scientific American" "news"
+http://rss.sciam.com/ScientificAmerican-News "~Scientific American" "stem"
 ## Sky & Telescope
-http://www.skyandtelescope.com/MostRecent.rss "~Sky and Telescope" "news"
+https://www.skyandtelescope.com/astronomy-news/feed/ "~Sky and Telescope" "astronomy" "stem"
 ## Dark Reading
 https://www.darkreading.com/rss_simple.asp "~Dark Reading" "security" "computer"
 ## Naked Security
@@ -42,6 +42,18 @@ https://nakedsecurity.sophos.com/feed "~Naked Security" "security" "computer"
 https://www.archlinux.org/feeds/news/ "~Arch Linux" "security" "computer"
 ## Alpine Linux
 https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"
+## NASA
+https://www.nasa.gov/rss/dyn/breaking_news.rss "~NASA" "astronomy" "stem"
+## NOAA
+https://oceanservice.noaa.gov/rss/nosnews.xml "~NOAA" "stem"
+## Biomed Central (BMC)
+https://blogs.biomedcentral.com/bmcseriesblog/feed/ "~Biomed Central" "stem" "academia"
+## Nature
+http://feeds.nature.com/nature/rss/current "~Nature" "stem" "academia"
+## JStor
+https://daily.jstor.org/feed/ "~JSTOR" "stem" "acedemia"
+## CDC
+https://tools.cdc.gov/podcasts/feed.asp?feedid=183 "~CDC" "stem"
 
 ## The Independent - not least-biased
 #http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"

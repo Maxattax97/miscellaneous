@@ -1309,6 +1309,18 @@ zshrc_batsdevrc() {
         bats.udp-listen() {
             bats_run "bats.udp-listen $*"
         }
+
+        bats.calc() {
+            bats_run "bats.calc $*"
+        }
+
+        bats.upload() {
+            bats_run "bats.upload $*"
+        }
+
+        bats.device-search() {
+            bats_run "bats.device-search $*"
+        }
     fi
 }
 
