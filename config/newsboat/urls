@@ -1,13 +1,22 @@
-# http://10.2.0.152:8080/rssAll
+## How to get RSS feeds from other sources:
+# https://codarium.substack.com/p/returning-the-killed-rss-of-reuters
 
-## Reuters Top
-http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world"
-## Reuters Business
-http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
+## Reuters All
+https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US "~Reuters" "news" "politics" "economics" "world"
+## Associated Press
+https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US "~Associated Press" "news" "politics" "world"
+## C-Span
+https://news.google.com/rss/search?q=when:7d+allinurl:c-span.org&ceid=US:en&hl=en-US&gl=US "~C-SPAN" "news" "politics"
+## Transparency International
+https://news.google.com/rss/search?q=when:7d+allinurl:transparency.org&ceid=US:en&hl=en-US&gl=US "~Transparency International" "news" "world" "politics"
 ## Economist International
 http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
 ## Reason
 https://reason.com/rss/ "~Reason" "news" "politics" "world"
+## Pew Research
+https://news.google.com/rss/search?q=when:7d+allinurl:pewresearch.org&ceid=US:en&hl=en-US&gl=US "~Pew Research" "world" "economics" "stem"
+## Gallup
+https://news.google.com/rss/search?q=when:7d+allinurl:gallup.com&ceid=US:en&hl=en-US&gl=US "~Gallup" "world" "economics" "stem"
 ## Hacker News
 http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
 ## Motherboard
@@ -55,13 +64,15 @@ https://daily.jstor.org/feed/ "~JSTOR" "stem" "acedemia"
 ## CDC
 https://tools.cdc.gov/podcasts/feed.asp?feedid=183 "~CDC" "stem"
 
+### Need to generate RSS feeds for:
+## Others from: https://mediabiasfactcheck.com/filtered-search/
+
+### Removed Feeds
 ## The Independent - not least-biased
 #http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
 
-### Need to generate RSS feeds for:
-## Associated Press
-## C-Span
-## Pew Research
-## Gallup
-## Transparency International (Transparency.org)
-## Others from: https://mediabiasfactcheck.com/filtered-search/
+### Defunct feeds
+## Reuters Top
+#http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world"
+## Reuters Business
+#http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"

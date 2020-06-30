@@ -1321,6 +1321,10 @@ zshrc_batsdevrc() {
         bats.device-search() {
             bats_run "bats.device-search $*"
         }
+
+        bats.bundle-js() {
+            bats_run "bats.bundle-js $*"
+        }
     fi
 }
 
