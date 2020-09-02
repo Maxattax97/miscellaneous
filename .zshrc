@@ -1325,6 +1325,14 @@ zshrc_batsdevrc() {
         bats.bundle-js() {
             bats_run "bats.bundle-js $*"
         }
+
+        bats.clean-bin-files() {
+            bats_run "bats.clean-bin-files $*"
+        }
+
+        bats.paste() {
+            bats_run "bats.paste $*"
+        }
     fi
 }
 
