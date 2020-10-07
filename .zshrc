@@ -219,6 +219,16 @@ zshrc_setup_completion() {
     # zstyle ':completion:*' verbose true
     # zstyle ':completion:*' rehash true
 
+    # Partial completions: ~/L/P/B -> ~/Library/Preferences/ByHost
+    zstyle ':completion:*' list-suffixes
+    zstyle ':completion:*' expand prefix suffix
+
+    # Makefile completion
+    zstyle ':completion:*:make:*:targets' call-command true # outputs all possible results for make targets
+    zstyle ':completion:*:make:*' tag-order targets
+    zstyle ':completion:*' group-name ''
+    zstyle ':completion:*:descriptions' format '%B%d%b'
+
     zmodload -i zsh/complist
 
     WORDCHARS=''
@@ -297,11 +307,9 @@ zshrc_setup_completion() {
 }
 
 zshrc_autoload() {
-    autoload -Uz compinit
-    compinit
-
-    autoload -Uz promptinit
-    promptinit
+    autoload -Uz compinit && compinit
+    autoload -Uz bashcompinit && bashcompinit
+    autoload -Uz promptinit && promptinit
 
     autoload -Uz edit-command-line
 
@@ -646,8 +654,10 @@ zshrc_set_path() {
 
     if [ -n "$GOPATH" ]; then
         add_path "${GOPATH}/bin/"
-    else
-        add_path "${HOME}/go/bin/"
+    fi
+
+    if [ -n "$GOROOT" ]; then
+        add_path "${GOROOT}/bin/"
     fi
 }
 
@@ -1137,8 +1147,16 @@ zshrc_set_environment_variables() {
         esac
     fi
 
-    if [[ -d "$HOME/go" ]]; then
-        export GOPATH="$HOME/go"
+    if [[ -d "${HOME}/go" ]]; then
+        export GOPATH="${HOME}/go"
+    fi
+
+    temp_go_path=("${GOPATH}/go-"*);
+    if [[ -d "${temp_go_path[-1]}" ]]; then
+        export GOROOT=${temp_go_path[-1]}
+        if [[ -d "${temp_go_path[2]}" ]]; then
+            echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+        fi
     fi
 
     export CHASSIS="$chassis_name"
@@ -1148,14 +1166,22 @@ zshrc_batsdevrc() {
     if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
+        _batsrc_path="$HOME/batsrc"
         _perforce_workspace_path="$HOME/Perforce/mocull"
-        export GOROOT="${_code_path}/.local/go/"
-        export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
+
+        #export GOROOT="${_code_path}/.local/go/"
+        #export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
+        #export PATH="${_code_path}/.local/go/bin/:$PATH"
+        #export PATH="${_code_path}/gocode/vendor/bin:$PATH"
+        export GOROOT="${_batsrc_path}/.local/go/"
+        export GOPATH="${_batsrc_path}/gocode/vendor:${_batsrc_path}/gocode/lib"
+        export PATH="${_batsrc_path}/.local/go/bin/:$PATH"
+        export PATH="${_batsrc_path}/gocode/vendor/bin:$PATH"
+
         export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"
 
         export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
-        export PATH="${_code_path}/.local/go/bin/:$PATH"
-        export PATH="${_code_path}/gocode/vendor/bin:$PATH"
+
 
         bats_run() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
