@@ -358,8 +358,9 @@ zshrc_source() {
 
 zshrc_set_options() {
     HISTFILE=~/.histfile
-    HISTSIZE=1000
-    SAVEHIST=10000
+    # The average command is 20.092 characters long.
+    HISTSIZE=10000 # How much is saved to file.
+    SAVEHIST=10000 # How much is kept in memory.
 
     # man zshoptions
     setopt correct
@@ -1173,9 +1174,10 @@ zshrc_batsdevrc() {
         #export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
         #export PATH="${_code_path}/.local/go/bin/:$PATH"
         #export PATH="${_code_path}/gocode/vendor/bin:$PATH"
-        export GOROOT="${_batsrc_path}/.local/go/"
+        export GOROOT="${_batsrc_path}/.local/go"
         export GOPATH="${_batsrc_path}/gocode/vendor:${_batsrc_path}/gocode/lib"
-        export PATH="${_batsrc_path}/.local/go/bin/:$PATH"
+        export GOBIN="${_batsrc_path}/.local/go/bin"
+        export PATH="${GOBIN}:$PATH"
         export PATH="${_batsrc_path}/gocode/vendor/bin:$PATH"
 
         export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"

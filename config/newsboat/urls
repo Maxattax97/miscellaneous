@@ -64,6 +64,9 @@ https://daily.jstor.org/feed/ "~JSTOR" "stem" "acedemia"
 ## CDC
 https://tools.cdc.gov/podcasts/feed.asp?feedid=183 "~CDC" "stem"
 
+## GitBucket activity
+http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
+
 ### Need to generate RSS feeds for:
 ## Others from: https://mediabiasfactcheck.com/filtered-search/
 
