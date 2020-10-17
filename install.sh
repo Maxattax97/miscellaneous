@@ -82,7 +82,13 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -S zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat
+            # Partial upgrades are not supported!
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat chezmoi
+        fi
+
+        if [[ -x "$(command -v pacman)" ]]; then
+            previous_dir="$(pwd)"
+            cd ~ && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
