@@ -129,6 +129,23 @@ case "$response" in
         ;;
 esac
 
+read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y nextcloud-client veracrypt
+        elif [[ -x "$(command -v apt)" ]]; then
+            # TODO: nextcloud, veracrypt
+            sudo apt install -y
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu nextcloud-client veracrypt
+        fi
+        ;;
+    *)
+        echo "Skipping utility installation"
+        ;;
+esac
+
 read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
@@ -162,5 +179,15 @@ case "$response" in
         ;;
     *)
         echo "Skipping permission setup"
+        ;;
+esac
+
+read -r -p "Would you like to install fonts? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        ./scripts/font-install.sh
+        ;;
+    *)
+        echo "Skipping font installation"
         ;;
 esac

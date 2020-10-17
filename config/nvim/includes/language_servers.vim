@@ -8,7 +8,6 @@ let g:coc_global_extensions = [
     \ 'coc-html',
     \ 'coc-solargraph',
     \ 'coc-vetur',
-    \ 'coc-json',
     \ 'coc-tsserver',
     \ 'coc-jest',
     \ 'coc-java',
