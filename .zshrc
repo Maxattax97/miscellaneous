@@ -328,20 +328,6 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
-    # Now using zshrc_batsdevrc.
-    #if [[ -e "$HOME/.batsrc" ]]; then
-        #source "$HOME/.batsrc"
-    #fi
-
-    #if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-        #source "$HOME/.profile"
-
-        #if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-            ## Doesn't exist within the profile.
-            #export NEOVIM_STUDIO_PROFILE_SOURCED=1
-        #fi
-    #fi
-
     if [ -f "${HOME}/.zplug/repos/junegunn/fzf/shell/key-bindings.zsh" ]; then
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -1164,7 +1150,9 @@ zshrc_set_environment_variables() {
 }
 
 zshrc_batsdevrc() {
-    if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
+    if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
+        source "$HOME/batsrc/.batsdevrc"
+    elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
         _batsrc_path="$HOME/batsrc"
@@ -1382,7 +1370,6 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_source
-    zshrc_batsdevrc
     zshrc_set_path
     zshrc_set_aliases
     zshrc_set_default_programs
@@ -1392,6 +1379,7 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_set_options
     zshrc_autoload
+
     if ( ! $zshrc_low_power ); then
         # Do this for now instead of `export TERM=xterm-256color` to avoid
         # annoying ZSH message. using xterm will break vim colors, and change
@@ -1401,6 +1389,8 @@ zshrc_init() {
     else
         zshrc_raw_prompt
     fi
+
+    zshrc_batsdevrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug

@@ -463,3 +463,7 @@ else
 fi
 unset __conda_setup
 # <<< conda init <<<
+
+if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
+    source "$HOME/batsrc/.batsdevrc"
+fi
