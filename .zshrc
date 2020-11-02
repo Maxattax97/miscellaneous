@@ -975,6 +975,21 @@ zshrc_load_library() {
             /TB$/{    printpower($1, 10, 12)}'
         done
     }
+
+    power-sleep() {
+        sudo sh -c 'echo "freeze" > /sys/power/state'
+    }
+
+    power-hibernate() {
+        # TODO: This won't work with a swap *file*.
+        local device="$(lsblk -b | grep -i 'swap' | awk '{ printf $4 " " $2 "\n" }' | sort -n -r | awk '{ printf $2 "\n" }' | head -n 1)"
+        if [ -n "$device" ]; then
+            sudo sh -c "echo $device > /sys/power/resume"
+            sudo sh -c 'echo "disk" > /sys/power/state'
+        else
+            echo "Could not find a valid swap device, check lsblk, aborting"
+        fi
+    }
 }
 
 zshrc_set_aliases() {
