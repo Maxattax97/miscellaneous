@@ -1,6 +1,7 @@
 .ccls-cache
 config/nvim/.netrwhist
 
+config/weechat/xfer
 config/weechat/logs
 config/weechat/*.log
 config/weechat/sec.conf
