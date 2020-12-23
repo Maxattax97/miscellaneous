@@ -150,7 +150,7 @@ read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
-            printf "[user]\n\tuser = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
+            printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
         fi
 
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
