@@ -176,6 +176,9 @@ case "$response" in
 
         sudo groupadd -r wireshark
         sudo usermod -a -G wireshark "$USER"
+
+        sudo groupadd -r tty
+        sudo usermod -a -G tty "$USER"
         ;;
     *)
         echo "Skipping permission setup"
