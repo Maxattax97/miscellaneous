@@ -219,6 +219,16 @@ zshrc_setup_completion() {
     # zstyle ':completion:*' verbose true
     # zstyle ':completion:*' rehash true
 
+    # Partial completions: ~/L/P/B -> ~/Library/Preferences/ByHost
+    zstyle ':completion:*' list-suffixes
+    zstyle ':completion:*' expand prefix suffix
+
+    # Makefile completion
+    zstyle ':completion:*:make:*:targets' call-command true # outputs all possible results for make targets
+    zstyle ':completion:*:make:*' tag-order targets
+    zstyle ':completion:*' group-name ''
+    zstyle ':completion:*:descriptions' format '%B%d%b'
+
     zmodload -i zsh/complist
 
     WORDCHARS=''
@@ -297,11 +307,9 @@ zshrc_setup_completion() {
 }
 
 zshrc_autoload() {
-    autoload -Uz compinit
-    compinit
-
-    autoload -Uz promptinit
-    promptinit
+    autoload -Uz compinit && compinit
+    autoload -Uz bashcompinit && bashcompinit
+    autoload -Uz promptinit && promptinit
 
     autoload -Uz edit-command-line
 
@@ -320,20 +328,6 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
-    # Now using zshrc_batsdevrc.
-    #if [[ -e "$HOME/.batsrc" ]]; then
-        #source "$HOME/.batsrc"
-    #fi
-
-    #if [[ -d "$HOME/.neovim-studio/" ]] && [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-        #source "$HOME/.profile"
-
-        #if [[ -z "${NEOVIM_STUDIO_PROFILE_SOURCED}" ]]; then
-            ## Doesn't exist within the profile.
-            #export NEOVIM_STUDIO_PROFILE_SOURCED=1
-        #fi
-    #fi
-
     if [ -f "${HOME}/.zplug/repos/junegunn/fzf/shell/key-bindings.zsh" ]; then
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -350,8 +344,9 @@ zshrc_source() {
 
 zshrc_set_options() {
     HISTFILE=~/.histfile
-    HISTSIZE=1000
-    SAVEHIST=10000
+    # The average command is 20.092 characters long.
+    HISTSIZE=10000 # How much is saved to file.
+    SAVEHIST=10000 # How much is kept in memory.
 
     # man zshoptions
     setopt correct
@@ -646,8 +641,10 @@ zshrc_set_path() {
 
     if [ -n "$GOPATH" ]; then
         add_path "${GOPATH}/bin/"
-    else
-        add_path "${HOME}/go/bin/"
+    fi
+
+    if [ -n "$GOROOT" ]; then
+        add_path "${GOROOT}/bin/"
     fi
 }
 
@@ -978,6 +975,21 @@ zshrc_load_library() {
             /TB$/{    printpower($1, 10, 12)}'
         done
     }
+
+    power-sleep() {
+        sudo sh -c 'echo "freeze" > /sys/power/state'
+    }
+
+    power-hibernate() {
+        # TODO: This won't work with a swap *file*.
+        local device="$(lsblk -b | grep -i 'swap' | awk '{ printf $4 " " $2 "\n" }' | sort -n -r | awk '{ printf $2 "\n" }' | head -n 1)"
+        if [ -n "$device" ]; then
+            sudo sh -c "echo $device > /sys/power/resume"
+            sudo sh -c 'echo "disk" > /sys/power/state'
+        else
+            echo "Could not find a valid swap device, check lsblk, aborting"
+        fi
+    }
 }
 
 zshrc_set_aliases() {
@@ -1121,8 +1133,10 @@ zshrc_set_environment_variables() {
 
     # Get the physical form factor of the machine.
     if [[ "$(uname)" != "Darwin" ]]; then
-        local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
-        local chassis_name=""
+        if [[ -f "/sys/class/dmi/id/chassis_type" ]] ; then
+            local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
+            local chassis_name=""
+        fi
 
         case "$chassis_type" in
             8|9|10|14)
@@ -1137,25 +1151,46 @@ zshrc_set_environment_variables() {
         esac
     fi
 
-    if [[ -d "$HOME/go" ]]; then
-        export GOPATH="$HOME/go"
+    if [[ -d "${HOME}/go" ]]; then
+        export GOPATH="${HOME}/go"
+    fi
+
+    if [[ -d "${GOPATH}" ]]; then
+        temp_go_path=("${GOPATH}/go-"*);
+        if [[ -d "${temp_go_path[-1]}" ]]; then
+            export GOROOT=${temp_go_path[-1]}
+            if [[ -d "${temp_go_path[2]}" ]]; then
+                echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+            fi
+        fi
     fi
 
     export CHASSIS="$chassis_name"
 }
 
 zshrc_batsdevrc() {
-    if [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
+    if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
+        source "$HOME/batsrc/.batsdevrc"
+    elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
+        _batsrc_path="$HOME/batsrc"
         _perforce_workspace_path="$HOME/Perforce/mocull"
-        export GOROOT="${_code_path}/.local/go/"
-        export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
+
+        #export GOROOT="${_code_path}/.local/go/"
+        #export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
+        #export PATH="${_code_path}/.local/go/bin/:$PATH"
+        #export PATH="${_code_path}/gocode/vendor/bin:$PATH"
+        export GOROOT="${_batsrc_path}/.local/go"
+        export GOPATH="${_batsrc_path}/gocode/vendor:${_batsrc_path}/gocode/lib"
+        export GOBIN="${_batsrc_path}/.local/go/bin"
+        export PATH="${GOBIN}:$PATH"
+        export PATH="${_batsrc_path}/gocode/vendor/bin:$PATH"
+
         export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"
 
         export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
-        export PATH="${_code_path}/.local/go/bin/:$PATH"
-        export PATH="${_code_path}/gocode/vendor/bin:$PATH"
+
 
         bats_run() {
             echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
@@ -1309,6 +1344,30 @@ zshrc_batsdevrc() {
         bats.udp-listen() {
             bats_run "bats.udp-listen $*"
         }
+
+        bats.calc() {
+            bats_run "bats.calc $*"
+        }
+
+        bats.upload() {
+            bats_run "bats.upload $*"
+        }
+
+        bats.device-search() {
+            bats_run "bats.device-search $*"
+        }
+
+        bats.bundle-js() {
+            bats_run "bats.bundle-js $*"
+        }
+
+        bats.clean-bin-files() {
+            bats_run "bats.clean-bin-files $*"
+        }
+
+        bats.paste() {
+            bats_run "bats.paste $*"
+        }
     fi
 }
 
@@ -1330,7 +1389,6 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_source
-    zshrc_batsdevrc
     zshrc_set_path
     zshrc_set_aliases
     zshrc_set_default_programs
@@ -1340,6 +1398,7 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_set_options
     zshrc_autoload
+
     if ( ! $zshrc_low_power ); then
         # Do this for now instead of `export TERM=xterm-256color` to avoid
         # annoying ZSH message. using xterm will break vim colors, and change
@@ -1349,6 +1408,8 @@ zshrc_init() {
     else
         zshrc_raw_prompt
     fi
+
+    zshrc_batsdevrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug

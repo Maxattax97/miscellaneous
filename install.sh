@@ -82,7 +82,13 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch
+            # Partial upgrades are not supported!
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi
+        fi
+
+        if [[ -x "$(command -v pacman)" ]]; then
+            previous_dir="$(pwd)"
+            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -114,7 +120,7 @@ case "$response" in
 
         # TODO: Automatically update the version.
         # TODO: Detect architecture of local system and grab the right binary.
-        wget https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -O "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        curl https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
 
         chsh -s /bin/zsh "${USER}"
         ;;
@@ -149,7 +155,7 @@ read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
-            printf "[user]\n\tuser = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
+            printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
         fi
 
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
@@ -175,6 +181,9 @@ case "$response" in
 
         sudo groupadd -r wireshark
         sudo usermod -a -G wireshark "$USER"
+
+        sudo groupadd -r tty
+        sudo usermod -a -G tty "$USER"
         ;;
     *)
         echo "Skipping permission setup"
