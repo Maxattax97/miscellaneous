@@ -60,6 +60,8 @@ link_source "config/rofi/" ".config/rofi"
 link_source "config/nvim/" ".config/nvim"
 link_source "config/newsboat/" ".config/newsboat"
 link_source "config/zathura/" ".config/zathura"
+link_source "config/bspwm/" ".config/bspwm"
+link_source "config/sxhkd/" ".config/sxhkd"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
