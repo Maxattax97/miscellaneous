@@ -82,7 +82,7 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -129,10 +129,15 @@ case "$response" in
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y nextcloud-client veracrypt
         elif [[ -x "$(command -v apt)" ]]; then
-            # TODO: nextcloud, veracrypt
+            # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring
+        fi
+
+        if [[ -x "$(command -v yay)" ]]; then
+            yay -Syu zathura-git girara-git ytop-bin picom-tryone-git
+            sudo pacman -Syu zathura-pdf-mupdf
         fi
         ;;
     *)

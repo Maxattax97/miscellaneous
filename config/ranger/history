@@ -3,3 +3,13 @@ search linux
 search inte
 search rgi
 search 
+find N
+find D
+find Sh
+find l
+colorscheme solarized
+set colorscheme=jungle
+set colorscheme=snow
+set colorscheme=solarized
+set colorscheme=default
+kk
