@@ -122,7 +122,7 @@ case "$response" in
 
         # TODO: Automatically update the version.
         # TODO: Detect architecture of local system and grab the right binary.
-        curl https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        curl https://github.com/bcicen/ctop/releases/download/v0.7.5/ctop-0.7.5-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
 
         chsh -s /bin/zsh "${USER}"
         ;;
