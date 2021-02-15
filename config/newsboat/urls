@@ -2,7 +2,9 @@
 # https://codarium.substack.com/p/returning-the-killed-rss-of-reuters
 
 ## Reuters All
-https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US "~Reuters" "news" "politics" "economics" "world"
+#https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US "~Reuters" "news" "politics" "economics" "world"
+## Reuters Top News
+https://rss.maxocull.com/?action=display&bridge=Reuters&feed=home%2Ftopnews&format=Atom "~Reuters" "news" "politics" "economics" "world"
 ## Associated Press
 https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US "~Associated Press" "news" "politics" "world"
 ## C-Span
@@ -11,6 +13,8 @@ https://news.google.com/rss/search?q=when:7d+allinurl:c-span.org&ceid=US:en&hl=e
 https://news.google.com/rss/search?q=when:7d+allinurl:transparency.org&ceid=US:en&hl=en-US&gl=US "~Transparency International" "news" "world" "politics"
 ## Economist International
 http://www.economist.com/rss/international_rss.xml "~The Economist" "news" "economics" "world" "politics"
+## The Guardian
+https://rss.maxocull.com/?action=display&bridge=TheGuardian&feed=world%2Frss&format=Atom "~The Guardian" "world" "news" "politics"
 ## Reason
 https://reason.com/rss/ "~Reason" "news" "politics" "world"
 ## Pew Research
@@ -19,10 +23,8 @@ https://news.google.com/rss/search?q=when:7d+allinurl:pewresearch.org&ceid=US:en
 https://news.google.com/rss/search?q=when:7d+allinurl:gallup.com&ceid=US:en&hl=en-US&gl=US "~Gallup" "world" "economics" "stem"
 ## Hacker News
 http://news.ycombinator.com/rss "~Hacker News" "stem" "security" "computer"
-## Motherboard
-http://motherboard.vice.com/rss "~Motherboard" "stem"
 ## Wired
-http://feeds.wired.com/wired/index "~Wired" "stem"
+https://rss.maxocull.com/?action=display&bridge=Wired&feed=rss&format=Atom "~Wired" "stem"
 ## The Verge
 http://www.theverge.com/rss/full.xml "~The Verge" "stem"
 ## The Register
@@ -49,20 +51,29 @@ https://www.darkreading.com/rss_simple.asp "~Dark Reading" "security" "computer"
 https://nakedsecurity.sophos.com/feed "~Naked Security" "security" "computer"
 ## Arch Linux
 https://www.archlinux.org/feeds/news/ "~Arch Linux" "security" "computer"
-## Alpine Linux
-https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"
 ## NASA
 https://www.nasa.gov/rss/dyn/breaking_news.rss "~NASA" "astronomy" "stem"
-## NOAA
-https://oceanservice.noaa.gov/rss/nosnews.xml "~NOAA" "stem"
 ## Biomed Central (BMC)
 https://blogs.biomedcentral.com/bmcseriesblog/feed/ "~Biomed Central" "stem" "academia"
 ## Nature
 http://feeds.nature.com/nature/rss/current "~Nature" "stem" "academia"
-## JStor
-https://daily.jstor.org/feed/ "~JSTOR" "stem" "acedemia"
 ## CDC
 https://tools.cdc.gov/podcasts/feed.asp?feedid=183 "~CDC" "stem"
+
+## Cryptome
+https://rss.maxocull.com/?action=display&bridge=Cryptome&n=20&format=Atom "~Cryptome" "politics" "computer" "security"
+## Have I Been Pwned
+https://rss.maxocull.com/?action=display&bridge=HaveIBeenPwned&order=dateAdded&item_limit=20&format=Atom "~Have I Been Pwned" "computer" "security"
+## OpenWRT
+https://rss.maxocull.com/?action=display&bridge=OpenwrtSecurity&format=Atom "~OpenWRT" "computer" "security"
+## r/WallStreetBets
+https://rss.maxocull.com/?action=display&bridge=Reddit&context=single&r=wallstreetbets&format=Atom "~r/WallStreetBets" "economics" "meme"
+## WikiLeaks
+https://rss.maxocull.com/?action=display&bridge=WikiLeaks&category=-Leaks-&teaser=on&format=Atom "~WikiLeaks" "politics" "security" "news" "world"
+## @elonmusk
+https://rss.maxocull.com/?action=display&bridge=Twitter&context=By+username&u=elonmusk&norep=on&nopic=on&noimgscaling=on&format=Atom "~@elonmusk" "memes"
+## Reddit Memes
+https://rss.maxocull.com/?action=display&bridge=Reddit&context=multi&rs=memeeconomy%2C+dankmemes%2C+politicalcompassmemes%2C+libertarianmemes%2C+voluntaristmemes&format=Atom "~Reddit Memes" "memes"
 
 ## GitBucket activity
 http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
@@ -73,9 +84,17 @@ http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
 ### Removed Feeds
 ## The Independent - not least-biased
 #http://www.independent.co.uk/rss "~The Independent" "news" "politics" "world"
+## JStor - just SJW stuff, not science
+#https://daily.jstor.org/feed/ "~JSTOR" "stem" "acedemia"
 
 ### Defunct feeds
 ## Reuters Top
 #http://feeds.reuters.com/reuters/topNews "~Reuters Top" "news" "politics" "world"
 ## Reuters Business
 #http://feeds.reuters.com/reuters/businessNews "~Reuters Business" "news" "economics" "world" "politics"
+## NOAA
+#https://oceanservice.noaa.gov/rss/nosnews.xml "~NOAA" "stem"
+## Alpine Linux
+#https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"
+## Motherboard
+#http://motherboard.vice.com/rss "~Motherboard" "stem"
