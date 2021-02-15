@@ -60,6 +60,8 @@ link_source "config/rofi/" ".config/rofi"
 link_source "config/nvim/" ".config/nvim"
 link_source "config/newsboat/" ".config/newsboat"
 link_source "config/zathura/" ".config/zathura"
+link_source "config/bspwm/" ".config/bspwm"
+link_source "config/sxhkd/" ".config/sxhkd"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -83,12 +85,12 @@ case "$response" in
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
             # Partial upgrades are not supported!
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat chezmoi
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi
         fi
 
         if [[ -x "$(command -v pacman)" ]]; then
             previous_dir="$(pwd)"
-            cd ~ && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
+            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -120,7 +122,7 @@ case "$response" in
 
         # TODO: Automatically update the version.
         # TODO: Detect architecture of local system and grab the right binary.
-        wget https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64 -O "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        curl https://github.com/bcicen/ctop/releases/download/v0.7.5/ctop-0.7.5-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
 
         chsh -s /bin/zsh "${USER}"
         ;;
@@ -135,10 +137,15 @@ case "$response" in
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y nextcloud-client veracrypt
         elif [[ -x "$(command -v apt)" ]]; then
-            # TODO: nextcloud, veracrypt
+            # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring
+        fi
+
+        if [[ -x "$(command -v yay)" ]]; then
+            yay -Syu zathura-git girara-git ytop-bin picom-tryone-git
+            sudo pacman -Syu zathura-pdf-mupdf
         fi
         ;;
     *)
@@ -150,7 +157,7 @@ read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
-            printf "[user]\n\tuser = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
+            printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
         fi
 
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
@@ -176,6 +183,9 @@ case "$response" in
 
         sudo groupadd -r wireshark
         sudo usermod -a -G wireshark "$USER"
+
+        sudo groupadd -r tty
+        sudo usermod -a -G tty "$USER"
         ;;
     *)
         echo "Skipping permission setup"

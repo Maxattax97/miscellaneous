@@ -1133,8 +1133,10 @@ zshrc_set_environment_variables() {
 
     # Get the physical form factor of the machine.
     if [[ "$(uname)" != "Darwin" ]]; then
-        local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
-        local chassis_name=""
+        if [[ -f "/sys/class/dmi/id/chassis_type" ]] ; then
+            local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
+            local chassis_name=""
+        fi
 
         case "$chassis_type" in
             8|9|10|14)
@@ -1153,11 +1155,13 @@ zshrc_set_environment_variables() {
         export GOPATH="${HOME}/go"
     fi
 
-    temp_go_path=("${GOPATH}/go-"*);
-    if [[ -d "${temp_go_path[-1]}" ]]; then
-        export GOROOT=${temp_go_path[-1]}
-        if [[ -d "${temp_go_path[2]}" ]]; then
-            echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+    if [[ -d "${GOPATH}" ]]; then
+        temp_go_path=("${GOPATH}/go-"*);
+        if [[ -d "${temp_go_path[-1]}" ]]; then
+            export GOROOT=${temp_go_path[-1]}
+            if [[ -d "${temp_go_path[2]}" ]]; then
+                echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+            fi
         fi
     fi
 
