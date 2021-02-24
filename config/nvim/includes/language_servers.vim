@@ -20,7 +20,7 @@ let g:coc_global_extensions = [
     \ 'coc-vimtex',
     \ 'coc-tslint-plugin',
     \ 'coc-phpls',
-    \ 'coc-python',
+    \ 'coc-pyright',
     \ 'coc-fsharp',
     \ 'coc-dictionary',
     \]

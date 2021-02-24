@@ -135,18 +135,20 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y nextcloud-client veracrypt
+            sudo dnf install -y nextcloud-client veracrypt firefox
         elif [[ -x "$(command -v apt)" ]]; then
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring  firefox
         fi
 
         if [[ -x "$(command -v yay)" ]]; then
             yay -Syu zathura-git girara-git ytop-bin picom-tryone-git
-            sudo pacman -Syu zathura-pdf-mupdf
+            sudo pacman -Syu zathura-pdf-mupdf firefox
         fi
+
+        xdg-settings set default-web-browser firefox.desktop
         ;;
     *)
         echo "Skipping utility installation"
