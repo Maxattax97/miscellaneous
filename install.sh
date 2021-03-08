@@ -84,11 +84,10 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
-            # Partial upgrades are not supported!
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi ctop --needed
         fi
 
-        if [[ -x "$(command -v pacman)" ]]; then
+        if [[ ! -x "$(command -v chezmoi)" ]]; then
             previous_dir="$(pwd)"
             cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
@@ -117,12 +116,20 @@ case "$response" in
 	    # rm -rf /tmp/.dein_installer.sh
         fi
 
-        # Always try to update these.
-        git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
+        if [[ ! -x "$(command -v gotop)" ]]; then
+            if [[ -x "$(command -v yay)" ]]; then
+                yay -Syu gotop-bin
+            else
+                # Always try to update these.
+                git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
+            fi
+        fi
 
-        # TODO: Automatically update the version.
-        # TODO: Detect architecture of local system and grab the right binary.
-        curl https://github.com/bcicen/ctop/releases/download/v0.7.5/ctop-0.7.5-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        if [[ ! -x "$(command -v ctop)" ]]; then
+            # TODO: Automatically update the version.
+            # TODO: Detect architecture of local system and grab the right binary.
+            curl https://github.com/bcicen/ctop/releases/download/v0.7.5/ctop-0.7.5-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        fi
 
         chsh -s /bin/zsh "${USER}"
         ;;
@@ -140,12 +147,12 @@ case "$response" in
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring  firefox
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox --needed
         fi
 
         if [[ -x "$(command -v yay)" ]]; then
-            yay -Syu zathura-git girara-git ytop-bin picom-tryone-git
-            sudo pacman -Syu zathura-pdf-mupdf firefox
+            yay -Syu zathura-git girara-git
+            sudo pacman -Syu zathura-pdf-mupdf firefox --needed
         fi
 
         xdg-settings set default-web-browser firefox.desktop
@@ -154,6 +161,23 @@ case "$response" in
         echo "Skipping utility installation"
         ;;
 esac
+
+if [[ -x "$(command -v pacman)" ]]; then
+    read -r -p "Would you like to attempt an install of bspwm (Arch Linux only)? [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            # TODO: install custom st.
+            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet picom --needed
+
+            if [[ -x "$(command -v yay)" ]]; then
+                yay -Syu polybar --needed
+            fi
+            ;;
+        *)
+            echo "Skipping bspwm installation"
+            ;;
+    esac
+fi
 
 read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in

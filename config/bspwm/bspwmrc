@@ -64,10 +64,18 @@ function runOnce()
 # Services
 runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
 runOnce sxhkd true sxhkd.log
-runOnce nitrogen true nitrogen.log --restore
-runOnce nm-applet true nm_applet.log
-runOnce nextcloud true nextcloud.log --background
-runOnce flameshot true flameshot.log
+if [[ -x "$(command -v nitrogen)" ]]; then
+    runOnce nitrogen true nitrogen.log --restore
+fi
+if [[ -x "$(command -v nm-applet)" ]]; then
+    runOnce nm-applet true nm_applet.log
+fi
+if [[ -x "$(command -v nextcloud)" ]]; then
+    runOnce nextcloud true nextcloud.log --background
+fi
+if [[ -x "$(command -v flameshot)" ]]; then
+    runOnce flameshot true flameshot.log
+fi
 
 # Applications
 runOnce st true st.log
