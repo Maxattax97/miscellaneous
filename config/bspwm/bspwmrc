@@ -80,6 +80,7 @@ fi
 # Applications
 runOnce st true st.log
 runOnce firefox true firefox.log
+runOnce dunst true dunst.log
 
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
 polybar workspaces -r &

@@ -11,7 +11,8 @@ super + Return
 
 # program launcher
 super + @space
-	dmenu_run
+	$HOME/.config/rofi/menu/MAIN
+    #dmenu_run
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -27,9 +28,10 @@ super + Home
 # bspwm hotkeys
 #
 
-# quit/restart bspwm
+# quit/restart bspwm, and reload sxhkd
 super + alt + {q,r}
 	bspc {quit,wm -r}
+	pkill -USR1 -x sxhkd
 
 # close and kill
 super + {_,shift + }w

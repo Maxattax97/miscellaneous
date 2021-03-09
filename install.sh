@@ -62,6 +62,7 @@ link_source "config/newsboat/" ".config/newsboat"
 link_source "config/zathura/" ".config/zathura"
 link_source "config/bspwm/" ".config/bspwm"
 link_source "config/sxhkd/" ".config/sxhkd"
+link_source "config/dunst/" ".config/dunst"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -167,10 +168,10 @@ if [[ -x "$(command -v pacman)" ]]; then
     case "$response" in
         [yY][eE][sS]|[yY])
             # TODO: install custom st.
-            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet picom --needed
+            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 dunst --needed
 
             if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu polybar --needed
+                yay -Syu polybar picom-git --needed
             fi
             ;;
         *)
