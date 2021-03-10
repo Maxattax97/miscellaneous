@@ -171,7 +171,7 @@ if [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 dunst --needed
 
             if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu polybar picom-git --needed
+                yay -Syu polybar picom-git ly --needed
             fi
             ;;
         *)
