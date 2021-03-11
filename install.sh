@@ -63,6 +63,7 @@ link_source "config/zathura/" ".config/zathura"
 link_source "config/bspwm/" ".config/bspwm"
 link_source "config/sxhkd/" ".config/sxhkd"
 link_source "config/dunst/" ".config/dunst"
+link_source "config/fontconfig/" ".config/fontconfig"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"

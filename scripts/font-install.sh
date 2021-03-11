@@ -26,6 +26,31 @@ wget -O _fonts/FiraCode.otf https://github.com/ryanoasis/nerd-fonts/raw/master/p
 wget -O _fonts/FiraMono.otf https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fura%20Mono%20Regular%20Nerd%20Font%20Complete%20Mono.otf
 wget -O _fonts/Hack.ttf https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete%20Mono.ttf
 
+wget -O _fonts/HelveticaNeueu.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeue.ttf
+wget -O _fonts/HelveticaNeueBold.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueBold.ttf
+wget -O _fonts/HelveticaNeueBoldItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueBoldItalic.ttf
+wget -O _fonts/HelveticaNeueCondensedBlack.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueCondensedBlack.ttf
+wget -O _fonts/HelveticaNeueCondensedBold.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueCondensedBold.ttf
+wget -O _fonts/HelveticaNeueItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueItalic.ttf
+wget -O _fonts/HelveticaNeueLight.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueLight.ttf
+wget -O _fonts/HelveticaNeueLightItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueLightItalic.ttf
+wget -O _fonts/HelveticaNeueMedium.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueMedium.ttf
+wget -O _fonts/HelveticaNeueMediumItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueMediumItalic.ttf
+wget -O _fonts/HelveticaNeueThin.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueThin.ttf
+wget -O _fonts/HelveticaNeueThinItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueThinItalic.ttf
+wget -O _fonts/HelveticaNeueUltraLight.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueUltraLight.ttf
+wget -O _fonts/HelveticaNeueUltraLightItalic.ttf https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueUltraLightItalic.ttf
+
+wget -O _fonts/RobotoSlab.zip https://fonts.google.com/download?family=Roboto%20Slab
+wget -O _fonts/Roboto.zip https://fonts.google.com/download?family=Roboto
+
+unzip _fonts/RobotoSlab.zip -d _fonts/
+mv _fonts/static/* _fonts/
+rm -rf _fonts/RobotoSlab.zip _fonts/LICENSE.txt _fonts/README.txt _fonts/RobotoSlab-VariableFont_wght.ttf _fonts/static/
+
+unzip _fonts/Roboto.zip -d _fonts/
+rm -rf _fonts/Roboto.zip _fonts/LICENSE.txt
+
 sudo mkdir /usr/share/fonts/pretty-fonts/
 sudo cp _fonts/* /usr/share/fonts/pretty-fonts/
 rm -rf _fonts/
