@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
@@ -6,13 +6,27 @@ echo "Linking from ${MISC_DIR} ..."
 
 link_source() {
     src="${MISC_DIR}/${1}"
-    dest="${HOME}/${2:-$1}"
+    overwrite="${2:-0}"
+    dest="${HOME}/${3:-$1}"
+
     if [ -h "$dest" ]; then
         echo "Skipping $dest because it is already linked ..."
     elif [ -f "$dest" ]; then
-        echo "Skipping $dest because a file exists there ..."
+        if [ "$overwrite" -eq 1 ]; then
+            rm -f "$dest"
+            echo "Overwriting file and linking $src -> $dest ..."
+            ln -sf "$src" "$dest"
+        else
+            echo "Skipping $dest because a file exists there ..."
+        fi
     elif [ -d "$dest" ]; then
-        echo "Skipping $dest because a directory exists there ..."
+        if [ "$overwrite" -eq 1 ]; then
+            rm -rf "$dest"
+            echo "Overwriting directory and linking $src -> $dest ..."
+            ln -sf "$src" "$dest"
+        else
+            echo "Skipping $dest because a directory exists there ..."
+        fi
     else
         echo "Linking $src -> $dest ..."
         ln -sf "$src" "$dest"
@@ -20,26 +34,26 @@ link_source() {
 }
 
 # Dot files
-link_source .ctags
-link_source .bashrc
-link_source .zshrc
-link_source .tmux.conf
-link_source .tmuxline.conf
-link_source .Xdefaults
-link_source .eslintrc.json
+link_source .ctags 1
+link_source .bashrc 1
+link_source .zshrc 1
+link_source .tmux.conf 1
+link_source .tmuxline.conf 1
+link_source .Xdefaults 1
+link_source .eslintrc.json 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
 
 mkdir -p "${HOME}/.ncmpcpp"
-link_source "config/ncmpcpp/config" ".ncmpcpp/config"
+link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
 
-link_source "config/SpaceVim.d" ".SpaceVim.d"
+link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
 # Configure secured password (not included in this repo) with:
 # /secure passphrase a strong password here
 # /secure set freenode_password yourFreenodePasswordHere
-link_source "config/weechat/" ".weechat"
+link_source "config/weechat/" 1 ".weechat"
 
 if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
     git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
@@ -48,32 +62,32 @@ fi
 # ~/.config/
 #echo "Backing up ${HOME}/.config ..."
 #tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
-link_source "config/i3/" ".config/i3"
-link_source "config/mpd/" ".config/mpd"
-link_source "config/polybar/" ".config/polybar"
-link_source "config/psd/" ".config/psd"
-link_source "config/compton/" ".config/compton"
-link_source "config/awesome/" ".config/awesome"
-link_source "config/gtk-3.0/" ".config/gtk-3.0"
-link_source "config/ranger/" ".config/ranger"
-link_source "config/rofi/" ".config/rofi"
-link_source "config/nvim/" ".config/nvim"
-link_source "config/newsboat/" ".config/newsboat"
-link_source "config/zathura/" ".config/zathura"
-link_source "config/bspwm/" ".config/bspwm"
-link_source "config/sxhkd/" ".config/sxhkd"
-link_source "config/dunst/" ".config/dunst"
-link_source "config/fontconfig/" ".config/fontconfig"
+link_source "config/i3/" 1 ".config/i3"
+link_source "config/mpd/" 1 ".config/mpd"
+link_source "config/polybar/" 1 ".config/polybar"
+link_source "config/psd/" 1 ".config/psd"
+link_source "config/compton/" 1 ".config/compton"
+link_source "config/awesome/" 1 ".config/awesome"
+link_source "config/gtk-3.0/" 0 ".config/gtk-3.0"
+link_source "config/ranger/" 1 ".config/ranger"
+link_source "config/rofi/" 1 ".config/rofi"
+link_source "config/nvim/" 1 ".config/nvim"
+link_source "config/newsboat/" 1 ".config/newsboat"
+link_source "config/zathura/" 1 ".config/zathura"
+link_source "config/bspwm/" 1 ".config/bspwm"
+link_source "config/sxhkd/" 1 ".config/sxhkd"
+link_source "config/dunst/" 1 ".config/dunst"
+link_source "config/fontconfig/" 0 ".config/fontconfig"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
-link_source "bin/ctlpanel"
-link_source "bin/gspeak"
-link_source "bin/idle-mine"
-link_source "bin/reload-kde"
-link_source "bin/restart-kde"
-link_source "bin/logout-kde"
+link_source "bin/ctlpanel" 1
+link_source "bin/gspeak" 1
+link_source "bin/idle-mine" 1
+link_source "bin/reload-kde" 1
+link_source "bin/restart-kde" 1
+link_source "bin/logout-kde" 1
 
 echo "Environment installation complete"
 

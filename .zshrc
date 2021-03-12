@@ -1155,15 +1155,16 @@ zshrc_set_environment_variables() {
         export GOPATH="${HOME}/go"
     fi
 
-    if [[ -d "${GOPATH}" ]]; then
-        temp_go_path=("${GOPATH}/go-"*);
-        if [[ -d "${temp_go_path[-1]}" ]]; then
-            export GOROOT=${temp_go_path[-1]}
-            if [[ -d "${temp_go_path[2]}" ]]; then
-                echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
-            fi
-        fi
-    fi
+    # Won't work on Arch, needed to install other things.
+    #if [[ -d "${GOPATH}" ]]; then
+        #temp_go_path=("${GOPATH}/go-"*);
+        #if [[ -d "${temp_go_path[-1]}" ]]; then
+            #export GOROOT=${temp_go_path[-1]}
+            #if [[ -d "${temp_go_path[2]}" ]]; then
+                #echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+            #fi
+        #fi
+    #fi
 
     export CHASSIS="$chassis_name"
 }
