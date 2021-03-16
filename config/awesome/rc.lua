@@ -640,7 +640,7 @@ local function run_once(cmd_arr)
 end
 
 run_once({'xrdb -load ~/.Xdefaults'})
-run_once({'compton --config ~/.config/compton/compton.conf'})
+run_once({'picom --config ~/.config/compton/compton.conf --experimental-backends'})
 run_once({'firefox'})
 run_once({'steam'})
 run_once({'discord'})
