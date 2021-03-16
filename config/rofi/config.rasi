@@ -1,10 +1,13 @@
 /* To get list of fonts, use `fc-list` */
+/* vim: ft=css
+ */
 configuration {
-	modi: "window,drun,ssh,combi";
+	modi: "combi";
 /*	width: 50;*/
 /*	lines: 15;*/
 /*	columns: 1;*/
-	font: "Hack Nerd Font Mono 16";     /* font: "FreeSans 16"; */
+    font: "FreeSans 16";
+	/*font: "Hack Nerd Font Mono 16";*/
 /*	bw: 1;*/
 /*	location: 0;*/
 /*	padding: 5;*/
@@ -12,6 +15,7 @@ configuration {
 /*	xoffset: 0;*/
 /*	fixed-num-lines: true;*/
     show-icons: true;
+    icon-theme: "Papirus";
     terminal: "rofi-sensible-terminal";
 /*	ssh-client: "ssh";*/
 /*	ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";*/

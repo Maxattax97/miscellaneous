@@ -11,7 +11,8 @@ super + Return
 
 # program launcher
 super + @space
-	$HOME/.config/rofi/menu/MAIN
+    rofi -show combi -combi drun,run,window
+    #$HOME/.config/rofi/menu/MAIN
     #dmenu_run
 
 # make sxhkd reload its configuration files:
@@ -24,14 +25,16 @@ super + Home
 	export PICOM_ENABLE="$(cat "${HOME}/.cache/max_enable_picom")"; \
 	if [ "$PICOM_ENABLE" = "1" ]; then echo "0" > "${HOME}/.cache/max_enable_picom" && pkill picom; else echo "1" > "${HOME}/.cache/max_enable_picom"; fi
 
+ctrl + shift + alt + p
+	if [ -s "${HOME}/batsrc/.batsdevrc" ]; then bash "${HOME}/batsrc/.batsdevrc" auto-fill-web-password; fi
+
 #
 # bspwm hotkeys
 #
 
 # quit/restart bspwm, and reload sxhkd
 super + alt + {q,r}
-	bspc {quit,wm -r}
-	pkill -USR1 -x sxhkd
+	bspc {quit,wm -r}; pkill -USR1 -x sxhkd
 
 # close and kill
 super + {_,shift + }w

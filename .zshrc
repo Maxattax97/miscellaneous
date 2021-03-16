@@ -1155,7 +1155,7 @@ zshrc_set_environment_variables() {
         export GOPATH="${HOME}/go"
     fi
 
-    # Won't work on Arch, needed to install other things.
+    # TODO: Won't work on Arch, needed to install other things.
     #if [[ -d "${GOPATH}" ]]; then
         #temp_go_path=("${GOPATH}/go-"*);
         #if [[ -d "${temp_go_path[-1]}" ]]; then
