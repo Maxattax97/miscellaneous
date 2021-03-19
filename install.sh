@@ -164,7 +164,7 @@ case "$response" in
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox --needed
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox p7zip unrar --needed
         fi
 
         if [[ -x "$(command -v yay)" ]]; then
