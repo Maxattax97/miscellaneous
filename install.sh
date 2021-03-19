@@ -184,7 +184,7 @@ if [[ -x "$(command -v pacman)" ]]; then
     case "$response" in
         [yY][eE][sS]|[yY])
             # TODO: install custom st.
-            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst --needed
+            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
 
             if [[ -x "$(command -v yay)" ]]; then
                 yay -Syu polybar picom-git ly --needed
