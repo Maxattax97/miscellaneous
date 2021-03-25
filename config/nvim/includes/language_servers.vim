@@ -4,6 +4,7 @@ let g:coc_global_extensions = [
     \ 'coc-tag',
     \ 'coc-tslint',
     \ 'coc-eslint',
+    \ 'coc-clangd',
     \ 'coc-css',
     \ 'coc-html',
     \ 'coc-solargraph',
