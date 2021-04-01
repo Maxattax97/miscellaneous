@@ -99,10 +99,12 @@
 
 [bar/system]
     inherit = bar/base
-    width = 400
+    width = 600
 
-    offset-x = 100%:-406
+    offset-x = 100%:-606
     module-margin-left = 2
+    padding-left = 2
+    padding-right = 2
 
     modules-right = pulseaudio battery wireless wired cpu memory date
     modules-left =

@@ -20,7 +20,7 @@
       ]
     },
     "ccls": {
-      "command": "ccls",
+      "command": "ccls_DISABLED",
       "filetypes": [
         "c",
         "cpp",
@@ -66,7 +66,7 @@
   "python.pythonPath": "python3",
   "python.linting.pylintEnabled": false,
   "python.linting.pep8Enabled": true,
-  "eslint.nodePath": "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/node_modules_dev",
+  "eslint.nodePath": "/home/max/batsrc/node_modules_dev",
   "eslint.packageManager": "yarn",
   "javascript.validate.enable": false,
   "tsserver.npm": "/usr/bin/npm"

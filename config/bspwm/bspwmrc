@@ -77,7 +77,7 @@ if [[ -x "$(command -v flameshot)" ]]; then
     runOnce flameshot true flameshot.log
 fi
 if [[ -x "$(command -v blueman-tray)" ]]; then
-    runOnce blueman-tray false blueman_tray.log
+    runOnce blueman-tray true blueman_tray.log
 fi
 
 # Applications
