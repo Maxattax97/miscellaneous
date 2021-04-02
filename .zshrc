@@ -1010,6 +1010,7 @@ zshrc_set_aliases() {
         alias egrep='egrep --color=auto'
 
         alias pacman='pacman --color=auto'
+        alias yay='yay --color=auto'
     fi
 
     # some more ls aliases
