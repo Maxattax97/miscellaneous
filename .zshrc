@@ -596,6 +596,12 @@ zshrc_zplug() {
     fi
 }
 
+zshrc_extensions() {
+	if [[ -x "$(command -v navi)" ]]; then
+		eval "$(navi widget zsh)"
+	fi
+}
+
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
         if [[ -x "$(command -v neofetch)" ]]; then
@@ -1417,6 +1423,7 @@ zshrc_init() {
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
+		zshrc_extensions
     fi
 
     if ( $zshrc_dropping_mode ); then

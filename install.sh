@@ -142,6 +142,14 @@ case "$response" in
             fi
         fi
 
+		if [[ ! -x "$(command -v navi)" ]]; then
+			if [[ -x "$(command -v yay)" ]]; then
+				yay -Syu navi
+			else
+				bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+			fi
+		fi
+
         if [[ ! -x "$(command -v ctop)" ]]; then
             # TODO: Automatically update the version.
             # TODO: Detect architecture of local system and grab the right binary.
