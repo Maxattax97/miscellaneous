@@ -142,6 +142,14 @@ case "$response" in
             fi
         fi
 
+		if [[ ! -x "$(command -v navi)" ]]; then
+			if [[ -x "$(command -v yay)" ]]; then
+				yay -Syu navi
+			else
+				bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+			fi
+		fi
+
         if [[ ! -x "$(command -v ctop)" ]]; then
             # TODO: Automatically update the version.
             # TODO: Detect architecture of local system and grab the right binary.
@@ -164,7 +172,7 @@ case "$response" in
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox --needed
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox p7zip unrar --needed
         fi
 
         if [[ -x "$(command -v yay)" ]]; then
@@ -184,7 +192,7 @@ if [[ -x "$(command -v pacman)" ]]; then
     case "$response" in
         [yY][eE][sS]|[yY])
             # TODO: install custom st.
-            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst --needed
+            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
 
             if [[ -x "$(command -v yay)" ]]; then
                 yay -Syu polybar picom-git ly --needed

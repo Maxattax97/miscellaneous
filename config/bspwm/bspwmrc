@@ -77,7 +77,7 @@ if [[ -x "$(command -v flameshot)" ]]; then
     runOnce flameshot true flameshot.log
 fi
 if [[ -x "$(command -v blueman-tray)" ]]; then
-    runOnce blueman-tray false blueman_tray.log
+    runOnce blueman-tray true blueman_tray.log
 fi
 
 # Applications
@@ -88,6 +88,7 @@ runOnce dunst true dunst.log
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
 polybar workspaces -r &
 polybar system -r &
+polybar workspaces-thin -r &
 
 # Delayed startup:
 #(sleep 30 && runOnce steam true steam.log) &

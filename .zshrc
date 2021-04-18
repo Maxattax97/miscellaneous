@@ -596,6 +596,12 @@ zshrc_zplug() {
     fi
 }
 
+zshrc_extensions() {
+	if [[ -x "$(command -v navi)" ]]; then
+		eval "$(navi widget zsh)"
+	fi
+}
+
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
         if [[ -x "$(command -v neofetch)" ]]; then
@@ -1008,6 +1014,9 @@ zshrc_set_aliases() {
         alias grep='grep --color=auto'
         alias fgrep='fgrep --color=auto'
         alias egrep='egrep --color=auto'
+
+        alias pacman='pacman --color=auto'
+        alias yay='yay --color=auto'
     fi
 
     # some more ls aliases
@@ -1414,6 +1423,7 @@ zshrc_init() {
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
+		zshrc_extensions
     fi
 
     if ( $zshrc_dropping_mode ); then

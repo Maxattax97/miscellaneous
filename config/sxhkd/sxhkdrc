@@ -28,6 +28,9 @@ super + Home
 ctrl + shift + alt + p
 	if [ -s "${HOME}/batsrc/.batsdevrc" ]; then bash "${HOME}/batsrc/.batsdevrc" auto-fill-web-password; fi
 
+Print
+    flameshot gui
+
 #
 # bspwm hotkeys
 #
