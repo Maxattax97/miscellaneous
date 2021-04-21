@@ -586,6 +586,8 @@ zshrc_zplug() {
         # zplug "zsh-users/zsh-syntax-highlighting"
         zplug "zdharma/fast-syntax-highlighting", defer:3
 
+        zplug "hkupty/ssh-agent"
+
         if ! zplug check; then
             zplug install
         fi

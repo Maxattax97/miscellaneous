@@ -28,6 +28,7 @@ augroup neovim_studio_denite
     "   <CR>          - Open currently selected file in any mode
     autocmd FileType denite-filter call s:denite_filter_my_settings()
     function! s:denite_filter_my_settings() abort
+	" TODO: this is broken, it won't let you tab out of the filter.
     imap <silent><buffer> <Tab>
     \ <Plug>(denite_filter_quit)
     inoremap <silent><buffer><expr> <Esc>
