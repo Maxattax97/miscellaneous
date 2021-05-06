@@ -45,11 +45,17 @@ zshrc_enter_tmux() {
                 send-keys 'gotop' C-m l l \; \
                 split-window -h \; \
                 send-keys 'ctop' C-m \; \
+                split-window -v \; \
+                send-keys 'nyx' C-m \; \
                 select-pane -t 1 \; \
                 new-window \; \
                 send-keys 'weechat' C-m \; \
                 split-window -h -p 35 \; \
                 send-keys 'newsboat' C-m 'R' \; \
+                select-pane -t 1 \; \
+                new-window \; \
+                send-keys 'sudo xmrig --config ~/.config/xmrig.json' C-m \; \
+                split-window -h \; \
                 select-pane -t 1 \; \
                 new-window \;
 
@@ -103,6 +109,8 @@ zshrc_auto_window_title() {
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
                 elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
+                elif [[ "$TMUX_PANE" == "%5" || "$TMUX_PANE" == "%6" ]]; then
+                    print -Pn "\ekRIG\e\\" # set screen hardstatus
                 else
                     print -Pn "\e]2;$2:q\a" # set window name
                     print -Pn "\e]1;$1:q\a" # set tab name
@@ -113,6 +121,8 @@ zshrc_auto_window_title() {
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
                 elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
+                elif [[ "$TMUX_PANE" == "%5" || "$TMUX_PANE" == "%6" ]]; then
+                    print -Pn "\ekRIG\e\\" # set screen hardstatus
                 else
                     print -Pn "\ek$1:q\e\\" # set screen hardstatus
                 fi

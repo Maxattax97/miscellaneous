@@ -79,6 +79,7 @@ link_source "config/sxhkd/" 1 ".config/sxhkd"
 link_source "config/dunst/" 1 ".config/dunst"
 link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
+link_source "config/xmrig.json" 1 ".config/xmrig.json"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
