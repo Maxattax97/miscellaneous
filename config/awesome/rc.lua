@@ -554,13 +554,13 @@ awful.rules.rules = {
       properties = { screen = 1, tag = "web" } },
 
     { rule = { class = "Steam" },
-      properties = { screen = 2, tag = "game" } },
+      properties = { screen = 1, tag = "game" } },
 
     { rule = { class = "discord" },
-      properties = { screen = 2, tag = "game" } },
+      properties = { screen = 1, tag = "game" } },
 
     { rule = { class = "Nextcloud" },
-      properties = { screen = 2, tag = "office" } },
+      properties = { screen = 1, tag = "office" } },
 }
 -- }}}
 
