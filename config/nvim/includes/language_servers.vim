@@ -4,11 +4,11 @@ let g:coc_global_extensions = [
     \ 'coc-tag',
     \ 'coc-tslint',
     \ 'coc-eslint',
+    \ 'coc-clangd',
     \ 'coc-css',
     \ 'coc-html',
     \ 'coc-solargraph',
     \ 'coc-vetur',
-    \ 'coc-json',
     \ 'coc-tsserver',
     \ 'coc-jest',
     \ 'coc-java',
@@ -21,7 +21,7 @@ let g:coc_global_extensions = [
     \ 'coc-vimtex',
     \ 'coc-tslint-plugin',
     \ 'coc-phpls',
-    \ 'coc-python',
+    \ 'coc-pyright',
     \ 'coc-fsharp',
     \ 'coc-dictionary',
     \]
@@ -39,9 +39,10 @@ let g:coc_global_extensions = [
 
 " INSTALL: npm install -g --local bash-language-server
 " INSTALL: yay -S ccls
-" INSTALL: go get -u golang.org/x/tools/cmd/gopls
+" INSTALL: go get golang.org/x/tools/cmd/gopls
 " INSTALL: go get -u github.com/mdempsky/gocode
-" INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp
-"          luarocks install --local luacheck lcf
+" INSTALL: pacman -Syu lua53 luarocks
+" INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp --lua-version=5.3
+" INSTALL: luarocks install --local lcf --lua-version=5.3       # luacheck no longer available.
 
 "call coc#add_extension('coc-dictionary')

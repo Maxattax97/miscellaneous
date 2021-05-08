@@ -7,7 +7,8 @@ call dein#add('wsdjeg/dein-ui.vim')
 "call dein#add('shougo/deoplete.nvim')
 " INSTALL: yarn
 "call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
-call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
+"call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
+call dein#add('neoclide/coc.nvim', {'branch': 'release'})
 
 " Display function arguments in command bar. Works with deoplete.
 " TODO: Not displaying?
@@ -202,6 +203,7 @@ call dein#add('lifepillar/vim-solarized8')
 call dein#add('mhartington/oceanic-next')
 call dein#add('dikiaap/minimalist')
 call dein#add('flazz/vim-colorschemes')
+call dein#add('srcery-colors/srcery-vim')
 
 " Icons for filetypes, Git, and more.
 call dein#add('ryanoasis/vim-devicons')

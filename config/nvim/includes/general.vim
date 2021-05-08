@@ -46,27 +46,29 @@ filetype plugin indent on
 syntax on
 
 " Default formatting when not detected.
-set autoindent
-set smartindent
-set smarttab
+"set autoindent
+"set smartindent
+"set smarttab
 set shiftround
 set softtabstop=4
 set tabstop=4
 set shiftwidth=4
 
+" Let vim-sleuth decide these because apparently we can't set without
+" completely overriding.
 " Default to TABS when not detected.
 "set noexpandtab
-
 " Default to SPACES when not detected
-set expandtab
+"set expandtab
 
 " Expand the modeline so we can read all the tags at the beginning.
 set modeline
 set modelines=5
 
 " Folds
-set foldmethod=indent
-set foldnestmax=3
+" I found myself always opening these anyway.
+"set foldmethod=indent
+"set foldnestmax=3
 
 " Open splits on the top, and right sides.
 "set splitright
@@ -103,6 +105,14 @@ set guifont=Hack\ Nerd\ Font\ 9
 
 " Use my custom Galactic colorscheme.
 colorscheme galactic
+" Favorites:
+"   solarized8_dark_flat
+"   Tomorrow-Night-Bright
+"   OceanicNext
+"   gotham256
+"   minimalist
+"   srcery-drk
+"   molokai
 
 " This will repair colors in Tmux/Screen sessions.
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"

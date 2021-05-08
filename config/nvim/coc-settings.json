@@ -1,43 +1,74 @@
 {
-    "coc.preferences.extensionUpdateCheck": "weekly",
-    "codeLens.enable": false,
-    "diagnostic.checkCurrentLine": true,
-    "diagnostic.displayByAle": true,
-    "diagnostic.warningSign": ">>",
-    "diagnostic.virtualText": true,
-    "diagnostic.virtualTextPrefix": " ]] ",
-    "languageserver": {
-        "bash": {
-            "args": ["start"],
-            "command": "bash-language-server",
-            "filetypes": ["sh"],
-            "ignoredRootPaths": ["~"]
-        },
-        "ccls": {
-            "command": "ccls",
-            "filetypes": ["c", "cpp", "objc", "objcpp"],
-            "initializationOptions": {"cache": {"directory": "/tmp/ccls"}},
-            "rootPatterns": [
-                ".ccls",
-                "compile_commands.json",
-                ".vim/",
-                ".git/",
-                ".hg/"
-            ]
-        },
-        "golang": {
-            "command": "gopls",
-            "filetypes": ["go"],
-            "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"]
-        },
-        "lua": {"command": "lua-lsp", "filetypes": ["lua"]}
+  "coc.preferences.extensionUpdateCheck": "weekly",
+  "codeLens.enable": false,
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.displayByAle": true,
+  "diagnostic.warningSign": ">>",
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextPrefix": " ]] ",
+  "languageserver": {
+    "bash": {
+      "args": [
+        "start"
+      ],
+      "command": "bash-language-server",
+      "filetypes": [
+        "sh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
     },
-    "suggest.echodocSupport": true,
-    "suggest.enablePreview": true,
-    "suggest.maxCompleteItemCount": 50,
-    "suggest.timeout": 5000,
-    "python.pythonPath": "python3",
-    "eslint.nodePath": "/home/max/Perforce/mocull/Engineering/Software/Linux/Code/node_modules_dev",
-    "eslint.packageManager": "yarn",
-    "javascript.validate.enable": false
+    "ccls": {
+      "command": "ccls_DISABLED",
+      "filetypes": [
+        "c",
+        "cpp",
+        "objc",
+        "objcpp"
+      ],
+      "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        }
+      },
+      "rootPatterns": [
+        ".ccls",
+        "compile_commands.json",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ]
+    },
+    "golang": {
+      "command": "gopls",
+      "filetypes": [
+        "go"
+      ],
+      "rootPatterns": [
+        "go.mod",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ]
+    },
+    "lua": {
+      "command": "lua-lsp",
+      "filetypes": [
+        "lua"
+      ]
+    }
+  },
+  "suggest.echodocSupport": true,
+  "suggest.enablePreview": true,
+  "suggest.maxCompleteItemCount": 50,
+  "suggest.timeout": 5000,
+  "python.pythonPath": "python3",
+  "python.linting.pylintEnabled": false,
+  "python.linting.pep8Enabled": true,
+  "eslint.nodePath": "/home/max/batsrc/.local/node_modules/",
+  "eslint.autoFixOnSave": true,
+  "eslint.format.enable": true,
+  "javascript.validate.enable": false,
+  "tsserver.npm": "/usr/bin/npm"
 }

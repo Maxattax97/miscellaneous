@@ -3,6 +3,8 @@ if &compatible
     set nocompatible
 endif
 
+source ~/.config/nvim/includes/preload.vim
+
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
 " INSTALL: curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.cache/dein

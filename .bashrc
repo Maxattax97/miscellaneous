@@ -428,6 +428,10 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+if [[ -x "$(command -v navi)" ]]; then
+	eval "$(navi widget bash)"
+fi
+
 if [[ -d "$HOME/bin" ]]; then
 	export PATH="$PATH:$HOME/bin"
 fi
@@ -463,3 +467,7 @@ else
 fi
 unset __conda_setup
 # <<< conda init <<<
+
+if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
+    source "$HOME/batsrc/.batsdevrc"
+fi

@@ -190,7 +190,7 @@ endtry
 " }}}
 
 " Vista {{{
-" INSTALL: https://github.com/universal-ctags/ctags
+" INSTALL: pacman -Syu ctags    # https://github.com/universal-ctags/ctags
 let g:vista_default_executive = 'ctags'
 let g:vista_icon_indent = ['▸ ', '▸ ']
 let g:vista#renderer#enable_icon = 1

@@ -1,0 +1,119 @@
+#! /usr/bin/env bash
+
+bspc monitor -d I II III IV V VI VII VIII IX X
+
+bspc config border_width            1
+bspc config window_gap              6
+bspc config top_padding             20
+
+bspc config split_ratio             0.52
+bspc config borderless_monocle      true
+bspc config gapless_monocle         true
+
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2' state=fullscreen
+bspc rule -a firefox desktop='^2' state=tiled #state=fullscreen
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+bspc rule -a nextcloud desktop='^10' state=tiled
+bspc rule -a Steam desktop='^4' state=tiled
+bspc rule -a discord desktop='^4' state=tiled
+
+bspwm_log_root="/tmp/bspwm_logs"
+
+function runOnce()
+{
+    cmd="${1}"
+    fork="${2}"
+    logfile="${3}"
+    args="${*:4}"
+
+    existing_pid="$(pidof "$cmd")"
+    existing_pid_code=$?
+
+    if [ $existing_pid_code -eq 0 ]; then
+        echo "$cmd is already running, skipping ..."
+        return
+    fi
+
+    exec_str="${cmd} ${args}"
+
+    if [ -n $logfile ]; then
+        if [ ! -d $bspwm_log_root ]; then
+            mkdir -p $bspwm_log_root
+        fi
+
+        echo "=== BSPWM LOG BEGIN @ $(date -Iseconds) ===" > ${bspwm_log_root}/${logfile}
+        exec_str="${exec_str} >>${bspwm_log_root}/${logfile} 2>&1"
+    fi
+
+    if [ $fork = true ]; then
+        exec_str="${exec_str} &"
+    fi
+
+    echo "${exec_str}"
+    eval "${exec_str}"
+    #forked_pid=$!
+
+    #if [ $fork = true ];
+        #return forked_pid
+    #fi
+}
+
+# Services
+runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
+runOnce sxhkd true sxhkd.log
+if [[ -x "$(command -v nitrogen)" ]]; then
+    runOnce nitrogen true nitrogen.log --restore
+fi
+if [[ -x "$(command -v nm-applet)" ]]; then
+    runOnce nm-applet true nm_applet.log
+fi
+if [[ -x "$(command -v nextcloud)" ]]; then
+    runOnce nextcloud true nextcloud.log --background
+fi
+if [[ -x "$(command -v flameshot)" ]]; then
+    runOnce flameshot true flameshot.log
+fi
+if [[ -x "$(command -v blueman-tray)" ]]; then
+    runOnce blueman-tray true blueman_tray.log
+fi
+
+# Applications
+runOnce st true st.log
+runOnce firefox true firefox.log
+runOnce dunst true dunst.log
+
+# TODO: Make it easy to reload polybar -- probably need to bundle in a script.
+polybar workspaces -r &
+polybar system -r &
+polybar workspaces-thin -r &
+
+# Delayed startup:
+#(sleep 30 && runOnce steam true steam.log) &
+#(sleep 45 && runOnce discord true discord.log) &
+# Disabled for now... they slow everything down!
+
+touch "${HOME}/.cache/max_enable_picom"
+echo "1" > "${HOME}/.cache/max_enable_picom"
+
+while true; do
+    pidof picom >> /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        if [ ! -s "${HOME}/.cache/max_enable_picom" ]; then
+            echo "1" > "${HOME}/.cache/max_enable_picom"
+        fi
+
+        picom_enable=$(cat "${HOME}/.cache/max_enable_picom")
+        echo "picom_enable = $picom_enable"
+        if [ "$picom_enable" = "1" ]; then
+            echo "Picom process died, restarting ..." >> "${bspwm_log_root}/picom.log"
+            runOnce picom false picom.log --config ~/.config/compton/compton.conf --experimental-backends -b
+        fi
+    fi
+
+    sleep 5
+done
+
+#runOnce picom false picom.log --config ~/.config/compton/compton.conf --experimental-backends -b

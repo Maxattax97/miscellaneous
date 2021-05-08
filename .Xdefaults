@@ -79,6 +79,24 @@
 *color14:                 S_cyan
 *color15:                 S_base3
 
+*base03:    S_base03
+*base02:    S_base02
+*base01:    S_base01
+*base00:    S_base00
+*base0:     S_base0
+*base1:     S_base1
+*base2:     S_base2
+*base3:     S_base3
+
+*yellow:    S_yellow
+*orange:    S_orange
+*red:       S_red
+*magenta:   S_magenta
+*violet:    S_violet
+*blue:      S_blue
+*cyan:      S_cyan
+*green:     S_green
+
 /* URxvt */
 !URxvt*internalBorder: 			20
 URxvt.intensityStyles:			false

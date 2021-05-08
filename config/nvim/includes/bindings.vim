@@ -61,9 +61,9 @@ nmap <leader>lR <Plug>(coc-rename)
 
 nmap <leader>lf <Plug>(coc-format)
 
-nmap <leader>lF <Plug>(coc-fix-selected)
-xmap <leader>lF <Plug>(coc-fix-selected)
-vmap <leader>lF <Plug>(coc-fix-selected)
+nmap <leader>lF <Plug>(coc-fix-current)
+xmap <leader>lF <Plug>(coc-fix-current)
+vmap <leader>lF <Plug>(coc-fix-current)
 
 nmap <leader>la <Plug>(coc-codeaction-selected)
 xmap <leader>la <Plug>(coc-codeaction-selected)

@@ -554,10 +554,13 @@ awful.rules.rules = {
       properties = { screen = 1, tag = "web" } },
 
     { rule = { class = "Steam" },
-      properties = { screen = 2, tag = "game" } },
+      properties = { screen = 1, tag = "game" } },
+
+    { rule = { class = "discord" },
+      properties = { screen = 1, tag = "game" } },
 
     { rule = { class = "Nextcloud" },
-      properties = { screen = 2, tag = "office" } },
+      properties = { screen = 1, tag = "office" } },
 }
 -- }}}
 
@@ -637,9 +640,10 @@ local function run_once(cmd_arr)
 end
 
 run_once({'xrdb -load ~/.Xdefaults'})
-run_once({'compton --config ~/.config/compton/compton.conf'})
+run_once({'picom --config ~/.config/compton/compton.conf --experimental-backends'})
 run_once({'firefox'})
 run_once({'steam'})
+run_once({'discord'})
 run_once({'nextcloud'})
 run_once({'nm-applet'})
 run_once({'light-locker --lock-on-suspend'})

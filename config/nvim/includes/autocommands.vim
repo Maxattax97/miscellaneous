@@ -15,6 +15,12 @@ augroup neovim_studio_coc
     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
+augroup neovim_studio_english_spelling
+    autocmd!
+    autocmd FileType gitcommit,latex,tex,md,markdown setlocal spell
+    autocmd BufRead,BufNewFile *.md setlocal spell
+augroup end
+
 augroup neovim_studio_denite
     " Define mappings while in 'filter' mode
     "   <C-o>         - Switch to normal mode inside of search results
@@ -22,6 +28,7 @@ augroup neovim_studio_denite
     "   <CR>          - Open currently selected file in any mode
     autocmd FileType denite-filter call s:denite_filter_my_settings()
     function! s:denite_filter_my_settings() abort
+	" TODO: this is broken, it won't let you tab out of the filter.
     imap <silent><buffer> <Tab>
     \ <Plug>(denite_filter_quit)
     inoremap <silent><buffer><expr> <Esc>
