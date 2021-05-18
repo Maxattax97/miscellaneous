@@ -672,6 +672,10 @@ zshrc_load_library() {
         telnet towel.blinkenlights.nl
     }
 
+	mirrorweb() {
+        wget --mirror --page-requisites --no-parent --adjust-extension --convert-links --recursive --level=inf --continue --no-clobber $@
+	}
+
     # Download and run a curl based Party Parrot animation.
     parrot() {
         curl parrot.live
