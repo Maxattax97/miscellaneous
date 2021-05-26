@@ -45,17 +45,11 @@ zshrc_enter_tmux() {
                 send-keys 'gotop' C-m l l \; \
                 split-window -h \; \
                 send-keys 'ctop' C-m \; \
-                split-window -v \; \
-                send-keys 'nyx' C-m \; \
                 select-pane -t 1 \; \
                 new-window \; \
                 send-keys 'weechat' C-m \; \
                 split-window -h -p 35 \; \
                 send-keys 'newsboat' C-m 'R' \; \
-                select-pane -t 1 \; \
-                new-window \; \
-                send-keys 'sudo xmrig --config ~/.config/xmrig.json' C-m \; \
-                split-window -h \; \
                 select-pane -t 1 \; \
                 new-window \;
 
@@ -109,8 +103,6 @@ zshrc_auto_window_title() {
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
                 elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
-                elif [[ "$TMUX_PANE" == "%5" || "$TMUX_PANE" == "%6" ]]; then
-                    print -Pn "\ekRIG\e\\" # set screen hardstatus
                 else
                     print -Pn "\e]2;$2:q\a" # set window name
                     print -Pn "\e]1;$1:q\a" # set tab name
@@ -121,8 +113,6 @@ zshrc_auto_window_title() {
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
                 elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
-                elif [[ "$TMUX_PANE" == "%5" || "$TMUX_PANE" == "%6" ]]; then
-                    print -Pn "\ekRIG\e\\" # set screen hardstatus
                 else
                     print -Pn "\ek$1:q\e\\" # set screen hardstatus
                 fi
@@ -596,7 +586,8 @@ zshrc_zplug() {
         # zplug "zsh-users/zsh-syntax-highlighting"
         zplug "zdharma/fast-syntax-highlighting", defer:3
 
-        zplug "hkupty/ssh-agent"
+		# Really annoying and doesn't seem to work right?
+        #zplug "hkupty/ssh-agent"
 
         if ! zplug check; then
             zplug install
@@ -611,6 +602,15 @@ zshrc_zplug() {
 zshrc_extensions() {
 	if [[ -x "$(command -v navi)" ]]; then
 		eval "$(navi widget zsh)"
+	fi
+
+	if [[ -z "${SSH_AGENT_PID}" ]]; then
+		eval $(ssh-agent -t 10m) 1>/dev/null
+
+		# Add a key:
+		#		ssh-add ~/.ssh/id_rsa
+		# List currently loaded keys:
+		#		ssh-add -L
 	fi
 }
 

@@ -1,0 +1,4 @@
+[Unit]
+Description=Start the rig
+Conflicts=rig-stop.target
+Wants=rig-xmrig.service

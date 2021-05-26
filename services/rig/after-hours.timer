@@ -1,0 +1,10 @@
+[Unit]
+Description=Run after hours and on weekends
+
+[Timer]
+OnCalendar=Sat,Sun *-*-* 00:00:00
+OnCalendar=Mon..Fri *-*-* 17:00:00
+Unit=rig-start.target
+
+[Install]
+WantedBy=timers.target
