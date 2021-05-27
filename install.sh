@@ -205,6 +205,42 @@ if [[ -x "$(command -v pacman)" ]]; then
     esac
 fi
 
+if [[ -x "$(command -v pacman)" ]]; then
+    read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+			if [[ -x "$(command -v dnf)" ]]; then
+				sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
+			elif [[ -x "$(command -v pacman)" ]]; then
+				sudo pacman -Syu tor nyx msr-tools --needed
+			fi
+
+            if [[ -x "$(command -v yay)" ]]; then
+                yay -Syu xmrig-donateless --needed
+            fi
+
+cat >> /etc/tor/torrc<< EOF
+ControlPort 9051
+CookieAuthentication 1
+CookieAuthFile /var/lib/tor/control_auth_cookie
+CookieAuthFileGroupReadable 1
+DataDirectoryGroupReadable 1
+EOF
+
+			if [[ -x "$(command -v dnf)" ]]; then
+				sudo usermod -a -G toranon "$USER"
+			elif [[ -x "$(command -v pacman)" ]]; then
+				sudo usermod -a -G tor "$USER"
+			fi
+            echo "You will want to refresh your groups before running Nyx: newgrp tor"
+            echo "To start Tor: sudo systemctl restart tor"
+            ;;
+        *)
+            echo "Skipping xmrig suite installation"
+            ;;
+    esac
+fi
+
 read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
