@@ -1,0 +1,16 @@
+[Unit]
+Description=XMRig Daemon
+After=network.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/xmrig -c /etc/xmrig/rig.json
+WorkingDirectory=/etc/xmrig
+Restart=on-failure
+RestartSec=20s
+StartLimitInterval=30min
+StartLimitBurst=30
+
+[Install]
+WantedBy=multi-user.target

