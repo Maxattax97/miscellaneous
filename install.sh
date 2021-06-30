@@ -98,7 +98,7 @@ case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
+            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
         elif [[ -x "$(command -v pacman)" ]]; then
@@ -168,7 +168,8 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y nextcloud-client veracrypt firefox
+			# TODO: Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
+            sudo dnf install -y nextcloud-client firefox flameshot p7zip
         elif [[ -x "$(command -v apt)" ]]; then
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
