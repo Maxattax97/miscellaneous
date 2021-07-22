@@ -633,36 +633,36 @@ zshrc_display_banner() {
     fi
 }
 
-zshrc_set_path() {
-    add_path() {
-        if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-            export PATH="${PATH:+"$PATH:"}$1"
-        fi
-    }
+zshrc_add_path() {
+	if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+		export PATH="${PATH:+"$PATH:"}$1"
+	fi
+}
 
-    add_path "${HOME}/bin/"
-    add_path "${HOME}/.local/bin/"
-    add_path "/sbin/"
-    add_path "/usr/sbin/"
-    add_path "${HOME}/.SpaceVim/bin/"
-    add_path "${HOME}/src/depot_tools/"
-    add_path "${HOME}/.anaconda2/bin/"
-    add_path "${HOME}/anaconda2/bin/"
-    add_path "${HOME}/src/cquery/build/release/bin/"
-    add_path "${HOME}/.adb-fastboot/platform-tools/"
-    add_path "${HOME}/.cargo/bin/"
-    add_path "/usr/local/go/bin/"
-    add_path "${HOME}/.gem/ruby/2.6.0/bin/"
-    add_path "/usr/lib/gem/ruby/2.6.0/bin/"
-    add_path "$HOME/.yarn/bin"
-    add_path "$HOME/.config/yarn/global/node_modules/.bin"
+zshrc_set_path() {
+    zshrc_add_path "${HOME}/bin/"
+    zshrc_add_path "${HOME}/.local/bin/"
+    zshrc_add_path "/sbin/"
+    zshrc_add_path "/usr/sbin/"
+    zshrc_add_path "${HOME}/.SpaceVim/bin/"
+    zshrc_add_path "${HOME}/src/depot_tools/"
+    zshrc_add_path "${HOME}/.anaconda2/bin/"
+    zshrc_add_path "${HOME}/anaconda2/bin/"
+    zshrc_add_path "${HOME}/src/cquery/build/release/bin/"
+    zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
+    zshrc_add_path "${HOME}/.cargo/bin/"
+    zshrc_add_path "/usr/local/go/bin/"
+    zshrc_add_path "${HOME}/.gem/ruby/2.6.0/bin/"
+    zshrc_add_path "/usr/lib/gem/ruby/2.6.0/bin/"
+    zshrc_add_path "$HOME/.yarn/bin"
+    zshrc_add_path "$HOME/.config/yarn/global/node_modules/.bin"
 
     if [ -n "$GOPATH" ]; then
-        add_path "${GOPATH}/bin/"
+        zshrc_add_path "${GOPATH}/bin/"
     fi
 
     if [ -n "$GOROOT" ]; then
-        add_path "${GOROOT}/bin/"
+        zshrc_add_path "${GOROOT}/bin/"
     fi
 }
 
@@ -1197,6 +1197,7 @@ zshrc_set_environment_variables() {
 zshrc_batsdevrc() {
     if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
         source "$HOME/batsrc/.batsdevrc"
+		zshrc_add_path "${HOME}/batsrc/.local/bin"
     elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
