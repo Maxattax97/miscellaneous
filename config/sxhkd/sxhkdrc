@@ -1,13 +1,16 @@
 #
 # wm independent hotkeys
 #
+# Can't figure out a key name? Use `xev`.
 
-# TODO: Add toggle system for compositor.
 # TODO: Add toggle system for gaps.
 
 # terminal emulator
 super + Return
 	st
+
+super + backslash
+	pcmanfm --no-desktop
 
 # program launcher
 super + @space
