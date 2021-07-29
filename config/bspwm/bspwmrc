@@ -84,7 +84,7 @@ if [[ -x "$(command -v blueman-tray)" ]]; then
     runOnce blueman-tray true blueman_tray.log
 fi
 if [[ -x "$(command -v pcmanfm)" ]]; then
-    runOnce pcmanfm true blueman_tray.log --no-desktop --daemon-mode
+    runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
 fi
 
 # Applications
