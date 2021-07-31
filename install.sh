@@ -47,6 +47,7 @@ mkdir -p "${HOME}/.config/"
 
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
+link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
 
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
