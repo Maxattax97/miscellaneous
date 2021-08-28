@@ -67,9 +67,6 @@ function runOnce()
 # Services
 runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
 runOnce sxhkd true sxhkd.log
-if [[ -x "$(command -v nitrogen)" ]]; then
-    runOnce nitrogen true nitrogen.log --restore
-fi
 if [[ -x "$(command -v nm-applet)" ]]; then
     runOnce nm-applet true nm_applet.log
 fi
@@ -85,6 +82,10 @@ if [[ -x "$(command -v blueman-tray)" ]]; then
 fi
 if [[ -x "$(command -v pcmanfm)" ]]; then
     runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
+fi
+if [[ -x "$(command -v nitrogen)" ]]; then
+	# Sometimes this crashes because X11 isn't ready yet.
+    runOnce nitrogen true nitrogen.log --restore
 fi
 
 # Applications
