@@ -97,10 +97,14 @@ polybar workspaces -r &
 polybar system -r &
 polybar workspaces-thin -r &
 
-# Delayed startup:
-#(sleep 30 && runOnce steam true steam.log) &
-#(sleep 45 && runOnce discord true discord.log) &
-# Disabled for now... they slow everything down!
+if [[ -x "$(command -v steam)" ]]; then
+    runOnce steam true steam.log
+	#(sleep 30 && runOnce steam true steam.log) &
+fi
+if [[ -x "$(command -v discord)" ]]; then
+    runOnce discord true discord.log
+	#(sleep 45 && runOnce discord true discord.log) &
+fi
 
 touch "${HOME}/.cache/max_enable_picom"
 echo "1" > "${HOME}/.cache/max_enable_picom"
