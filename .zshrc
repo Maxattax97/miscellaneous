@@ -573,7 +573,8 @@ zshrc_zplug() {
         zplug "gko/ssh-connect", as:command
 
         if ( ! "$zshrc_low_power" ); then
-            zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
+            #zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
+			zplug "romkatv/powerlevel10k", as:theme, depth:1
         fi
 
         # zplug "ael-code/zsh-colored-man-pages"
