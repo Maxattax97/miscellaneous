@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+ROFI_OPTIONS=( -theme $HOME/.config/rofi/bar.theme.rasi -theme-str "*{accent: ${color1:-#3294ff};}")
+
+shutdown="shutdown"
+reboot="reboot"
+lock="lock"
+suspend="suspend"
+logout="logout"
+hibernate="hibernate"
+
+options="$shutdown\n$reboot\n$lock\n$suspend\n$logout"
+chosen="$(echo -e "$options" | rofi "${ROFI_OPTIONS[@]}" -dmenu)" # -selected-row 2
+
+YESNO="no\nyes"
+
+case $chosen in
+    $shutdown)
+		[ $(echo -e $YESNO | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Proceed?") == "yes" ] && systemctl poweroff
+        ;;
+    $reboot)
+		[ $(echo -e $YESNO | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Proceed?") == "yes" ] && systemctl reboot
+        ;;
+    $lock)
+		loginctl lock-session ${XDG_SESSION_ID-}
+        ;;
+    $suspend)
+	    systemctl suspend
+        ;;
+    $hibernate)
+	    systemctl hibernate
+        ;;
+    $logout)
+		[ $(echo -e $YESNO | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Proceed?") == "yes" ] && loginctl terminate-session ${XDG_SESSION_ID-}
+        ;;
+esac

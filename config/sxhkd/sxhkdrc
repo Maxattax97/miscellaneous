@@ -1,23 +1,26 @@
 #
 # wm independent hotkeys
 #
+# Can't figure out a key name? Use `xev`.
 
-# TODO: Add toggle system for compositor.
 # TODO: Add toggle system for gaps.
 
 # terminal emulator
 super + Return
 	st
 
+super + backslash
+	pcmanfm --no-desktop
+
 # program launcher
 super + @space
-    rofi -show combi -combi drun,run,window
+    rofi -show combi
     #$HOME/.config/rofi/menu/MAIN
     #dmenu_run
 
-# make sxhkd reload its configuration files:
+# Open system menu
 super + Escape
-	pkill -USR1 -x sxhkd
+	$HOME/.config/rofi/menu/system
 
 # toggle compositor
 super + Home

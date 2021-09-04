@@ -6,13 +6,16 @@ bspc config border_width            1
 bspc config window_gap              6
 bspc config top_padding             20
 
-bspc config split_ratio             0.52
+bspc config split_ratio             0.50
 bspc config borderless_monocle      true
 bspc config gapless_monocle         true
+bspc config automatic_scheme		alternate
 
 bspc rule -a Gimp desktop='^8' state=floating follow=on
 bspc rule -a Chromium desktop='^2' state=fullscreen
-bspc rule -a firefox desktop='^2' state=tiled #state=fullscreen
+#bspc rule -a firefox desktop='^2' state=tiled #state=fullscreen
+bspc rule -a Firefox:Navigator desktop='^2' state=tiled
+bspc rule -a Firefox:Browser state=floating
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
@@ -64,9 +67,6 @@ function runOnce()
 # Services
 runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
 runOnce sxhkd true sxhkd.log
-if [[ -x "$(command -v nitrogen)" ]]; then
-    runOnce nitrogen true nitrogen.log --restore
-fi
 if [[ -x "$(command -v nm-applet)" ]]; then
     runOnce nm-applet true nm_applet.log
 fi
@@ -77,7 +77,15 @@ if [[ -x "$(command -v flameshot)" ]]; then
     runOnce flameshot true flameshot.log
 fi
 if [[ -x "$(command -v blueman-tray)" ]]; then
+	# Sometimes I have to run `blueman-manager` once to get the services to kick in... odd.
     runOnce blueman-tray true blueman_tray.log
+fi
+if [[ -x "$(command -v pcmanfm)" ]]; then
+    runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
+fi
+if [[ -x "$(command -v nitrogen)" ]]; then
+	# Sometimes this crashes because X11 isn't ready yet.
+    runOnce nitrogen true nitrogen.log --restore
 fi
 
 # Applications
@@ -90,10 +98,14 @@ polybar workspaces -r &
 polybar system -r &
 polybar workspaces-thin -r &
 
-# Delayed startup:
-#(sleep 30 && runOnce steam true steam.log) &
-#(sleep 45 && runOnce discord true discord.log) &
-# Disabled for now... they slow everything down!
+if [[ -x "$(command -v steam)" ]]; then
+    runOnce steam true steam.log
+	#(sleep 30 && runOnce steam true steam.log) &
+fi
+if [[ -x "$(command -v discord)" ]]; then
+    runOnce discord true discord.log
+	#(sleep 45 && runOnce discord true discord.log) &
+fi
 
 touch "${HOME}/.cache/max_enable_picom"
 echo "1" > "${HOME}/.cache/max_enable_picom"

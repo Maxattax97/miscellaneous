@@ -15,7 +15,7 @@ configuration {
 /*	xoffset: 0;*/
 /*	fixed-num-lines: true;*/
     show-icons: true;
-    icon-theme: "Papirus";
+	icon-theme: "Papirus";
     terminal: "rofi-sensible-terminal";
 /*	ssh-client: "ssh";*/
 /*	ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";*/
@@ -41,7 +41,7 @@ configuration {
 /*	auto-select: false;*/
 /*	parse-hosts: false;*/
 /*	parse-known-hosts: true;*/
-	combi-modi: "window,drun,ssh";
+	combi-modi: "drun"; /* ,run,window,ssh */
 /*	matching: "normal";*/
 /*	tokenize: true;*/
 /*	m: "-5";*/
@@ -60,7 +60,7 @@ configuration {
 /*	window-format: "{w}    {c}   {t}";*/
 /*	click-to-exit: true;*/
 /*	show-match: true;*/
-	theme: "solarized";
+	theme: ".config/rofi/bar.theme.rasi";
 /*	color-normal: ;*/
 /*	color-urgent: ;*/
 /*	color-active: ;*/

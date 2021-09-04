@@ -47,6 +47,7 @@ mkdir -p "${HOME}/.config/"
 
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
+link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
 
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
@@ -175,11 +176,11 @@ case "$response" in
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox p7zip unrar --needed
-        fi
 
-        if [[ -x "$(command -v yay)" ]]; then
-            yay -Syu zathura-git girara-git
-            sudo pacman -Syu zathura-pdf-mupdf firefox --needed
+			if [[ -x "$(command -v yay)" ]]; then
+				yay -Syu zathura-git girara-git
+				sudo pacman -Syu zathura-pdf-mupdf firefox --needed
+			fi
         fi
 
         xdg-settings set default-web-browser firefox.desktop
@@ -189,22 +190,35 @@ case "$response" in
         ;;
 esac
 
-if [[ -x "$(command -v pacman)" ]]; then
-    read -r -p "Would you like to attempt an install of bspwm (Arch Linux only)? [y/N] " response
-    case "$response" in
-        [yY][eE][sS]|[yY])
-            # TODO: install custom st.
-            sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
+read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+case "$response" in
+	[yY][eE][sS]|[yY])
+		# TODO: install custom st.
+		if [[ -x "$(command -v dnf)" ]]; then
+			# TODO: Fill the rest in.
+			sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd
+		elif [[ -x "$(command -v apt)" ]]; then
+			# NetworkManager pre-installed.
+			sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv
 
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu polybar picom-git ly --needed
-            fi
-            ;;
-        *)
-            echo "Skipping bspwm installation"
-            ;;
-    esac
-fi
+			echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
+			echo "python-xcbgen may need to be changed to python3-xcbgen"
+			sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+
+			echo "You will need to build picom from source: https://github.com/yshui/picom#build"
+			sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
+		elif [[ -x "$(command -v pacman)" ]]; then
+			sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
+
+			if [[ -x "$(command -v yay)" ]]; then
+				yay -Syu polybar picom-git ly --needed
+			fi
+		fi
+		;;
+	*)
+		echo "Skipping bspwm installation"
+		;;
+esac
 
 if [[ -x "$(command -v pacman)" ]]; then
     read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
@@ -214,11 +228,11 @@ if [[ -x "$(command -v pacman)" ]]; then
 				sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
 			elif [[ -x "$(command -v pacman)" ]]; then
 				sudo pacman -Syu tor nyx msr-tools --needed
-			fi
 
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu xmrig-donateless --needed
-            fi
+				if [[ -x "$(command -v yay)" ]]; then
+					yay -Syu xmrig-donateless --needed
+				fi
+			fi
 
 cat >> /etc/tor/torrc<< EOF
 ControlPort 9051
