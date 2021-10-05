@@ -40,7 +40,6 @@ let g:coc_global_extensions = [
 " INSTALL: npm install -g --local bash-language-server
 " INSTALL: yay -S ccls
 " INSTALL: go get golang.org/x/tools/cmd/gopls
-" INSTALL: go get -u github.com/mdempsky/gocode
 " INSTALL: pacman -Syu lua53 luarocks
 " INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp --lua-version=5.3
 " INSTALL: luarocks install --local lcf --lua-version=5.3       # luacheck no longer available.
