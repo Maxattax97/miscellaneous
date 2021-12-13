@@ -308,7 +308,7 @@ zshrc_setup_completion() {
 
 zshrc_autoload() {
     autoload -Uz compinit && compinit
-    autoload -Uz bashcompinit && bashcompinit
+    autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
     autoload -Uz promptinit && promptinit
 
     autoload -Uz edit-command-line
@@ -867,10 +867,30 @@ zshrc_load_library() {
             success="$?"
             if [ "$success" -eq 0 ]; then
                 printf "\n"
-                echo "Internet access has been restored!"
+                echo "Network access has been restored!"
                 notify-send --urgency=normal --icon=gtk-network "Online" "Internet access has been restored."
                 tone 500 400; tone 1000 400; tone 2000 400
                 failing=false
+            else
+                printf "."
+                sleep 1
+            fi
+        done
+    }
+
+    waitoffline() {
+        local target=${1:-8.8.8.8}
+        echo "Waiting for system go offline ..."
+        succeeding=true
+        while "$succeeding"; do
+            ping "$target" -c 1 -W 2 > /dev/null 2>&1
+            success="$?"
+            if [ "$success" -ne 0 ]; then
+                printf "\n"
+                echo "Network access has been lost!"
+                notify-send --urgency=normal --icon=gtk-network "Offline" "Network access has been lost."
+                tone 2000 400; tone 1000 400; tone 500 400
+                succeeding=false
             else
                 printf "."
                 sleep 1
@@ -1416,6 +1436,7 @@ zshrc_init() {
     zshrc_enter_tmux
     #zshrc_display_banner
 
+    zshrc_autoload
     zshrc_source
     zshrc_set_path
     zshrc_set_aliases
@@ -1425,7 +1446,6 @@ zshrc_init() {
     zshrc_auto_window_title
     zshrc_setup_completion
     zshrc_set_options
-    zshrc_autoload
 
     if ( ! $zshrc_low_power ); then
         # Do this for now instead of `export TERM=xterm-256color` to avoid
