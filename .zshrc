@@ -1218,7 +1218,6 @@ zshrc_set_environment_variables() {
 zshrc_batsdevrc() {
     if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
         source "$HOME/batsrc/.batsdevrc"
-		zshrc_add_path "${HOME}/batsrc/.local/bin"
     elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
