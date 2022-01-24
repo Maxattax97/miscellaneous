@@ -581,11 +581,14 @@ zshrc_zplug() {
 
         zplug "supercrabtree/k"
 
-        zplug "psprint/zsh-navigation-tools"
+        # zplug "psprint/zsh-navigation-tools" # deleted
+		# zplug "z-shell/zsh-navigation-tools" # alternate
+		zplug "zdharma-continuum/zsh-navigation-tools"
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
-        zplug "zdharma/fast-syntax-highlighting", defer:3
+        # zplug "zdharma/fast-syntax-highlighting", defer:3
+        zplug "zdharma-continuum/fast-syntax-highlighting", defer:3
 
 		# Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
