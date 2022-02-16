@@ -12,10 +12,12 @@ bspc config gapless_monocle         true
 bspc config automatic_scheme		alternate
 
 bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2' state=fullscreen
+bspc rule -a Chromium desktop='^2' state=tiled
 #bspc rule -a firefox desktop='^2' state=tiled #state=fullscreen
 bspc rule -a Firefox:Navigator desktop='^2' state=tiled
 bspc rule -a Firefox:Browser state=floating
+bspc rule -a Brave-browser desktop='^2' state=tiled
+bspc rule -a Brave-browser state=floating
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
@@ -90,7 +92,8 @@ fi
 
 # Applications
 runOnce st true st.log
-runOnce firefox true firefox.log
+#runOnce firefox true firefox.log
+runOnce brave true brave.log
 runOnce dunst true dunst.log
 
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
