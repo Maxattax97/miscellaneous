@@ -132,3 +132,9 @@ while true; do
 done
 
 #runOnce picom false picom.log --config ~/.config/compton/compton.conf --experimental-backends -b
+
+# On Endeavor you will need to do these:
+# Stop autoconnecting to ethernet, let it breathe, then reconnect.
+#
+# sudo dmesg --follow # for tracking kernel activity
+# systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
