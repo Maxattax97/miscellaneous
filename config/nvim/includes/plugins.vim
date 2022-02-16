@@ -7,8 +7,9 @@ call dein#add('wsdjeg/dein-ui.vim')
 "call dein#add('shougo/deoplete.nvim')
 " INSTALL: yarn
 "call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
+"call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'master', 'build': 'yarn install --frozen-lockfile' })
 "call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
-call dein#add('neoclide/coc.nvim', {'branch': 'release'})
+call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 
 " Display function arguments in command bar. Works with deoplete.
 " TODO: Not displaying?
@@ -184,6 +185,8 @@ call dein#add('fatih/vim-go')
 
 " Adds support for Apache Avro's IDL files.
 call dein#add('gurpreetatwal/vim-avro')
+
+call dein#add('urbit/hoon.vim')
 " }}}
 
 " Aesthetics {{{
