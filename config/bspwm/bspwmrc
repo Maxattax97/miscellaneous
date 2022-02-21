@@ -86,8 +86,11 @@ if [[ -x "$(command -v pcmanfm)" ]]; then
     runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
 fi
 if [[ -x "$(command -v nitrogen)" ]]; then
-	# Sometimes this crashes because X11 isn't ready yet.
+    # Sometimes this crashes because X11 isn't ready yet.
     runOnce nitrogen true nitrogen.log --restore
+
+    # Refresh the wallpaper.
+    systemctl --user start redrum
 fi
 
 # Applications

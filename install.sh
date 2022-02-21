@@ -81,6 +81,7 @@ link_source "config/dunst/" 1 ".config/dunst"
 link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
 link_source "config/xmrig.json" 1 ".config/xmrig.json"
+link_source "config/redrum.ini" 1 ".config/redrum.ini"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -213,6 +214,21 @@ case "$response" in
 				yay -Syu polybar picom-git ly --needed
 			fi
 		fi
+
+		if [[ -x "$(command -v pip3)" ]]; then
+			pip3 install --user redrum
+		fi
+
+		# copy service files
+		cp -u services/redrum.service ~/.config/systemd/user/
+		cp -u services/redrum.timer ~/.config/systemd/user/
+
+		# enable and start systemd timer
+		systemctl --user enable redrum.timer
+		systemctl --user start redrum.timer
+
+		# the service can be triggered manually as well
+		systemctl --user start redrum
 		;;
 	*)
 		echo "Skipping bspwm installation"
