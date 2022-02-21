@@ -89,8 +89,10 @@ if [[ -x "$(command -v nitrogen)" ]]; then
     # Sometimes this crashes because X11 isn't ready yet.
     runOnce nitrogen true nitrogen.log --restore
 
-    # Refresh the wallpaper.
-    systemctl --user start redrum
+    if [[ -x "$(command -v redrum)" ]]; then
+        # Refresh the wallpaper.
+        systemctl --user start redrum
+    fi
 fi
 
 # Applications
