@@ -1459,7 +1459,8 @@ zshrc_init() {
         zshrc_raw_prompt
     fi
 
-    zshrc_batsdevrc
+    # Disabled for CaveOS workspaces.
+    #zshrc_batsdevrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
@@ -1472,5 +1473,19 @@ zshrc_init() {
 
     zshrc_benchmark_stop
 }
+
+#current_batsrc=""
+#precmd()
+#{
+    #local path="$(realpath .)"
+    #if [[ $path = *batsrc* ]]; then
+        #local new_batsrc="$(realpath .)"
+
+        #if [[ "$current_batsrc" != "$new_batsrc" ]]; then
+            #echo "Switching to BATS environment: $current_batsrc"
+            ##source "${current_batsrc}/.batsdevrc"
+        #fi
+    #fi
+#}
 
 zshrc_init

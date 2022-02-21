@@ -86,8 +86,13 @@ if [[ -x "$(command -v pcmanfm)" ]]; then
     runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
 fi
 if [[ -x "$(command -v nitrogen)" ]]; then
-	# Sometimes this crashes because X11 isn't ready yet.
+    # Sometimes this crashes because X11 isn't ready yet.
     runOnce nitrogen true nitrogen.log --restore
+
+    if [[ -x "$(command -v redrum)" ]]; then
+        # Refresh the wallpaper.
+        systemctl --user start redrum
+    fi
 fi
 
 # Applications
@@ -99,7 +104,7 @@ runOnce dunst true dunst.log
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
 polybar workspaces -r &
 polybar system -r &
-polybar workspaces-thin -r &
+#polybar workspaces-thin -r &
 
 if [[ -x "$(command -v steam)" ]]; then
     runOnce steam true steam.log
@@ -139,3 +144,9 @@ while true; do
 done
 
 #runOnce picom false picom.log --config ~/.config/compton/compton.conf --experimental-backends -b
+
+# On Endeavor you will need to do these:
+# Stop autoconnecting to ethernet, let it breathe, then reconnect.
+#
+# sudo dmesg --follow # for tracking kernel activity
+# systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
