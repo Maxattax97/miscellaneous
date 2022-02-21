@@ -104,7 +104,7 @@ runOnce dunst true dunst.log
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
 polybar workspaces -r &
 polybar system -r &
-polybar workspaces-thin -r &
+#polybar workspaces-thin -r &
 
 if [[ -x "$(command -v steam)" ]]; then
     runOnce steam true steam.log
