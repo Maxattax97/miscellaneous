@@ -138,7 +138,7 @@ case "$response" in
 
         if [[ ! -x "$(command -v gotop)" ]]; then
             if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu gotop-bin
+                yay -S gotop-bin --needed
             else
                 # Always try to update these.
                 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
@@ -147,7 +147,7 @@ case "$response" in
 
 		if [[ ! -x "$(command -v navi)" ]]; then
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu navi
+				yay -S navi --needed
 			else
 				bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
 			fi
@@ -178,8 +178,8 @@ case "$response" in
             sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
 
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu zathura-git girara-git brave-bin
-				sudo pacman -Syu zathura-pdf-mupdf --needed
+				yay -S zathura-git girara-git brave-bin --needed
+				sudo pacman -S zathura-pdf-mupdf --needed
 			fi
         fi
 
@@ -211,7 +211,7 @@ case "$response" in
 			sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
 
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu polybar picom-git ly --needed
+				yay -S polybar picom-git ly --needed
 			fi
 		fi
 
@@ -220,6 +220,7 @@ case "$response" in
 		fi
 
 		# copy service files
+		mkdir -p ~/.config/systemd/user/
 		cp -u services/redrum.service ~/.config/systemd/user/
 		cp -u services/redrum.timer ~/.config/systemd/user/
 
@@ -245,7 +246,7 @@ if [[ -x "$(command -v pacman)" ]]; then
 				sudo pacman -Syu tor nyx msr-tools --needed
 
 				if [[ -x "$(command -v yay)" ]]; then
-					yay -Syu xmrig-donateless --needed
+					yay -S xmrig-donateless --needed
 				fi
 			fi
 
