@@ -581,11 +581,14 @@ zshrc_zplug() {
 
         zplug "supercrabtree/k"
 
-        zplug "psprint/zsh-navigation-tools"
+        # zplug "psprint/zsh-navigation-tools" # deleted
+		# zplug "z-shell/zsh-navigation-tools" # alternate
+		zplug "zdharma-continuum/zsh-navigation-tools"
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
-        zplug "zdharma/fast-syntax-highlighting", defer:3
+        # zplug "zdharma/fast-syntax-highlighting", defer:3
+        zplug "zdharma-continuum/fast-syntax-highlighting", defer:3
 
 		# Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
@@ -1218,7 +1221,6 @@ zshrc_set_environment_variables() {
 zshrc_batsdevrc() {
     if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
         source "$HOME/batsrc/.batsdevrc"
-		zshrc_add_path "${HOME}/batsrc/.local/bin"
     elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
@@ -1457,7 +1459,8 @@ zshrc_init() {
         zshrc_raw_prompt
     fi
 
-    zshrc_batsdevrc
+    # Disabled for CaveOS workspaces.
+    #zshrc_batsdevrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
@@ -1470,5 +1473,19 @@ zshrc_init() {
 
     zshrc_benchmark_stop
 }
+
+#current_batsrc=""
+#precmd()
+#{
+    #local path="$(realpath .)"
+    #if [[ $path = *batsrc* ]]; then
+        #local new_batsrc="$(realpath .)"
+
+        #if [[ "$current_batsrc" != "$new_batsrc" ]]; then
+            #echo "Switching to BATS environment: $current_batsrc"
+            ##source "${current_batsrc}/.batsdevrc"
+        #fi
+    #fi
+#}
 
 zshrc_init

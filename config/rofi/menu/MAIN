@@ -46,7 +46,7 @@ elif [ "$another" == "$usem" ] ; then
     thelink=$(echo $appname | cut -d'+' -f3 | tr -d ' ')
     [[ ! -n $appname ]] && exit
     regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
-    [[ $thelink =~ $regex ]]&& firefox $thelink || $edit_with -e nvim ~/.config/applist
+    [[ $thelink =~ $regex ]]&& brave $thelink || $edit_with -e nvim ~/.config/applist
 
 elif [ "$another" == "$cont" ] ; then
     exec $HOME/.config/rofi/menu/contacts

@@ -28,6 +28,10 @@ super + Home
 	export PICOM_ENABLE="$(cat "${HOME}/.cache/max_enable_picom")"; \
 	if [ "$PICOM_ENABLE" = "1" ]; then echo "0" > "${HOME}/.cache/max_enable_picom" && pkill picom; else echo "1" > "${HOME}/.cache/max_enable_picom"; fi
 
+# refresh background
+super + Insert
+	systemctl --user start redrum
+
 ctrl + shift + alt + p
 	if [ -s "${HOME}/batsrc/.batsdevrc" ]; then bash "${HOME}/batsrc/.batsdevrc" auto-fill-web-password; fi
 

@@ -52,6 +52,12 @@
         ".hg/"
       ]
     },
+    "bash": {
+      "command": "hoon-language-server",
+      "filetypes": [
+        "hoon"
+      ]
+    },
     "lua": {
       "command": "lua-lsp",
       "filetypes": [

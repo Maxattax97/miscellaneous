@@ -81,6 +81,7 @@ link_source "config/dunst/" 1 ".config/dunst"
 link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
 link_source "config/xmrig.json" 1 ".config/xmrig.json"
+link_source "config/redrum.ini" 1 ".config/redrum.ini"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -137,7 +138,7 @@ case "$response" in
 
         if [[ ! -x "$(command -v gotop)" ]]; then
             if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu gotop-bin
+                yay -S gotop-bin --needed
             else
                 # Always try to update these.
                 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
@@ -146,7 +147,7 @@ case "$response" in
 
 		if [[ ! -x "$(command -v navi)" ]]; then
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu navi
+				yay -S navi --needed
 			else
 				bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
 			fi
@@ -169,21 +170,21 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-			# TODO: Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
-            sudo dnf install -y nextcloud-client firefox flameshot p7zip
+			# TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
+            sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt
         elif [[ -x "$(command -v apt)" ]]; then
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring firefox p7zip unrar --needed
+            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
 
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu zathura-git girara-git
-				sudo pacman -Syu zathura-pdf-mupdf firefox --needed
+				yay -S zathura-git girara-git brave-bin --needed
+				sudo pacman -S zathura-pdf-mupdf --needed
 			fi
         fi
 
-        xdg-settings set default-web-browser firefox.desktop
+        xdg-settings set default-web-browser brave.desktop
         ;;
     *)
         echo "Skipping utility installation"
@@ -211,9 +212,25 @@ case "$response" in
 			sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
 
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -Syu polybar picom-git ly --needed
+				yay -S polybar picom-git ly --needed
 			fi
 		fi
+
+		if [[ -x "$(command -v pip3)" ]]; then
+			pip3 install --user redrum
+		fi
+
+		# copy service files
+		mkdir -p ~/.config/systemd/user/
+		cp -u services/redrum.service ~/.config/systemd/user/
+		cp -u services/redrum.timer ~/.config/systemd/user/
+
+		# enable and start systemd timer
+		systemctl --user enable redrum.timer
+		systemctl --user start redrum.timer
+
+		# the service can be triggered manually as well
+		systemctl --user start redrum
 		;;
 	*)
 		echo "Skipping bspwm installation"
@@ -230,7 +247,7 @@ if [[ -x "$(command -v pacman)" ]]; then
 				sudo pacman -Syu tor nyx msr-tools --needed
 
 				if [[ -x "$(command -v yay)" ]]; then
-					yay -Syu xmrig-donateless --needed
+					yay -S xmrig-donateless --needed
 				fi
 			fi
 
