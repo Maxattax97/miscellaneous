@@ -278,7 +278,9 @@ case "$response" in
     [yY][eE][sS]|[yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
             printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
-            printf "[alias]\n\tlogline = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit\n" >> "${HOME}/.gitconfig"
+            printf "[alias]\n\tlogline = log --graph --pretty=format:'" >> "${HOME}/.gitconfig"
+            echo -n '%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' >> "${HOME}/.gitconfig"
+            printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
         fi
 
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
