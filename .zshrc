@@ -1096,18 +1096,20 @@ zshrc_set_aliases() {
 }
 
 zshrc_set_default_programs() {
-
     # For heavyweight purposes.
     if [[ -x "$(command -v nvim)" ]]; then
-        export VISUAL="/usr/bin/nvim"
+        export VISUAL="$(which nvim)"
         if [[ -d "${HOME}/.SpaceVim" ]]; then
             alias vim="nvim"
         fi
     elif [[ -x "$(command -v vim)" ]]; then
-        export VISUAL="/usr/bin/vim"
+        export VISUAL="$(which vim)"
         alias nvim="vim"
-    else
-        export VISUAL="/usr/bin/nano"
+    elif [[ -x "$(command -v vi)" ]]; then
+        export VISUAL="$(which vi)"
+        alias nvim="vi"
+    elif [[ -x "$(command -v nano)" ]]; then
+        export VISUAL="$(which nano)"
     fi
 
     # For lightweight purposes.
@@ -1116,15 +1118,19 @@ zshrc_set_default_programs() {
     export PAGER="less"
     export MANPAGER="less"
 
-    if [[ -x "$(command -v firefox)" ]]; then
-        export BROWSER="firefox"
+    if [[ -x "$(command -v brave)" ]]; then
+        export BROWSER="$(which brave)"
+    elif [[ -x "$(command -v firefox)" ]]; then
+        export BROWSER="$(which firefox)"
     elif [[ -x "$(command -v chromium)" ]]; then
-        export BROWSER="chromium"
+        export BROWSER="$(which chromium)"
     elif [[ -x "$(command -v google-chrome-stable)" ]]; then
-        export BROWSER="google-chrome-stable"
+        export BROWSER="$(which google-chrome-stable)"
     fi
 
-    if [[ -x "$(command -v urxvt-256color)" ]]; then
+    if [[ -x "$(command -v st)" ]]; then
+        export TERMINAL="$(which st)"
+    elif [[ -x "$(command -v urxvt-256color)" ]]; then
         export TERMINAL="$(which urxvt-256color)"
     elif [[ -x "$(command -v konsole)" ]]; then
         export TERMINAL="$(which konsole)"
