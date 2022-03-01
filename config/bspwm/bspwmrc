@@ -66,6 +66,9 @@ function runOnce()
     #fi
 }
 
+HOSTNAME="$(hostname)"
+export HOSTNAME
+
 # Services
 runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
 runOnce sxhkd true sxhkd.log
@@ -97,9 +100,14 @@ fi
 
 # Applications
 runOnce st true st.log
-#runOnce firefox true firefox.log
-runOnce brave true brave.log
 runOnce dunst true dunst.log
+
+if [[ hostname ]]; then
+	runOnce brave true brave.log --profile-directory="Default"
+else
+	#runOnce firefox true firefox.log
+	runOnce brave true brave.log
+fi
 
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
 polybar workspaces -r &
