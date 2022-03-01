@@ -102,7 +102,7 @@ fi
 runOnce st true st.log
 runOnce dunst true dunst.log
 
-if [[ hostname ]]; then
+if [[ "$HOSTNAME" == "Maxattax-Arch" ]]; then
 	runOnce brave true brave.log --profile-directory="Default"
 else
 	#runOnce firefox true firefox.log
