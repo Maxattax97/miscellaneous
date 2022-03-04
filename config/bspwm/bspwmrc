@@ -103,10 +103,16 @@ runOnce st true st.log
 runOnce dunst true dunst.log
 
 if [[ "$HOSTNAME" == "Maxattax-Arch" ]]; then
-	runOnce brave true brave.log --profile-directory="Default"
+    runOnce brave true brave.log --profile-directory="Default" # Personal
+elif [[ "$HOSTNAME" == "mocull-endeavor" ]]; then
+    runOnce brave true brave.log --profile-directory="Profile 2" # Work
+    runOnce brave true brave.log --profile-directory="Profile 3" # Personal
+
+    # Fix bluetooth.
+    systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
 else
-	#runOnce firefox true firefox.log
-	runOnce brave true brave.log
+    #runOnce firefox true firefox.log
+    runOnce brave true brave.log
 fi
 
 # TODO: Make it easy to reload polybar -- probably need to bundle in a script.
@@ -116,11 +122,11 @@ polybar system -r &
 
 if [[ -x "$(command -v steam)" ]]; then
     runOnce steam true steam.log
-	#(sleep 30 && runOnce steam true steam.log) &
+    #(sleep 30 && runOnce steam true steam.log) &
 fi
 if [[ -x "$(command -v discord)" ]]; then
     runOnce discord true discord.log
-	#(sleep 45 && runOnce discord true discord.log) &
+    #(sleep 45 && runOnce discord true discord.log) &
 fi
 
 touch "${HOME}/.cache/max_enable_picom"
@@ -129,8 +135,8 @@ echo "1" > "${HOME}/.cache/max_enable_picom"
 # Use the identifying characteristics of this monitor:
 #   https://www.extron.com/article/uedid
 if (xrandr --prop | grep -q '031e0104b55021783b64f5ad5049a322'); then
-	echo "Upgrading to 120hz"
-	xrandr --output DisplayPort-0 --mode 3440x1440 --rate 120
+    echo "Upgrading to 120hz"
+    xrandr --output DisplayPort-0 --mode 3440x1440 --rate 120
 fi
 
 while true; do
