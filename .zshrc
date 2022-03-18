@@ -1036,6 +1036,21 @@ zshrc_load_library() {
             echo "Could not find a valid swap device, check lsblk, aborting"
         fi
     }
+
+    enhance() {
+        img=$1
+        tmp_file="$(mktemp -u)"
+        convert -auto-gamma -auto-level -normalize $img $tmp_file
+        mv $tmp_file $img
+    }
+
+    enhance_batch() {
+        folder=$1
+        for img in $folder/*; do
+            echo "Enhancing $img ..."
+            enhance $img
+        done
+    }
 }
 
 zshrc_set_aliases() {
