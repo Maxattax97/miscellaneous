@@ -5,6 +5,8 @@
 #https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US "~Reuters" "news" "politics" "economics" "world"
 ## Reuters Top News
 https://rss.maxocull.com/?action=display&bridge=Reuters&feed=home%2Ftopnews&format=Atom "~Reuters" "news" "politics" "economics" "world"
+## WikiNews
+https://en.wikinews.org/w/index.php?title=Special:NewsFeed&feed=atom&categories=Published&notcategories=No%20publish%7CArchived%7CAutoArchived%7Cdisputed&namespace=0&count=30&hourcount=124&ordermethod=categoryadd&stablepages=only "~WikiNews" "news" "politics" "economics" "world"
 ## Associated Press
 https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US "~Associated Press" "news" "politics" "world"
 ## C-Span
