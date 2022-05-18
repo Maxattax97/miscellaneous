@@ -608,14 +608,18 @@ zshrc_extensions() {
 		eval "$(navi widget zsh)"
 	fi
 
-	if [[ -z "${SSH_AGENT_PID}" ]]; then
-		eval $(ssh-agent -t 10m) 1>/dev/null
+	if [[ -x "$(command -v keychain)" ]]; then
+		eval "$(keychain --eval -q)"
+	fi
+
+	#if [[ -z "${SSH_AGENT_PID}" ]]; then
+		#eval $(ssh-agent -t 10m) 1>/dev/null
 
 		# Add a key:
 		#		ssh-add ~/.ssh/id_rsa
 		# List currently loaded keys:
 		#		ssh-add -L
-	fi
+	#fi
 }
 
 zshrc_display_banner() {

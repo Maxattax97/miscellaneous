@@ -1,0 +1,9 @@
+# vim:ft=sshconfig
+
+Host gitea.batswireless.lcl
+	HostName gitea.batswireless.lcl
+	IdentityFile ~/.ssh/id_ed25519_bats
+
+Host *
+	AddKeysToAgent yes
+	IdentityFile ~/.ssh/id_rsa
