@@ -48,6 +48,7 @@ mkdir -p "${HOME}/.config/"
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
 link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
+link_source "config/ssh/config" 0 ".ssh/config"
 
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
@@ -100,11 +101,11 @@ case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user
+            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user keychain
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat
+            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi ctop --needed
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi ctop keychain --needed
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then

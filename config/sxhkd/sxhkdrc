@@ -29,11 +29,12 @@ super + Home
 	if [ "$PICOM_ENABLE" = "1" ]; then echo "0" > "${HOME}/.cache/max_enable_picom" && pkill picom; else echo "1" > "${HOME}/.cache/max_enable_picom"; fi
 
 # refresh background
+# NOTE: The systemd service is finicky
 super + Insert
-	systemctl --user start redrum
+	redrum
 
 ctrl + shift + alt + p
-	if [ -s "${HOME}/batsrc/.batsdevrc" ]; then bash "${HOME}/batsrc/.batsdevrc" auto-fill-web-password; fi
+	if [ -s "${HOME}/batsrc_caveos/.batsdevrc" ]; then bash "${HOME}/batsrc_caveos/.batsdevrc" auto-fill-web-password; fi
 
 Print
     flameshot gui
