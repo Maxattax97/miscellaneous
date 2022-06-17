@@ -14,6 +14,7 @@
 
 	foreground:         @accent;
 	foreground-alt:		#e2e2e2;
+	text-alt: 	rgba(226, 226, 226, 0.7);
 	background:			@bckgrd;
 	background-alt: 	rgba(255, 255, 255, 0.1);
 	transparent:		rgba(0, 0, 0, 0);
@@ -51,6 +52,16 @@
 #element {
     padding: 			10px 25px 10px 25px;
 /* border-radius:      4px; */
+}
+
+#element-text {
+    background-color:       transparent;
+    text-color:       @text-alt;
+}
+
+#element-icon {
+    padding: 3px;
+    background-color:       transparent;
 }
 
 /* These have been combined to look the same (alternating rows different colors) */
