@@ -238,6 +238,7 @@ zshrc_setup_completion() {
     setopt auto_menu         # show completion menu on successive tab press
     setopt complete_in_word
     setopt always_to_end
+    setopt shwordsplit # https://unix.stackexchange.com/questions/19530/expanding-variables-in-zsh
 
     # should this be in keybindings?
     bindkey -M menuselect '^o' accept-and-infer-next-history
@@ -1464,6 +1465,7 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_autoload
+    zshrc_setup_completion
     zshrc_source
     zshrc_set_path
     zshrc_set_aliases
@@ -1471,7 +1473,6 @@ zshrc_init() {
     zshrc_load_library
 
     zshrc_auto_window_title
-    zshrc_setup_completion
     zshrc_set_options
 
     if ( ! $zshrc_low_power ); then
