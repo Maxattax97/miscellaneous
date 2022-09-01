@@ -545,8 +545,10 @@ zshrc_zplug() {
         zplug "zsh-users/zsh-history-substring-search"
         zplug "zsh-users/zsh-autosuggestions"
         zplug "zsh-users/zsh-completions"
-        zplug "mfaerevaag/wd", as:command, use:"wd.sh", \
-            hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
+        zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
+        # For some reason, the hook doesn't always work...
+        wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }
+
         zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
         zplug "hlissner/zsh-autopair", defer:2
@@ -1245,8 +1247,8 @@ zshrc_set_environment_variables() {
 }
 
 zshrc_batsdevrc() {
-    if [[ -s "$HOME/batsrc/.batsdevrc" ]]; then
-        source "$HOME/batsrc/.batsdevrc"
+    if [[ -s "$HOME/batsrc_caveos/.batsdevrc" ]]; then
+        source "$HOME/batsrc_caveos/.batsdevrc"
     elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
         # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
         _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
@@ -1486,7 +1488,7 @@ zshrc_init() {
     fi
 
     # Disabled for CaveOS workspaces.
-    #zshrc_batsdevrc
+    zshrc_batsdevrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
