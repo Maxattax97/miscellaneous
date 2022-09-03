@@ -1,5 +1,6 @@
 {
   "coc.preferences.extensionUpdateCheck": "weekly",
+  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "js", "javascript", "json", "ts", "typescript", "html", "yml", "yaml"],
   "codeLens.enable": false,
   "diagnostic.checkCurrentLine": true,
   "diagnostic.displayByAle": true,

@@ -24,6 +24,7 @@ let g:coc_global_extensions = [
     \ 'coc-pyright',
     \ 'coc-fsharp',
     \ 'coc-dictionary',
+    \ 'coc-prettier',
     \]
 
 " Disabled servers:
@@ -45,3 +46,5 @@ let g:coc_global_extensions = [
 " INSTALL: luarocks install --local lcf --lua-version=5.3       # luacheck no longer available.
 
 "call coc#add_extension('coc-dictionary')
+
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
