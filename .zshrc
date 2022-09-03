@@ -1056,6 +1056,16 @@ zshrc_load_library() {
             enhance $img
         done
     }
+
+    scale_batch() {
+        folder=$1
+        scale=$2
+        for img in $folder/*; do
+            echo "Enhancing $img ..."
+            convert -scale $scale $img "${img}_scaled"
+            mv "${img}_scaled" $img
+        done
+    }
 }
 
 zshrc_set_aliases() {
