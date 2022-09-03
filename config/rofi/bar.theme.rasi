@@ -97,7 +97,7 @@
 
 #element.selected.active {
     background-color: 	@foreground;
-    text-color:       	@thi;
+    text-color:       	@background;
 }
 
 #element.alternate.urgent {
