@@ -35,7 +35,14 @@ if dein#check_install()
     call dein#install()
 
     " Uninstall unused plugins.
+    "call dein#recache_runtimepath()
     "call map(dein#check_clean(), "delete(v:val, 'rf')")
+endif
+
+" Automatically remove unused new plugins.
+if len(dein#check_clean())
+    call dein#recache_runtimepath()
+    call map(dein#check_clean(), "delete(v:val, 'rf')")
 endif
 
 " TODO: Automated weekly updates.
