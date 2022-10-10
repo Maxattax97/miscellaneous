@@ -180,7 +180,7 @@ case "$response" in
             sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
 
 			if [[ -x "$(command -v yay)" ]]; then
-				yay -S zathura-git girara-git brave-bin --needed
+				yay -S zathura-git girara-git brave-bin all-repository-fonts --needed
 				sudo pacman -S zathura-pdf-mupdf --needed
 			fi
         fi
