@@ -13,6 +13,7 @@ let g:coc_global_extensions = [
     \ 'coc-jest',
     \ 'coc-java',
     \ 'coc-rls',
+    \ 'coc-r-lsp',
     \ 'coc-highlight',
     \ 'coc-yaml',
     \ 'coc-emmet',
@@ -44,6 +45,8 @@ let g:coc_global_extensions = [
 " INSTALL: pacman -Syu lua53 luarocks
 " INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp --lua-version=5.3
 " INSTALL: luarocks install --local lcf --lua-version=5.3       # luacheck no longer available.
+" INSTALL: R -e 'install.packages("languageserver")' # may have to manually
+" execute rather than using this one-liner.
 
 "call coc#add_extension('coc-dictionary')
 
