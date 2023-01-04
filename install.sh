@@ -105,7 +105,7 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi ctop keychain --needed
+            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi keychain --needed
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -146,18 +146,26 @@ case "$response" in
             fi
         fi
 
-		if [[ ! -x "$(command -v navi)" ]]; then
-			if [[ -x "$(command -v yay)" ]]; then
-				yay -S navi --needed
-			else
-				bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
-			fi
-		fi
+        if [[ ! -x "$(command -v navi)" ]]; then
+                if [[ -x "$(command -v yay)" ]]; then
+                        yay -S navi --needed
+                else
+                        bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+                fi
+        fi
 
-        if [[ ! -x "$(command -v ctop)" ]]; then
+        #if [[ ! -x "$(command -v ctop)" ]]; then
             # TODO: Automatically update the version.
             # TODO: Detect architecture of local system and grab the right binary.
-            curl https://github.com/bcicen/ctop/releases/download/v0.7.5/ctop-0.7.5-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+            #curl https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
+        #fi
+
+        if [[ ! -x "$(command -v lazydocker)" ]]; then
+            if [[ -x "$(command -v yay)" ]]; then
+                yay -S lazydocker --needed
+            else
+                curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
+            fi
         fi
 
         chsh -s /bin/zsh "${USER}"
