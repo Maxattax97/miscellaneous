@@ -1045,28 +1045,13 @@ zshrc_load_library() {
     }
 
     enhance() {
-        img=$1
-        tmp_file="$(mktemp -u)"
-        convert -auto-gamma -auto-level -normalize $img $tmp_file
-        mv $tmp_file $img
+        mogrify -auto-gamma -auto-level -normalize $@
     }
 
-    enhance_batch() {
-        folder=$1
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            enhance $img
-        done
-    }
-
-    scale_batch() {
-        folder=$1
-        scale=$2
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            convert -scale $scale $img "${img}_scaled"
-            mv "${img}_scaled" $img
-        done
+    scale() {
+        scale=$1
+        shift
+        mogrify -scale $scale $@
     }
 }
 
