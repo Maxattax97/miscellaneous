@@ -83,6 +83,8 @@ link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
 link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
+link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
+link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
