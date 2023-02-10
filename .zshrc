@@ -667,6 +667,7 @@ zshrc_set_path() {
     zshrc_add_path "/usr/lib/gem/ruby/2.6.0/bin/"
     zshrc_add_path "$HOME/.yarn/bin"
     zshrc_add_path "$HOME/.config/yarn/global/node_modules/.bin"
+    zshrc_add_path "${HOME}/bin/balena-cli"
 
     if [ -n "$GOPATH" ]; then
         zshrc_add_path "${GOPATH}/bin/"
