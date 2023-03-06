@@ -294,6 +294,11 @@ case "$response" in
             printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
         fi
 
+        git config --global diff.tool nvimdiff
+        git config --global diff.algorithm histogram
+        git config --global merge.tool nvimdiff
+        git config --global --add difftool.prompt false
+
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
             ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
             eval "$(ssh-agent -s)"
