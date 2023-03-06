@@ -31,7 +31,7 @@ super + Home
 # refresh background
 # NOTE: The systemd service is finicky
 super + Insert
-	redrum
+	"${HOME}/.local/bin/redrum"
 
 ctrl + shift + alt + p
 	if [ -s "${HOME}/batsrc_caveos/.batsdevrc" ]; then bash "${HOME}/batsrc_caveos/.batsdevrc" auto-fill-web-password; fi
