@@ -85,6 +85,7 @@ link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
 link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
+link_source "config/btop/" 1 ".config/btop"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -103,11 +104,11 @@ case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user keychain
+            sudo dnf install -y zsh neovim tmux btop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user keychain
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
+            sudo apt install -y zsh neovim tmux btop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi keychain --needed
+            sudo pacman -Syu zsh neovim tmux btop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi keychain --needed
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then

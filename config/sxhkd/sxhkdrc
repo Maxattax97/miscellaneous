@@ -63,6 +63,10 @@ super + y
 super + g
 	bspc node -s biggest
 
+# rotate tree
+super + shift + r
+    bspc node @/ -R 90
+
 #
 # state/flags
 #

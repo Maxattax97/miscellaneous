@@ -40,7 +40,7 @@ zshrc_enter_tmux() {
             # echo "Launching tmux base session $base_session ..."
             # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
-                send-keys 'htop' C-m \; \
+                send-keys 'top' C-m \; \
                 split-window -v \; \
                 send-keys 'gotop' C-m l l \; \
                 split-window -h \; \
@@ -1111,6 +1111,15 @@ zshrc_set_aliases() {
 
     # Clipboard
     alias clip='xclip -selection clipboard'
+
+    # btop > htop > top
+    if [[ -x "$(command -v htop)" ]]; then
+        alias top='htop'
+    fi
+
+    if [[ -x "$(command -v btop)" ]]; then
+        alias htop='btop'
+    fi
 }
 
 zshrc_set_default_programs() {

@@ -12,7 +12,7 @@ let g:coc_global_extensions = [
     \ 'coc-tsserver',
     \ 'coc-jest',
     \ 'coc-java',
-    \ 'coc-rls',
+    \ 'coc-rust-analyzer',
     \ 'coc-r-lsp',
     \ 'coc-highlight',
     \ 'coc-yaml',
