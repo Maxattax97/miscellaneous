@@ -1120,6 +1120,8 @@ zshrc_set_aliases() {
     if [[ -x "$(command -v btop)" ]]; then
         alias htop='btop'
     fi
+
+    alias e="$EDITOR"
 }
 
 zshrc_set_default_programs() {
@@ -1475,8 +1477,8 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_source
     zshrc_set_path
-    zshrc_set_aliases
     zshrc_set_default_programs
+    zshrc_set_aliases
     zshrc_load_library
 
     zshrc_auto_window_title
