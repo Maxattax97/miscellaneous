@@ -124,7 +124,7 @@ case "$response" in
             pip3 install --user neovim
         fi
 
-	# TODO: install LTS node via NVM which is installed via ZSH.
+        # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
         fi
@@ -137,7 +137,7 @@ case "$response" in
             mkdir -p "${HOME}/.cache/dein"
             curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
             # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh /tmp/.dein_installer.sh && sh /tmp/.dein_installer.sh "${HOME}/.cache/dein"
-	    # rm -rf /tmp/.dein_installer.sh
+            # rm -rf /tmp/.dein_installer.sh
         fi
 
         if [[ ! -x "$(command -v gotop)" ]]; then
@@ -182,7 +182,7 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-			# TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
+                        # TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
             sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt
         elif [[ -x "$(command -v apt)" ]]; then
             # TODO: nextcloud, veracrypt, gnome-keyring
@@ -208,63 +208,63 @@ esac
 
 read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
 case "$response" in
-	[yY][eE][sS]|[yY])
-		# TODO: install custom st.
-		if [[ -x "$(command -v dnf)" ]]; then
-			# TODO: Fill the rest in.
-			sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd
-		elif [[ -x "$(command -v apt)" ]]; then
-			# NetworkManager pre-installed.
-			sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv
+        [yY][eE][sS]|[yY])
+                # TODO: install custom st.
+                if [[ -x "$(command -v dnf)" ]]; then
+                        # TODO: Fill the rest in.
+                        sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd
+                elif [[ -x "$(command -v apt)" ]]; then
+                        # NetworkManager pre-installed.
+                        sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv
 
-			echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
-			echo "python-xcbgen may need to be changed to python3-xcbgen"
-			sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+                        echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
+                        echo "python-xcbgen may need to be changed to python3-xcbgen"
+                        sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
 
-			echo "You will need to build picom from source: https://github.com/yshui/picom#build"
-			sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
-		elif [[ -x "$(command -v pacman)" ]]; then
-			sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
+                        echo "You will need to build picom from source: https://github.com/yshui/picom#build"
+                        sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
+                elif [[ -x "$(command -v pacman)" ]]; then
+                        sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
 
-			if [[ -x "$(command -v yay)" ]]; then
-				yay -S polybar picom-git ly --needed
-			fi
-		fi
+                        if [[ -x "$(command -v yay)" ]]; then
+                                yay -S polybar picom-git ly --needed
+                        fi
+                fi
 
-		if [[ -x "$(command -v pip3)" ]]; then
-			pip3 install --user redrum
-		fi
+                if [[ -x "$(command -v pip3)" ]]; then
+                        pip3 install --user redrum
+                fi
 
-		# copy service files
-		mkdir -p ~/.config/systemd/user/
-		cp -u services/redrum.service ~/.config/systemd/user/
-		cp -u services/redrum.timer ~/.config/systemd/user/
+                # copy service files
+                mkdir -p ~/.config/systemd/user/
+                cp -u services/redrum.service ~/.config/systemd/user/
+                cp -u services/redrum.timer ~/.config/systemd/user/
 
-		# enable and start systemd timer
-		systemctl --user enable redrum.timer
-		systemctl --user start redrum.timer
+                # enable and start systemd timer
+                systemctl --user enable redrum.timer
+                systemctl --user start redrum.timer
 
-		# the service can be triggered manually as well
-		systemctl --user start redrum
-		;;
-	*)
-		echo "Skipping bspwm installation"
-		;;
+                # the service can be triggered manually as well
+                systemctl --user start redrum
+                ;;
+        *)
+                echo "Skipping bspwm installation"
+                ;;
 esac
 
 if [[ -x "$(command -v pacman)" ]]; then
     read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
     case "$response" in
         [yY][eE][sS]|[yY])
-			if [[ -x "$(command -v dnf)" ]]; then
-				sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
-			elif [[ -x "$(command -v pacman)" ]]; then
-				sudo pacman -Syu tor nyx msr-tools --needed
+                        if [[ -x "$(command -v dnf)" ]]; then
+                                sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
+                        elif [[ -x "$(command -v pacman)" ]]; then
+                                sudo pacman -Syu tor nyx msr-tools --needed
 
-				if [[ -x "$(command -v yay)" ]]; then
-					yay -S xmrig-donateless --needed
-				fi
-			fi
+                                if [[ -x "$(command -v yay)" ]]; then
+                                        yay -S xmrig-donateless --needed
+                                fi
+                        fi
 
 cat >> /etc/tor/torrc<< EOF
 ControlPort 9051
@@ -274,11 +274,11 @@ CookieAuthFileGroupReadable 1
 DataDirectoryGroupReadable 1
 EOF
 
-			if [[ -x "$(command -v dnf)" ]]; then
-				sudo usermod -a -G toranon "$USER"
-			elif [[ -x "$(command -v pacman)" ]]; then
-				sudo usermod -a -G tor "$USER"
-			fi
+                        if [[ -x "$(command -v dnf)" ]]; then
+                                sudo usermod -a -G toranon "$USER"
+                        elif [[ -x "$(command -v pacman)" ]]; then
+                                sudo usermod -a -G tor "$USER"
+                        fi
             echo "You will want to refresh your groups before running Nyx: newgrp tor"
             echo "To start Tor: sudo systemctl restart tor"
             ;;
