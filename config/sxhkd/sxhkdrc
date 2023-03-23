@@ -27,6 +27,10 @@ super + Escape
 super + slash
 	$HOME/.config/rofi/menu/sxhkd-help
 
+# Open ChatGPT prompt
+super + semicolon
+	$HOME/.config/rofi/menu/chatgpt
+
 # Toggle compositor
 super + Home
 	touch "${HOME}/.cache/max_enable_picom"; \
