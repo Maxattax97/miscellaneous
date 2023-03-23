@@ -189,11 +189,14 @@ case "$response" in
             sudo apt install -y
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
+            if [[ -x "$(command -v yay)" ]]; then
+                    yay -S zathura-git girara-git brave-bin all-repository-fonts --needed
+                    sudo pacman -S zathura-pdf-mupdf --needed
+            fi
 
-			if [[ -x "$(command -v yay)" ]]; then
-				yay -S zathura-git girara-git brave-bin all-repository-fonts --needed
-				sudo pacman -S zathura-pdf-mupdf --needed
-			fi
+            if [[ -x "$(command -v pip3)" ]]; then
+                    pip3 install --user shell-gpt
+            fi
         fi
 
         xdg-settings set default-web-browser brave.desktop
