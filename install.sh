@@ -41,6 +41,7 @@ link_source .tmux.conf 1
 link_source .tmuxline.conf 1
 link_source .Xdefaults 1
 link_source .eslintrc.json 0
+link_source ".gtkrc-2.0" 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
@@ -86,6 +87,7 @@ link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
 link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 link_source "config/btop/" 1 ".config/btop"
+link_source "config/Kvantum/" 1 ".config/Kvantum"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -183,7 +185,7 @@ case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
-            sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt
+            sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt qalculate-qt
         elif [[ -x "$(command -v apt)" ]]; then
             # TODO: nextcloud, veracrypt, gnome-keyring
             sudo apt install -y
@@ -212,10 +214,10 @@ case "$response" in
                 # TODO: install custom st.
                 if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: Fill the rest in.
-                        sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd
+                        sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd materia-gtk-theme materia-kde qt6ct
                 elif [[ -x "$(command -v apt)" ]]; then
                         # NetworkManager pre-installed.
-                        sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv
+                        sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv materia-gtk-theme materia-kde murrine-themes qt6ct
 
                         echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
                         echo "python-xcbgen may need to be changed to python3-xcbgen"
@@ -224,7 +226,7 @@ case "$response" in
                         echo "You will need to build picom from source: https://github.com/yshui/picom#build"
                         sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
                 elif [[ -x "$(command -v pacman)" ]]; then
-                        sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
+                        sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv materia-gtk-theme materia-kde gtk-engine-murrine qt6ct kvantum-theme-materia --needed
 
                         if [[ -x "$(command -v yay)" ]]; then
                                 yay -S polybar picom-git ly --needed
@@ -234,6 +236,8 @@ case "$response" in
                 if [[ -x "$(command -v pip3)" ]]; then
                         pip3 install --user redrum
                 fi
+
+                link_source .xinitrc 0
 
                 # copy service files
                 mkdir -p ~/.config/systemd/user/
