@@ -23,5 +23,6 @@ if [ -f "$usermodmap" ]; then
 fi
 
 export QT_QPA_PLATFORMTHEME=qt6ct
+export XDG_CURRENT_DESKTOP=bspwm
 
 bspwm
