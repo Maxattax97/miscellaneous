@@ -911,6 +911,7 @@ zshrc_load_library() {
 
     dockerclean() {
         echo "Cleaning Docker images and containers ..."
+        sudo docker system prune --all
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
         echo "Docker cleaned."
