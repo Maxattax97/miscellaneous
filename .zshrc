@@ -40,7 +40,7 @@ zshrc_enter_tmux() {
             # echo "Launching tmux base session $base_session ..."
             # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
-                send-keys 'htop' C-m \; \
+                send-keys 'top' C-m \; \
                 split-window -v \; \
                 send-keys 'gotop' C-m l l \; \
                 split-window -h \; \
@@ -1047,28 +1047,13 @@ zshrc_load_library() {
     }
 
     enhance() {
-        img=$1
-        tmp_file="$(mktemp -u)"
-        convert -auto-gamma -auto-level -normalize $img $tmp_file
-        mv $tmp_file $img
+        mogrify -auto-gamma -auto-level -normalize $@
     }
 
-    enhance_batch() {
-        folder=$1
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            enhance $img
-        done
-    }
-
-    scale_batch() {
-        folder=$1
-        scale=$2
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            convert -scale $scale $img "${img}_scaled"
-            mv "${img}_scaled" $img
-        done
+    scale() {
+        scale=$1
+        shift
+        mogrify -scale $scale $@
     }
 }
 
@@ -1127,6 +1112,17 @@ zshrc_set_aliases() {
 
     # Clipboard
     alias clip='xclip -selection clipboard'
+
+    # btop > htop > top
+    if [[ -x "$(command -v htop)" ]]; then
+        alias top='htop'
+    fi
+
+    if [[ -x "$(command -v btop)" ]]; then
+        alias htop='btop'
+    fi
+
+    alias e="$EDITOR"
 }
 
 zshrc_set_default_programs() {
@@ -1482,8 +1478,8 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_source
     zshrc_set_path
-    zshrc_set_aliases
     zshrc_set_default_programs
+    zshrc_set_aliases
     zshrc_load_library
 
     zshrc_auto_window_title
