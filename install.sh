@@ -88,6 +88,7 @@ link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
 link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"

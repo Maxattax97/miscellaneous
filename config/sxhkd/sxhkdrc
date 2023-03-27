@@ -37,10 +37,12 @@ super + Home
 	export PICOM_ENABLE="$(cat "${HOME}/.cache/max_enable_picom")"; \
 	if [ "$PICOM_ENABLE" = "1" ]; then echo "0" > "${HOME}/.cache/max_enable_picom" && pkill picom; else echo "1" > "${HOME}/.cache/max_enable_picom"; fi
 
-# NOTE: The systemd service is finicky
-# Refresh background
+# Next background
 super + Insert
-	"${HOME}/.local/bin/redrum"
+	variety --next
+
+super + shift + Insert
+	variety --favorite
 
 # Auto-fill BATS web password
 ctrl + shift + alt + p
