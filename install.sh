@@ -107,11 +107,55 @@ case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux btop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user keychain
+            sudo dnf install -y \
+                btop \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python3 \
+                ripgrep \
+                tmux \
+                util-linux-user \
+                weechat \
+                xclip \
+                zsh
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y zsh neovim tmux btop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
+            sudo apt install -y \
+                btop \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python3 \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux btop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi keychain --needed
+            sudo pacman -Syu --needed \
+                btop \
+                chezmoi \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -143,22 +187,22 @@ case "$response" in
             # rm -rf /tmp/.dein_installer.sh
         fi
 
-        if [[ ! -x "$(command -v gotop)" ]]; then
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -S gotop-bin --needed
-            else
-                # Always try to update these.
-                git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
-            fi
-        fi
+        #if [[ ! -x "$(command -v gotop)" ]]; then
+            #if [[ -x "$(command -v yay)" ]]; then
+                #yay -S gotop-bin --needed
+            #else
+                ## Always try to update these.
+                #git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
+            #fi
+        #fi
 
-        if [[ ! -x "$(command -v navi)" ]]; then
-                if [[ -x "$(command -v yay)" ]]; then
-                        yay -S navi --needed
-                else
-                        bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
-                fi
-        fi
+        #if [[ ! -x "$(command -v navi)" ]]; then
+                #if [[ -x "$(command -v yay)" ]]; then
+                        #yay -S navi --needed
+                #else
+                        #bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+                #fi
+        #fi
 
         #if [[ ! -x "$(command -v ctop)" ]]; then
             # TODO: Automatically update the version.
@@ -166,13 +210,13 @@ case "$response" in
             #curl https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
         #fi
 
-        if [[ ! -x "$(command -v lazydocker)" ]]; then
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -S lazydocker --needed
-            else
-                curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
-            fi
-        fi
+        #if [[ ! -x "$(command -v lazydocker)" ]]; then
+            #if [[ -x "$(command -v yay)" ]]; then
+                #yay -S lazydocker --needed
+            #else
+                #curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
+            #fi
+        #fi
 
         chsh -s /bin/zsh "${USER}"
         ;;
@@ -185,20 +229,50 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-                        # TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
-            sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt qalculate-qt
+            sudo dnf install -y \
+                brave \
+                firefox \
+                flameshot \
+                nextcloud-client \
+                p7zip \
+                qalculate-gtk \
+                veracrypt \
+                zathura \
+                zathura-pdf-mupdf
         elif [[ -x "$(command -v apt)" ]]; then
-            # TODO: nextcloud, veracrypt, gnome-keyring
-            sudo apt install -y
+            sudo apt install -y \
+                flameshot \
+                nextcloud-desktop \
+                p7zip-full \
+                unrar \
+                qalculate-gtk \
+                veracrypt \
+                zathura
+
+            # TODO: Add ppa for veracrypt on Ubuntu
+            # TODO: Add ppa for Brave on Ubuntu
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
+            sudo pacman -Syu --needed \
+                flameshot \
+                gnome-keyring \
+                nextcloud-client \
+                p7zip \
+                unrar \
+                qalculate-gtk \
+                veracrypt
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -S zathura-git girara-git brave-bin all-repository-fonts --needed
-                    sudo pacman -S zathura-pdf-mupdf --needed
+                    yay -S --needed \
+                        all-repository-fonts \
+                        brave-bin \
+                        girara-git \
+                        zathura-git
+                    sudo pacman -S --needed \
+                        zathura-pdf-mupdf
             fi
 
             if [[ -x "$(command -v pip3)" ]]; then
-                    pip3 install --user shell-gpt
+                    pip3 install --user \
+                        shell-gpt
             fi
         fi
 
@@ -215,10 +289,39 @@ case "$response" in
                 # TODO: install custom st.
                 if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: Fill the rest in.
-                        sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd materia-gtk-theme materia-kde qt6ct
+                        sudo dnf install -y \
+                            bspwm \
+                            dunst \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            nitrogen \
+                            papirus-icon-theme \
+                            pcmanfm \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            sxiv \
+                            variety \
+                            xarchiver
                 elif [[ -x "$(command -v apt)" ]]; then
                         # NetworkManager pre-installed.
-                        sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv materia-gtk-theme materia-kde murrine-themes qt6ct
+                        sudo apt install -y \
+                            bspwm \
+                            dunst \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            murrine-themes \
+                            nitrogen \
+                            papirus-icon-theme \
+                            pcmanfm \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            sxiv \
+                            variety \
+                            xarchiver \
 
                         echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
                         echo "python-xcbgen may need to be changed to python3-xcbgen"
@@ -227,15 +330,37 @@ case "$response" in
                         echo "You will need to build picom from source: https://github.com/yshui/picom#build"
                         sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
                 elif [[ -x "$(command -v pacman)" ]]; then
-                        sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv materia-gtk-theme materia-kde gtk-engine-murrine qt6ct kvantum-theme-materia --needed
+                        sudo pacman -Syu --needed \
+                            bspwm \
+                            dunst \
+                            gtk-engine-murrine \
+                            kvantum-theme-materia \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            network-manager-applet \
+                            nitrogen \
+                            nm-connection-editor \
+                            papirus-icon-theme \
+                            pcmanfm-gtk3 \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            sxiv \
+                            variety \
+                            xarchiver
 
                         if [[ -x "$(command -v yay)" ]]; then
-                                yay -S polybar picom-git ly --needed
+                                yay -S --needed \
+                                    ly \
+                                    picom-git \
+                                    polybar
                         fi
                 fi
 
                 if [[ -x "$(command -v pip3)" ]]; then
-                        pip3 install --user redrum
+                        pip3 install --user \
+                            redrum
                 fi
 
                 link_source .xinitrc 0
@@ -262,12 +387,28 @@ if [[ -x "$(command -v pacman)" ]]; then
     case "$response" in
         [yY][eE][sS]|[yY])
                         if [[ -x "$(command -v dnf)" ]]; then
-                                sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
+                                sudo dnf install -y \
+                                    cmake \
+                                    gcc \
+                                    gcc-c++ \
+                                    git \
+                                    hwloc-devel \
+                                    libstdc++-static \
+                                    libuv-static \
+                                    make \
+                                    msr-tools \
+                                    nyx \
+                                    openssl-devel \
+                                    tor
                         elif [[ -x "$(command -v pacman)" ]]; then
-                                sudo pacman -Syu tor nyx msr-tools --needed
+                                sudo pacman -Syu --needed \
+                                    msr-tools \
+                                    nyx \
+                                    tor
 
                                 if [[ -x "$(command -v yay)" ]]; then
-                                        yay -S xmrig-donateless --needed
+                                        yay -S --needed \
+                                            xmrig-donateless
                                 fi
                         fi
 
