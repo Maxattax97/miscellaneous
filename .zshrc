@@ -41,9 +41,7 @@ zshrc_enter_tmux() {
             # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
                 send-keys 'top' C-m \; \
-                split-window -v \; \
-                send-keys 'gotop' C-m l l \; \
-                split-window -h \; \
+                split-window -h -p 35 \; \
                 send-keys 'ctop' C-m \; \
                 select-pane -t 1 \; \
                 new-window \; \
