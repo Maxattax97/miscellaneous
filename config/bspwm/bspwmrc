@@ -119,6 +119,7 @@ fi
 polybar workspaces -r &
 polybar system -r &
 #polybar workspaces-thin -r &
+variety &
 
 if [[ -x "$(command -v steam)" ]]; then
     runOnce steam true steam.log
