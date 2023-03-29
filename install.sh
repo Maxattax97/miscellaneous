@@ -48,9 +48,14 @@ mkdir -p "${HOME}/.config/"
 
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
+
+mkdir -p "${HOME}/.gnupg"
 link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
+
+mkdir -p "${HOME}/.ssh"
 link_source "config/ssh/config" 0 ".ssh/config"
 
+mkdir -p "${HOME}/.SpaceVim.d"
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
 # Configure secured password (not included in this repo) with:
@@ -63,8 +68,6 @@ if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
 fi
 
 # ~/.config/
-#echo "Backing up ${HOME}/.config ..."
-#tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
 link_source "config/i3/" 1 ".config/i3"
 link_source "config/mpd/" 1 ".config/mpd"
 link_source "config/polybar/" 1 ".config/polybar"
@@ -88,6 +91,8 @@ link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
 link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+
+mkdir -p "${HOME}/.config/variety"
 link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
 
 # Binaries / executables
