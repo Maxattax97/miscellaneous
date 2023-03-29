@@ -241,43 +241,54 @@ read -r -p "Would you like to attempt an install of workstation utilities? [y/N]
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y \
+            sudo dnf install \
                 brave \
                 firefox \
                 flameshot \
+                gparted \
+                mpv \
                 nextcloud-client \
                 p7zip \
                 qalculate-gtk \
                 veracrypt \
                 zathura \
-                zathura-pdf-mupdf
+                zathura-pdf-mupdf \
+                -y
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y \
+            sudo apt install \
                 flameshot \
+                gparted \
+                mpv \
                 nextcloud-desktop \
                 p7zip-full \
-                unrar \
                 qalculate-gtk \
+                unrar \
                 veracrypt \
-                zathura
+                zathura \
+                -y
 
             # TODO: Add ppa for veracrypt on Ubuntu
             # TODO: Add ppa for Brave on Ubuntu
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu --needed \
+            sudo pacman -Syu \
                 flameshot \
                 gnome-keyring \
+                mpv \
                 nextcloud-client \
                 p7zip \
-                unrar \
                 qalculate-gtk \
-                veracrypt
+                unrar \
+                veracrypt \
+                --needed
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -S --needed \
+                    yay -S \
                         all-repository-fonts \
                         brave-bin \
                         girara-git \
-                        zathura-git
+                        yt-dlp \
+                        zathura-git \
+                        --needed
+
                     sudo pacman -S --needed \
                         zathura-pdf-mupdf
             fi
