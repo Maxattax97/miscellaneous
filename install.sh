@@ -42,6 +42,7 @@ link_source .tmuxline.conf 1
 link_source .Xdefaults 1
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
+link_source .xinitrc 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
@@ -373,8 +374,6 @@ case "$response" in
                         pip3 install --user \
                             redrum
                 fi
-
-                link_source .xinitrc 0
 
                 # copy service files
                 mkdir -p ~/.config/systemd/user/
