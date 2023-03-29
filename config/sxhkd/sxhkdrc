@@ -52,6 +52,20 @@ ctrl + shift + alt + p
 Print
     flameshot gui
 
+#super + KP_Add
+super + equal
+	xbacklight -inc 10
+
+#super + KP_Subtract
+super + minus
+	xbacklight -dec 10
+
+XF86AudioRaiseVolume
+	pactl -- set-sink-volume 0 +5%
+
+XF86AudioLowerVolume
+	pactl -- set-sink-volume 0 -5%
+
 #
 # bspwm hotkeys
 #
