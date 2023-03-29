@@ -119,15 +119,21 @@ case "$response" in
 
         if [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user neovim
+        else
+            echo "You need to install pip3"
         fi
 
 	# TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
+        else
+            echo "You need to install npm"
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
             gem install neovim
+        else
+            echo "You need to install gem"
         fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
@@ -295,6 +301,17 @@ case "$response" in
         ;;
     *)
         echo "Skipping Git setup"
+        ;;
+esac
+
+read -r -p "Would you like to install configurations with root? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        sudo rm -f "/etc/chrony.conf"
+        sudo cp -f "${MISC_DIR}/config/chrony.conf" "/etc/chrony.conf"
+        ;;
+    *)
+        echo "Skipping installing configurations with root"
         ;;
 esac
 

@@ -150,7 +150,7 @@ while true; do
         echo "picom_enable = $picom_enable"
         if [ "$picom_enable" = "1" ]; then
             echo "Picom process died, restarting ..." >> "${bspwm_log_root}/picom.log"
-            runOnce picom false picom.log --config ~/.config/compton/compton.conf --experimental-backends -b
+            runOnce picom false picom.log --config ~/.config/compton/compton.conf -b
         fi
     fi
 
