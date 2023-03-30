@@ -6,8 +6,8 @@ fi
 
 notify-send -a "ChatGPT" "Awaiting response from OpenAI servers ..." -i "$HOME/.config/rofi/openai.svg"
 
-ANSWER=$($HOME/.local/bin/sgpt "$INPUT" --no-animation --no-spinner)
-zenity --info --text="$ANSWER"
+ANSWER=$($HOME/.local/bin/sgpt "$INPUT")
+yad --info --text="$ANSWER"
 
 #($TERMINAL $PAGER $file) &
 #bspc node -t floating

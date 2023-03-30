@@ -246,6 +246,8 @@ case "$response" in
                 firefox \
                 flameshot \
                 gparted \
+                inkscape \
+                libreoffice \
                 mpv \
                 nextcloud-client \
                 p7zip \
@@ -258,6 +260,8 @@ case "$response" in
             sudo apt install \
                 flameshot \
                 gparted \
+                inkscape \
+                libreoffice \
                 mpv \
                 nextcloud-desktop \
                 p7zip-full \
@@ -273,24 +277,24 @@ case "$response" in
             sudo pacman -Syu \
                 flameshot \
                 gnome-keyring \
+                inkscape \
+                libreoffice-fresh \
                 mpv \
                 nextcloud-client \
                 p7zip \
                 qalculate-gtk \
                 unrar \
+                zathura \
+                zathura-mu-pdf \
+                girara \
                 veracrypt \
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
                     yay -S \
                         all-repository-fonts \
                         brave-bin \
-                        girara-git \
                         yt-dlp \
-                        zathura-git \
                         --needed
-
-                    sudo pacman -S --needed \
-                        zathura-pdf-mupdf
             fi
 
             if [[ -x "$(command -v pip3)" ]]; then
@@ -312,7 +316,7 @@ case "$response" in
                 # TODO: install custom st.
                 if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: Fill the rest in.
-                        sudo dnf install -y \
+                        sudo dnf install \
                             bspwm \
                             dunst \
                             lxappearance \
@@ -326,10 +330,12 @@ case "$response" in
                             sxhkd \
                             sxiv \
                             variety \
-                            xarchiver
+                            yad \
+                            xarchiver \
+                            -y
                 elif [[ -x "$(command -v apt)" ]]; then
                         # NetworkManager pre-installed.
-                        sudo apt install -y \
+                        sudo apt install \
                             bspwm \
                             dunst \
                             lxappearance \
@@ -345,6 +351,8 @@ case "$response" in
                             sxiv \
                             variety \
                             xarchiver \
+                            yad \
+                            -y
 
                         echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
                         echo "python-xcbgen may need to be changed to python3-xcbgen"
@@ -353,7 +361,7 @@ case "$response" in
                         echo "You will need to build picom from source: https://github.com/yshui/picom#build"
                         sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
                 elif [[ -x "$(command -v pacman)" ]]; then
-                        sudo pacman -Syu --needed \
+                        sudo pacman -Syu \
                             bspwm \
                             dunst \
                             gtk-engine-murrine \
@@ -371,7 +379,9 @@ case "$response" in
                             sxhkd \
                             sxiv \
                             variety \
-                            xarchiver
+                            xarchiver \
+                            yad \
+                            --needed
 
                         if [[ -x "$(command -v yay)" ]]; then
                                 yay -S --needed \
