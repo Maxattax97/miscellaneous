@@ -285,7 +285,7 @@ case "$response" in
                 qalculate-gtk \
                 unrar \
                 zathura \
-                zathura-mu-pdf \
+                zathura-pdf-mupdf \
                 girara \
                 veracrypt \
                 --needed
@@ -374,6 +374,8 @@ case "$response" in
                             nm-connection-editor \
                             papirus-icon-theme \
                             pcmanfm-gtk3 \
+                            picom \
+                            polybar \
                             qt6ct \
                             rofi \
                             sxhkd \
@@ -384,29 +386,27 @@ case "$response" in
                             --needed
 
                         if [[ -x "$(command -v yay)" ]]; then
-                                yay -S --needed \
+                                yay -S \
                                     ly \
-                                    picom-git \
-                                    polybar
+                                    --needed
                         fi
                 fi
 
-                if [[ -x "$(command -v pip3)" ]]; then
-                        pip3 install --user \
-                            redrum
-                fi
+                #if [[ -x "$(command -v pip3)" ]]; then
+                        #pip3 install --user \
+                #fi
 
                 # copy service files
                 mkdir -p ~/.config/systemd/user/
-                cp -u services/redrum.service ~/.config/systemd/user/
-                cp -u services/redrum.timer ~/.config/systemd/user/
+                #cp -u services/redrum.service ~/.config/systemd/user/
+                #cp -u services/redrum.timer ~/.config/systemd/user/
 
                 # enable and start systemd timer
-                systemctl --user enable redrum.timer
-                systemctl --user start redrum.timer
+                #systemctl --user enable redrum.timer
+                #systemctl --user start redrum.timer
 
                 # the service can be triggered manually as well
-                systemctl --user start redrum
+                #systemctl --user start redrum
                 ;;
         *)
                 echo "Skipping bspwm installation"
