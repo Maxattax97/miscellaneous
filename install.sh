@@ -512,6 +512,8 @@ case "$response" in
         sudo mkdir -p "/etc/pacman.d/hooks/"
         sudo rm -f "/etc/pacman.d/hooks/nvidia.hook"
         sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/nvidia.hook" "/etc/pacman.d/hooks/nvidia.hook"
+        sudo rm -f "/etc/pacman.d/hooks/refind.hook"
+        sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
 
         # NOTE: Skipped mkinitcpio because it's system dependent... use Chezmoi!
         ;;
