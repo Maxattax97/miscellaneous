@@ -257,93 +257,6 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
-case "$response" in
-    [yY][eE][sS]|[yY])
-        if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install \
-                brave \
-                firefox \
-                flameshot \
-                gparted \
-                inkscape \
-                libreoffice \
-                mpv \
-                nextcloud-client \
-                p7zip \
-                qalculate-gtk \
-                veracrypt \
-                zathura \
-                zathura-pdf-mupdf \
-                -y
-        elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install \
-                flameshot \
-                gparted \
-                inkscape \
-                libreoffice \
-                mpv \
-                nextcloud-desktop \
-                p7zip-full \
-                qalculate-gtk \
-                unrar \
-                veracrypt \
-                zathura \
-                -y
-
-            # TODO: Add ppa for veracrypt on Ubuntu
-            # TODO: Add ppa for Brave on Ubuntu
-        elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu \
-                flameshot \
-                gnome-keyring \
-                inkscape \
-                libreoffice-fresh \
-                mpv \
-                nextcloud-client \
-                p7zip \
-                qalculate-gtk \
-                unrar \
-                zathura \
-                zathura-pdf-mupdf \
-                girara \
-                veracrypt \
-                --needed
-            if [[ -x "$(command -v yay)" ]]; then
-                    yay -S \
-                        all-repository-fonts \
-                        brave-bin \
-                        yt-dlp \
-                        --needed
-            fi
-        elif [[ -x "$(command -v pkg)" ]]; then
-            sudo pkg install \
-                flameshot \
-                girara \
-                gnome-keyring \
-                inkscape \
-                libreoffice \
-                mpv \
-                nextcloudclient \
-                qalculate-gtk \
-                unrar \
-                veracrypt \
-                zathura \
-                zathura-pdf-mupdf
-        fi
-
-        if [[ -x "$(command -v pip3)" ]]; then
-                pip3 install --user \
-                    shell-gpt
-        fi
-
-        xdg-settings set default-web-browser brave.desktop
-        ;;
-    *)
-        echo "Skipping utility installation"
-        ;;
-esac
-
 read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
 case "$response" in
         [yY][eE][sS]|[yY])
@@ -429,7 +342,7 @@ case "$response" in
                         fi
                 elif [[ -x "$(command -v pkg)" ]]; then
                         sudo pkg install \
-                            Kvantum \
+                            Kvantum-qt5 \
                             bspwm \
                             dunst \
                             gtk-murrine-engine \
@@ -480,6 +393,93 @@ case "$response" in
         *)
                 echo "Skipping bspwm installation"
                 ;;
+esac
+
+read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install \
+                brave \
+                firefox \
+                flameshot \
+                gparted \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloud-client \
+                p7zip \
+                qalculate-gtk \
+                veracrypt \
+                zathura \
+                zathura-pdf-mupdf \
+                -y
+        elif [[ -x "$(command -v apt)" ]]; then
+            sudo apt install \
+                flameshot \
+                gparted \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloud-desktop \
+                p7zip-full \
+                qalculate-gtk \
+                unrar \
+                veracrypt \
+                zathura \
+                -y
+
+            # TODO: Add ppa for veracrypt on Ubuntu
+            # TODO: Add ppa for Brave on Ubuntu
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu \
+                flameshot \
+                gnome-keyring \
+                inkscape \
+                libreoffice-fresh \
+                mpv \
+                nextcloud-client \
+                p7zip \
+                qalculate-gtk \
+                unrar \
+                zathura \
+                zathura-pdf-mupdf \
+                girara \
+                veracrypt \
+                --needed
+            if [[ -x "$(command -v yay)" ]]; then
+                    yay -S \
+                        all-repository-fonts \
+                        brave-bin \
+                        yt-dlp \
+                        --needed
+            fi
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                flameshot \
+                girara \
+                gnome-keyring \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloudclient \
+                qalculate-gtk \
+                unrar \
+                veracrypt \
+                zathura \
+                zathura-pdf-mupdf
+        fi
+
+        if [[ -x "$(command -v pip3)" ]]; then
+                pip3 install --user \
+                    shell-gpt
+        fi
+
+        xdg-settings set default-web-browser brave.desktop
+        ;;
+    *)
+        echo "Skipping workstation utility installation"
+        ;;
 esac
 
 if [[ -x "$(command -v pacman)" ]]; then
