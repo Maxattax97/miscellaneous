@@ -351,6 +351,7 @@ case "$response" in
                 if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: Fill the rest in.
                         sudo dnf install \
+                            @base-x \
                             bspwm \
                             dunst \
                             lxappearance \
@@ -385,6 +386,7 @@ case "$response" in
                             sxiv \
                             variety \
                             xarchiver \
+                            xorg \
                             yad \
                             -y
 
@@ -415,6 +417,7 @@ case "$response" in
                             sxhkd \
                             variety \
                             xarchiver \
+                            xorg-server \
                             yad \
                             --needed
 
@@ -443,6 +446,7 @@ case "$response" in
                             sxhkd \
                             variety \
                             xarchiver \
+                            xorg \
                             yad
 
                             # Could not find these:
@@ -590,15 +594,24 @@ esac
 read -r -p "Would you like to setup system permissions? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
-        # TODO: Check that these are correct groupadd commands.
-        sudo groupadd -r docker
-        sudo usermod -a -G docker "$USER"
 
-        sudo groupadd -r wireshark
-        sudo usermod -a -G wireshark "$USER"
+        if [[ -x "$(command -v pw)" ]]; then
+            sudo pw groupmod video -m "$USER"
+            sudo pw groupmod docker -m "$USER"
+            sudo pw groupmod wireshark -m "$USER"
+            sudo pw groupmod wheel -m "$USER"
+            sudo pw groupmod tty -m "$USER"
+        else
+            # TODO: Check that these are correct groupadd commands.
+            sudo groupadd -r docker
+            sudo usermod -a -G docker "$USER"
 
-        sudo groupadd -r tty
-        sudo usermod -a -G tty "$USER"
+            sudo groupadd -r wireshark
+            sudo usermod -a -G wireshark "$USER"
+
+            sudo groupadd -r tty
+            sudo usermod -a -G tty "$USER"
+        fi
         ;;
     *)
         echo "Skipping permission setup"
