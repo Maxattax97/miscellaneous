@@ -121,11 +121,15 @@ xterm*disallowedWindowOps: 20,21,SetXProp
 /* See section in sts config.h that describes XResources (~L175) */
 st*selectToClipboard: true
 st*disallowedWindowOps: 20,21,SetXProp
-st*background: S_base3
 st.borderpx: 0
 st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
-st.cursorColor: S_base03
-/* There must be a bug here? Cursor color changes background, and vice versa. */
+st.alpha: 0.9
+st.alphaOffset: 0.3
+
+/* There must be a bug in my version of st. Cursor color changes background, and vice versa. */
+/* Luke Smith's does not have this issue */
+!st*background: S_base03
+!st.cursorColor: S_base3
 
 Xft.autohint: 	0
 Xft.antialias: 	1
