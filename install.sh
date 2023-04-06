@@ -250,7 +250,7 @@ case "$response" in
             #fi
         #fi
 
-        chsh -s /bin/zsh "${USER}"
+        chsh -s "$(command -v zsh)" "${USER}"
         ;;
     *)
         echo "Skipping utility installation"
@@ -347,12 +347,15 @@ case "$response" in
                             dunst \
                             gtk-murrine-engine \
                             lxappearance \
+                            ly \
                             materia-gtk-theme \
+                            ncurses \
                             nitrogen \
                             nsxiv \
                             papirus-icon-theme \
                             pcmanfm-gtk3 \
                             picom \
+                            pidof \
                             polybar \
                             qt6ct \
                             rofi \
@@ -366,12 +369,6 @@ case "$response" in
                             #materia-kde \
                             #network-manager-applet \
                             #nm-connection-editor \
-
-                        if [[ -x "$(command -v yay)" ]]; then
-                                yay -S \
-                                    ly \
-                                    --needed
-                        fi
                 fi
 
                 #if [[ -x "$(command -v pip3)" ]]; then
@@ -466,6 +463,7 @@ case "$response" in
                 qalculate-gtk \
                 unrar \
                 veracrypt \
+                yt-dlp \
                 zathura \
                 zathura-pdf-mupdf
         fi
