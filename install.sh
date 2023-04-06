@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Convert this script to shell so it can run on lighter systems.
+
 MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 echo "Linking from ${MISC_DIR} ..."
@@ -162,6 +164,24 @@ case "$response" in
                 weechat \
                 xclip \
                 zsh
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                btop \
+                chezmoi \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                node \
+                npm \
+                python \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -296,11 +316,25 @@ case "$response" in
                         yt-dlp \
                         --needed
             fi
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                flameshot \
+                girara \
+                gnome-keyring \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloudclient \
+                qalculate-gtk \
+                unrar \
+                veracrypt \
+                zathura \
+                zathura-pdf-mupdf
+        fi
 
-            if [[ -x "$(command -v pip3)" ]]; then
-                    pip3 install --user \
-                        shell-gpt
-            fi
+        if [[ -x "$(command -v pip3)" ]]; then
+                pip3 install --user \
+                    shell-gpt
         fi
 
         xdg-settings set default-web-browser brave.desktop
@@ -379,11 +413,42 @@ case "$response" in
                             qt6ct \
                             rofi \
                             sxhkd \
-                            sxiv \
                             variety \
                             xarchiver \
                             yad \
                             --needed
+
+                        if [[ -x "$(command -v yay)" ]]; then
+                                yay -S \
+                                    ly \
+                                    nsxiv \
+                                    --needed
+                        fi
+                elif [[ -x "$(command -v pkg)" ]]; then
+                        sudo pkg install \
+                            Kvantum \
+                            bspwm \
+                            dunst \
+                            gtk-murrine-engine \
+                            lxappearance \
+                            materia-gtk-theme \
+                            nitrogen \
+                            nsxiv \
+                            papirus-icon-theme \
+                            pcmanfm-gtk3 \
+                            picom \
+                            polybar \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            variety \
+                            xarchiver \
+                            yad
+
+                            # Could not find these:
+                            #materia-kde \
+                            #network-manager-applet \
+                            #nm-connection-editor \
 
                         if [[ -x "$(command -v yay)" ]]; then
                                 yay -S \
@@ -397,7 +462,7 @@ case "$response" in
                 #fi
 
                 # copy service files
-                mkdir -p ~/.config/systemd/user/
+                #mkdir -p ~/.config/systemd/user/
                 #cp -u services/redrum.service ~/.config/systemd/user/
                 #cp -u services/redrum.timer ~/.config/systemd/user/
 
