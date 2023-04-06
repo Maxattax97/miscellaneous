@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -d "_fonts/" ]; then
 	rm -rf _fonts/
 fi
