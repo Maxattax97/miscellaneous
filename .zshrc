@@ -822,7 +822,9 @@ zshrc_load_library() {
 
     # Host the current directory via HTTP
     hostdir() {
-        if type "python3" > /dev/null 2>&1; then
+        if type "npx" > /dev/null 2>&1; then
+            npx http-server
+        elif type "python3" > /dev/null 2>&1; then
             python3 -m http.server
         elif type "python" > /dev/null 2>&1; then
             python -m SimpleHTTPServer
