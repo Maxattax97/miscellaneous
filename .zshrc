@@ -1171,9 +1171,19 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
 
-    if [[ "$(uname)" != "Darwin" ]]; then
+    if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
         CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
+    fi
+
+    if [[ "$(uname)" =~ .*BSD.* ]] || [[ "$(uname)" == "Darwin" ]]; then
+        CPU_CORES="$(sysctl -n hw.ncpu)"
+        local threads_per_core="$(sysctl -n hw.smt_threads 2>/dev/null || echo 1)"
+        CPU_THREADS=$((threads_per_core * CPU_CORES))
+    fi
+
+    if [[ -z "${CPU_CORES}" ]] || [[ -z "${CPU_THREADS}" ]]; then
+        echo "Failed to detect number of cores/threads."
     fi
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
