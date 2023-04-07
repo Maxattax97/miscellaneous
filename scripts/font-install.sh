@@ -51,13 +51,10 @@ rm -rf _fonts/RobotoSlab.zip _fonts/LICENSE.txt _fonts/README.txt _fonts/RobotoS
 unzip _fonts/Roboto.zip -d _fonts/
 rm -rf _fonts/Roboto.zip _fonts/LICENSE.txt
 
-if [[ $(uname) =~ .*BSD.* ]]; then
-	sudo mkdir -p /usr/local/share/fonts/pretty-fonts/
-	sudo cp _fonts/* /usr/local/share/fonts/pretty-fonts/
-else
-	sudo mkdir -p /usr/share/fonts/pretty-fonts/
-	sudo cp _fonts/* /usr/share/fonts/pretty-fonts/
-fi
+sudo mkdir -p /usr/local/share/fonts/TTF
+sudo mkdir -p /usr/local/share/fonts/OTF
+sudo cp _fonts/*.ttf /usr/local/share/fonts/TTF/
+sudo cp _fonts/*.otf /usr/local/share/fonts/OTF/
 
 rm -rf _fonts/
 fc-cache -fv
