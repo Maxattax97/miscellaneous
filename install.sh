@@ -189,6 +189,8 @@ case "$response" in
             cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
+
         if [[ -x "$(command -v pip2)" ]]; then
             pip2 install --user neovim
         fi
