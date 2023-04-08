@@ -34,16 +34,16 @@
 ! #define S_base02        #c6c6c6
 ! #define S_base03        #e2e2e2
 
-*background:              S_base03
-*foreground:              S_base3
-*accent:                  S_blue
-*bckgrd:                  S_base03
-*select:                  S_blue
-*fading:                  40
-*fadeColor:               S_base03
-*cursorColor:             S_base3
-*pointerColorBackground:  S_base01
-*pointerColorForeground:  S_base1
+*.background:              S_base03
+*.foreground:              S_base3
+*.accent:                  S_blue
+*.bckgrd:                  S_base03
+*.select:                  S_blue
+*.fading:                  40
+*.fadeColor:               S_base03
+*.cursorColor:             S_base3
+*.pointerColorBackground:  S_base01
+*.pointerColorForeground:  S_base1
 
 ! *color0:                  S_base02
 ! *color1:                  S_red
@@ -62,69 +62,65 @@
 ! *color14:                 S_base1
 ! *color15:                 S_base3
 
-*color0:                  S_base03
-*color1:                  S_red
-*color2:                  S_green
-*color3:                  S_yellow
-*color4:                  S_blue
-*color5:                  S_violet
-*color6:                  S_cyan
-*color7:                  S_base1
-*color8:                  S_base01
-*color9:                  S_red
-*color10:                 S_green
-*color11:                 S_yellow
-*color12:                 S_blue
-*color13:                 S_violet
-*color14:                 S_cyan
-*color15:                 S_base3
+*.color0:                  S_base03
+*.color1:                  S_red
+*.color2:                  S_green
+*.color3:                  S_yellow
+*.color4:                  S_blue
+*.color5:                  S_violet
+*.color6:                  S_cyan
+*.color7:                  S_base1
+*.color8:                  S_base01
+*.color9:                  S_red
+*.color10:                 S_green
+*.color11:                 S_yellow
+*.color12:                 S_blue
+*.color13:                 S_violet
+*.color14:                 S_cyan
+*.color15:                 S_base3
 
-*base03:    S_base03
-*base02:    S_base02
-*base01:    S_base01
-*base00:    S_base00
-*base0:     S_base0
-*base1:     S_base1
-*base2:     S_base2
-*base3:     S_base3
+*.base03:    S_base03
+*.base02:    S_base02
+*.base01:    S_base01
+*.base00:    S_base00
+*.base0:     S_base0
+*.base1:     S_base1
+*.base2:     S_base2
+*.base3:     S_base3
 
-*yellow:    S_yellow
-*orange:    S_orange
-*red:       S_red
-*magenta:   S_magenta
-*violet:    S_violet
-*blue:      S_blue
-*cyan:      S_cyan
-*green:     S_green
+!*yellow:    S_yellow
+!*orange:    S_orange
+!*red:       S_red
+!*magenta:   S_magenta
+!*violet:    S_violet
+!*blue:      S_blue
+!*cyan:      S_cyan
+!*green:     S_green
 
 /* URxvt */
-!URxvt*internalBorder: 			20
-URxvt.intensityStyles:			false
-!URxvt.background: 				#121212
-!URxvt*background:               rgba:0000/0000/0000/aaaa
-!URxvt.foreground: 				#BBBBBB
-URxvt.depth:					32
-URxvt.font: 					xft:Hack Nerd Font Mono:size=9
-URxvt.scrollBar:				false
-!URxvt.cursorColor:				white
-!URxvt.colorUL:					#61c7c6
-URxvt.keysym.Shift-Control-V: 	eval:paste_clipboard
-URxvt.keysym.Shift-Control-C: 	eval:selection_to_clipboard
-URxvt.iso14755: true
-URxvt.iso14755_52: false
-URxvt.letterSpace: -1
-URxvt.lineSpace: 0
+!URxvt.intensityStyles:			false
+!URxvt.depth:					32
+!URxvt.font: 					xft:Hack Nerd Font Mono:size=9
+!URxvt.scrollBar:				false
+!URxvt.keysym.Shift-Control-V: 	eval:paste_clipboard
+!URxvt.keysym.Shift-Control-C: 	eval:selection_to_clipboard
+!URxvt.iso14755: true
+!URxvt.iso14755_52: false
+!URxvt.letterSpace: -1
+!URxvt.lineSpace: 0
 
-xterm*selectToClipboard: true
-xterm*disallowedWindowOps: 20,21,SetXProp
+!xterm*selectToClipboard: true
+!xterm*disallowedWindowOps: 20,21,SetXProp
 
 /* See section in sts config.h that describes XResources (~L175) */
 st*selectToClipboard: true
 st*disallowedWindowOps: 20,21,SetXProp
+! st.termname: st-256color
 st.borderpx: 0
 st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
 st.alpha: 0.9
-st.alphaOffset: 0.3
+st.alphaOffset: 0.0
+st.alphaUnfocus: 0.0
 
 /* There must be a bug in my version of st. Cursor color changes background, and vice versa. */
 /* Luke Smith's does not have this issue */
