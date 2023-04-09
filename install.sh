@@ -194,6 +194,8 @@ case "$response" in
         fi
 
         xdg-settings set default-web-browser brave.desktop
+
+        curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         ;;
     *)
         echo "Skipping utility installation"
