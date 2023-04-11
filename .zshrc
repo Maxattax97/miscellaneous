@@ -40,10 +40,8 @@ zshrc_enter_tmux() {
             # echo "Launching tmux base session $base_session ..."
             # Guide: https://stackoverflow.com/a/40009032
             tmux -2 new-session -s Main \; \
-                send-keys 'htop' C-m \; \
-                split-window -v \; \
-                send-keys 'gotop' C-m l l \; \
-                split-window -h \; \
+                send-keys 'top' C-m \; \
+                split-window -h -p 35 \; \
                 send-keys 'ctop' C-m \; \
                 select-pane -t 1 \; \
                 new-window \; \
@@ -824,7 +822,9 @@ zshrc_load_library() {
 
     # Host the current directory via HTTP
     hostdir() {
-        if type "python3" > /dev/null 2>&1; then
+        if type "npx" > /dev/null 2>&1; then
+            npx http-server
+        elif type "python3" > /dev/null 2>&1; then
             python3 -m http.server
         elif type "python" > /dev/null 2>&1; then
             python -m SimpleHTTPServer
@@ -911,6 +911,7 @@ zshrc_load_library() {
 
     dockerclean() {
         echo "Cleaning Docker images and containers ..."
+        sudo docker system prune --all
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
         echo "Docker cleaned."
@@ -1046,28 +1047,13 @@ zshrc_load_library() {
     }
 
     enhance() {
-        img=$1
-        tmp_file="$(mktemp -u)"
-        convert -auto-gamma -auto-level -normalize $img $tmp_file
-        mv $tmp_file $img
+        mogrify -auto-gamma -auto-level -normalize $@
     }
 
-    enhance_batch() {
-        folder=$1
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            enhance $img
-        done
-    }
-
-    scale_batch() {
-        folder=$1
-        scale=$2
-        for img in $folder/*; do
-            echo "Enhancing $img ..."
-            convert -scale $scale $img "${img}_scaled"
-            mv "${img}_scaled" $img
-        done
+    scale() {
+        scale=$1
+        shift
+        mogrify -scale $scale $@
     }
 }
 
@@ -1126,6 +1112,17 @@ zshrc_set_aliases() {
 
     # Clipboard
     alias clip='xclip -selection clipboard'
+
+    # btop > htop > top
+    if [[ -x "$(command -v htop)" ]]; then
+        alias top='htop'
+    fi
+
+    if [[ -x "$(command -v btop)" ]]; then
+        alias htop='btop'
+    fi
+
+    alias e="$EDITOR"
 }
 
 zshrc_set_default_programs() {
@@ -1174,9 +1171,19 @@ zshrc_set_default_programs() {
 
 zshrc_set_environment_variables() {
 
-    if [[ "$(uname)" != "Darwin" ]]; then
+    if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
         CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
+    fi
+
+    if [[ "$(uname)" =~ .*BSD.* ]] || [[ "$(uname)" == "Darwin" ]]; then
+        CPU_CORES="$(sysctl -n hw.ncpu)"
+        local threads_per_core="$(sysctl -n hw.smt_threads 2>/dev/null || echo 1)"
+        CPU_THREADS=$((threads_per_core * CPU_CORES))
+    fi
+
+    if [[ -z "${CPU_CORES}" ]] || [[ -z "${CPU_THREADS}" ]]; then
+        echo "Failed to detect number of cores/threads."
     fi
 
     if [[ -d "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/AATSV4/Lib" ]]; then
@@ -1481,8 +1488,8 @@ zshrc_init() {
     zshrc_setup_completion
     zshrc_source
     zshrc_set_path
-    zshrc_set_aliases
     zshrc_set_default_programs
+    zshrc_set_aliases
     zshrc_load_library
 
     zshrc_auto_window_title

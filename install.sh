@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Convert this script to shell so it can run on lighter systems.
+
 MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 echo "Linking from ${MISC_DIR} ..."
@@ -41,15 +43,22 @@ link_source .tmux.conf 1
 link_source .tmuxline.conf 1
 link_source .Xdefaults 1
 link_source .eslintrc.json 0
+link_source ".gtkrc-2.0" 0
+link_source .xinitrc 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
 
 mkdir -p "${HOME}/.ncmpcpp"
 link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
+
+mkdir -p "${HOME}/.gnupg"
 link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
+
+mkdir -p "${HOME}/.ssh"
 link_source "config/ssh/config" 0 ".ssh/config"
 
+mkdir -p "${HOME}/.SpaceVim.d"
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
 
 # Configure secured password (not included in this repo) with:
@@ -62,8 +71,6 @@ if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
 fi
 
 # ~/.config/
-#echo "Backing up ${HOME}/.config ..."
-#tar -czf "${HOME}/.config.bak.tar.gz" "${HOME}/.config/"
 link_source "config/i3/" 1 ".config/i3"
 link_source "config/mpd/" 1 ".config/mpd"
 link_source "config/polybar/" 1 ".config/polybar"
@@ -83,6 +90,13 @@ link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
 link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
+link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
+link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
+link_source "config/btop/" 1 ".config/btop"
+link_source "config/Kvantum/" 1 ".config/Kvantum"
+
+mkdir -p "${HOME}/.config/variety"
+link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -101,11 +115,73 @@ case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat neofetch util-linux-user keychain
+            sudo dnf install -y \
+                btop \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python3 \
+                ripgrep \
+                tmux \
+                util-linux-user \
+                weechat \
+                xclip \
+                zsh
         elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y zsh neovim tmux htop git curl ripgrep python3 nodejs xclip weechat newsboat keychain
+            sudo apt install -y \
+                btop \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python3 \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu zsh neovim tmux htop git curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi keychain --needed
+            sudo pacman -Syu --needed \
+                btop \
+                chezmoi \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                nodejs \
+                python \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                btop \
+                chezmoi \
+                curl \
+                git \
+                keychain \
+                neofetch \
+                neovim \
+                newsboat \
+                node \
+                npm \
+                python \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -113,46 +189,54 @@ case "$response" in
             cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
+
         if [[ -x "$(command -v pip2)" ]]; then
             pip2 install --user neovim
         fi
 
         if [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user neovim
+        else
+            echo "You need to install pip3"
         fi
 
-	# TODO: install LTS node via NVM which is installed via ZSH.
+        # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
+        else
+            echo "You need to install npm"
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
             gem install neovim
+        else
+            echo "You need to install gem"
         fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
             mkdir -p "${HOME}/.cache/dein"
             curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
             # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh /tmp/.dein_installer.sh && sh /tmp/.dein_installer.sh "${HOME}/.cache/dein"
-	    # rm -rf /tmp/.dein_installer.sh
+            # rm -rf /tmp/.dein_installer.sh
         fi
 
-        if [[ ! -x "$(command -v gotop)" ]]; then
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -S gotop-bin --needed
-            else
-                # Always try to update these.
-                git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
-            fi
-        fi
+        #if [[ ! -x "$(command -v gotop)" ]]; then
+            #if [[ -x "$(command -v yay)" ]]; then
+                #yay -S gotop-bin --needed
+            #else
+                ## Always try to update these.
+                #git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
+            #fi
+        #fi
 
-        if [[ ! -x "$(command -v navi)" ]]; then
-                if [[ -x "$(command -v yay)" ]]; then
-                        yay -S navi --needed
-                else
-                        bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
-                fi
-        fi
+        #if [[ ! -x "$(command -v navi)" ]]; then
+                #if [[ -x "$(command -v yay)" ]]; then
+                        #yay -S navi --needed
+                #else
+                        #bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+                #fi
+        #fi
 
         #if [[ ! -x "$(command -v ctop)" ]]; then
             # TODO: Automatically update the version.
@@ -160,37 +244,235 @@ case "$response" in
             #curl https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
         #fi
 
-        if [[ ! -x "$(command -v lazydocker)" ]]; then
-            if [[ -x "$(command -v yay)" ]]; then
-                yay -S lazydocker --needed
-            else
-                curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
-            fi
-        fi
+        #if [[ ! -x "$(command -v lazydocker)" ]]; then
+            #if [[ -x "$(command -v yay)" ]]; then
+                #yay -S lazydocker --needed
+            #else
+                #curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
+            #fi
+        #fi
 
-        chsh -s /bin/zsh "${USER}"
+        chsh -s "$(command -v zsh)" "${USER}"
         ;;
     *)
-        echo "Skipping utility installation"
+        echo "Skipping common utility installation"
         ;;
+esac
+
+read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+case "$response" in
+        [yY][eE][sS]|[yY])
+                # TODO: install custom st.
+                if [[ -x "$(command -v dnf)" ]]; then
+                        # TODO: Fill the rest in.
+                        sudo dnf install \
+                            @base-x \
+                            bspwm \
+                            dunst \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            nitrogen \
+                            papirus-icon-theme \
+                            pcmanfm \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            sxiv \
+                            variety \
+                            yad \
+                            xarchiver \
+                            -y
+                elif [[ -x "$(command -v apt)" ]]; then
+                        # NetworkManager pre-installed.
+                        sudo apt install \
+                            bspwm \
+                            dunst \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            murrine-themes \
+                            nitrogen \
+                            papirus-icon-theme \
+                            pcmanfm \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            sxiv \
+                            variety \
+                            xarchiver \
+                            xorg \
+                            yad \
+                            -y
+
+                        echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
+                        echo "python-xcbgen may need to be changed to python3-xcbgen"
+                        sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+
+                        echo "You will need to build picom from source: https://github.com/yshui/picom#build"
+                        sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
+                elif [[ -x "$(command -v pacman)" ]]; then
+                        sudo pacman -Syu \
+                            bspwm \
+                            dunst \
+                            gtk-engine-murrine \
+                            kvantum-theme-materia \
+                            lxappearance \
+                            materia-gtk-theme \
+                            materia-kde \
+                            network-manager-applet \
+                            nitrogen \
+                            nm-connection-editor \
+                            papirus-icon-theme \
+                            pcmanfm-gtk3 \
+                            picom \
+                            polybar \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            variety \
+                            xarchiver \
+                            xorg-server \
+                            yad \
+                            --needed
+
+                        if [[ -x "$(command -v yay)" ]]; then
+                                yay -S \
+                                    ly \
+                                    nsxiv \
+                                    --needed
+                        fi
+                elif [[ -x "$(command -v pkg)" ]]; then
+                        sudo pkg install \
+                            Kvantum-qt5 \
+                            bspwm \
+                            dunst \
+                            gtk-murrine-engine \
+                            lxappearance \
+                            ly \
+                            materia-gtk-theme \
+                            ncurses \
+                            nitrogen \
+                            nsxiv \
+                            papirus-icon-theme \
+                            pcmanfm-gtk3 \
+                            picom \
+                            pidof \
+                            polybar \
+                            qt6ct \
+                            rofi \
+                            sxhkd \
+                            variety \
+                            xarchiver \
+                            xorg \
+                            yad
+
+                            # Could not find these:
+                            #materia-kde \
+                            #network-manager-applet \
+                            #nm-connection-editor \
+                fi
+
+                #if [[ -x "$(command -v pip3)" ]]; then
+                        #pip3 install --user \
+                #fi
+
+                # copy service files
+                #mkdir -p ~/.config/systemd/user/
+                #cp -u services/redrum.service ~/.config/systemd/user/
+                #cp -u services/redrum.timer ~/.config/systemd/user/
+
+                # enable and start systemd timer
+                #systemctl --user enable redrum.timer
+                #systemctl --user start redrum.timer
+
+                # the service can be triggered manually as well
+                #systemctl --user start redrum
+                ;;
+        *)
+                echo "Skipping bspwm installation"
+                ;;
 esac
 
 read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
-			# TODO: (still necessary?) Install Veracrypt from CentOS package via here: https://www.veracrypt.fr/en/Downloads.html
-            sudo dnf install -y nextcloud-client firefox flameshot p7zip brave veracrypt
+            sudo dnf install \
+                brave \
+                firefox \
+                flameshot \
+                gparted \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloud-client \
+                p7zip \
+                qalculate-gtk \
+                veracrypt \
+                zathura \
+                zathura-pdf-mupdf \
+                -y
         elif [[ -x "$(command -v apt)" ]]; then
-            # TODO: nextcloud, veracrypt, gnome-keyring
-            sudo apt install -y
-        elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu nextcloud-client veracrypt flameshot gnome-keyring p7zip unrar --needed
+            sudo apt install \
+                flameshot \
+                gparted \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloud-desktop \
+                p7zip-full \
+                qalculate-gtk \
+                unrar \
+                veracrypt \
+                zathura \
+                -y
 
-			if [[ -x "$(command -v yay)" ]]; then
-				yay -S zathura-git girara-git brave-bin all-repository-fonts --needed
-				sudo pacman -S zathura-pdf-mupdf --needed
-			fi
+            # TODO: Add ppa for veracrypt on Ubuntu
+            # TODO: Add ppa for Brave on Ubuntu
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu \
+                flameshot \
+                gnome-keyring \
+                inkscape \
+                libreoffice-fresh \
+                mpv \
+                nextcloud-client \
+                p7zip \
+                qalculate-gtk \
+                unrar \
+                zathura \
+                zathura-pdf-mupdf \
+                girara \
+                veracrypt \
+                --needed
+            if [[ -x "$(command -v yay)" ]]; then
+                    yay -S \
+                        all-repository-fonts \
+                        brave-bin \
+                        yt-dlp \
+                        --needed
+            fi
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                flameshot \
+                girara \
+                gnome-keyring \
+                inkscape \
+                libreoffice \
+                mpv \
+                nextcloudclient \
+                qalculate-gtk \
+                unrar \
+                veracrypt \
+                yt-dlp \
+                zathura \
+                zathura-pdf-mupdf
+        fi
+
+        if [[ -x "$(command -v pip3)" ]]; then
+                pip3 install --user \
+                    shell-gpt
         fi
 
         xdg-settings set default-web-browser brave.desktop
@@ -198,69 +480,39 @@ case "$response" in
         curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         ;;
     *)
-        echo "Skipping utility installation"
+        echo "Skipping workstation utility installation"
         ;;
-esac
-
-read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
-case "$response" in
-	[yY][eE][sS]|[yY])
-		# TODO: install custom st.
-		if [[ -x "$(command -v dnf)" ]]; then
-			# TODO: Fill the rest in.
-			sudo dnf install -y sxiv nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance bspwm sxhkd
-		elif [[ -x "$(command -v apt)" ]]; then
-			# NetworkManager pre-installed.
-			sudo apt install -y bspwm sxhkd nitrogen rofi papirus-icon-theme pcmanfm xarchiver dunst lxappearance sxiv
-
-			echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
-			echo "python-xcbgen may need to be changed to python3-xcbgen"
-			sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
-
-			echo "You will need to build picom from source: https://github.com/yshui/picom#build"
-			sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
-		elif [[ -x "$(command -v pacman)" ]]; then
-			sudo pacman -Syu bspwm sxhkd nitrogen nm-connection-editor network-manager-applet rofi papirus-icon-theme pcmanfm-gtk3 xarchiver dunst lxappearance sxiv --needed
-
-			if [[ -x "$(command -v yay)" ]]; then
-				yay -S polybar picom-git ly --needed
-			fi
-		fi
-
-		if [[ -x "$(command -v pip3)" ]]; then
-			pip3 install --user redrum
-		fi
-
-		# copy service files
-		mkdir -p ~/.config/systemd/user/
-		cp -u services/redrum.service ~/.config/systemd/user/
-		cp -u services/redrum.timer ~/.config/systemd/user/
-
-		# enable and start systemd timer
-		systemctl --user enable redrum.timer
-		systemctl --user start redrum.timer
-
-		# the service can be triggered manually as well
-		systemctl --user start redrum
-		;;
-	*)
-		echo "Skipping bspwm installation"
-		;;
 esac
 
 if [[ -x "$(command -v pacman)" ]]; then
     read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
     case "$response" in
         [yY][eE][sS]|[yY])
-			if [[ -x "$(command -v dnf)" ]]; then
-				sudo dnf install -y git make cmake gcc gcc-c++ libstdc++-static libuv-static hwloc-devel openssl-devel tor nyx msr-tools
-			elif [[ -x "$(command -v pacman)" ]]; then
-				sudo pacman -Syu tor nyx msr-tools --needed
+                        if [[ -x "$(command -v dnf)" ]]; then
+                                sudo dnf install -y \
+                                    cmake \
+                                    gcc \
+                                    gcc-c++ \
+                                    git \
+                                    hwloc-devel \
+                                    libstdc++-static \
+                                    libuv-static \
+                                    make \
+                                    msr-tools \
+                                    nyx \
+                                    openssl-devel \
+                                    tor
+                        elif [[ -x "$(command -v pacman)" ]]; then
+                                sudo pacman -Syu --needed \
+                                    msr-tools \
+                                    nyx \
+                                    tor
 
-				if [[ -x "$(command -v yay)" ]]; then
-					yay -S xmrig-donateless --needed
-				fi
-			fi
+                                if [[ -x "$(command -v yay)" ]]; then
+                                        yay -S --needed \
+                                            xmrig-donateless
+                                fi
+                        fi
 
 cat >> /etc/tor/torrc<< EOF
 ControlPort 9051
@@ -270,11 +522,11 @@ CookieAuthFileGroupReadable 1
 DataDirectoryGroupReadable 1
 EOF
 
-			if [[ -x "$(command -v dnf)" ]]; then
-				sudo usermod -a -G toranon "$USER"
-			elif [[ -x "$(command -v pacman)" ]]; then
-				sudo usermod -a -G tor "$USER"
-			fi
+                        if [[ -x "$(command -v dnf)" ]]; then
+                                sudo usermod -a -G toranon "$USER"
+                        elif [[ -x "$(command -v pacman)" ]]; then
+                                sudo usermod -a -G tor "$USER"
+                        fi
             echo "You will want to refresh your groups before running Nyx: newgrp tor"
             echo "To start Tor: sudo systemctl restart tor"
             ;;
@@ -294,6 +546,11 @@ case "$response" in
             printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
         fi
 
+        git config --global diff.tool nvimdiff
+        git config --global diff.algorithm histogram
+        git config --global merge.tool nvimdiff
+        git config --global --add difftool.prompt false
+
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
             ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
             eval "$(ssh-agent -s)"
@@ -308,18 +565,55 @@ case "$response" in
         ;;
 esac
 
+read -r -p "Would you like to copy install configurations with root? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        sudo rm -f "/etc/chrony.conf"
+        sudo cp -f "${MISC_DIR}/config/chrony.conf" "/etc/chrony.conf"
+
+        sudo rm -f "/etc/xdg/reflector/reflector.conf"
+        sudo cp -f "${MISC_DIR}/config/xdg/reflector/reflector.conf" "/etc/xdg/reflector/reflector.conf"
+
+        sudo rm -f "/etc/systemd/zram-generator.conf"
+        sudo cp -f "${MISC_DIR}/config/systemd/zram-generator.conf" "/etc/systemd/zram-generator.conf"
+
+        sudo rm -f "/etc/pacman.conf"
+        sudo cp -f "${MISC_DIR}/config/pacman.conf" "/etc/pacman.conf"
+
+        sudo mkdir -p "/etc/pacman.d/hooks/"
+        sudo rm -f "/etc/pacman.d/hooks/nvidia.hook"
+        sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/nvidia.hook" "/etc/pacman.d/hooks/nvidia.hook"
+        sudo rm -f "/etc/pacman.d/hooks/refind.hook"
+        sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
+
+        # NOTE: Skipped mkinitcpio because it's system dependent... use Chezmoi!
+        ;;
+    *)
+        echo "Skipping installing configurations with root"
+        ;;
+esac
+
 read -r -p "Would you like to setup system permissions? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
-        # TODO: Check that these are correct groupadd commands.
-        sudo groupadd -r docker
-        sudo usermod -a -G docker "$USER"
 
-        sudo groupadd -r wireshark
-        sudo usermod -a -G wireshark "$USER"
+        if [[ -x "$(command -v pw)" ]]; then
+            sudo pw groupmod video -m "$USER"
+            sudo pw groupmod docker -m "$USER"
+            sudo pw groupmod wireshark -m "$USER"
+            sudo pw groupmod wheel -m "$USER"
+            sudo pw groupmod tty -m "$USER"
+        else
+            # TODO: Check that these are correct groupadd commands.
+            sudo groupadd -r docker
+            sudo usermod -a -G docker "$USER"
 
-        sudo groupadd -r tty
-        sudo usermod -a -G tty "$USER"
+            sudo groupadd -r wireshark
+            sudo usermod -a -G wireshark "$USER"
+
+            sudo groupadd -r tty
+            sudo usermod -a -G tty "$USER"
+        fi
         ;;
     *)
         echo "Skipping permission setup"
