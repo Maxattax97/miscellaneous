@@ -594,6 +594,9 @@ zshrc_zplug() {
 		# Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
 
+        zplug "plugins/thefuck", from:oh-my-zsh
+        bindkey "^f" fuck-command-line
+
         if ! zplug check; then
             zplug install
         fi
