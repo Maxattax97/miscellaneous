@@ -97,6 +97,11 @@ link_source "config/Kvantum/" 1 ".config/Kvantum"
 
 mkdir -p "${HOME}/.config/variety"
 link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
+link_source "config/copyq/copyq-commands.ini" 1 ".config/copyq/copyq-commands.ini"
+link_source "config/copyq/copyq.conf" 1 ".config/copyq/copyq.conf"
+link_source "config/copyq/copyq-filter.ini" 1 ".config/copyq/copyq-filter.ini"
+link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.ini"
+link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -268,6 +273,7 @@ case "$response" in
                         sudo dnf install \
                             @base-x \
                             bspwm \
+                            copyq \
                             dunst \
                             lxappearance \
                             materia-gtk-theme \
@@ -287,6 +293,7 @@ case "$response" in
                         # NetworkManager pre-installed.
                         sudo apt install \
                             bspwm \
+                            copyq \
                             dunst \
                             lxappearance \
                             materia-gtk-theme \
@@ -314,6 +321,7 @@ case "$response" in
                 elif [[ -x "$(command -v pacman)" ]]; then
                         sudo pacman -Syu \
                             bspwm \
+                            copyq \
                             dunst \
                             gtk-engine-murrine \
                             kvantum-theme-materia \
@@ -346,6 +354,7 @@ case "$response" in
                         sudo pkg install \
                             Kvantum-qt5 \
                             bspwm \
+                            copyq \
                             dunst \
                             gtk-murrine-engine \
                             lxappearance \
