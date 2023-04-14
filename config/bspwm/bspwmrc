@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-bspwm}"
+export XDG_CURRENT_DESKTOP
+HOSTNAME="$(hostname)"
+export HOSTNAME
+
 bspc monitor -d I II III IV V VI VII VIII IX X
 
 bspc config border_width            1
@@ -11,6 +16,7 @@ bspc config borderless_monocle      true
 bspc config gapless_monocle         true
 bspc config automatic_scheme		alternate
 
+# Use `xprop` to find these, use 2nd entry of WM_CLASS.
 bspc rule -a Gimp desktop='^8' state=floating follow=on
 bspc rule -a Chromium desktop='^2' state=tiled
 #bspc rule -a firefox desktop='^2' state=tiled #state=fullscreen
@@ -24,6 +30,8 @@ bspc rule -a Screenkey manage=off
 bspc rule -a nextcloud desktop='^10' state=tiled
 bspc rule -a Steam desktop='^4' state=tiled
 bspc rule -a discord desktop='^4' state=tiled
+bspc rule -a copyq state=floating sticky
+bspc rule -a Yad state=floating sticky
 
 bspwm_log_root="/tmp/bspwm_logs"
 
@@ -66,24 +74,14 @@ function runOnce()
     #fi
 }
 
-HOSTNAME="$(hostname)"
-export HOSTNAME
-
 # Services
 runOnce xrdb false xrdb.log "${HOME}/.Xdefaults" # Don't fork, will break other programs.
 runOnce sxhkd true sxhkd.log
 if [[ -x "$(command -v nm-applet)" ]]; then
     runOnce nm-applet true nm_applet.log
 fi
-if [[ -x "$(command -v nextcloud)" ]]; then
-    runOnce nextcloud true nextcloud.log --background
-fi
 if [[ -x "$(command -v flameshot)" ]]; then
     runOnce flameshot true flameshot.log
-fi
-if [[ -x "$(command -v blueman-tray)" ]]; then
-	# Sometimes I have to run `blueman-manager` once to get the services to kick in... odd.
-    runOnce blueman-tray true blueman_tray.log
 fi
 if [[ -x "$(command -v pcmanfm)" ]]; then
     runOnce pcmanfm true pcmanfm.log --no-desktop --daemon-mode
@@ -92,24 +90,33 @@ if [[ -x "$(command -v nitrogen)" ]]; then
     # Sometimes this crashes because X11 isn't ready yet.
     runOnce nitrogen true nitrogen.log --restore
 
-    if [[ -x "$(command -v redrum)" ]]; then
-        # Refresh the wallpaper.
-        systemctl --user start redrum
+    if [[ -x "$(command -v variety)" ]]; then
+        runOnce variety true variety.log
     fi
 fi
 
 # Applications
 runOnce st true st.log
 runOnce dunst true dunst.log
+runOnce copyq true copyq.log
 
 if [[ "$HOSTNAME" == "Maxattax-Arch" ]]; then
     runOnce brave true brave.log --profile-directory="Default" # Personal
+
+    if [[ -x "$(command -v nextcloud)" ]]; then
+        runOnce nextcloud true nextcloud.log --background
+    fi
 elif [[ "$HOSTNAME" == "mocull-endeavor" ]]; then
     runOnce brave true brave.log --profile-directory="Profile 2" # Work
     runOnce brave true brave.log --profile-directory="Profile 3" # Personal
 
     # Fix bluetooth.
-    systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
+    #systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
+
+    if [[ -x "$(command -v blueman-tray)" ]]; then
+            # Sometimes I have to run `blueman-manager` once to get the services to kick in... odd.
+        runOnce blueman-tray true blueman_tray.log
+    fi
 else
     #runOnce firefox true firefox.log
     runOnce brave true brave.log
@@ -119,7 +126,6 @@ fi
 polybar workspaces -r &
 polybar system -r &
 #polybar workspaces-thin -r &
-variety &
 
 if [[ -x "$(command -v steam)" ]]; then
     runOnce steam true steam.log
