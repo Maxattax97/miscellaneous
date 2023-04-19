@@ -97,6 +97,8 @@ link_source "config/Kvantum/" 1 ".config/Kvantum"
 
 mkdir -p "${HOME}/.config/variety"
 link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
+
+mkdir -p "${HOME}/.config/copyq"
 link_source "config/copyq/copyq-commands.ini" 1 ".config/copyq/copyq-commands.ini"
 link_source "config/copyq/copyq.conf" 1 ".config/copyq/copyq.conf"
 link_source "config/copyq/copyq-filter.ini" 1 ".config/copyq/copyq-filter.ini"
@@ -194,14 +196,12 @@ case "$response" in
             cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
         fi
 
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
-
         if [[ -x "$(command -v pip2)" ]]; then
             pip2 install --user neovim
         fi
 
         if [[ -x "$(command -v pip3)" ]]; then
-            pip3 install --user neovim
+            pip3 install --user neovim thefuck
         else
             echo "You need to install pip3"
         fi
@@ -220,8 +220,11 @@ case "$response" in
         fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
-            mkdir -p "${HOME}/.cache/dein"
-            curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
+
+            #mkdir -p "${HOME}/.cache/dein"
+            #curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
+
             # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh /tmp/.dein_installer.sh && sh /tmp/.dein_installer.sh "${HOME}/.cache/dein"
             # rm -rf /tmp/.dein_installer.sh
         fi
@@ -257,7 +260,9 @@ case "$response" in
             #fi
         #fi
 
-        chsh -s "$(command -v zsh)" "${USER}"
+        if [[ ! "$SHELL" =~ "zsh" ]]; then
+            chsh -s "$(command -v zsh)" "${USER}"
+        fi
         ;;
     *)
         echo "Skipping common utility installation"
