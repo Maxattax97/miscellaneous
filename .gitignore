@@ -14,3 +14,4 @@ config/weechat/sec.conf
 /config/weechat/certs/Maxattax.key
 /config/weechat/sec.conf
 /config/ranger/bookmarks
+/config/weechat/script/plugins.xml.gz
