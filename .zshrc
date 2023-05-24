@@ -1099,8 +1099,8 @@ zshrc_set_aliases() {
     alias network-relocate='rsync -azP --delete --info=progress2'
 
     # Add progress indicator because I always forget.
-    alias dd='dd status=progress'
-    alias sudo dd='sudo dd status=progress'
+    alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
+    alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
     alias gpg='gpg2 --with-subkey-fingerprints'
     alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
@@ -1126,6 +1126,10 @@ zshrc_set_aliases() {
     fi
 
     alias e="$EDITOR"
+
+    if [ -x "$(command -v rofi)" ]; then
+        alias dmenu="rofi -dmenu"
+    fi
 }
 
 zshrc_set_default_programs() {
