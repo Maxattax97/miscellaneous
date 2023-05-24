@@ -1,13 +1,23 @@
-# Max's Miscellaneous Files (or `dotfiles` to most)
+# `dotfiles`
+
 ## Screenshots
 
-![Tmux, Zsh, Neovim 1](assets/TmuxOne.png)
+![btop, ctop, tmux, man, neofetch](assets/btop.png)
 
-![Tmux, Zsh, Neovim 2](assets/TmuxTwo.png)
+![zathura, pcmanfm, qalculate](assets/zathura.png)
+
+![neovim](assets/neovim.png)
+
+![sxiv, rofi, dunst, chatgpt, st](assets/sxiv.png)
+
+![weechat, newsboat](assets/weechat.png)
+
+![rofi](assets/rofi.png)
 
 ## Installation
 
 Execute:
+
 ```
 $ ./install.sh
 ```
@@ -19,28 +29,33 @@ files.
 ## Overview
 
 This repository contains configurations for:
- - `i3wm`
- - `mpd`
- - `grub`
 
-It has scripts pertaining to:
- - Background OpenVPN tunnels
- - OS detection
- - Internet speed testing
- - 256 color support
- - Complete system installation (the essentials)
- - Automated Nerd font installation
-
-Some other things it contains are:
- - Assorted language samples (for tests / syntax highlighting)
- - Spotify ad-block list
+- `bspwm`
+- `btop`
+- `picom`
+- `copyq`
+- `dunst`
+- `mpd`
+- `ncmpcpp`
+- `newsboat`
+- `pcmanfm`
+- `polybar`
+- `rofi`
+- `sxhkd`
+- `variety`
+- `weechat`
+- `zathura`
+- `chrony`
+- `pacman`
+- `zsh`
+- `bash`
+- `radare`
+- `tmux`
+- `neovim`
+- `x11`
 
 ## Credits
 
-`i3` environment inspired by [Bresilla](https://github.com/bresilla/dotfiles/).
-
-I use [Neovim Studio](https://github.com/Maxattax97/Neovim-Studio) for all my text editing needs.
-
-I use [OPM](https://github.com/Maxattax97/opm) to manage packages across distributions portably.
+Environment inspired by [Bresilla](https://github.com/bresilla/dotfiles/).
 
 Check out my website at [maxocull.com](https://www.maxocull.com/)!

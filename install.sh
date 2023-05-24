@@ -105,6 +105,9 @@ link_source "config/copyq/copyq-filter.ini" 1 ".config/copyq/copyq-filter.ini"
 link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.ini"
 link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 
+# We only want to copy the roles folder from sgpt; the .sgptrc file contains our OpenAI key
+link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
+
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
