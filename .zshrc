@@ -764,16 +764,16 @@ zshrc_load_library() {
     }
 
     squeeze() {
-        if [ -z "$1" ]; then
+        if [ -z "$1" ] || [ -z "$2" ]; then
             # display usage if no parameters given
-            echo "Usage: squeeze <path/directory> <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz>"
+            echo "Usage: squeeze <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
             return 1
         else
             input=$1
             output=$2
-            # TODO: Add support for single files (in addition to directories).
+            # Add support for single files (in addition to directories).
             if [ -d "$input" ] || [ -f "$input" ] ; then
-                case "${output%,}" in
+                case "${output}" in
                     *.tar)
                         tar cf "$output" "$input"
                         ;;
@@ -787,29 +787,43 @@ zshrc_load_library() {
                         tar Jcf "$output" "$input"
                         ;;
                     *.tar.lzma|*.tlzma)
-                        tar cf "$output" --lzma "$input"
+                        tar --lzma -cf "$output" "$input"
                         ;;
                     *.bz2)
-                        bzip2 ./"$n"
+                        tar -cjf "$output" "$input"
                         ;;
-                    # TODO: Finish these below.
                     *.rar)
-                        rar x -ad ./"$n"
+                        rar a "$output" "$input"
                         ;;
                     *.gz)
-                        gzip ./"$n"
+                        tar -czf "$output" "$input"
                         ;;
                     *.zip)
-                        zip ./"$n"
+                        zip -r "$output" "$input"
                         ;;
-                    *.z)
-                        compress ./"$n"
+                    *.Z)
+                        tar -cZf "$output" "$input"
                         ;;
                     *.7z)
-                        7z a ./"$n"
+                        7z a "$output" "$input"
                         ;;
                     *.xz)
-                        xz ./"$n"
+                        tar -cJf "$output" "$input"
+                        ;;
+                    *.lzop)
+                        lzop -o "$output" "$input"
+                        ;;
+                    *.lz)
+                        lzip -o "$output" "$input"
+                        ;;
+                    *.lz4)
+                        lz4 -z "$input" "$output"
+                        ;;
+                    *.tar.zst|*.tzst)
+                        tar --zstd -cf "$output" "$input"
+                        ;;
+                    *.zst)
+                        zstd "$input" -o "$output"
                         ;;
                     *)
                         echo "squeeze: '$output' - unknown archive method"
@@ -817,7 +831,7 @@ zshrc_load_library() {
                         ;;
                 esac
             else
-                echo "'$input' - file does not exist"
+                echo "'$input' - file or directory does not exist"
                 return 1
             fi
         fi
@@ -1099,8 +1113,8 @@ zshrc_set_aliases() {
     alias network-relocate='rsync -azP --delete --info=progress2'
 
     # Add progress indicator because I always forget.
-    alias dd='dd status=progress'
-    alias sudo dd='sudo dd status=progress'
+    alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
+    alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
     alias gpg='gpg2 --with-subkey-fingerprints'
     alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
@@ -1126,6 +1140,10 @@ zshrc_set_aliases() {
     fi
 
     alias e="$EDITOR"
+
+    if [ -x "$(command -v rofi)" ]; then
+        alias dmenu="rofi -dmenu"
+    fi
 }
 
 zshrc_set_default_programs() {

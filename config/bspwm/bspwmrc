@@ -28,8 +28,8 @@ bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 bspc rule -a nextcloud desktop='^10' state=tiled
-bspc rule -a Steam desktop='^4' state=tiled
-bspc rule -a discord desktop='^4' state=tiled
+bspc rule -a steam desktop='^4' state=floating
+bspc rule -a discord desktop='^5' state=tiled
 bspc rule -a copyq state=floating sticky
 bspc rule -a Yad state=floating sticky
 
