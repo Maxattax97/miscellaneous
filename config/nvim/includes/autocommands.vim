@@ -6,14 +6,16 @@ augroup neovim_studio_filetypes
     autocmd BufRead,BufNewFile *.colortemplate set filetype=colortemplate
 augroup end
 
-augroup neovim_studio_coc
-    autocmd!
-    " Hover on cursor hold.
-    autocmd CursorHold * silent call CocActionAsync('highlight')
+if exists('*CocActionAsync')
+    augroup neovim_studio_coc
+        autocmd!
+        " Hover on cursor hold.
+        autocmd CursorHold * silent call CocActionAsync('highlight')
 
-    " Update signature to help on jump placeholder.
-    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
+        " Update signature to help on jump placeholder.
+        autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    augroup end
+endif
 
 augroup neovim_studio_english_spelling
     autocmd!

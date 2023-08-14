@@ -561,7 +561,7 @@ zshrc_zplug() {
             hook-build:"rm ~/.fzf.zsh; ./install --all && source ${HOME}/.fzf.zsh"
 
         # Install fzf or fzy
-        zplug "b4b4r07/enhancd", use:init.sh, hook-load:"ENHANCD_DISABLE_DOT=1"
+        zplug "b4b4r07/enhancd", use:init.sh, hook-load:"ENHANCD_ENABLE_DOUBLE_DOT=false"
 
         # git log = glo; git diff = gd; git add = ga; git ignore = gi
         zplug "wfxr/forgit", defer:1
