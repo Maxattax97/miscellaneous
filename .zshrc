@@ -97,9 +97,9 @@ zshrc_auto_window_title() {
 
         case "$TERM" in
             cygwin|xterm*|putty*|rxvt*|ansi)
-                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" ]]; then
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
-                elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
+                elif [[ "$TMUX_PANE" == "%2" || "$TMUX_PANE" == "%3" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
                 else
                     print -Pn "\e]2;$2:q\a" # set window name
@@ -107,9 +107,9 @@ zshrc_auto_window_title() {
                 fi
                 ;;
             screen*|tmux*)
-                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" || "$TMUX_PANE" == "%2" ]]; then
+                if [[ "$TMUX_PANE" == "%0" || "$TMUX_PANE" == "%1" ]]; then
                     print -Pn "\ekSYS\e\\" # set screen hardstatus
-                elif [[ "$TMUX_PANE" == "%3" || "$TMUX_PANE" == "%4" ]]; then
+                elif [[ "$TMUX_PANE" == "%2" || "$TMUX_PANE" == "%3" ]]; then
                     print -Pn "\ekCOM\e\\" # set screen hardstatus
                 else
                     print -Pn "\ek$1:q\e\\" # set screen hardstatus
