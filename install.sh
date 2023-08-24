@@ -465,7 +465,6 @@ case "$response" in
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
                     yay -S \
-                        all-repository-fonts \
                         brave-bin \
                         yt-dlp \
                         --needed
@@ -640,6 +639,12 @@ esac
 read -r -p "Would you like to install fonts? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v yay)" ]]; then
+                yay -S \
+                    all-repository-fonts \
+                    ttf-ms-fonts \
+                    --needed
+        fi
         ./scripts/font-install.sh
         ;;
     *)
