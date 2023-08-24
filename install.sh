@@ -130,7 +130,7 @@ case "$response" in
                 curl \
                 git \
                 keychain \
-                neofetch \
+                fastfetch \
                 neovim \
                 newsboat \
                 nodejs \
@@ -164,7 +164,6 @@ case "$response" in
                 curl \
                 git \
                 keychain \
-                neofetch \
                 neovim \
                 newsboat \
                 nodejs \
@@ -174,6 +173,12 @@ case "$response" in
                 weechat \
                 xclip \
                 zsh
+
+            if [[ -x "$(command -v yay)" ]]; then
+                    yay -S \
+                        fastfetch \
+                        --needed
+            fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
                 btop \
@@ -181,7 +186,7 @@ case "$response" in
                 curl \
                 git \
                 keychain \
-                neofetch \
+                fastfetch \
                 neovim \
                 newsboat \
                 node \

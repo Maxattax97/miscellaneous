@@ -628,7 +628,9 @@ zshrc_extensions() {
 
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
-        if [[ -x "$(command -v neofetch)" ]]; then
+        if [[ -x "$(command -v fastfetch)" ]]; then
+            fastfetch
+        elif [[ -x "$(command -v neofetch)" ]]; then
             neofetch --disable "packages"
         elif [[ -x "$(command -v screenfetch)" ]]; then
             screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
@@ -1188,6 +1190,20 @@ zshrc_set_default_programs() {
     fi
 
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+
+    if [[ -x "$(command -v fastfetch)" ]]; then
+        alias neofetch="fastfetch"
+        alias screenfetch="fastfetch"
+        alias fetch="fastfetch"
+    elif [[ -x "$(command -v neofetch)" ]]; then
+        alias fastfetch="neofetch"
+        alias screenfetch="neofetch"
+        alias fetch="neofetch"
+    elif [[ -x "$(command -v screenfetch)" ]]; then
+        alias fastfetch="screenfetch"
+        alias neofetch="screenfetch"
+        alias fetch="screenfetch"
+    fi
 }
 
 zshrc_set_environment_variables() {
