@@ -17,14 +17,21 @@ curl -Lo _fonts/FreeSerifBold.otf 'https://github.com/Maxattax97/gnu-freefont/ra
 curl -Lo _fonts/FreeSerifBoldItalic.otf 'https://github.com/Maxattax97/gnu-freefont/raw/master/otf/FreeSerifBoldItalic.otf'
 curl -Lo _fonts/FreeSerifItalic.otf 'https://github.com/Maxattax97/gnu-freefont/raw/master/otf/FreeSerifItalic.otf'
 
-curl -Lo _fonts/SourceCodePro.ttf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete%20Mono.ttf'
-curl -Lo _fonts/Terminus.ttf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Terminus/terminus-ttf-4.40.1/Regular/complete/Terminess%20(TTF)%20Nerd%20Font%20Complete%20Mono.ttf'
-curl -Lo _fonts/UbuntuMono.ttf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/UbuntuMono/Regular/complete/Ubuntu%20Mono%20Nerd%20Font%20Complete%20Mono.ttf'
-curl -Lo _fonts/DroidSansMono.otf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete%20Mono.otf'
-curl -Lo _fonts/DejaVuSansMono.ttf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete%20Mono.ttf'
-curl -Lo _fonts/FiraCode.otf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Retina/complete/Fura%20Code%20Retina%20Nerd%20Font%20Complete%20Mono.otf'
-curl -Lo _fonts/FiraMono.otf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fura%20Mono%20Regular%20Nerd%20Font%20Complete%20Mono.otf'
-curl -Lo _fonts/Hack.ttf 'https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete%20Mono.ttf'
+NERD_FONT_DOWNLOAD_ROOT='https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/'
+
+dl_unpack() {
+	curl -Lo "_fonts/${1}.tar.xz" "${NERD_FONT_DOWNLOAD_ROOT}/${1}.tar.xz"
+	tar -xzvf _fonts/*.tar.xz -C _fonts/
+	rm -rf _fonts/*/ _fonts/*.md _fonts/*.tar.xz _fonts/LICENSE _fonts/README _fonts/*.txt
+}
+
+dl_unpack Hack
+dl_unpack SourceCodePro
+dl_unpack Terminus
+dl_unpack UbuntuMono
+dl_unpack DroidSansMono
+dl_unpack DejaVuSansMono
+dl_unpack FiraCode
 
 curl -Lo _fonts/HelveticaNeueu.ttf 'https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeue.ttf'
 curl -Lo _fonts/HelveticaNeueBold.ttf 'https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueBold.ttf'
@@ -51,12 +58,17 @@ rm -rf _fonts/RobotoSlab.zip _fonts/LICENSE.txt _fonts/README.txt _fonts/RobotoS
 unzip _fonts/Roboto.zip -d _fonts/
 rm -rf _fonts/Roboto.zip _fonts/LICENSE.txt
 
-# This folder should be universal to Linux / FreeBSD.
-sudo mkdir -p /usr/local/share/fonts/pretty-fonts/
-sudo cp _fonts/* /usr/local/share/fonts/pretty-fonts/
+if [ -d "/Library/Fonts/" ]; then
+	# This is for Mac.
+	sudo cp _fonts/* "/Library/Fonts/"
+else
+	# This folder should be universal to Linux / FreeBSD.
+	sudo mkdir -p /usr/local/share/fonts/pretty-fonts/
+	sudo cp _fonts/* /usr/local/share/fonts/pretty-fonts/
+
+	# Do this for both root and the current user.
+	sudo fc-cache -rfv
+	fc-cache -rfv
+fi
 
 rm -rf _fonts/
-
-# Do this for both root and the current user.
-sudo fc-cache -rfv
-fc-cache -rfv
