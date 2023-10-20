@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 config_help=false
 config_benchmark=false
 if [[ -z "$zshrc_low_power" ]]; then
@@ -678,6 +679,10 @@ zshrc_set_path() {
 
     if [ -n "$GOROOT" ]; then
         zshrc_add_path "${GOROOT}/bin/"
+    fi
+
+    if [ -s "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
 }
 

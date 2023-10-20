@@ -141,6 +141,22 @@ case "$response" in
                 weechat \
                 xclip \
                 zsh
+        elif [[ -x "$(command -v brew)" ]]; then
+            brew install \
+                btop \
+                chezmoi \
+                curl \
+                git \
+                keychain \
+                fastfetch \
+                neovim \
+                newsboat \
+                node \
+                ripgrep \
+                tmux \
+                weechat \
+                xclip \
+                zsh
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y \
                 btop \
