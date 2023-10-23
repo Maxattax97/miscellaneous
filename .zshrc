@@ -655,6 +655,11 @@ zshrc_add_path() {
 }
 
 zshrc_set_path() {
+    # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
+    if [ -s "/opt/homebrew/opt/curl/bin/curl" ]; then
+        export PATH="/opt/homebrew/opt/curl/bin:${PATH}"
+    fi
+
     zshrc_add_path "${HOME}/bin/"
     zshrc_add_path "${HOME}/.local/bin/"
     zshrc_add_path "/sbin/"
