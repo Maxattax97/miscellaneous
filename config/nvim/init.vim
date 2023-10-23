@@ -5,30 +5,57 @@ endif
 
 source ~/.config/nvim/includes/preload.vim
 
-set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
-
 " INSTALL: curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.cache/dein
 " INSTALL: pip2 install neovim
 " INSTALL: pip3 install neovim
 " INSTALL: npm install -g neovim
 " INSTALL: gem install neovim   # Non root?
 " :checkhealth
-if dein#load_state('~/.cache/dein')
-    call dein#begin('~/.cache/dein')
+let $CACHE = expand('~/.cache')
 
-    " I am not 100% certain as to why I need both of these.
-    call dein#add('~/.cache/dein/repos/repos/github.com/Shougo/dein.vim')
-    call dein#add('Shougo/dein.vim')
-
-    " TODO: Migrate plugins to init.vim file so they are sourced properly?
-    source ~/.config/nvim/includes/plugins.vim
-
-    call dein#end()
-    call dein#save_state()
+if !($CACHE->isdirectory())
+    call mkdir($CACHE, 'p')
 endif
 
+if &runtimepath !~# '/dein.vim'
+    let s:dir = 'dein.vim'->fnamemodify(':p')
+
+    if !(s:dir->isdirectory())
+        let s:dir = $CACHE .. '/dein/repos/github.com/Shougo/dein.vim'
+
+        if !(s:dir->isdirectory())
+            execute '!git clone https://github.com/Shougo/dein.vim' s:dir
+        endif
+    endif
+
+    execute 'set runtimepath^='
+        \ .. s:dir->fnamemodify(':p')->substitute('[/\\]$', '', '')
+endif
+
+" Set dein base path (required)
+let s:dein_base = '~/.cache/dein/'
+
+" Set dein source path (required)
+let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
+
+" Set dein runtime path (required)
+execute 'set runtimepath+=' .. s:dein_src
+
+" Call dein initialization (required)
+call dein#begin(s:dein_base)
+
+call dein#add(s:dein_src)
+
+source ~/.config/nvim/includes/plugins.vim
+
+" Finish dein initialization (required)
+call dein#end()
+
 filetype plugin indent on
-syntax enable
+
+if has('syntax')
+    syntax on
+endif
 
 " Automatically install new plugins.
 if dein#check_install()
