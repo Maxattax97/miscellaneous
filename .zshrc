@@ -1128,8 +1128,10 @@ zshrc_set_aliases() {
     alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
     alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
-    alias gpg='gpg2 --with-subkey-fingerprints'
-    alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
+    if [[ -x "$(command -v gpg2)" ]]; then
+        alias gpg='gpg2 --with-subkey-fingerprints'
+        alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
+    fi
 
     alias please='sudo'
 
