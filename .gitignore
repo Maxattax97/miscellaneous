@@ -5,13 +5,8 @@ config/btop/*.log
 config/weechat/xfer
 config/weechat/logs
 config/weechat/*.log
-config/weechat/sec.conf
 /.blackbox/pubring.gpg~
 /.blackbox/pubring.kbx~
 /.blackbox/secring.gpg
-/config/weechat/certs/Maxattax.cer
-/config/weechat/certs/Maxattax.pem
-/config/weechat/certs/Maxattax.key
-/config/weechat/sec.conf
 /config/ranger/bookmarks
 /config/weechat/script/plugins.xml.gz
