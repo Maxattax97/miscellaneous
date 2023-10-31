@@ -1219,6 +1219,8 @@ zshrc_set_default_programs() {
 }
 
 zshrc_set_environment_variables() {
+    # macOS and some other distros don't use traditional Linux ls colors.
+    export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
     if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
