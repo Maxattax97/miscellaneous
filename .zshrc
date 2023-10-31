@@ -1311,6 +1311,13 @@ zshrc_set_environment_variables() {
     #fi
 
     export CHASSIS="$chassis_name"
+
+    # Fix GPG TTY for MacOS, otherwise you can't do signed commits
+    # https://stackoverflow.com/a/57591830
+    if [[ "$(uname)" =~ .*BSD.* ]] || [[ "$(uname)" == "Darwin" ]]; then
+        GPG_TTY=$(tty)
+        export GPG_TTY
+    fi
 }
 
 zshrc_batsdevrc() {
