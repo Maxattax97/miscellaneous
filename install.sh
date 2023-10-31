@@ -143,6 +143,7 @@ case "$response" in
                 zsh
         elif [[ -x "$(command -v brew)" ]]; then
             # macOS has outdated version of curl
+            # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
                 btop \
                 chezmoi \
@@ -154,6 +155,7 @@ case "$response" in
                 neovim \
                 newsboat \
                 node \
+                pinentry-mac \
                 ripgrep \
                 tmux \
                 weechat \
