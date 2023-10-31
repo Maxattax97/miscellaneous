@@ -655,6 +655,11 @@ zshrc_add_path() {
 }
 
 zshrc_set_path() {
+    # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
+    if [ -s "/opt/homebrew/opt/curl/bin/curl" ]; then
+        export PATH="/opt/homebrew/opt/curl/bin:${PATH}"
+    fi
+
     zshrc_add_path "${HOME}/bin/"
     zshrc_add_path "${HOME}/.local/bin/"
     zshrc_add_path "/sbin/"
@@ -1123,8 +1128,10 @@ zshrc_set_aliases() {
     alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
     alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
-    alias gpg='gpg2 --with-subkey-fingerprints'
-    alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
+    if [[ -x "$(command -v gpg2)" ]]; then
+        alias gpg='gpg2 --with-subkey-fingerprints'
+        alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
+    fi
 
     alias please='sudo'
 
@@ -1304,6 +1311,13 @@ zshrc_set_environment_variables() {
     #fi
 
     export CHASSIS="$chassis_name"
+
+    # Fix GPG TTY for MacOS, otherwise you can't do signed commits
+    # https://stackoverflow.com/a/57591830
+    if [[ "$(uname)" =~ .*BSD.* ]] || [[ "$(uname)" == "Darwin" ]]; then
+        GPG_TTY=$(tty)
+        export GPG_TTY
+    fi
 }
 
 zshrc_batsdevrc() {

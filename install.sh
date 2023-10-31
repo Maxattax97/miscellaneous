@@ -142,13 +142,15 @@ case "$response" in
                 xclip \
                 zsh
         elif [[ -x "$(command -v brew)" ]]; then
+            # macOS has outdated version of curl
             brew install \
                 btop \
                 chezmoi \
                 curl \
-                git \
-                keychain \
                 fastfetch \
+                git \
+                gnupg \
+                keychain \
                 neovim \
                 newsboat \
                 node \
@@ -221,11 +223,15 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
-            pip2 install --user neovim
+            pip2 install --user \
+                neovim
         fi
 
         if [[ -x "$(command -v pip3)" ]]; then
-            pip3 install --user neovim thefuck
+            pip3 install --user \
+                neovim \
+                shell-gpt \
+                thefuck
         else
             echo "You need to install pip3"
         fi
@@ -238,7 +244,8 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
-            gem install neovim
+            gem install \
+                neovim
         else
             echo "You need to install gem"
         fi
@@ -451,6 +458,30 @@ case "$response" in
                 zathura \
                 zathura-pdf-mupdf \
                 -y
+        elif [[ -x "$(command -v brew)" ]]; then
+            brew install \
+                ffmpeg \
+                minikube \
+                p7zip \
+                qalculate-gtk \
+                qemu \
+                rar \
+                yt-dlp
+
+            brew install --cask \
+                brave-browser \
+                docker \
+                flameshot \
+                inkscape \
+                iterm2 \
+                joplin \
+                libreoffice \
+                mpv \
+                nextcloud \
+                utm \
+                veracrypt \
+                vlc \
+                wireshark
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install \
                 flameshot \
@@ -507,14 +538,11 @@ case "$response" in
                 zathura-pdf-mupdf
         fi
 
-        if [[ -x "$(command -v pip3)" ]]; then
-                pip3 install --user \
-                    shell-gpt
+        if [[ ! -x "$(command -v brew)" ]]; then
+            xdg-settings set default-web-browser brave.desktop
+
+            curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         fi
-
-        xdg-settings set default-web-browser brave.desktop
-
-        curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         ;;
     *)
         echo "Skipping workstation utility installation"
@@ -599,6 +627,16 @@ case "$response" in
         ;;
     *)
         echo "Skipping Git setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup Rust? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        ;;
+    *)
+        echo "Skipping Rust setup"
         ;;
 esac
 

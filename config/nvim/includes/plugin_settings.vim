@@ -228,9 +228,9 @@ let g:vista_echo_cursor_strategy = 'floating_win'
  "\ defx#do_action('multi', ['drop', 'quit'])
 
 
-call defx#custom#option('_', 'drives', [
- \ expand('~/Downloads'), expand('~')
- \ ])
+"call defx#custom#option('_', 'drives', [
+ "\ expand('~/Downloads'), expand('~')
+ "\ ])
 
 silent! call defx#custom#option('_', {
  \ 'columns': 'indent:git:icons:filename',
