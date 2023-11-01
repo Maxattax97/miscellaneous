@@ -57,22 +57,32 @@ if has('syntax')
     syntax on
 endif
 
-" Automatically install new plugins.
-if dein#check_install()
-    call dein#install()
+let s:target_file = expand("~/.cache/nvim/last_update")
 
-    " Uninstall unused plugins.
-    "call dein#recache_runtimepath()
-    "call map(dein#check_clean(), "delete(v:val, 'rf')")
+if filereadable(s:target_file)
+  let s:file_age = localtime() - getftime(s:target_file)
+else
+    let s:file_age = 999999
 endif
 
-" Automatically remove unused new plugins.
-if len(dein#check_clean())
-    call dein#recache_runtimepath()
-    call map(dein#check_clean(), "delete(v:val, 'rf')")
-endif
+" Check if the file is older than one week (604800 seconds)
+if s:file_age > 604800
+    " Automatically install new plugins.
+    if dein#check_install()
+        call dein#install()
+    endif
 
-" TODO: Automated weekly updates.
+    call dein#update()
+
+    " Automatically remove unused new plugins.
+    if len(dein#check_clean())
+        call dein#recache_runtimepath()
+        call map(dein#check_clean(), "delete(v:val, 'rf')")
+    endif
+
+    " Touch the file with a new timestamp
+    call writefile([], s:target_file)
+endif
 
 source ~/.config/nvim/includes/language_servers.vim
 source ~/.config/nvim/includes/general.vim
