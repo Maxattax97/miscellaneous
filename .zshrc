@@ -655,9 +655,13 @@ zshrc_add_path() {
 }
 
 zshrc_set_path() {
+    if [ -s "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [ -s "/opt/homebrew/opt/curl/bin/curl" ]; then
-        export PATH="/opt/homebrew/opt/curl/bin:${PATH}"
+    if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
+        export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
     fi
 
     zshrc_add_path "${HOME}/bin/"
@@ -686,8 +690,8 @@ zshrc_set_path() {
         zshrc_add_path "${GOROOT}/bin/"
     fi
 
-    if [ -s "/opt/homebrew/bin/brew" ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+    if [ -s "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
     fi
 }
 
@@ -1320,6 +1324,11 @@ zshrc_set_environment_variables() {
         GPG_TTY=$(tty)
         export GPG_TTY
     fi
+
+    # Python on Linux uses ~/.local
+    # Python on macOS uses ~/Library/Python/X.Y/lib/python/site-packages
+    # ... this is madness, unify them.
+    export PYTHONUSERBASE="$HOME/.local"
 }
 
 zshrc_batsdevrc() {
