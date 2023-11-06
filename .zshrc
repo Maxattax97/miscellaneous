@@ -304,9 +304,28 @@ zshrc_setup_completion() {
 
 
     zstyle :compinstall filename '/home/max/.zshrc'
+
+    if [[ -x "$(command -v rustup)" ]]; then
+        if [[ ! -s "${HOME}/.zsh_completions/_rustup" ]]; then
+            rustup completions zsh > "${HOME}/.zsh_completions/_rustup"
+        fi
+
+        if [[ -x "$(command -v cargo)" ]] && [[ ! -s "${HOME}/.zsh_completions/_cargo" ]]; then
+            rustup completions zsh cargo > "${HOME}/.zsh_completions/_cargo"
+        fi
+    fi
+
 }
 
 zshrc_autoload() {
+    # Setup the ZSH completions directory before we initialize completions.
+    mkdir -p "${HOME}/.zsh_completions"
+    fpath+="${HOME}/.zsh_completions"
+
+    if [[ -x "$(command -v brew)" ]]; then
+        fpath+="$(brew --prefix)/share/zsh/site-functions"
+    fi
+
     autoload -Uz compinit && compinit
     autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
     autoload -Uz promptinit && promptinit
@@ -655,10 +674,6 @@ zshrc_add_path() {
 }
 
 zshrc_set_path() {
-    if [ -s "/opt/homebrew/bin/brew" ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
-
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
         export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
@@ -1223,6 +1238,11 @@ zshrc_set_default_programs() {
 }
 
 zshrc_set_environment_variables() {
+    # We can't use `brew --prefix` here because brew isn't in our path yet.
+    if [ -s "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
     # macOS and some other distros don't use traditional Linux ls colors.
     export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
