@@ -4,6 +4,13 @@ Host gitea.batswireless.lcl
 	HostName gitea.batswireless.lcl
 	IdentityFile ~/.ssh/id_ed25519_bats
 
+Host 44.200.213.43
+	IdentityFile ~/.ssh/ru-config-test-key-pair.pem
+
+Host ec2-3-219-63-96.compute-1.amazonaws.com
+	IdentityFile ~/.ssh/mocull-develop-keypair.pem
+
 Host *
+	UseKeychain yes
 	AddKeysToAgent yes
 	IdentityFile ~/.ssh/id_rsa
