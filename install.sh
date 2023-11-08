@@ -129,14 +129,20 @@ case "$response" in
                 btop \
                 ctags \
                 curl \
-                git \
-                keychain \
                 fastfetch \
+                gcc \
+                git \
+                git-crypt \
+                keychain \
+                make \
                 neovim \
                 newsboat \
                 nodejs \
+                nodejs-npm \
                 python3 \
+                python3-pip \
                 ripgrep \
+                rubygems \
                 tmux \
                 util-linux-user \
                 weechat \
@@ -154,6 +160,7 @@ case "$response" in
                 fastfetch \
                 gcc \
                 git \
+                git-crypt \
                 gnupg \
                 keychain \
                 libtool \
@@ -163,6 +170,7 @@ case "$response" in
                 node \
                 pinentry-mac \
                 pkg-config \
+                python \
                 ripgrep \
                 tmux \
                 weechat \
@@ -173,14 +181,20 @@ case "$response" in
                 btop \
                 ctags \
                 curl \
+                gcc \
                 git \
+                git-crypt \
                 keychain \
+                make \
                 neofetch \
                 neovim \
                 newsboat \
                 nodejs \
+                npm \
                 python3 \
+                python3-pip \
                 ripgrep \
+                ruby-rubygems \
                 tmux \
                 weechat \
                 xclip \
@@ -191,13 +205,19 @@ case "$response" in
                 chezmoi \
                 ctags \
                 curl \
+                gcc \
                 git \
+                git-crypt \
                 keychain \
+                make \
                 neovim \
                 newsboat \
                 nodejs \
+                npm \
                 python \
+                python-pip \
                 ripgrep \
+                rubygems \
                 tmux \
                 weechat \
                 xclip \
@@ -214,15 +234,20 @@ case "$response" in
                 chezmoi \
                 ctags \
                 curl \
-                git \
-                keychain \
                 fastfetch \
+                gcc \
+                git \
+                git-crypt \
+                gmake \
+                keychain \
                 neovim \
                 newsboat \
                 node \
                 npm \
+                py39-pip \
                 python \
                 ripgrep \
+                ruby \
                 tmux \
                 weechat \
                 xclip \

@@ -676,18 +676,20 @@ zshrc_add_path() {
 
 zshrc_set_path() {
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
-        export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
-    fi
+    if [[ -x "$(command -v brew)" ]]; then
+        if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
+            export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
+        fi
 
-    if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
-        export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
-    fi
+        if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
+            export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
+        fi
 
-    if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
-        export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
-        export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
-        export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+        if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
+            export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
+            export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
+            export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+        fi
     fi
 
     zshrc_add_path "${HOME}/bin/"
