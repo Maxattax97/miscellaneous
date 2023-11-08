@@ -575,7 +575,7 @@ zshrc_zplug() {
         # Improved bash compatibility
         # zplug "chrissicool/zsh-bash"
 
-        zplug "stackexchange/blackbox"
+        #zplug "stackexchange/blackbox"
         zplug "tarrasch/zsh-command-not-found"
 
         zplug "junegunn/fzf", as:command, rename-to:fzf, \
@@ -723,10 +723,7 @@ zshrc_set_path() {
     # Dynamically add the ruby gem paths.
     if [[ -x "$(command -v gem)" ]]; then
         zshrc_add_path "$(gem env gemdir)/bin"
-
-        # Get the major and minor Ruby version (ignoring patch level)
-        ruby_version="$(ruby -e 'puts "#{RUBY_VERSION.match(/\d+\.\d+/)}"').0"
-        zshrc_add_path "${HOME}/.local/share/gem/ruby/${ruby_version}/bin"
+        zshrc_add_path "$(gem env user_gemdir)/bin"
     fi
 
 }
