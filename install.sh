@@ -127,6 +127,7 @@ case "$response" in
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y \
                 btop \
+                ctags \
                 curl \
                 git \
                 keychain \
@@ -142,20 +143,26 @@ case "$response" in
                 xclip \
                 zsh
         elif [[ -x "$(command -v brew)" ]]; then
-            # macOS has outdated version of curl
+            # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
+                binutils \
                 btop \
                 chezmoi \
+                ctags \
                 curl \
                 fastfetch \
+                gcc \
                 git \
                 gnupg \
                 keychain \
+                libtool \
+                make \
                 neovim \
                 newsboat \
                 node \
                 pinentry-mac \
+                pkg-config \
                 ripgrep \
                 tmux \
                 weechat \
@@ -164,6 +171,7 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y \
                 btop \
+                ctags \
                 curl \
                 git \
                 keychain \
@@ -181,6 +189,7 @@ case "$response" in
             sudo pacman -Syu --needed \
                 btop \
                 chezmoi \
+                ctags \
                 curl \
                 git \
                 keychain \
@@ -203,6 +212,7 @@ case "$response" in
             sudo pkg install \
                 btop \
                 chezmoi \
+                ctags \
                 curl \
                 git \
                 keychain \
