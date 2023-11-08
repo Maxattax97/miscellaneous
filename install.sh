@@ -139,7 +139,9 @@ case "$response" in
                 newsboat \
                 nodejs \
                 nodejs-npm \
+                pipx \
                 python3 \
+                python3-neovim \
                 python3-pip \
                 ripgrep \
                 rubygems \
@@ -169,6 +171,7 @@ case "$response" in
                 newsboat \
                 node \
                 pinentry-mac \
+                pipx \
                 pkg-config \
                 python \
                 ripgrep \
@@ -191,8 +194,10 @@ case "$response" in
                 newsboat \
                 nodejs \
                 npm \
+                pipx \
                 python3 \
                 python3-pip \
+                python3-pynvim \
                 ripgrep \
                 ruby-rubygems \
                 tmux \
@@ -216,6 +221,8 @@ case "$response" in
                 npm \
                 python \
                 python-pip \
+                python-pipx \
+                python-pynvim \
                 ripgrep \
                 rubygems \
                 tmux \
@@ -245,6 +252,8 @@ case "$response" in
                 node \
                 npm \
                 py39-pip \
+                py39-pipx \
+                py39-pynvim \
                 python \
                 ripgrep \
                 ruby \
@@ -264,7 +273,11 @@ case "$response" in
                 neovim
         fi
 
-        if [[ -x "$(command -v pip3)" ]]; then
+        if [[ -x "$(command -v pipx)" ]]; then
+            pipx install neovim
+            pipx install shell-gpt
+            pipx install thefuck
+        elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 neovim \
                 shell-gpt \

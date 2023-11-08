@@ -704,10 +704,8 @@ zshrc_set_path() {
     zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
     zshrc_add_path "${HOME}/.cargo/bin/"
     zshrc_add_path "/usr/local/go/bin/"
-    zshrc_add_path "${HOME}/.gem/ruby/2.6.0/bin/"
-    zshrc_add_path "/usr/lib/gem/ruby/2.6.0/bin/"
-    zshrc_add_path "$HOME/.yarn/bin"
-    zshrc_add_path "$HOME/.config/yarn/global/node_modules/.bin"
+    zshrc_add_path "${HOME}/.yarn/bin"
+    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
     zshrc_add_path "${HOME}/bin/balena-cli"
 
     if [ -n "$GOPATH" ]; then
@@ -721,6 +719,16 @@ zshrc_set_path() {
     if [ -s "$HOME/.cargo/env" ]; then
         . "$HOME/.cargo/env"
     fi
+
+    # Dynamically add the ruby gem paths.
+    if [[ -x "$(command -v gem)" ]]; then
+        zshrc_add_path "$(gem env gemdir)/bin"
+
+        # Get the major and minor Ruby version (ignoring patch level)
+        ruby_version="$(ruby -e 'puts "#{RUBY_VERSION.match(/\d+\.\d+/)}"').0"
+        zshrc_add_path "${HOME}/.local/share/gem/ruby/${ruby_version}/bin"
+    fi
+
 }
 
 zshrc_load_library() {
