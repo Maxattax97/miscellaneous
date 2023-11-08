@@ -11,8 +11,8 @@ nnoremap <S-Tab> <C-w><S-w>
 nnoremap <c-z> <nop>
 
 " Bind NerdTree or Defx to F2
-"noremap <F2> :NERDTreeToggle<CR>
-noremap <F2> :Defx<CR>
+noremap <F2> :NERDTreeToggle<CR>
+"noremap <F2> :Defx<CR>
 
 " Bind Tagbar or Vista to F3
 "noremap <F3> :TagbarToggle<CR>

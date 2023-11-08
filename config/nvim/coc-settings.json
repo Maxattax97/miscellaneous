@@ -77,5 +77,6 @@
   "eslint.autoFixOnSave": true,
   "eslint.format.enable": true,
   "javascript.validate.enable": false,
+  "rust-analyzer.checkOnSave.command": "clippy",
   "tsserver.npm": "/usr/bin/npm"
 }

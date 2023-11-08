@@ -20,11 +20,13 @@ call dein#add('w0rp/ale')
 
 " Access project files in side-bar.
 "call dein#add('scrooloose/nerdtree')
-"call dein#add('xuyuanp/nerdtree-git-plugin')
+call dein#add('preservim/nerdtree')
+call dein#add('xuyuanp/nerdtree-git-plugin')
+call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
 "call dein#add('jistr/vim-nerdtree-tabs')
-call dein#add('shougo/defx.nvim')
-call dein#add('kristijanhusak/defx-git')
-call dein#add('kristijanhusak/defx-icons')
+"call dein#add('shougo/defx.nvim')
+"call dein#add('kristijanhusak/defx-git')
+"call dein#add('kristijanhusak/defx-icons')
 
 " Access function tags in side-bar.
 "call dein#add('majutsushi/tagbar')
