@@ -288,6 +288,9 @@ zshrc_setup_completion() {
     # ... unless we really want to.
     zstyle '*' single-ignored show
 
+    # Complete IP addresses from host files.
+    zstyle ':completion:*' use-ip true
+
     # if [[ $COMPLETION_WAITING_DOTS = true ]]; then
         expand-or-complete-with-dots() {
             # toggle line-wrapping off and back on again
@@ -302,7 +305,6 @@ zshrc_setup_completion() {
         bindkey "^I" expand-or-complete-with-dots
     # fi
 
-
     zstyle :compinstall filename '/home/max/.zshrc'
 
     if [[ -x "$(command -v rustup)" ]]; then
@@ -314,7 +316,6 @@ zshrc_setup_completion() {
             rustup completions zsh cargo > "${HOME}/.zsh_completions/_cargo"
         fi
     fi
-
 }
 
 zshrc_autoload() {
@@ -677,6 +678,16 @@ zshrc_set_path() {
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
         export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
+    fi
+
+    if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
+        export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
+    fi
+
+    if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
+        export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
+        export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
+        export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
     fi
 
     zshrc_add_path "${HOME}/bin/"
