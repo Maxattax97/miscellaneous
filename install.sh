@@ -45,6 +45,7 @@ link_source .Xdefaults 1
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
+link_source .warprc 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
