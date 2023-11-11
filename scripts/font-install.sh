@@ -21,7 +21,7 @@ NERD_FONT_DOWNLOAD_ROOT='https://github.com/ryanoasis/nerd-fonts/releases/downlo
 
 dl_unpack() {
 	curl -Lo "_fonts/${1}.tar.xz" "${NERD_FONT_DOWNLOAD_ROOT}/${1}.tar.xz"
-	tar -xzvf _fonts/*.tar.xz -C _fonts/
+	tar -xvf _fonts/*.tar.xz -C _fonts/
 	rm -rf _fonts/*/ _fonts/*.md _fonts/*.tar.xz _fonts/LICENSE _fonts/README _fonts/*.txt
 }
 
