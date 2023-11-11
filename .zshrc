@@ -1187,6 +1187,7 @@ zshrc_set_aliases() {
     fi
 
     if [[ -x "$(command -v btop)" ]]; then
+        alias top='btop'
         alias htop='btop'
     fi
 
