@@ -620,6 +620,44 @@ case "$response" in
         ;;
 esac
 
+
+read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install \
+                fontconfig-devel \
+                freetype-devel \
+                libX11-devel \
+                libXft-devel \
+                -y
+        fi
+
+        # TODO: The other package managers
+        #elif [[ -x "$(command -v brew)" ]]; then
+            #brew install \
+        #elif [[ -x "$(command -v apt)" ]]; then
+            #sudo apt install \
+        #elif [[ -x "$(command -v pacman)" ]]; then
+            #sudo pacman -Syu \
+                #--needed
+        #elif [[ -x "$(command -v pkg)" ]]; then
+            #sudo pkg install \
+        #fi
+
+        if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
+            git clone git@github.com:LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+        fi
+        (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
+        sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
+        xrdb "${MISC_DIR}/.Xdefaults"
+        ;;
+    *)
+        echo "Skipping workstation utility installation"
+        ;;
+esac
+
+
 if [[ -x "$(command -v pacman)" ]]; then
     read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
     case "$response" in
