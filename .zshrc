@@ -564,9 +564,15 @@ zshrc_zplug() {
         zplug "zsh-users/zsh-history-substring-search"
         zplug "zsh-users/zsh-autosuggestions"
         zplug "zsh-users/zsh-completions"
+
         zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
         # For some reason, the hook doesn't always work...
         wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }
+        # Add zsh completion for this plugin.
+        if [[ -d "${HOME}/.zplug/repos/mfaerevaag/wd/" ]]; then
+            fpath+="${HOME}/.zplug/repos/mfaerevaag/wd/"
+        fi
+
 
         zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
@@ -758,7 +764,7 @@ zshrc_load_library() {
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
     # TODO: Add support for cpio, ar, iso
     # TODO: Add progress bar, remove verbose flag
-    inflate() {
+    decompress() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
             echo "Usage: inflate <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
@@ -812,7 +818,7 @@ zshrc_load_library() {
         fi
     }
 
-    squeeze() {
+    compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
             # display usage if no parameters given
             echo "Usage: squeeze <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
@@ -1591,7 +1597,6 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_autoload
-    zshrc_setup_completion
     zshrc_source
     zshrc_set_path
     zshrc_set_default_programs
@@ -1616,8 +1621,11 @@ zshrc_init() {
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
-		zshrc_extensions
+        zshrc_extensions
     fi
+
+    # Load this after plugins so that we can get completions too.
+    zshrc_setup_completion
 
     if ( $zshrc_dropping_mode ); then
         zshrc_dropping_mode=false
