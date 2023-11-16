@@ -42,6 +42,14 @@ let g:ale_linters = {
 let g:ale_fix_on_save = 1
 " }}}
 
+" Copilot {{{
+let g:copilot_filetypes = {
+\ 'gitcommit': v:true,
+\ 'markdown': v:true,
+\ 'yaml': v:true
+\}
+" }}}
+
 " Signify {{{
 let g:signify_vcs_list = [ 'git', 'perforce', 'hg', 'svn' ]
 
