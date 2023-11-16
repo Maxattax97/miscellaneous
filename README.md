@@ -16,15 +16,35 @@
 
 ## Installation
 
-Execute:
-
 ```
 $ ./install.sh
 ```
 
-To link all of my configurations to your home. Performing a `git pull` within
+### `zsh`
+
+Open a fresh shell and let the zsh plugins automatically install. You may have to restart your shell, sometimes it breaks.
+
+```
+$ zsh
+```
+
+### `tmux`
+
+In tmux, you must install your plugins with the key combination `Ctrl-a I`.
+
+### `nvim`
+
+Open neovim to have it automatically install plugins. It will also automatically update every week.
+
+```
+$ nvim
+```
+
+## Updating
+
+All of my configurations are linked to your home. Performing a `git pull` within
 this repository then automatically gives you the latest version of these
-files.
+files. Execute `./install.sh` after a pull to get any new packages or other updates.
 
 ## Overview
 

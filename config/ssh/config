@@ -11,6 +11,5 @@ Host ec2-3-219-63-96.compute-1.amazonaws.com
 	IdentityFile ~/.ssh/mocull-develop-keypair.pem
 
 Host *
-	UseKeychain yes
 	AddKeysToAgent yes
 	IdentityFile ~/.ssh/id_rsa

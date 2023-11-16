@@ -6,31 +6,44 @@ MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 echo "Linking from ${MISC_DIR} ..."
 
+TEXT_RED='\033[0;91m';
+TEXT_RESET='\033[0m';
+TEXT_BLINK='\033[5m';
+TEXT_HIGHLIGHT='\033[0;94m';
+
+link_skipped_files="";
+link_linked_files="";
+link_overwritten_files="";
+
 link_source() {
     src="${MISC_DIR}/${1}"
     overwrite="${2:-0}"
     dest="${HOME}/${3:-$1}"
 
     if [ -h "$dest" ]; then
-        echo "Skipping $dest because it is already linked ..."
+        #echo "Skipping $dest because it is already linked ..."
+        link_skipped_files+="$dest "
     elif [ -f "$dest" ]; then
         if [ "$overwrite" -eq 1 ]; then
             rm -f "$dest"
-            echo "Overwriting file and linking $src -> $dest ..."
+            #echo "Overwriting file and linking $src -> $dest ..."
+            link_overwritten_files+="$dest "
             ln -sf "$src" "$dest"
         else
-            echo "Skipping $dest because a file exists there ..."
+            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a file exists there!${TEXT_RESET}"
         fi
     elif [ -d "$dest" ]; then
         if [ "$overwrite" -eq 1 ]; then
             rm -rf "$dest"
-            echo "Overwriting directory and linking $src -> $dest ..."
+            #echo "Overwriting directory and linking $src -> $dest ..."
+            link_overwritten_files+="$dest "
             ln -sf "$src" "$dest"
         else
-            echo "Skipping $dest because a directory exists there ..."
+            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a directory exists there!${TEXT_RESET}"
         fi
     else
-        echo "Linking $src -> $dest ..."
+        #echo "Linking $src -> $dest ..."
+        link_linked_files+="$dest "
         ln -sf "$src" "$dest"
     fi
 }
@@ -45,6 +58,7 @@ link_source .Xdefaults 1
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
+link_source .warprc 0
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
@@ -106,6 +120,7 @@ link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.in
 link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 
 # We only want to copy the roles folder from sgpt; the .sgptrc file contains our OpenAI key
+mkdir -p "${HOME}/.config/shell_gpt/roles/"
 link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
 
 # Binaries / executables
@@ -118,25 +133,39 @@ link_source "bin/reload-kde" 1
 link_source "bin/restart-kde" 1
 link_source "bin/logout-kde" 1
 
+echo "Overwritten files: ${link_overwritten_files}"
+echo "Linked files: ${link_linked_files}"
+echo "Skipped files: ${link_skipped_files}"
+
 echo "Environment installation complete"
 
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
+        # gem needs ruby-devel on Fedora.
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y \
                 btop \
                 ctags \
                 curl \
-                git \
-                keychain \
                 fastfetch \
+                gcc \
+                git \
+                git-crypt \
+                keychain \
+                make \
                 neovim \
                 newsboat \
                 nodejs \
+                nodejs-npm \
+                pipx \
                 python3 \
+                python3-neovim \
+                python3-pip \
                 ripgrep \
+                ruby-devel \
+                rubygems \
                 tmux \
                 util-linux-user \
                 weechat \
@@ -154,6 +183,7 @@ case "$response" in
                 fastfetch \
                 gcc \
                 git \
+                git-crypt \
                 gnupg \
                 keychain \
                 libtool \
@@ -162,7 +192,9 @@ case "$response" in
                 newsboat \
                 node \
                 pinentry-mac \
+                pipx \
                 pkg-config \
+                python \
                 ripgrep \
                 tmux \
                 weechat \
@@ -173,14 +205,22 @@ case "$response" in
                 btop \
                 ctags \
                 curl \
+                gcc \
                 git \
+                git-crypt \
                 keychain \
+                make \
                 neofetch \
                 neovim \
                 newsboat \
                 nodejs \
+                npm \
+                pipx \
                 python3 \
+                python3-pip \
+                python3-pynvim \
                 ripgrep \
+                ruby-rubygems \
                 tmux \
                 weechat \
                 xclip \
@@ -191,13 +231,21 @@ case "$response" in
                 chezmoi \
                 ctags \
                 curl \
+                gcc \
                 git \
+                git-crypt \
                 keychain \
+                make \
                 neovim \
                 newsboat \
                 nodejs \
+                npm \
                 python \
+                python-pip \
+                python-pipx \
+                python-pynvim \
                 ripgrep \
+                rubygems \
                 tmux \
                 weechat \
                 xclip \
@@ -214,15 +262,22 @@ case "$response" in
                 chezmoi \
                 ctags \
                 curl \
-                git \
-                keychain \
                 fastfetch \
+                gcc \
+                git \
+                git-crypt \
+                gmake \
+                keychain \
                 neovim \
                 newsboat \
                 node \
                 npm \
+                py39-pip \
+                py39-pipx \
+                py39-pynvim \
                 python \
                 ripgrep \
+                ruby \
                 tmux \
                 weechat \
                 xclip \
@@ -239,7 +294,11 @@ case "$response" in
                 neovim
         fi
 
-        if [[ -x "$(command -v pip3)" ]]; then
+        if [[ -x "$(command -v pipx)" ]]; then
+            pipx install neovim
+            pipx install shell-gpt
+            pipx install thefuck
+        elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 neovim \
                 shell-gpt \
@@ -560,6 +619,44 @@ case "$response" in
         echo "Skipping workstation utility installation"
         ;;
 esac
+
+
+read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install \
+                fontconfig-devel \
+                freetype-devel \
+                libX11-devel \
+                libXft-devel \
+                -y
+        fi
+
+        # TODO: The other package managers
+        #elif [[ -x "$(command -v brew)" ]]; then
+            #brew install \
+        #elif [[ -x "$(command -v apt)" ]]; then
+            #sudo apt install \
+        #elif [[ -x "$(command -v pacman)" ]]; then
+            #sudo pacman -Syu \
+                #--needed
+        #elif [[ -x "$(command -v pkg)" ]]; then
+            #sudo pkg install \
+        #fi
+
+        if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
+            git clone git@github.com:LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+        fi
+        (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
+        sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
+        xrdb "${MISC_DIR}/.Xdefaults"
+        ;;
+    *)
+        echo "Skipping workstation utility installation"
+        ;;
+esac
+
 
 if [[ -x "$(command -v pacman)" ]]; then
     read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response

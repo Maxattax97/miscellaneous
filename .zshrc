@@ -564,9 +564,15 @@ zshrc_zplug() {
         zplug "zsh-users/zsh-history-substring-search"
         zplug "zsh-users/zsh-autosuggestions"
         zplug "zsh-users/zsh-completions"
+
         zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
         # For some reason, the hook doesn't always work...
         wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }
+        # Add zsh completion for this plugin.
+        if [[ -d "${HOME}/.zplug/repos/mfaerevaag/wd/" ]]; then
+            fpath+="${HOME}/.zplug/repos/mfaerevaag/wd/"
+        fi
+
 
         zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
@@ -575,7 +581,7 @@ zshrc_zplug() {
         # Improved bash compatibility
         # zplug "chrissicool/zsh-bash"
 
-        zplug "stackexchange/blackbox"
+        #zplug "stackexchange/blackbox"
         zplug "tarrasch/zsh-command-not-found"
 
         zplug "junegunn/fzf", as:command, rename-to:fzf, \
@@ -676,18 +682,20 @@ zshrc_add_path() {
 
 zshrc_set_path() {
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
-        export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
-    fi
+    if [[ -x "$(command -v brew)" ]]; then
+        if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
+            export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
+        fi
 
-    if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
-        export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
-    fi
+        if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
+            export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
+        fi
 
-    if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
-        export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
-        export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
-        export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+        if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
+            export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
+            export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
+            export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+        fi
     fi
 
     zshrc_add_path "${HOME}/bin/"
@@ -702,10 +710,8 @@ zshrc_set_path() {
     zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
     zshrc_add_path "${HOME}/.cargo/bin/"
     zshrc_add_path "/usr/local/go/bin/"
-    zshrc_add_path "${HOME}/.gem/ruby/2.6.0/bin/"
-    zshrc_add_path "/usr/lib/gem/ruby/2.6.0/bin/"
-    zshrc_add_path "$HOME/.yarn/bin"
-    zshrc_add_path "$HOME/.config/yarn/global/node_modules/.bin"
+    zshrc_add_path "${HOME}/.yarn/bin"
+    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
     zshrc_add_path "${HOME}/bin/balena-cli"
 
     if [ -n "$GOPATH" ]; then
@@ -719,6 +725,13 @@ zshrc_set_path() {
     if [ -s "$HOME/.cargo/env" ]; then
         . "$HOME/.cargo/env"
     fi
+
+    # Dynamically add the ruby gem paths.
+    if [[ -x "$(command -v gem)" ]]; then
+        zshrc_add_path "$(gem env gemdir)/bin"
+        zshrc_add_path "$(gem env user_gemdir)/bin"
+    fi
+
 }
 
 zshrc_load_library() {
@@ -751,7 +764,7 @@ zshrc_load_library() {
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
     # TODO: Add support for cpio, ar, iso
     # TODO: Add progress bar, remove verbose flag
-    inflate() {
+    decompress() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
             echo "Usage: inflate <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
@@ -805,7 +818,7 @@ zshrc_load_library() {
         fi
     }
 
-    squeeze() {
+    compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
             # display usage if no parameters given
             echo "Usage: squeeze <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
@@ -1180,6 +1193,7 @@ zshrc_set_aliases() {
     fi
 
     if [[ -x "$(command -v btop)" ]]; then
+        alias top='btop'
         alias htop='btop'
     fi
 
@@ -1583,7 +1597,6 @@ zshrc_init() {
     #zshrc_display_banner
 
     zshrc_autoload
-    zshrc_setup_completion
     zshrc_source
     zshrc_set_path
     zshrc_set_default_programs
@@ -1608,8 +1621,11 @@ zshrc_init() {
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
-		zshrc_extensions
+        zshrc_extensions
     fi
+
+    # Load this after plugins so that we can get completions too.
+    zshrc_setup_completion
 
     if ( $zshrc_dropping_mode ); then
         zshrc_dropping_mode=false

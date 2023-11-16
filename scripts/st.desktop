@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Suckless Terminal
+Comment=Use this terminal emulator for a simple and lightweight experience
+Exec=st
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+Keywords=Terminal;Shell;Command Line;Suckless;
