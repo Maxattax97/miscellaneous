@@ -120,3 +120,7 @@ nmap <silent> <leader><S-e> <Plug>(ale_previous_wrap)
 xnoremap <leader>P "0p
 nnoremap <leader>P "0p
 vnoremap <leader>P "0p
+
+" Map test runners.
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>

@@ -58,8 +58,11 @@ call dein#add('shougo/neomru.vim')
 " Vim colortemplate generator.
 call dein#add('lifepillar/vim-colortemplate')
 
-" Github Copilot
-"call dein#add('github/copilot.vim')
+" Github Copilot integration.
+call dein#add('github/copilot.vim')
+
+" Test runner.
+call dein#add('vim-test/vim-test')
 " }}}
 
 " Tim Pope Collection {{{

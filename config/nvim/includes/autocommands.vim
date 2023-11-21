@@ -141,6 +141,15 @@ augroup neovim_studio_defx
 	endfunction
 augroup end
 
+augroup neovim_studio_copilot
+	" Disable Copilot for very large files.
+	autocmd BufReadPre *
+	\ let f=getfsize(expand("<afile>"))
+	\ | if f > 15000 || f == -2
+	\ | let b:copilot_enabled = v:false
+	\ | endif
+augroup end
+
 "augroup neovim_studio_auto_open
     "autocmd!
     "autocmd VimEnter * Vista
