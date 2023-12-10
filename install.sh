@@ -58,6 +58,7 @@ link_source .Xdefaults 1
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
+link_source .xprofile 0
 link_source .warprc 0
 
 # Dot directories
@@ -372,10 +373,29 @@ case "$response" in
         ;;
 esac
 
+read -r -p "Would you like to add unofficial package repositories? [y/N] " response
+case "$response" in
+        [yY][eE][sS]|[yY])
+                if [[ -x "$(command -v dnf)" ]]; then
+                    sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+                    sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+                elif [[ -x "$(command -v apt)" ]]; then
+                    echo "No repositories for apt yet"
+                elif [[ -x "$(command -v pacman)" ]]; then
+                    echo "No repositories for pacman yet"
+                    # TODO: Set up yay.
+                elif [[ -x "$(command -v pkg)" ]]; then
+                    echo "No repositories for pkg yet"
+                fi
+                ;;
+        *)
+                echo "Skipping package repository installation"
+                ;;
+esac
+
 read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
 case "$response" in
         [yY][eE][sS]|[yY])
-                # TODO: install custom st.
                 if [[ -x "$(command -v dnf)" ]]; then
                         # TODO: Fill the rest in.
                         sudo dnf install \
