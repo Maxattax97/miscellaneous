@@ -817,6 +817,7 @@ zshrc_load_library() {
             done
         fi
     }
+    alias inflate='decompress'
 
     compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
@@ -891,6 +892,7 @@ zshrc_load_library() {
             fi
         fi
     }
+    alias squeeze='compress'
 
     # Host the current directory via HTTP
     hostdir() {
