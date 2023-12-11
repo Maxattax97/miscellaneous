@@ -598,7 +598,8 @@ zshrc_zplug() {
         # zplug "lukechilds/zsh-nvm"
         zplug "maxattax97/zsh-nvm"
 
-        zplug "gko/ssh-connect", as:command
+        zplug "gko/ssh-connect", as:command, use:"ssh-connect.sh", hook-load:". $ZPLUG_REPOS/gko/ssh-connect/ssh-connect.sh"
+        alias sshc='ssh-connect'
 
         if ( ! "$zshrc_low_power" ); then
             #zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
