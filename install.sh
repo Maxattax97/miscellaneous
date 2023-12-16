@@ -185,6 +185,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 gnupg \
                 keychain \
                 libtool \

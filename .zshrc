@@ -598,7 +598,8 @@ zshrc_zplug() {
         # zplug "lukechilds/zsh-nvm"
         zplug "maxattax97/zsh-nvm"
 
-        zplug "gko/ssh-connect", as:command
+        zplug "gko/ssh-connect", as:command, use:"ssh-connect.sh", hook-load:". $ZPLUG_REPOS/gko/ssh-connect/ssh-connect.sh"
+        alias sshc='ssh-connect'
 
         if ( ! "$zshrc_low_power" ); then
             #zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
@@ -728,8 +729,16 @@ zshrc_set_path() {
 
     # Dynamically add the ruby gem paths.
     if [[ -x "$(command -v gem)" ]]; then
-        zshrc_add_path "$(gem env gemdir)/bin"
-        zshrc_add_path "$(gem env user_gemdir)/bin"
+        # Sometimes this path doesn't exist.
+        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${user_gem_path}/bin"
+        fi
+
+        local gem_path=$(gem env gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${gem_path}/bin"
+        fi
     fi
 
 }
@@ -817,6 +826,7 @@ zshrc_load_library() {
             done
         fi
     }
+    alias inflate='decompress'
 
     compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
@@ -891,6 +901,7 @@ zshrc_load_library() {
             fi
         fi
     }
+    alias squeeze='compress'
 
     # Host the current directory via HTTP
     hostdir() {
@@ -1050,6 +1061,18 @@ zshrc_load_library() {
         done
     }
 
+    jules() {
+        chat_id="${1:-$(uuidgen)}"
+        action="Starting"
+
+        if [ -n "$1" ]; then
+            action="Resuming"
+        fi
+
+        echo "${action} chat \`${chat_id}\`"
+        sgpt --role "jules" --model "gpt-4-1106-preview" --repl "${chat_id}"
+    }
+
     d2h() {
         for dec in "${@:-$(</dev/stdin)}"; do
             printf "0x%x\n" "${dec}"
@@ -1202,6 +1225,8 @@ zshrc_set_aliases() {
     if [ -x "$(command -v rofi)" ]; then
         alias dmenu="rofi -dmenu"
     fi
+
+    alias rcat='find . -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
 }
 
 zshrc_set_default_programs() {

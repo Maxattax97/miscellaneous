@@ -1,5 +1,7 @@
-.sample-secret.md filter=git-crypt diff=git-crypt
+*.cer filter=git-crypt diff=git-crypt
 *.key filter=git-crypt diff=git-crypt
 *.pem filter=git-crypt diff=git-crypt
-*.cer filter=git-crypt diff=git-crypt
+.sample-secret.md filter=git-crypt diff=git-crypt
+/config/shell_gpt/roles/jules.json filter=git-crypt diff=git-crypt
+/config/shell_gpt/roles/veronica.json filter=git-crypt diff=git-crypt
 /config/weechat/sec.conf filter=git-crypt diff=git-crypt
