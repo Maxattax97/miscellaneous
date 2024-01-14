@@ -539,6 +539,7 @@ case "$response" in
                 brave \
                 firefox \
                 flameshot \
+                google-noto-emoji-color-fonts \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -577,6 +578,7 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install \
                 flameshot \
+                fonts-noto-color-emoji \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -594,18 +596,19 @@ case "$response" in
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu \
                 flameshot \
+                girara \
                 gnome-keyring \
                 inkscape \
                 libreoffice-fresh \
                 mpv \
                 nextcloud-client \
+                noto-fonts-emoji \
                 p7zip \
                 qalculate-gtk \
                 unrar \
+                veracrypt \
                 zathura \
                 zathura-pdf-mupdf \
-                girara \
-                veracrypt \
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
                     yay -S \
@@ -622,6 +625,7 @@ case "$response" in
                 libreoffice \
                 mpv \
                 nextcloudclient \
+                noto-emoji \
                 qalculate-gtk \
                 unrar \
                 veracrypt \
