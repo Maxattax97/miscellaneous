@@ -55,6 +55,7 @@ link_source .zshrc 1
 link_source .tmux.conf 1
 link_source .tmuxline.conf 1
 link_source .Xdefaults 1
+link_source .Xdefaults 1 .Xresources
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
@@ -150,10 +151,12 @@ case "$response" in
                 btop \
                 ctags \
                 curl \
+                dnf-plugins-core \
                 fastfetch \
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neovim \
@@ -210,6 +213,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neofetch \
@@ -236,6 +240,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neovim \
@@ -268,6 +273,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 gmake \
                 keychain \
                 neovim \
@@ -326,6 +332,10 @@ case "$response" in
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
             sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
 
+            # Fix the file that Dein overwrote so Neovim just works when we open it.
+            mv "${HOME}/.config/nvim/init.vim" "${HOME}/.config/nvim/init.dein.vim"
+            mv "${HOME}/.config/nvim/init.vim.pre-dein-vim" "${HOME}/.config/nvim/init.vim"
+
             #mkdir -p "${HOME}/.cache/dein"
             #curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
 
@@ -379,6 +389,36 @@ case "$response" in
                 if [[ -x "$(command -v dnf)" ]]; then
                     sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
                     sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+                    # Add repo for Brave
+                    sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+                    sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+
+                    # Add repo for Docker
+                    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+                    read -r -p "Would you like to install Brave? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y brave-browser
+                                ;;
+                            *)
+                                echo "Skipping Brave installation"
+                                ;;
+                    esac
+
+                    read -r -p "Would you like to install Docker? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                                sudo systemctl enable docker
+                                sudo systemctl start docker
+                                ;;
+                            *)
+                                echo "Skipping Docker installation"
+                                ;;
+                    esac
+
                 elif [[ -x "$(command -v apt)" ]]; then
                     echo "No repositories for apt yet"
                 elif [[ -x "$(command -v pacman)" ]]; then
@@ -667,7 +707,7 @@ case "$response" in
         #fi
 
         if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
-            git clone git@github.com:LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+            git clone https://github.com/LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
         fi
         (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
         sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
