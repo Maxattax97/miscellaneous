@@ -429,7 +429,7 @@ case "$response" in
                 fi
                 ;;
         *)
-                echo "Skipping package repository installation"
+                echo "Skipping unofficial package repository installation"
                 ;;
 esac
 
@@ -718,7 +718,7 @@ case "$response" in
         xrdb "${MISC_DIR}/.Xdefaults"
         ;;
     *)
-        echo "Skipping workstation utility installation"
+        echo "Skipping Suckless Terminal (st) installation"
         ;;
 esac
 
