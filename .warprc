@@ -1,4 +1,8 @@
-m:~/src/miscellaneous
-fl:/opt/flotilla
-sr:~/src
+ans:~/aura/ns
+ar:~/aura/r
+asc:~/aura/sc
 ch:~/.local/share/chezmoi
+dl:~/Downloads
+fl:/opt/flotilla
+m:~/src/miscellaneous
+sr:~/src
