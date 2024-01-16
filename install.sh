@@ -805,6 +805,10 @@ case "$response" in
         git config --global merge.tool nvimdiff
         git config --global --add difftool.prompt false
 
+        # When you setup a GPG subkey for this machine, you'll use these:
+        # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
+        # git config --global commit.gpgsign true
+
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
             ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
             eval "$(ssh-agent -s)"
