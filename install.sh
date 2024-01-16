@@ -397,6 +397,9 @@ case "$response" in
                     # Add repo for Docker
                     sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 
+                    # Import PGP key for VeraCrypt.
+                    sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
+
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
@@ -627,7 +630,6 @@ case "$response" in
                 p7zip-full \
                 qalculate-gtk \
                 unrar \
-                veracrypt \
                 zathura \
                 -y
 
@@ -679,6 +681,19 @@ case "$response" in
 
             curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         fi
+
+        if [[ ! -x "$(command -v veracrypt)" ]]; then
+            read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+            case "$response" in
+                [yY][eE][sS]|[yY])
+                    xdg-open 'https://veracrypt.eu/en/Downloads.html'
+                    ;;
+                *)
+                    echo "Skipping VeraCrypt installation"
+                    ;;
+            esac
+        fi
+
         ;;
     *)
         echo "Skipping workstation utility installation"
