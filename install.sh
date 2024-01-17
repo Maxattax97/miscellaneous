@@ -800,10 +800,17 @@ case "$response" in
             printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
         fi
 
+        # Use Neovim's difftool
         git config --global diff.tool nvimdiff
         git config --global diff.algorithm histogram
         git config --global merge.tool nvimdiff
         git config --global --add difftool.prompt false
+
+        # Automatically set up remotes if they don't exist when pushing.
+        git config --global push.autoSetupRemote
+
+        # Merge by default.
+        git config --global pull.rebase false
 
         # When you setup a GPG subkey for this machine, you'll use these:
         # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
@@ -827,6 +834,9 @@ read -r -p "Would you like to setup Rust? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+        # For Neovim
+        rustup component add rust-analyzer
         ;;
     *)
         echo "Skipping Rust setup"
