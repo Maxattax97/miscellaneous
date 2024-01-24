@@ -1,6 +1,6 @@
 {
   "coc.preferences.extensionUpdateCheck": "weekly",
-  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "js", "javascript", "json", "ts", "typescript", "html", "yml", "yaml", "rust"],
+  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "js", "javascript", "json", "ts", "typescript", "html", "yml", "yaml", "rust", "c", "cpp", "h", "hpp"],
   "coc.preferences.formatOnSave": true,
   "codeLens.enable": false,
   "diagnostic.checkCurrentLine": true,
@@ -21,27 +21,6 @@
         "~"
       ]
     },
-    "ccls": {
-      "command": "ccls_DISABLED",
-      "filetypes": [
-        "c",
-        "cpp",
-        "objc",
-        "objcpp"
-      ],
-      "initializationOptions": {
-        "cache": {
-          "directory": "/tmp/ccls"
-        }
-      },
-      "rootPatterns": [
-        ".ccls",
-        "compile_commands.json",
-        ".vim/",
-        ".git/",
-        ".hg/"
-      ]
-    },
     "golang": {
       "command": "gopls",
       "filetypes": [
@@ -54,7 +33,7 @@
         ".hg/"
       ]
     },
-    "bash": {
+    "hoon": {
       "command": "hoon-language-server",
       "filetypes": [
         "hoon"
