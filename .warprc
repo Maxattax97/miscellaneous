@@ -1,3 +1,8 @@
+ans:~/aura/ns
+ar:~/aura/r
+asc:~/aura/sc
+ch:~/.local/share/chezmoi
+dl:~/Downloads
+fl:/opt/flotilla
 m:~/src/miscellaneous
 sr:~/src
-ch:~/.local/share/chezmoi

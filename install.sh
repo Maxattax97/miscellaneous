@@ -55,6 +55,7 @@ link_source .zshrc 1
 link_source .tmux.conf 1
 link_source .tmuxline.conf 1
 link_source .Xdefaults 1
+link_source .Xdefaults 1 .Xresources
 link_source .eslintrc.json 0
 link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
@@ -150,10 +151,12 @@ case "$response" in
                 btop \
                 ctags \
                 curl \
+                dnf-plugins-core \
                 fastfetch \
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neovim \
@@ -210,6 +213,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neofetch \
@@ -236,6 +240,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 keychain \
                 make \
                 neovim \
@@ -268,6 +273,7 @@ case "$response" in
                 gcc \
                 git \
                 git-crypt \
+                git-lfs \
                 gmake \
                 keychain \
                 neovim \
@@ -326,6 +332,10 @@ case "$response" in
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
             sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
 
+            # Fix the file that Dein overwrote so Neovim just works when we open it.
+            mv "${HOME}/.config/nvim/init.vim" "${HOME}/.config/nvim/init.dein.vim"
+            mv "${HOME}/.config/nvim/init.vim.pre-dein-vim" "${HOME}/.config/nvim/init.vim"
+
             #mkdir -p "${HOME}/.cache/dein"
             #curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
 
@@ -379,6 +389,42 @@ case "$response" in
                 if [[ -x "$(command -v dnf)" ]]; then
                     sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
                     sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+                    # Add repo for Brave
+                    sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+                    sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+
+                    # Add repo for Docker
+                    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+                    # Import PGP key for VeraCrypt.
+                    sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
+
+                    # Add Copr repo for OpenVPN Connect
+                    sudo dnf copr enable dsommers/openvpn3
+
+                    read -r -p "Would you like to install Brave? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y brave-browser
+                                ;;
+                            *)
+                                echo "Skipping Brave installation"
+                                ;;
+                    esac
+
+                    read -r -p "Would you like to install Docker? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                                sudo systemctl enable docker
+                                sudo systemctl start docker
+                                ;;
+                            *)
+                                echo "Skipping Docker installation"
+                                ;;
+                    esac
+
                 elif [[ -x "$(command -v apt)" ]]; then
                     echo "No repositories for apt yet"
                 elif [[ -x "$(command -v pacman)" ]]; then
@@ -389,7 +435,7 @@ case "$response" in
                 fi
                 ;;
         *)
-                echo "Skipping package repository installation"
+                echo "Skipping unofficial package repository installation"
                 ;;
 esac
 
@@ -539,6 +585,7 @@ case "$response" in
                 brave \
                 firefox \
                 flameshot \
+                google-noto-emoji-color-fonts \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -577,6 +624,7 @@ case "$response" in
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install \
                 flameshot \
+                fonts-noto-color-emoji \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -585,7 +633,6 @@ case "$response" in
                 p7zip-full \
                 qalculate-gtk \
                 unrar \
-                veracrypt \
                 zathura \
                 -y
 
@@ -594,18 +641,19 @@ case "$response" in
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu \
                 flameshot \
+                girara \
                 gnome-keyring \
                 inkscape \
                 libreoffice-fresh \
                 mpv \
                 nextcloud-client \
+                noto-fonts-emoji \
                 p7zip \
                 qalculate-gtk \
                 unrar \
+                veracrypt \
                 zathura \
                 zathura-pdf-mupdf \
-                girara \
-                veracrypt \
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
                     yay -S \
@@ -622,6 +670,7 @@ case "$response" in
                 libreoffice \
                 mpv \
                 nextcloudclient \
+                noto-emoji \
                 qalculate-gtk \
                 unrar \
                 veracrypt \
@@ -635,6 +684,19 @@ case "$response" in
 
             curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         fi
+
+        if [[ ! -x "$(command -v veracrypt)" ]]; then
+            read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+            case "$response" in
+                [yY][eE][sS]|[yY])
+                    xdg-open 'https://veracrypt.eu/en/Downloads.html'
+                    ;;
+                *)
+                    echo "Skipping VeraCrypt installation"
+                    ;;
+            esac
+        fi
+
         ;;
     *)
         echo "Skipping workstation utility installation"
@@ -667,14 +729,14 @@ case "$response" in
         #fi
 
         if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
-            git clone git@github.com:LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+            git clone https://github.com/LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
         fi
         (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
         sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
         xrdb "${MISC_DIR}/.Xdefaults"
         ;;
     *)
-        echo "Skipping workstation utility installation"
+        echo "Skipping Suckless Terminal (st) installation"
         ;;
 esac
 
@@ -741,10 +803,24 @@ case "$response" in
             printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
         fi
 
+        # Use Neovim's difftool
         git config --global diff.tool nvimdiff
         git config --global diff.algorithm histogram
         git config --global merge.tool nvimdiff
         git config --global --add difftool.prompt false
+
+        # Automatically set up remotes if they don't exist when pushing.
+        git config --global push.autoSetupRemote
+
+        # Merge by default.
+        git config --global pull.rebase false
+
+        # Use `main` as default branch... so Github stops complaining.
+        git config --global init.defaultBranch main
+
+        # When you setup a GPG subkey for this machine, you'll use these:
+        # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
+        # git config --global commit.gpgsign true
 
         if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
             ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
@@ -764,6 +840,9 @@ read -r -p "Would you like to setup Rust? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+        # For Neovim
+        rustup component add rust-analyzer
         ;;
     *)
         echo "Skipping Rust setup"
