@@ -157,6 +157,7 @@ case "$response" in
                 git \
                 git-crypt \
                 git-lfs \
+                gnupg2 \
                 keychain \
                 make \
                 neovim \
@@ -214,6 +215,7 @@ case "$response" in
                 git \
                 git-crypt \
                 git-lfs \
+                gpg \
                 keychain \
                 make \
                 neofetch \
@@ -241,6 +243,7 @@ case "$response" in
                 git \
                 git-crypt \
                 git-lfs \
+                gnupg \
                 keychain \
                 make \
                 neovim \
@@ -275,6 +278,7 @@ case "$response" in
                 git-crypt \
                 git-lfs \
                 gmake \
+                gnupg \
                 keychain \
                 neovim \
                 newsboat \
@@ -343,36 +347,8 @@ case "$response" in
             # rm -rf /tmp/.dein_installer.sh
         fi
 
-        #if [[ ! -x "$(command -v gotop)" ]]; then
-            #if [[ -x "$(command -v yay)" ]]; then
-                #yay -S gotop-bin --needed
-            #else
-                ## Always try to update these.
-                #git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop && /tmp/gotop/scripts/download.sh && mv gotop "${HOME}/bin/" && rm -rf /tmp/gotop
-            #fi
-        #fi
-
-        #if [[ ! -x "$(command -v navi)" ]]; then
-                #if [[ -x "$(command -v yay)" ]]; then
-                        #yay -S navi --needed
-                #else
-                        #bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
-                #fi
-        #fi
-
-        #if [[ ! -x "$(command -v ctop)" ]]; then
-            # TODO: Automatically update the version.
-            # TODO: Detect architecture of local system and grab the right binary.
-            #curl https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -o "${HOME}/bin/ctop" && chmod +x "${HOME}/bin/ctop"
-        #fi
-
-        #if [[ ! -x "$(command -v lazydocker)" ]]; then
-            #if [[ -x "$(command -v yay)" ]]; then
-                #yay -S lazydocker --needed
-            #else
-                #curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | DIR="${HOME}/bin/" bash
-            #fi
-        #fi
+        # Pull GPG keys for max.ocull@protonmail.com
+        gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
