@@ -749,9 +749,9 @@ zshrc_load_library() {
         telnet towel.blinkenlights.nl
     }
 
-	mirrorweb() {
+    mirrorweb() {
         wget --mirror --page-requisites --no-parent --adjust-extension --convert-links --recursive --level=inf --continue --no-clobber $@
-	}
+    }
 
     # Download and run a curl based Party Parrot animation.
     parrot() {
@@ -1058,6 +1058,22 @@ zshrc_load_library() {
                 echo "Exiting due to success exit code"
                 return
             fi
+        done
+    }
+
+    cycle() {
+        delay=$1
+        case $delay in
+            ''|*[!0-9]*) echo "You must specify a numeric delay" && return ;;
+            *) echo good ;;
+        esac
+        shift
+        cmd_with_args=$@
+
+        while true; do
+            clear
+            $cmd_with_args
+            sleep $delay
         done
     }
 
