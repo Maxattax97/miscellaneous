@@ -9,6 +9,11 @@ Host *
 	AddKeysToAgent yes
 	IdentityFile ~/.ssh/id_rsa
 
+#Host maxocull.com
+	#HostName maxocull.com
+	#User entourage
+	#IdentityFile ~/.ssh/id_rsa
+
 ##### BATS #####
 
 Host gitea.batswireless.lcl
@@ -17,42 +22,17 @@ Host gitea.batswireless.lcl
 
 ##### AURA #####
 
-Host aura-aws-mocull-develop
-	HostName ec2-3-219-63-96.compute-1.amazonaws.com
-	User arch
-	IdentityFile ~/.ssh/mocull-develop-keypair.pem
-
-Host aura-aws-cgt
-	HostName 10.248.6.160
-	User ubuntu
-	IdentityFile ~/.ssh/vt-test-key-pair-9-29-23.pem
-
-Host aura-jump-lab
-	HostName 44.200.213.43
-	User ubuntu
-	ForwardAgent yes
-	IdentityFile ~/.ssh/ru-config-test-key-pair.pem
-
 Host aura-lab-dell-xr11
 	HostName 10.101.200.50
 	User aura-lab-admin
 	ForwardAgent yes
-	ProxyJump aura-jump-lab
-
-Host aura-lab-jump-ars
-	HostName 10.101.201.6
-	User pi
-	ForwardAgent yes
-	ProxyJump aura-jump-lab
 
 Host aura-lab-ru
 	HostName 10.101.201.10
 	User aura
 	ForwardAgent yes
-	ProxyJump aura-jump-lab
 
 Host aura-lab-ars
-	HostName 10.101.201.11
+	HostName 10.101.201.26
 	User aura
 	ForwardAgent yes
-	ProxyJump aura-lab-jump-ars
