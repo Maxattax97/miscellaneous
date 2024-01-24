@@ -400,6 +400,9 @@ case "$response" in
                     # Import PGP key for VeraCrypt.
                     sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
 
+                    # Add Copr repo for OpenVPN Connect
+                    sudo dnf copr enable dsommers/openvpn3
+
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
@@ -811,6 +814,9 @@ case "$response" in
 
         # Merge by default.
         git config --global pull.rebase false
+
+        # Use `main` as default branch... so Github stops complaining.
+        git config --global init.defaultBranch main
 
         # When you setup a GPG subkey for this machine, you'll use these:
         # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
