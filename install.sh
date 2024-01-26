@@ -166,6 +166,7 @@ case "$response" in
                 nodejs-npm \
                 pipx \
                 python3 \
+                python3-devel \ # You need this on Fedora to install shell-gpt
                 python3-neovim \
                 python3-pip \
                 ripgrep \
