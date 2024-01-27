@@ -145,8 +145,9 @@ read -r -p "Would you like to attempt an install of common utilities? [y/N] " re
 case "$response" in
     [yY][eE][sS]|[yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
-        # gem needs ruby-devel on Fedora.
         if [[ -x "$(command -v dnf)" ]]; then
+            # shell-gpt needs python3-devel on Fedora.
+            # gem needs ruby-devel on Fedora.
             sudo dnf install -y \
                 btop \
                 ctags \
@@ -166,7 +167,7 @@ case "$response" in
                 nodejs-npm \
                 pipx \
                 python3 \
-                python3-devel \ # You need this on Fedora to install shell-gpt
+                python3-devel \
                 python3-neovim \
                 python3-pip \
                 ripgrep \
@@ -559,7 +560,7 @@ case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install \
-                brave \
+                brave-browser \
                 firefox \
                 flameshot \
                 google-noto-emoji-color-fonts \
@@ -659,6 +660,10 @@ case "$response" in
         if [[ ! -x "$(command -v brew)" ]]; then
             xdg-settings set default-web-browser brave.desktop
 
+            # Install NordVPN CLI tool.
+            sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
+
+            # Install/update Joplin
             curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         fi
 
