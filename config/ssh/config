@@ -9,10 +9,10 @@ Host *
 	AddKeysToAgent yes
 	IdentityFile ~/.ssh/id_rsa
 
-#Host maxocull.com
-	#HostName maxocull.com
-	#User entourage
-	#IdentityFile ~/.ssh/id_rsa
+Host maxocull.com
+	HostName maxocull.com
+	User entourage
+	IdentityFile ~/.ssh/id_rsa
 
 ##### BATS #####
 
@@ -35,4 +35,9 @@ Host aura-lab-ru
 Host aura-lab-ars
 	HostName 10.101.201.26
 	User aura
+	ForwardAgent yes
+
+Host aura-lab-poc
+	HostName 10.101.201.18
+	User pi
 	ForwardAgent yes
