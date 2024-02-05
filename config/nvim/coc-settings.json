@@ -9,18 +9,6 @@
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextPrefix": " ]] ",
   "languageserver": {
-    "bash": {
-      "args": [
-        "start"
-      ],
-      "command": "bash-language-server",
-      "filetypes": [
-        "sh"
-      ],
-      "ignoredRootPaths": [
-        "~"
-      ]
-    },
     "golang": {
       "command": "gopls",
       "filetypes": [

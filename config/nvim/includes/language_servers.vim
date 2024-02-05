@@ -1,31 +1,33 @@
 " vim: foldmethod=marker
 let g:coc_global_extensions = [
-    \ 'coc-json',
-    \ 'coc-tag',
-    \ 'coc-tslint',
-    \ 'coc-eslint',
     \ 'coc-clangd',
     \ 'coc-css',
-    \ 'coc-html',
-    \ 'coc-solargraph',
-    \ 'coc-vetur',
-    \ 'coc-tsserver',
-    \ 'coc-jest',
-    \ 'coc-java',
-    \ 'coc-rust-analyzer',
-    \ 'coc-r-lsp',
-    \ 'coc-highlight',
-    \ 'coc-yaml',
-    \ 'coc-emmet',
-    \ 'coc-lists',
-    \ 'coc-yank',
-    \ 'coc-vimtex',
-    \ 'coc-tslint-plugin',
-    \ 'coc-phpls',
-    \ 'coc-pyright',
-    \ 'coc-fsharp',
+    \ 'coc-deno',
     \ 'coc-dictionary',
+    \ 'coc-emmet',
+    \ 'coc-eslint',
+    \ 'coc-fsharp',
+    \ 'coc-highlight',
+    \ 'coc-html',
+    \ 'coc-java',
+    \ 'coc-jest',
+    \ 'coc-json',
+    \ 'coc-lists',
+    \ 'coc-phpls',
     \ 'coc-prettier',
+    \ 'coc-pyright',
+    \ 'coc-r-lsp',
+    \ 'coc-rust-analyzer',
+    \ 'coc-sh',
+    \ 'coc-solargraph',
+    \ 'coc-tag',
+    \ 'coc-tslint',
+    \ 'coc-tslint-plugin',
+    \ 'coc-tsserver',
+    \ 'coc-vetur',
+    \ 'coc-vimtex',
+    \ 'coc-yaml',
+    \ 'coc-yank',
     \]
 
 " Disabled servers:
@@ -39,8 +41,6 @@ let g:coc_global_extensions = [
     "\ 'coc-neoinclude', " Install via plugin manager.
     "\ 'coc-word',
 
-" INSTALL: npm install -g --local bash-language-server
-" INSTALL: yay -S ccls
 " INSTALL: go get golang.org/x/tools/cmd/gopls
 " INSTALL: pacman -Syu lua53 luarocks
 " INSTALL: luarocks install --server=http://luarocks.org/dev lua-lsp --lua-version=5.3
