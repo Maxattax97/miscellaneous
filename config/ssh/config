@@ -20,24 +20,4 @@ Host gitea.batswireless.lcl
 	HostName gitea.batswireless.lcl
 	IdentityFile ~/.ssh/id_ed25519_bats
 
-##### AURA #####
-
-Host aura-lab-dell-xr11
-	HostName 10.101.200.50
-	User aura-lab-admin
-	ForwardAgent yes
-
-Host aura-lab-ru
-	HostName 10.101.201.10
-	User aura
-	ForwardAgent yes
-
-Host aura-lab-ars
-	HostName 10.101.201.26
-	User aura
-	ForwardAgent yes
-
-Host aura-lab-poc
-	HostName 10.101.201.18
-	User pi
-	ForwardAgent yes
+Include ~/.ssh/aura_ssh_config
