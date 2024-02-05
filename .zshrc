@@ -1041,9 +1041,6 @@ zshrc_load_library() {
         ssh "${target_user}${target_host}" -p "${target_port}" "/home/${target_user:-${USER}}/.infect.sh"
     }
 
-    # TODO: bats.infect for those annoying low level AATS RMCU's.
-
-
     forever() {
         cmd_base="$1"
         cmd_args=$@
@@ -1417,206 +1414,10 @@ zshrc_set_environment_variables() {
     export PYTHONUSERBASE="$HOME/.local"
 }
 
-zshrc_batsdevrc() {
-    if [[ -s "$HOME/batsrc_caveos/.batsdevrc" ]]; then
-        source "$HOME/batsrc_caveos/.batsdevrc"
-    elif [[ -s "$HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc" ]]; then
-        # Proxy all functions through bash because Zsh doesn't play nice when sourcing them.
-        _code_path="$HOME/Perforce/mocull/Engineering/Software/Linux/Code"
-        _batsrc_path="$HOME/batsrc"
-        _perforce_workspace_path="$HOME/Perforce/mocull"
-
-        #export GOROOT="${_code_path}/.local/go/"
-        #export GOPATH="${_code_path}/gocode/vendor:${_code_path}/gocode/lib"
-        #export PATH="${_code_path}/.local/go/bin/:$PATH"
-        #export PATH="${_code_path}/gocode/vendor/bin:$PATH"
-        export GOROOT="${_batsrc_path}/.local/go"
-        export GOPATH="${_batsrc_path}/gocode/vendor:${_batsrc_path}/gocode/lib"
-        export GOBIN="${_batsrc_path}/.local/go/bin"
-        export PATH="${GOBIN}:$PATH"
-        export PATH="${_batsrc_path}/gocode/vendor/bin:$PATH"
-
-        export NODE_PATH="${_code_path}/AATSV4/Lib:${_code_path}/node_modules_dev"
-
-        export PATH="${_code_path}/node_modules_dev/node_modules/.bin:${PATH}"
-
-
-        bats_run() {
-            echo "> source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
-            bash -c "source $HOME/Perforce/mocull/Engineering/Software/Linux/Code/batsdevrc && $*"
-        }
-
-        bats.code() {
-            cd "${_code_path}/"
-        }
-
-        bats.imx() {
-            cd "${_perforce_workspace_path}/Engineering/Software/Linux/iMX6QuadLinux/Angstrom/"
-        }
-
-        bats.install-vscode-extensions() {
-            bats_run "bats.install-vscode-extensions $*"
-        }
-
-        bats.p4v() {
-            bats_run "bats.p4v $*"
-        }
-
-        bats.update-docker-containers() {
-            bats_run "bats.update-docker-containers $*"
-        }
-
-        bats.docker-run-aatsv4() {
-            bats_run "bats.docker-run-aatsv4 $*"
-        }
-
-        bats.docker-build() {
-            bats_run "bats.docker-build $*"
-        }
-
-        bats.docker-run() {
-            bats_run "bats.docker-run $*"
-        }
-
-        bats.docker-run-x86() {
-            bats_run "bats.docker-run-x86 $*"
-        }
-
-        bats.docker-run-arm() {
-            bats_run "bats.docker-run-arm $*"
-        }
-
-        bats.docker-run-crosstoolchains() {
-            bats_run "bats.docker-run-crosstoolchains $*"
-        }
-
-        bats.docker-run-crossarm() {
-            bats_run "bats.docker-run-crossarm $*"
-        }
-
-        bats.docker-run-node() {
-            bats_run "bats.docker-run-node $*"
-        }
-
-        bats.docker-run-x86ubuntu() {
-            bats_run "bats.docker-run-x86ubuntu $*"
-        }
-
-        bats.docker-run-automatedtesting() {
-            bats_run "bats.docker-run-automatedtesting $*"
-        }
-
-        bats.build() {
-            bats_run "bats.build $*"
-        }
-
-        bats.radiokeys() {
-            bats_run "bats.radiokeys $*"
-        }
-
-        bats.compile-all() {
-            bats_run "bats.compile-all $*"
-        }
-
-        bats.compile-x86() {
-            bats_run "bats.compile-x86 $*"
-        }
-
-        bats.compile-arm() {
-            bats_run "bats.compile-arm $*"
-        }
-
-        bats._portknock() {
-            bats_run "bats._portknock $*"
-        }
-
-        bats._passwordseed() {
-            bats_run "bats._passwordseed $*"
-        }
-
-        bats._rootpasswordfromseed() {
-            bats_run "bats._rootpasswordfromseed $*"
-        }
-
-        bats._devpasswordfromseed() {
-            bats_run "bats._devpasswordfromseed $*"
-        }
-
-        bats.ssh() {
-            bats_run "bats.ssh $*"
-        }
-
-        bats.scp() {
-            bats_run "bats.scp $*"
-        }
-
-        bats.dupe-aatsv4() {
-            bats_run "bats.dupe-aatsv4 $*"
-        }
-
-        bats.install-aatsv4() {
-            bats_run "bats.install-aatsv4 $*"
-        }
-
-        bats.pw() {
-            bats_run "bats.pw $*"
-        }
-
-        bats.portforwardssh() {
-            bats_run "bats.portforwardssh $*"
-        }
-
-        bats.http-server() {
-            bats_run "bats.http-server $*"
-        }
-
-        bats.https-server() {
-            bats_run "bats.https-server $*"
-        }
-
-        bats.http-get() {
-            bats_run "bats.http-get $*"
-        }
-
-        bats.https-get() {
-            bats_run "bats.https-get $*"
-        }
-
-        bats.usbserial() {
-            bats_run "bats.usbserial $*"
-        }
-
-        bats.install-dev-node-modules() {
-            bats_run "bats.install-dev-node-modules $*"
-        }
-
-        bats.udp-listen() {
-            bats_run "bats.udp-listen $*"
-        }
-
-        bats.calc() {
-            bats_run "bats.calc $*"
-        }
-
-        bats.upload() {
-            bats_run "bats.upload $*"
-        }
-
-        bats.device-search() {
-            bats_run "bats.device-search $*"
-        }
-
-        bats.bundle-js() {
-            bats_run "bats.bundle-js $*"
-        }
-
-        bats.clean-bin-files() {
-            bats_run "bats.clean-bin-files $*"
-        }
-
-        bats.paste() {
-            bats_run "bats.paste $*"
-        }
+zshrc_aura_shrc() {
+    export AURA_DEVELOPMENT_TOOLS_PATH="$HOME/aura/ns/aura-development-tools"
+    if [[ -s "$AURA_DEVELOPMENT_TOOLS_PATH/aura_shrc" ]]; then
+        source $AURA_DEVELOPMENT_TOOLS_PATH/aura_shrc
     fi
 }
 
@@ -1657,8 +1458,7 @@ zshrc_init() {
         zshrc_raw_prompt
     fi
 
-    # Disabled for CaveOS workspaces.
-    zshrc_batsdevrc
+    zshrc_aura_shrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
@@ -1674,19 +1474,5 @@ zshrc_init() {
 
     zshrc_benchmark_stop
 }
-
-#current_batsrc=""
-#precmd()
-#{
-    #local path="$(realpath .)"
-    #if [[ $path = *batsrc* ]]; then
-        #local new_batsrc="$(realpath .)"
-
-        #if [[ "$current_batsrc" != "$new_batsrc" ]]; then
-            #echo "Switching to BATS environment: $current_batsrc"
-            ##source "${current_batsrc}/.batsdevrc"
-        #fi
-    #fi
-#}
 
 zshrc_init
