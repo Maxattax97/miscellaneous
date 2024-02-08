@@ -4,6 +4,10 @@
 # automatically connect and install your public host key to enable passwordless
 # SSH-key logins:
 #	 ssh-copy-id <host>
+#
+# NOTE: Includes must be at the top of the file!
+
+Include ~/.ssh/aura_ssh_config
 
 Host *
 	AddKeysToAgent yes
@@ -19,5 +23,3 @@ Host maxocull.com
 Host gitea.batswireless.lcl
 	HostName gitea.batswireless.lcl
 	IdentityFile ~/.ssh/id_ed25519_bats
-
-Include ~/.ssh/aura_ssh_config
