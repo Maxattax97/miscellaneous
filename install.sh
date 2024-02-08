@@ -869,6 +869,7 @@ case "$response" in
             sudo pw groupmod wireshark -m "$USER"
             sudo pw groupmod wheel -m "$USER"
             sudo pw groupmod tty -m "$USER"
+            sudo pw groupmod nordvpn -m "$USER"
         else
             # TODO: Check that these are correct groupadd commands.
             sudo groupadd -r docker
@@ -879,6 +880,9 @@ case "$response" in
 
             sudo groupadd -r tty
             sudo usermod -a -G tty "$USER"
+
+            sudo groupadd -r nordvpn
+            sudo usermod -a -G nordvpn "$USER"
         fi
         ;;
     *)

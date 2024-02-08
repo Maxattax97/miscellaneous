@@ -17,9 +17,3 @@ Host maxocull.com
 	HostName maxocull.com
 	User entourage
 	IdentityFile ~/.ssh/id_rsa
-
-##### BATS #####
-
-Host gitea.batswireless.lcl
-	HostName gitea.batswireless.lcl
-	IdentityFile ~/.ssh/id_ed25519_bats
