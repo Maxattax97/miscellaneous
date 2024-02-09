@@ -379,7 +379,10 @@ case "$response" in
                     sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
 
                     # Add Copr repo for OpenVPN Connect
-                    sudo dnf copr enable dsommers/openvpn3
+                    ## This repo does not have an x64 build for Fedora 39 for some reason?
+                    ##sudo dnf copr enable dsommers/openvpn3
+                    # This one works:
+                    sudo dnf copr enable ojab/openvpn3
 
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
