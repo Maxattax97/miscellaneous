@@ -59,7 +59,7 @@ set shiftwidth=4
 " Default to TABS when not detected.
 "set noexpandtab
 " Default to SPACES when not detected
-"set expandtab
+set expandtab
 
 " Expand the modeline so we can read all the tags at the beginning.
 set modeline
