@@ -1267,6 +1267,8 @@ zshrc_set_default_programs() {
 
     if [[ -x "$(command -v brave)" ]]; then
         export BROWSER="$(which brave)"
+    elif [[ -x "$(command -v brave-browser)" ]]; then
+        export BROWSER="$(which brave-browser)"
     elif [[ -x "$(command -v firefox)" ]]; then
         export BROWSER="$(which firefox)"
     elif [[ -x "$(command -v chromium)" ]]; then

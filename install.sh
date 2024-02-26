@@ -903,6 +903,13 @@ case "$response" in
                     --needed
         fi
         ./scripts/font-install.sh
+
+        # Set fonts for Gnome.
+        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+            gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
+        fi
         ;;
     *)
         echo "Skipping font installation"
