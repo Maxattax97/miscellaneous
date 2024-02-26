@@ -697,6 +697,10 @@ zshrc_set_path() {
             export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
             export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
         fi
+
+        if [[ -x "$(command -v gsed)" ]]; then
+            alias sed='gsed'
+        fi
     fi
 
     zshrc_add_path "${HOME}/bin/"
