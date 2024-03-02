@@ -1091,19 +1091,43 @@ zshrc_load_library() {
     }
 
     d2h() {
-        for dec in "${@:-$(</dev/stdin)}"; do
-            printf "0x%x\n" "${dec}"
-        done
+        if [ $# -eq 0 ]; then
+            while IFS= read -r dec; do
+                printf "0x%x\n" "$dec"
+            done
+        else
+            for dec in "$@"; do
+                printf "0x%x\n" "$dec"
+            done
+        fi
     }
 
     h2d() {
-        for hex in "${@:-$(</dev/stdin)}"; do
-            if [[ "${hex:0:2}" != "0x" ]]; then
-                hex="0x${hex}"
-                printf "$hex -> " > /dev/stderr
-            fi
-            printf "%d\n" "${hex}"
-        done
+        if [ $# -eq 0 ]; then
+            while IFS= read -r hex; do
+                case "$hex" in
+                    0x*|0X*)
+                        ;;
+                    *)
+                        hex="0x$hex"
+                        printf "%s -> " "$hex" > /dev/stderr
+                        ;;
+                esac
+                printf "%d\n" "$hex"
+            done
+        else
+            for hex in "$@"; do
+                case "$hex" in
+                    0x*|0X*)
+                        ;;
+                    *)
+                        hex="0x$hex"
+                        printf "%s -> " "$hex" > /dev/stderr
+                        ;;
+                esac
+                printf "%d\n" "$hex"
+            done
+        fi
     }
 
     alias x2d='h2d'
@@ -1315,6 +1339,9 @@ zshrc_set_environment_variables() {
     # macOS and some other distros don't use traditional Linux ls colors.
     export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
+    # Enable colors for less by default.
+    export LESS='--RAW-CONTROL-CHARS --mouse'
+
     if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
         CPU_THREADS="$(grep "^processor" /proc/cpuinfo | sort -u | wc -l)"
@@ -1421,7 +1448,9 @@ zshrc_set_environment_variables() {
 }
 
 zshrc_aura_shrc() {
-    export AURA_DEVELOPMENT_TOOLS_PATH="$HOME/aura/ns/aura-development-tools"
+    export AURA_DEVELOPMENT_TOOLS_PATH="${HOME}/aura/ns/aura-development-tools"
+    export AURA_VPN_CONFIG="${HOME}/Documents/OpenVPN/aura_profile-5075079927914878174.ovpn"
+
     if [[ -s "$AURA_DEVELOPMENT_TOOLS_PATH/aura_shrc" ]]; then
         source $AURA_DEVELOPMENT_TOOLS_PATH/aura_shrc
     fi
