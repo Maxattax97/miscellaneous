@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Suckless Terminal
 Comment=Use this terminal emulator for a simple and lightweight experience
-Exec=st
+Exec=st -g=120x36+200+200
 Icon=utilities-terminal
 Terminal=false
 Type=Application
