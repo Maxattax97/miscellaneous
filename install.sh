@@ -125,12 +125,15 @@ link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 mkdir -p "${HOME}/.config/shell_gpt/roles/"
 link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
 
-
 # We link for both the regular and Flatpak versions of FreeCAD.
 mkdir -p "${HOME}/.var/app/org.freecadweb.FreeCAD/config/FreeCAD"
 link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/FreeCAD/user.cfg"
 mkdir -p "${HOME}/.config/FreeCAD"
 link_source "config/FreeCAD/user.cfg" 1 ".config/FreeCAD/user.cfg"
+
+# awcli
+mkdir -p "${HOME}/.aws"
+link_source "config/aws/config" 0 ".aws/config"
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
