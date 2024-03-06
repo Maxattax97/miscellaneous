@@ -150,6 +150,17 @@ augroup neovim_studio_copilot
 	\ | endif
 augroup end
 
+augroup neovim_studio_folds
+	" Enable folds for very large files.
+	autocmd BufReadPre *
+	\ let f=getfsize(expand("<afile>"))
+	\ | if f > 5000 || f == -2
+	\ | set foldmethod=indent
+	\ | set foldlevel=1
+	\ | set foldnestmax=3
+	\ | endif
+augroup end
+
 "augroup neovim_studio_auto_open
     "autocmd!
     "autocmd VimEnter * Vista
