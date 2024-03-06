@@ -145,7 +145,7 @@ augroup neovim_studio_copilot
 	" Disable Copilot for very large files.
 	autocmd BufReadPre *
 	\ let f=getfsize(expand("<afile>"))
-	\ | if f > 30000 || f == -2
+	\ | if f > 500000 || f == -2
 	\ | let b:copilot_enabled = v:false
 	\ | endif
 augroup end

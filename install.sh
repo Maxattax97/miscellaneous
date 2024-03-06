@@ -125,6 +125,13 @@ link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 mkdir -p "${HOME}/.config/shell_gpt/roles/"
 link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
 
+
+# We link for both the regular and Flatpak versions of FreeCAD.
+mkdir -p "${HOME}/.var/app/org.freecadweb.FreeCAD/config/FreeCAD"
+link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/FreeCAD/user.cfg"
+mkdir -p "${HOME}/.config/FreeCAD"
+link_source "config/FreeCAD/user.cfg" 1 ".config/FreeCAD/user.cfg"
+
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
@@ -855,6 +862,9 @@ case "$response" in
         sudo rm -f "/etc/pacman.d/hooks/refind.hook"
         sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
 
+        sudo rm -f "/etc/dnf/dnf.conf"
+        sudo cp -f "${MISC_DIR}/config/dnf.conf" "/etc/dnf/dnf.conf"
+
         # NOTE: Skipped mkinitcpio because it's system dependent... use Chezmoi!
         ;;
     *)
@@ -903,6 +913,13 @@ case "$response" in
                     --needed
         fi
         ./scripts/font-install.sh
+
+        # Set fonts for Gnome.
+        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+            gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
+        fi
         ;;
     *)
         echo "Skipping font installation"
