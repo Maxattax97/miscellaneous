@@ -625,6 +625,8 @@ zshrc_zplug() {
         zplug "plugins/thefuck", from:oh-my-zsh
         bindkey "^f" fuck-command-line
 
+        zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
+
         if ! zplug check; then
             zplug install
         fi
@@ -1147,6 +1149,10 @@ zshrc_load_library() {
             GB=$(((MB+512)/1024))
             [ $GB -lt 1024 ] && echo ${GB} GiB && break
             echo $(((GB+512)/1024)) TiB
+
+            # something is really effed up and screws up my syntax here, so
+            # this comment fixes that:
+            # ''$(\'''
         done
     }
 
@@ -1172,7 +1178,7 @@ zshrc_load_library() {
     }
 
     power-hibernate() {
-        # TODO: This won't work with a swap *file*.
+        # TODO: This wont work with a swap *file*.
         local device="$(lsblk -b | grep -i 'swap' | awk '{ printf $4 " " $2 "\n" }' | sort -n -r | awk '{ printf $2 "\n" }' | head -n 1)"
         if [ -n "$device" ]; then
             sudo sh -c "echo $device > /sys/power/resume"
@@ -1190,6 +1196,23 @@ zshrc_load_library() {
         scale=$1
         shift
         mogrify -scale $scale $@
+    }
+
+    poor_mans_scp_upload() {
+        local source_file="$1"
+        local target_user_at_host="$2"
+        local target_file="$3"
+
+        tar czf - "$source_file" | ssh "$target_user_at_host" tar xzf - -C "$target_file"
+    }
+
+    poor_mans_scp_download() {
+        local remote_user_at_host="$1"
+        local remote_source_file="$2"
+        local local_dest_file="$3"
+
+        # shellcheck disable=SC2029
+        ssh "$remote_user_at_host" "tar czf - ${remote_source_file}" | tar xzvf - -C "$(dirname "$local_dest_file")"
     }
 }
 
@@ -1340,7 +1363,8 @@ zshrc_set_environment_variables() {
     export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
     # Enable colors for less by default.
-    export LESS='--RAW-CONTROL-CHARS --mouse'
+    # --LINE-NUMBERS
+    export LESS='--RAW-CONTROL-CHARS --mouse --ignore-case --quit-if-one-screen --status-column --tabs=4 --wheel-lines=3'
 
     if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
