@@ -316,6 +316,13 @@ zshrc_setup_completion() {
             rustup completions zsh cargo > "${HOME}/.zsh_completions/_cargo"
         fi
     fi
+
+    # Load `awscli`'s completions if available.
+    # NOTE: These are bash completions!
+    local aws_completer_path="$(command -v aws_completer)"
+    if [ -x $aws_completer_path ]; then
+        complete -C "$aws_completer_path" aws
+    fi
 }
 
 zshrc_autoload() {
@@ -1213,6 +1220,25 @@ zshrc_load_library() {
 
         # shellcheck disable=SC2029
         ssh "$remote_user_at_host" "tar czf - ${remote_source_file}" | tar xzvf - -C "$(dirname "$local_dest_file")"
+    }
+
+    unix_epoch_seconds() {
+        date +%s
+    }
+
+    unix_epoch_milliseconds() {
+        date +%s%3N
+    }
+
+    unix_epoch_parse() {
+        # TODO: Make this parse seconds, milliseconds, nanoseconds based on size of input.
+        # https://unix.stackexchange.com/a/2993
+        if date --version 2>&1 | grep -q 'GNU coreutils'; then
+            date -u -d "@$1" --iso-8601=ns
+        else
+            # *BSD
+            date -u -r "$1" +"%Y-%m-%dT%H:%M:%S%:z"
+        fi
     }
 }
 

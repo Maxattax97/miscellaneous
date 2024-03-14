@@ -671,7 +671,11 @@ case "$response" in
         fi
 
         if [[ ! -x "$(command -v brew)" ]]; then
-            xdg-settings set default-web-browser brave.desktop
+            if [ -s /usr/share/applications/brave.desktop ]; then
+                xdg-settings set default-web-browser brave.desktop
+            elif [ -s /usr/share/applications/brave-browser.desktop ]; then
+                xdg-settings set default-web-browser brave-browser.desktop
+            fi
 
             # Install NordVPN CLI tool.
             sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
