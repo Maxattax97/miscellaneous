@@ -6,3 +6,4 @@
 /config/shell_gpt/roles/jules.json filter=git-crypt diff=git-crypt
 /config/shell_gpt/roles/veronica.json filter=git-crypt diff=git-crypt
 /config/weechat/sec.conf filter=git-crypt diff=git-crypt
+/scripts/supermicro_ipmi.sh filter=git-crypt diff=git-crypt
