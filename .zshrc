@@ -727,6 +727,7 @@ zshrc_set_path() {
     zshrc_add_path "${HOME}/.yarn/bin"
     zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
     zshrc_add_path "${HOME}/bin/balena-cli"
+    zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin"
 
     if [ -n "$GOPATH" ]; then
         zshrc_add_path "${GOPATH}/bin/"
@@ -1178,6 +1179,11 @@ zshrc_load_library() {
             /GB$/{    printpower($1, 10,  9)};
             /TB$/{    printpower($1, 10, 12)}'
         done
+    }
+
+    # Go to the root of the current git repository.
+    groot() {
+        cd "$(git rev-parse --show-toplevel)"
     }
 
     power-sleep() {

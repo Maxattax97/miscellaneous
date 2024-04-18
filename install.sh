@@ -362,6 +362,9 @@ case "$response" in
         # Pull GPG keys for max.ocull@protonmail.com
         gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
+        # Gentoo keys
+        gpg --keyserver hkps://keys.gentoo.org --recv-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
+
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
         fi
@@ -416,8 +419,59 @@ case "$response" in
                                 ;;
                     esac
 
+                    read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
+                                ;;
+                            *)
+                                echo "Skipping AWS Session Manager Plugin installation"
+                                ;;
+                    esac
                 elif [[ -x "$(command -v apt)" ]]; then
-                    echo "No repositories for apt yet"
+                    read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+                                sudo dpkg -i "session-manager-plugin.deb"
+                                rm -f "session-manager-plugin.deb"
+                                ;;
+                            *)
+                                echo "Skipping AWS Session Manager Plugin installation"
+                                ;;
+                    esac
+
+                    read -r -p "Would you like to install Kubernetes? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo mkdir -p -m 755 /etc/apt/keyrings
+                                curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+                                sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+
+                                echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+                                sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
+
+                                sudo apt-get update
+                                sudo apt-get install -y kubectl
+                                ;;
+                            *)
+                                echo "Skipping Kubernetes installation"
+                                ;;
+                    esac
+
+                    read -r -p "Would you like to install Helm? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+                                sudo apt-get install apt-transport-https --yes
+                                echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+                                sudo apt-get update
+                                sudo apt-get install helm
+                                ;;
+                            *)
+                                echo "Skipping Helm installation"
+                                ;;
+                    esac
                 elif [[ -x "$(command -v pacman)" ]]; then
                     echo "No repositories for pacman yet"
                     # TODO: Set up yay.
@@ -845,6 +899,24 @@ case "$response" in
         ;;
     *)
         echo "Skipping Rust setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup Krew? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        (
+            set -x; cd "$(mktemp -d)" &&
+            OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+            ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+            KREW="krew-${OS}_${ARCH}" &&
+            curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+            tar zxvf "${KREW}.tar.gz" &&
+            ./"${KREW}" install krew
+        )
+        ;;
+    *)
+        echo "Skipping Krew setup"
         ;;
 esac
 
