@@ -74,8 +74,9 @@ link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
 mkdir -p "${HOME}/.ssh"
 link_source "config/ssh/config" 0 ".ssh/config"
 
-mkdir -p "${HOME}/.SpaceVim.d"
+# Linked folders
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
+link_source ".tmuxp" 1
 
 # Configure secured password (not included in this repo) with:
 # /secure passphrase a strong password here
@@ -322,13 +323,15 @@ case "$response" in
             pipx install neovim
             pipx install shell-gpt
             pipx install thefuck
+            pipx install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 neovim \
                 shell-gpt \
-                thefuck
+                thefuck \
+                tmuxp
         else
-            echo "You need to install pip3"
+            echo "You need to install pipx / pip3"
         fi
 
         # TODO: install LTS node via NVM which is installed via ZSH.

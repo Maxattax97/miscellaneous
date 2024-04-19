@@ -34,26 +34,14 @@ zshrc_probe() {
 }
 
 zshrc_enter_tmux() {
-    # [[ -n "$DISPLAY" ]] &&
     if [[ -x "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls | grep "^Main" | wc -l)
         if [[ "$session_count" == "0" ]]; then
-            # echo "Launching tmux base session $base_session ..."
-            # Guide: https://stackoverflow.com/a/40009032
-            tmux -2 new-session -s Main \; \
-                send-keys 'top' C-m \; \
-                split-window -h -p 35 \; \
-                send-keys 'ctop' C-m \; \
-                select-pane -t 1 \; \
-                new-window \; \
-                send-keys 'weechat' C-m \; \
-                split-window -h -p 35 \; \
-                send-keys 'newsboat' C-m 'R' \; \
-                select-pane -t 1 \; \
-                new-window \;
-
-                #send-keys '((sleep 5 && tmux select-pane -t 2 \; send-keys l l \; select-pane -t 1 \;) &)' C-m \; \
-
+            if [ -x "$(command -v tmuxp)" ]; then
+                tmuxp load "${HOME}/.tmuxp/main.yaml"
+            else
+                tmux -2 new-session -s "Main"
+            fi
         else
             # Make sure we are not already in a tmux session
             if [[ -z "$TMUX" ]]; then
@@ -64,10 +52,6 @@ zshrc_enter_tmux() {
                 # Create a new session (without attaching it) and link to base session
                 # to share windows
                 tmux -2 new-session -d -t Main -s "$session_id"
-                # if [[ "$2" == "1" ]]; then
-                #     # Create a new window in that session
-                #     tmux new-window
-                # fi
 
                 # Attach to the new session & kill it once orphaned
                 tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
@@ -75,8 +59,6 @@ zshrc_enter_tmux() {
                 zshrc_display_banner
             fi
         fi
-
-        # test -z "$TMUX" && (tmux attach || tmux new-session -s "Main")
     else
         zshrc_display_banner
     fi
@@ -84,7 +66,9 @@ zshrc_enter_tmux() {
 
 # Adapted from oh-my-zsh: https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/termsupport.zsh
 zshrc_auto_window_title() {
-    DISABLE_AUTO_TITLE=false
+    if [ -z "$DISABLE_AUTO_TITLE" ]; then
+        DISABLE_AUTO_TITLE=false
+    fi
 
     function title {
         emulate -L zsh

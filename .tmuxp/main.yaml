@@ -1,0 +1,38 @@
+session_name: Main
+windows:
+  - window_name: SYS
+    environment:
+      DISABLE_AUTO_TITLE: "true"
+    focus: true
+    options:
+      allow-rename: false
+      automatic-rename: false
+    panes:
+      - shell_command: top
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+  - window_name: COM
+    layout: even-horizontal
+    environment:
+      DISABLE_AUTO_TITLE: "true"
+    options:
+      allow-rename: false
+      automatic-rename: false
+    panes:
+      - shell_command: weechat
+        focus: true
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+          set-titles: false
+      - shell_command: newsboat
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
