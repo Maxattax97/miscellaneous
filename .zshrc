@@ -34,9 +34,9 @@ zshrc_probe() {
 }
 
 zshrc_enter_tmux() {
-    if [[ -x "$(command -v tmux)" ]]; then
-        local session_count=$(tmux ls | grep "^Main" | wc -l)
-        if [[ "$session_count" == "0" ]]; then
+    if [[ -n "$(command -v tmux)" ]]; then
+        local session_count=$(tmux ls 2>/dev/null | grep "^Main" | wc -l)
+        if [[ "$session_count" -eq "0" ]]; then
             if [ -x "$(command -v tmuxp)" ]; then
                 tmuxp load "${HOME}/.tmuxp/main.yaml"
             else
@@ -1510,12 +1510,12 @@ zshrc_init() {
     fi
 
     zshrc_set_environment_variables
+    zshrc_set_path
     zshrc_enter_tmux
     #zshrc_display_banner
 
     zshrc_autoload
     zshrc_source
-    zshrc_set_path
     zshrc_set_default_programs
     zshrc_set_aliases
     zshrc_load_library
