@@ -200,6 +200,7 @@ case "$response" in
                 curl \
                 fastfetch \
                 gcc \
+                gh \
                 git \
                 git-crypt \
                 git-lfs \
@@ -256,6 +257,7 @@ case "$response" in
                 git \
                 git-crypt \
                 git-lfs \
+                github-cli \
                 gnupg \
                 keychain \
                 make \
@@ -287,6 +289,7 @@ case "$response" in
                 curl \
                 fastfetch \
                 gcc \
+                gh \
                 git \
                 git-crypt \
                 git-lfs \
@@ -366,7 +369,35 @@ case "$response" in
         gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
         # Gentoo keys
-        gpg --keyserver hkps://keys.gentoo.org --recv-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
+        gpg --keyserver hkps://keys.gentoo.org --receive-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
+
+        # FreeBSD team keys
+        curl -s https://docs.freebsd.org/pgpkeys/pgpkeys.txt | gpg --import
+
+        # Linux Kernel
+        # https://www.kernel.org/signature.html
+        ## Linus Torvalds
+        gpg --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
+        ## Greg Kroah-Hartman
+        gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
+        ## Sasha Levin
+        gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
+        ## Ben Hutchings
+        gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
+
+        # Arch Linux Official Keys
+        # https://archlinux.org/master-keys/
+        ## Florian Pritz
+        gpg --receive-keys 91FFE0700E80619CEB73235CA88E23E377514E00
+        ## Levente Polyak
+        gpg --receive-keys D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C
+        ## David Runge
+        gpg --receive-keys 2AC0A42EFB0B5CBC7A0402ED4DC95B6D7BE9892E
+        ## Johannes Löthberg
+        gpg --receive-keys 69E6471E3AE065297529832E6BA0F5A2037F4F41
+        ## Leonidas Spyropoulos
+        gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
+
 
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
@@ -400,6 +431,12 @@ case "$response" in
                     # This one works:
                     sudo dnf copr enable ojab/openvpn3
 
+                    # Add Github CLI repo
+                    sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+
+                    # Update all the new repositories
+                    sudo dnf update -y
+
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
@@ -431,7 +468,40 @@ case "$response" in
                                 echo "Skipping AWS Session Manager Plugin installation"
                                 ;;
                     esac
+
+                    read -r -p "Would you like to install Github CLI? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y gh
+                                ;;
+                            *)
+                                echo "Skipping Github CLI installation"
+                                ;;
+                    esac
                 elif [[ -x "$(command -v apt)" ]]; then
+                    # Install tools for adding repositories
+                    sudo apt-get install -y apt-transport-https
+
+                    # Make sure the keyrings directory exists
+                    sudo mkdir -p -m 755 /etc/apt/keyrings
+
+                    # Keys and repository for Kubernetes
+                    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+                    sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+                    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+                    sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
+
+                    # Keys and repository for Helm
+                    curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+
+                    # Keys and repository for Github CLI
+                    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+                    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+                    sudo apt-get update
+
                     read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
@@ -447,14 +517,6 @@ case "$response" in
                     read -r -p "Would you like to install Kubernetes? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
-                                sudo mkdir -p -m 755 /etc/apt/keyrings
-                                curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-                                sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
-
-                                echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-                                sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
-
-                                sudo apt-get update
                                 sudo apt-get install -y kubectl
                                 ;;
                             *)
@@ -465,21 +527,25 @@ case "$response" in
                     read -r -p "Would you like to install Helm? [y/N] " response
                     case "$response" in
                             [yY][eE][sS]|[yY])
-                                curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-                                sudo apt-get install apt-transport-https --yes
-                                echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-                                sudo apt-get update
-                                sudo apt-get install helm
+                                sudo apt-get install -y helm
                                 ;;
                             *)
                                 echo "Skipping Helm installation"
                                 ;;
                     esac
+
+                    read -r -p "Would you like to install Github CLI? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo apt-get install -y gh
+                                ;;
+                            *)
+                                echo "Skipping Github CLI installation"
+                                ;;
+                    esac
                 elif [[ -x "$(command -v pacman)" ]]; then
                     echo "No repositories for pacman yet"
                     # TODO: Set up yay.
-                elif [[ -x "$(command -v pkg)" ]]; then
-                    echo "No repositories for pkg yet"
                 fi
                 ;;
         *)

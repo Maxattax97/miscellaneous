@@ -307,6 +307,12 @@ zshrc_setup_completion() {
     if [ -x $aws_completer_path ]; then
         complete -C "$aws_completer_path" aws
     fi
+
+    if [[ -x "$(command -v gh)" ]]; then
+        if [[ ! -s "${HOME}/.zsh_completions/_gh" ]]; then
+            gh completion -s zsh > "${HOME}/.zsh_completions/_gh"
+        fi
+    fi
 }
 
 zshrc_autoload() {
