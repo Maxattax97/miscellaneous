@@ -152,13 +152,13 @@ def construct_url_finder_pattern():
     url = r"""
         # url must be preceded by a word boundary, or a weechat color (a control character followed by a digit)
         (?:(?<=\d)|\b)
-    
+
         # http:// or www  =1=
         (https?://|www\.)
-    
+
         # optional userinfo at  =2=
         (?:([^{bad}@]*)@)?
-    
+
         # ip or host  =3=
         (
             # ipv4
@@ -183,14 +183,14 @@ def construct_url_finder_pattern():
             {host_segment}
             (?:\.{host_segment})*
             \.{tld}
-            
+
             # fqdn dot, but only if followed by url-ish things
             (?:\.(?=/|:\d))?
         )
-    
+
         # port?  =4=
         (:\d{{1,5}})?
-    
+
         # / & the rest  =5=
         (
             /
@@ -204,7 +204,7 @@ def construct_url_finder_pattern():
             # any string (non-greedy!)
             {good}*?
         )?
-    
+
         # url must be directly followed by:
         (?=
             # some possible punctuation

@@ -442,4 +442,3 @@ augroup END
 
 "" Append any other overwrites or settings here
 "source $NEOVIM_STUDIO_DIR/includes/settings.vim
-

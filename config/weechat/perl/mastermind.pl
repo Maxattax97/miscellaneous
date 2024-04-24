@@ -55,7 +55,7 @@ my $message_end = "";
 sub buffer_close
 {
     $mm_buffer = "";
-    
+
     weechat::print("", "Thank you for playing Mastermind!");
     return weechat::WEECHAT_RC_OK;
 }
@@ -82,7 +82,7 @@ sub mastermind_init
         # command: /mastermind toggle_solution
         # (shame on you if you do that!)
         #weechat::buffer_set($mm_buffer, "key_bind_meta-Z",      "/mastermind toggle_solution");
-        
+
         new_game();
         display_all();
         weechat::buffer_set($mm_buffer, "display", "1");
@@ -140,11 +140,11 @@ sub display_all
                      .weechat::color("cyan").": set color -- "
                      .weechat::color("lightcyan")."alt-Ret"
                      .weechat::color("cyan").": check pattern");
-    
+
     # bar on top
     weechat::print_y($mm_buffer, $start_y + 1,
                      " ┌───".("────" x $nbx)."───".("────" x $nbx)."─┐");
-    
+
     # middle
     for (my $y = 0; $y < $nby; $y++)
     {
@@ -155,14 +155,14 @@ sub display_all
                              " │   ".("    " x $nbx)." │ ".("    " x $nbx)." │");
         }
     }
-    
+
     # bottom bar
     weechat::print_y($mm_buffer, $start_y + 2 + (($nby - 1) * 2) + 1,
                      " └───".("────" x $nbx)."───".("────" x $nbx)."─┘");
-    
+
     # display solution and message
     weechat::print_y($mm_buffer, $start_y + 2 + (($nby - 1) * 2) + 3,
-                     ($display_solution) ? 
+                     ($display_solution) ?
                      "     ".get_line_for_display($pattern, 0)
                      .weechat::color("default")."  ".$message_end
                      : "");
@@ -207,7 +207,7 @@ sub check_pattern
     my $temp_pattern = $pattern;
     my $good_position = 0;
     my $bad_position = 0;
-    
+
     # check for pegs at good position
     for (my $i = 0; $i < $nbx; $i++)
     {
@@ -236,7 +236,7 @@ sub check_pattern
             $bad_position++ if ($found);
         }
     }
-    
+
     # build result string
     my $result = " " x $nbx;
     for (my $i = 0; $i < $good_position; $i++)
@@ -276,18 +276,18 @@ sub check_pattern
 sub mastermind
 {
     my ($data, $buffer, $args) = ($_[0], $_[1], $_[2]);
-    
+
     if ($mm_buffer eq "")
     {
         mastermind_init();
     }
-    
+
     if ($args eq "new_game")
     {
         new_game();
         display_all();
     }
-    
+
     if ($playing eq 1)
     {
         if ($args eq "up")
@@ -343,7 +343,7 @@ sub mastermind
             display_all();
         }
     }
-    
+
     return weechat::WEECHAT_RC_OK;
 }
 

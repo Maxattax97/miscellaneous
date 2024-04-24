@@ -1,7 +1,8 @@
+#!/usr/bin/env bash
 
 echo "Setting up PPA's ..."
 # Google Chrome
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 # Resilio
 # ...
@@ -46,7 +47,7 @@ echo "Installing GUI-based packages ..."
 sudo apt-get install google-chrome-stable audacity blender filezilla gimp gparted hexchat okular qbittorrent remmina scudcloud libreoffice
 
 # Pantheon-based
-sudo apt install elementary-tweaks 
+sudo apt install elementary-tweaks
 # ksysguard
 
 echo "Installing packages with DRM ..."
@@ -66,4 +67,3 @@ sudo apt-get clean
 # KVM
 # rescuetime
 # spotify blocklist https://www.youtube.com/watch?v=QX86UkSLgRk
- 

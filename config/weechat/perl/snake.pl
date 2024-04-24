@@ -60,7 +60,7 @@ sub tail { # direction -> print the right type of tail for the previous spot (ya
 }
 
 sub init_snake { # (re)start
-  
+
   @coords=(); # reset
   $speed=140;
   $score=0;
@@ -69,23 +69,23 @@ sub init_snake { # (re)start
   $pause=0;
   $level="";
   $dir=$prevdir=1;
-  
+
   for my $i (0..$rows){ # empty table
     for my $j (0..$cols){
       $table[$i][$j]=$empty;
     }
   }
-  
+
   for my $i (0..$length){ # add the snake
     $table[5][$i]=$tail[1];
     push(@coords, (5,$i));
   }
-  
+
   $table[5][$length]=$head;
   $table[12][19]=$food; # first food
   redraw();
   hook(1);
-  
+
 }
 
 sub snake_cmd { # /snake
@@ -129,29 +129,29 @@ sub snake_cmd { # /snake
     move();
   }
   return weechat::WEECHAT_RC_OK;
-} 
+}
 
 sub move {
-  
+
   if($dir+$prevdir==0){ $dir=$prevdir; } # don't go backwards
-  
+
   if($dir==1){ $c++; } # new head position
   elsif($dir==2){ $r++; }
   elsif($dir==-1){ $c--; }
   elsif($dir==-2){ $r--; }
-  
+
   $r%=$rows+1; # edges
   $c%=$cols+1;
-  
+
   if($table[$r][$c] eq $food){ # eat
-    
+
     $score++;
     if($score==50){ $level="Cool!"; $speed*=0.95; }
     elsif($score==100){ $level="Awesome!"; $speed*=0.92; }
     elsif($score==120){ $level="OMG!"; $speed*=0.9; }
     elsif($score==150){ $level="OMG!! INSANE!!!"; $speed*=0.7; }
     weechat::print_y($buffer, $rows+3, " Score: $score $level");
-    
+
     for my $i (0..10000){
       my $randr=rand($rows+1);
       my $randc=rand($cols+1);
@@ -165,13 +165,13 @@ sub move {
       }
       if($i==10000){ hook(0); $table[$r][$c]=$tail[0]; print_line($r); weechat::print_y($buffer, $rows+3, " Score: $score $level YOU WON THE GAME!"); return weechat::WEECHAT_RC_OK; } # not really necessary...
     }
-    
+
   }else{
-    
+
     my ($remr,$remc)=(shift(@coords),shift(@coords));
     $table[$remr][$remc]=$empty; # remove the last coordinates
     print_line($remr);
-    
+
     if($table[$r][$c] ne $empty){ # die
       $table[$r][$c]=$dead;
       tail();
@@ -179,14 +179,14 @@ sub move {
       hook(0);
       return weechat::WEECHAT_RC_OK;
     }
-    
+
   }
-  
+
   $table[$r][$c]=$head; # snake to new coordinates
   print_line($r);
   tail();
-  
+
   push(@coords, ($r,$c)); # push the new coordinates to @coords array
   $prevdir=$dir;
-  
+
 }

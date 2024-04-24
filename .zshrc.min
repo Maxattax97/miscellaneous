@@ -63,7 +63,7 @@ zshrc_source() {
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
     fi
-    
+
     if [[ -e "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh" ]]; then
         source "$HOME/src/robobenklein-config/zsh/plunks/rtabfunc.zsh"
     fi
@@ -304,7 +304,7 @@ zshrc_load_library() {
         echo "Cleaning Docker images and containers ..."
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
-        echo "Docker cleaned." 
+        echo "Docker cleaned."
     }
 }
 
@@ -441,4 +441,3 @@ zshrc_init() {
 }
 
 zshrc_init
-

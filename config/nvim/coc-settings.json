@@ -1,13 +1,33 @@
 {
   "coc.preferences.extensionUpdateCheck": "weekly",
-  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "js", "javascript", "json", "ts", "typescript", "html", "yml", "yaml", "rust", "c", "cpp", "h", "hpp"],
   "coc.preferences.formatOnSave": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "markdown",
+    "js",
+    "javascript",
+    "json",
+    "ts",
+    "typescript",
+    "html",
+    "yml",
+    "yaml",
+    "rust",
+    "c",
+    "cpp",
+    "h",
+    "hpp"
+  ],
   "codeLens.enable": false,
   "diagnostic.checkCurrentLine": true,
   "diagnostic.displayByAle": true,
-  "diagnostic.warningSign": ">>",
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextPrefix": " ]] ",
+  "diagnostic.warningSign": ">>",
+  "eslint.autoFixOnSave": true,
+  "eslint.format.enable": true,
+  "eslint.nodePath": "~/batsrc/.local/node_modules/",
+  "javascript.validate.enable": false,
   "languageserver": {
     "golang": {
       "command": "gopls",
@@ -34,17 +54,13 @@
       ]
     }
   },
+  "python.linting.pep8Enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.pythonPath": "python3",
+  "rust-analyzer.checkOnSave.command": "clippy",
   "suggest.echodocSupport": true,
   "suggest.enablePreview": true,
   "suggest.maxCompleteItemCount": 50,
   "suggest.timeout": 5000,
-  "python.pythonPath": "python3",
-  "python.linting.pylintEnabled": false,
-  "python.linting.pep8Enabled": true,
-  "eslint.nodePath": "~/batsrc/.local/node_modules/",
-  "eslint.autoFixOnSave": true,
-  "eslint.format.enable": true,
-  "javascript.validate.enable": false,
-  "rust-analyzer.checkOnSave.command": "clippy",
   "tsserver.npm": "/usr/bin/npm"
 }

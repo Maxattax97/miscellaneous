@@ -148,4 +148,3 @@ argsWeeChat      = '[%s [%s] ]' % (cryptoCurrencies, fiatCurrencies)
 
 weechat.hook_command(COMMAND_NICK, 'Display common crypto currency spot exchange values conveted to fiat currencies like USD or EUR',\
             argsWeeChat, '    btc  = Bitcoin\n    eth  = Ethereum\n    bch  = Bitcoin Cash\n    xrp  = Ripple\n    xem  = NEM\n    ltc  = Litecoin\n    dash = Dash\n    neo  = NEO\n    etc  = Ethereum Classic\n\n    usd = US dollar\n    eur = euro\n    rur = Russian ruble', '', 'displayCryptoCurrencyTicker', '')
-

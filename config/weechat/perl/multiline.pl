@@ -706,7 +706,7 @@ sub do_key_bind {
 ## returns the command
   sub get_key_command {
       unless (exists $keys{$_[0]}) {
-	  ($keys{$_[0]}) = 
+	  ($keys{$_[0]}) =
 	map { $_->{command} } grep { $_->{key} eq $_[0] }
 		Nlib::i2h('key')
 		}

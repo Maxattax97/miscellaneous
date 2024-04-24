@@ -3,40 +3,10 @@
     "id": null,
     "worker-id": null
   },
-  "http": {
-    "enabled": false,
-    "host": "127.0.0.1",
-    "port": 0,
-    "access-token": null,
-    "restricted": true
-  },
   "autosave": true,
   "background": false,
   "colors": true,
-  "title": true,
-  "randomx": {
-    "init": -1,
-    "init-avx2": -1,
-    "mode": "auto",
-    "1gb-pages": false,
-    "rdmsr": true,
-    "wrmsr": true,
-    "cache_qos": false,
-    "numa": true,
-    "scratchpad_prefetch_mode": 1
-  },
   "cpu": {
-    "enabled": true,
-    "huge-pages": true,
-    "huge-pages-jit": false,
-    "hw-aes": null,
-    "priority": 1,
-    "memory-pool": false,
-    "yield": true,
-    "asm": true,
-    "argon2-impl": null,
-    "astrobwt-max-size": 550,
-    "astrobwt-avx2": false,
     "argon2": [
       0,
       12,
@@ -63,6 +33,8 @@
       11,
       23
     ],
+    "argon2-impl": null,
+    "asm": true,
     "astrobwt": [
       0,
       12,
@@ -89,6 +61,8 @@
       11,
       23
     ],
+    "astrobwt-avx2": false,
+    "astrobwt-max-size": 550,
     "cn": [
       [
         1,
@@ -351,6 +325,7 @@
         23
       ]
     ],
+    "cn-lite/0": false,
     "cn-pico": [
       [
         2,
@@ -449,6 +424,7 @@
         23
       ]
     ],
+    "cn/0": false,
     "cn/upx2": [
       [
         2,
@@ -547,6 +523,12 @@
         23
       ]
     ],
+    "enabled": true,
+    "huge-pages": true,
+    "huge-pages-jit": false,
+    "hw-aes": null,
+    "memory-pool": false,
+    "priority": 1,
     "rx": [
       0,
       12,
@@ -573,6 +555,8 @@
       11,
       23
     ],
+    "rx/arq": "rx/wow",
+    "rx/keva": "rx/wow",
     "rx/wow": [
       0,
       12,
@@ -599,67 +583,83 @@
       11,
       23
     ],
-    "cn/0": false,
-    "cn-lite/0": false,
-    "rx/arq": "rx/wow",
-    "rx/keva": "rx/wow"
-  },
-  "opencl": {
-    "enabled": false,
-    "cache": true,
-    "loader": null,
-    "platform": "AMD",
-    "adl": true
+    "yield": true
   },
   "cuda": {
     "enabled": false,
     "loader": null,
     "nvml": true
   },
-  "log-file": null,
-  "donate-level": 0,
-  "donate-over-proxy": 0,
-  "pools": [
-    {
-      "algo": null,
-      "coin": "monero",
-      "url": "mo2tor2amawhphlrgyaqlrqx7o27jaj7yldnx3t6jip3ow4bujlwz6id.onion:10512",
-      "user": "46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA",
-      "pass": "Endeavor",
-      "rig-id": null,
-      "nicehash": false,
-      "keepalive": true,
-      "enabled": true,
-      "tls": false,
-      "tls-fingerprint": null,
-      "daemon": false,
-      "socks5": 9050,
-      "self-select": null,
-      "submit-to-origin": false
-    }
-  ],
-  "retries": 5,
-  "retry-pause": 5,
-  "print-time": 60,
-  "health-print-time": 60,
   "dmi": true,
-  "syslog": false,
-  "tls": {
-    "enabled": false,
-    "protocols": null,
-    "cert": null,
-    "cert_key": null,
-    "ciphers": null,
-    "ciphersuites": null,
-    "dhparam": null
-  },
   "dns": {
     "ipv6": false,
     "ttl": 30
   },
+  "donate-level": 0,
+  "donate-over-proxy": 0,
+  "health-print-time": 60,
+  "http": {
+    "access-token": null,
+    "enabled": false,
+    "host": "127.0.0.1",
+    "port": 0,
+    "restricted": true
+  },
+  "log-file": null,
+  "opencl": {
+    "adl": true,
+    "cache": true,
+    "enabled": false,
+    "loader": null,
+    "platform": "AMD"
+  },
+  "pause-on-active": false,
+  "pause-on-battery": false,
+  "pools": [
+    {
+      "algo": null,
+      "coin": "monero",
+      "daemon": false,
+      "enabled": true,
+      "keepalive": true,
+      "nicehash": false,
+      "pass": "Endeavor",
+      "rig-id": null,
+      "self-select": null,
+      "socks5": 9050,
+      "submit-to-origin": false,
+      "tls": false,
+      "tls-fingerprint": null,
+      "url": "mo2tor2amawhphlrgyaqlrqx7o27jaj7yldnx3t6jip3ow4bujlwz6id.onion:10512",
+      "user": "46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
+    }
+  ],
+  "print-time": 60,
+  "randomx": {
+    "1gb-pages": false,
+    "cache_qos": false,
+    "init": -1,
+    "init-avx2": -1,
+    "mode": "auto",
+    "numa": true,
+    "rdmsr": true,
+    "scratchpad_prefetch_mode": 1,
+    "wrmsr": true
+  },
+  "retries": 5,
+  "retry-pause": 5,
+  "syslog": false,
+  "title": true,
+  "tls": {
+    "cert": null,
+    "cert_key": null,
+    "ciphers": null,
+    "ciphersuites": null,
+    "dhparam": null,
+    "enabled": false,
+    "protocols": null
+  },
   "user-agent": null,
   "verbose": 0,
-  "watch": true,
-  "pause-on-battery": false,
-  "pause-on-active": false
+  "watch": true
 }

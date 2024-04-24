@@ -26,7 +26,7 @@ func! bootstrap#before() abort
 
     " Disable concealing of Markdown characters for displaying.
     let g:vim_markdown_conceal = 0
-   
+
     " Use Galactic's airline theme.
     let g:airline_theme='galactic'
     let g:gitgutter_realtime = 0
