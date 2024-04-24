@@ -4,6 +4,10 @@
 
 MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
+if [ -n "${AUTOMATED}" ]; then
+    AUTOMATED_PACMAN_FLAGS="--noconfirm"
+fi
+
 echo "Linking from ${MISC_DIR} ..."
 
 TEXT_RED='\033[0;91m';
@@ -248,7 +252,7 @@ case "$response" in
                 xclip \
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu --needed \
+            sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
                 btop \
                 chezmoi \
                 ctags \
@@ -277,7 +281,7 @@ case "$response" in
                 zsh
 
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -S \
+                    yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
                         fastfetch \
                         --needed
             fi
@@ -352,17 +356,7 @@ case "$response" in
         fi
 
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
-            sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
-
-            # Fix the file that Dein overwrote so Neovim just works when we open it.
-            mv "${HOME}/.config/nvim/init.vim" "${HOME}/.config/nvim/init.dein.vim"
-            mv "${HOME}/.config/nvim/init.vim.pre-dein-vim" "${HOME}/.config/nvim/init.vim"
-
-            #mkdir -p "${HOME}/.cache/dein"
-            #curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s -- "${HOME}/.cache/dein"
-
-            # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh /tmp/.dein_installer.sh && sh /tmp/.dein_installer.sh "${HOME}/.cache/dein"
-            # rm -rf /tmp/.dein_installer.sh
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)" -- "${HOME}/.cache/dein" --use-neovim-config
         fi
 
         # Pull GPG keys for max.ocull@protonmail.com
@@ -607,7 +601,7 @@ case "$response" in
                         echo "You will need to build picom from source: https://github.com/yshui/picom#build"
                         sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
                 elif [[ -x "$(command -v pacman)" ]]; then
-                        sudo pacman -Syu \
+                        sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
                             bspwm \
                             copyq \
                             dunst \
@@ -633,7 +627,7 @@ case "$response" in
                             --needed
 
                         if [[ -x "$(command -v yay)" ]]; then
-                                yay -S \
+                                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
                                     ly \
                                     nsxiv \
                                     --needed
@@ -753,7 +747,7 @@ case "$response" in
             # TODO: Add ppa for veracrypt on Ubuntu
             # TODO: Add ppa for Brave on Ubuntu
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu \
+            sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
                 flameshot \
                 girara \
                 gnome-keyring \
@@ -770,7 +764,7 @@ case "$response" in
                 zathura-pdf-mupdf \
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -S \
+                    yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
                         brave-bin \
                         yt-dlp \
                         --needed
@@ -808,7 +802,11 @@ case "$response" in
         fi
 
         if [[ ! -x "$(command -v veracrypt)" ]]; then
-            read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+            if [ -n "${AUTOMATED}" ]; then
+                response='n'
+            else
+                read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+            fi
             case "$response" in
                 [yY][eE][sS]|[yY])
                     xdg-open 'https://veracrypt.eu/en/Downloads.html'
@@ -844,7 +842,7 @@ case "$response" in
         #elif [[ -x "$(command -v apt)" ]]; then
             #sudo apt install \
         #elif [[ -x "$(command -v pacman)" ]]; then
-            #sudo pacman -Syu \
+            #sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
                 #--needed
         #elif [[ -x "$(command -v pkg)" ]]; then
             #sudo pkg install \
@@ -882,13 +880,13 @@ if [[ -x "$(command -v pacman)" ]]; then
                                     openssl-devel \
                                     tor
                         elif [[ -x "$(command -v pacman)" ]]; then
-                                sudo pacman -Syu --needed \
+                                sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
                                     msr-tools \
                                     nyx \
                                     tor
 
                                 if [[ -x "$(command -v yay)" ]]; then
-                                        yay -S --needed \
+                                        yay -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
                                             xmrig-donateless
                                 fi
                         fi
@@ -1055,7 +1053,7 @@ read -r -p "Would you like to install fonts? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v yay)" ]]; then
-                yay -S \
+                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
                     all-repository-fonts \
                     ttf-ms-fonts \
                     --needed

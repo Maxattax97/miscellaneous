@@ -1,5 +1,7 @@
 # `dotfiles`
 
+[![Super-Linter](https://github.com/Maxattax97/miscellaneous/actions/workflows/ci.yaml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 ## Screenshots
 
 ![btop, ctop, tmux, man, neofetch](assets/btop.png)
