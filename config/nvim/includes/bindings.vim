@@ -124,3 +124,8 @@ vnoremap <leader>P "0p
 " Map test runners.
 nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
+
+" Fugitive Conflict Resolution
+nnoremap <leader>gd :Gvdiffsplit!<CR>
+nnoremap gdh :diffget //2<CR>
+nnoremap gdl :diffget //3<CR>
