@@ -19,6 +19,7 @@ Host maxocull.com
 	IdentityFile ~/.ssh/id_rsa
 
 Host leviathan
-	HostName 192.168.2.195
-	User root
+	HostName 192.168.2.192
+	ProxyJump maxocull.com
+	User max
 	IdentityFile ~/.ssh/id_rsa
