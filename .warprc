@@ -3,8 +3,12 @@ ans:~/aura/ns
 ar:~/aura/r
 asc:~/aura/sc
 ch:~/.local/share/chezmoi
+cp:~/aura/sc/ran-cu-cp-service
 dl:~/Downloads
 fl:/opt/flotilla
+fos:~/aura/sc/fos-integration-testing
+gvcf:~/aura/sc/gvcf-transcoder-service
+iac:~/aura/ns/core-poc-iac
 m:~/src/miscellaneous
 sr:~/src
 s:~/src
