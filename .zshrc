@@ -330,6 +330,7 @@ zshrc_autoload() {
     autoload -Uz compinit && compinit
     autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
     autoload -Uz promptinit && promptinit
+    autoload -Uz add-zsh-hook
 
     autoload -Uz edit-command-line
 
@@ -1026,9 +1027,9 @@ zshrc_load_library() {
     }
 
     infect() {
-        local target_host="$1"
-        local target_port="${2:-22}"
-        local target_user="${3}"
+        local target_user="$1"
+        local target_host="$2"
+        local target_port="${3:-22}"
 
         local host_user_str=""
         if [ -n "$target_user" ]; then
@@ -1622,9 +1623,7 @@ zshrc_init() {
     fi
 
     # Hook for checking the current directory.
-    chpwd() {
-        zshrc_check_directory
-    }
+    add-zsh-hook chpwd zshrc_check_directory
 
     zshrc_benchmark_stop
 }
