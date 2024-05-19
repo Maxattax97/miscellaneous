@@ -15,7 +15,7 @@ windows:
           allow-rename: false
           automatic-rename: false
   - window_name: COM
-    layout: even-horizontal
+    layout: main-vertical
     environment:
       DISABLE_AUTO_TITLE: "true"
     options:

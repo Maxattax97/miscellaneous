@@ -77,6 +77,7 @@ link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
 
 mkdir -p "${HOME}/.ssh"
 link_source "config/ssh/config" 0 ".ssh/config"
+link_source "config/ssh/aws-ssm-ec2-proxy-command.sh" 1 ".ssh/aws-ssm-ec2-proxy-command.sh"
 
 # Linked folders
 link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
@@ -327,16 +328,26 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v pipx)" ]]; then
+            pipx install ansible
+            pipx install ansible-core
+            pipx install ansible-lint
+            pipx install flake8
+            pipx install isort
             pipx install neovim
             pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
+                ansible \
+                ansible-core \
+                ansible-lint \
+                flake8 \
+                isort \
                 neovim \
                 shell-gpt \
                 thefuck \
-                tmuxp
+                tmuxp \
         else
             echo "You need to install pipx / pip3"
         fi
