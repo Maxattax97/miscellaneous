@@ -331,6 +331,7 @@ case "$response" in
             pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
+            pipx install pre-commit
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 neovim \
@@ -350,7 +351,8 @@ case "$response" in
 
         if [[ -x "$(command -v gem)" ]]; then
             gem install \
-                neovim
+                neovim \
+                taskjuggler
         else
             echo "You need to install gem"
         fi
