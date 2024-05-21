@@ -356,6 +356,9 @@ case "$response" in
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
+
+            # I set this up to use npx instead
+            #npm install -g bash-language-server
         else
             echo "You need to install npm"
         fi
