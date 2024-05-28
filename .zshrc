@@ -778,6 +778,10 @@ zshrc_load_library() {
         telnet nethack.alt.org
     }
 
+    weather() {
+        curl "wttr.in/$1?m"
+    }
+
     # Aliases, functions, commands, etc.
 
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
