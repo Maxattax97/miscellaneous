@@ -1568,7 +1568,7 @@ zshrc_setup_repo() {
 zshrc_check_directory() {
     if [ -d "${PWD}/.git" ]; then
         # Is the root of a git repo.
-        if git remote -v | grep -qE "(Maxattax97)"; then
+        if git remote -v | grep -qE "(Maxattax97|maxocull\\.com)"; then
             zshrc_setup_repo
             echo "Personal repository detected and updated"
         fi

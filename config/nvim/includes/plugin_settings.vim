@@ -113,6 +113,10 @@ let g:go_metalinter_disabled = ['vet', 'golint', 'errcheck']
 let g:go_fmt_fail_silently = 1
 " }}}
 
+" Task Juggler {{{
+let g:NERDCustomDelimiters = { 'tjp': { 'left': '#' }, 'tji': { 'left': '#' } }
+" }}}
+
 " }}}
 "
 " Denite {{{

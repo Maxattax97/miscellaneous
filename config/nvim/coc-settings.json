@@ -29,6 +29,19 @@
   "eslint.nodePath": "~/batsrc/.local/node_modules/",
   "javascript.validate.enable": false,
   "languageserver": {
+    "bash": {
+      "args": [
+        "bash-language-server",
+        "start"
+      ],
+      "command": "npx",
+      "filetypes": [
+        "sh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
+    },
     "golang": {
       "command": "gopls",
       "filetypes": [
