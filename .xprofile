@@ -23,3 +23,6 @@ if [ -f "$usermodmap" ]; then
 fi
 
 export QT_QPA_PLATFORMTHEME=qt6ct
+
+# https://wiki.archlinux.org/title/Java#Better_font_rendering
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
