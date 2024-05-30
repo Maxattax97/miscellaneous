@@ -4,7 +4,7 @@
 let g:ale_sign_column_always = 1
 
 " Enable virtualtext.
-let g:ale_virtualtext_cursor = 1
+let g:ale_virtualtext_cursor = 0
 let g:ale_virtualtext_prefix = ' ]] '
 
 "let g:ale_javascript_clangformat_options = '-style=file -assume-filename=file.js'
