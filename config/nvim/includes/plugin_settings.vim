@@ -18,6 +18,7 @@ let g:ale_fixers = {
 \   'json': ['jq'],
 \   'python': ['black'],
 \   'rust': ['rustfmt'],
+\   'yaml': [],
 \}
 
 " Disable ALE for C/C++, Python, use LSP exclusively.

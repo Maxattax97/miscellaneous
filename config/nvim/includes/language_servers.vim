@@ -50,4 +50,8 @@ let g:coc_global_extensions = [
 
 "call coc#add_extension('coc-dictionary')
 
+let g:coc_filetype_map = {
+  \ 'yaml.ansible': 'ansible',
+  \ }
+
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument

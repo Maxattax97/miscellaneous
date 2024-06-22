@@ -4,6 +4,7 @@ augroup neovim_studio_filetypes
     autocmd!
     autocmd BufRead,BufNewFile *.aatstest set filetype=json
     autocmd BufRead,BufNewFile *.colortemplate set filetype=colortemplate
+    autocmd BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
 augroup end
 
 if exists('*CocActionAsync')

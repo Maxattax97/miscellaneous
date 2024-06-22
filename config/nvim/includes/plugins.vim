@@ -10,6 +10,7 @@ call dein#add('wsdjeg/dein-ui.vim')
 "call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'master', 'build': 'yarn install --frozen-lockfile' })
 "call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
 call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
+call dein#add('yaegassy/coc-ansible') " , { 'build': 'yarn install --frozen-lockfile' }
 
 " Display function arguments in command bar. Works with deoplete.
 " TODO: Not displaying?
@@ -181,6 +182,7 @@ call dein#add('neoclide/coc-neco')
 " Syntax / File Support {{{
 " Syntax support for a huge number of languages.
 call dein#add('sheerun/vim-polyglot')
+call dein#add('pearofducks/ansible-vim')
 
 " Improved Perl support.
 call dein#add('vim-perl/vim-perl')
