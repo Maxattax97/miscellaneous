@@ -77,8 +77,8 @@ https://rss.maxocull.com/?action=display&bridge=Twitter&context=By+username&u=el
 ## Reddit Memes
 https://rss.maxocull.com/?action=display&bridge=Reddit&context=multi&rs=memeeconomy%2C+dankmemes%2C+politicalcompassmemes%2C+libertarianmemes%2C+voluntaristmemes&format=Atom "~Reddit Memes" "memes"
 
-## GitBucket activity
-http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
+## Daily Deals
+https://camelcamelcamel.com/top_drops/feed?t=daily& "~Electronics Deals" "computer"
 
 ### Need to generate RSS feeds for:
 ## Others from: https://mediabiasfactcheck.com/filtered-search/
@@ -100,3 +100,5 @@ http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
 #https://gitlab.alpinelinux.org/alpine/aports/issues.atom?label_name%5B%5D=T-Security&scope=all&state=closed&utf8=%E2%9C%93 "~Alpine Linux" "security" "computer"
 ## Motherboard
 #http://motherboard.vice.com/rss "~Motherboard" "stem"
+## GitBucket activity
+#http://10.2.0.152:5000/activities.atom "~GitBucket" "ci"
