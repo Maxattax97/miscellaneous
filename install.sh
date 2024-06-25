@@ -13,7 +13,6 @@ echo "Linking from ${MISC_DIR} ..."
 TEXT_RED='\033[0;91m';
 TEXT_RESET='\033[0m';
 TEXT_BLINK='\033[5m';
-TEXT_HIGHLIGHT='\033[0;94m';
 
 link_skipped_files="";
 link_linked_files="";
@@ -933,10 +932,12 @@ read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
-            printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n" > "${HOME}/.gitconfig"
-            printf "[alias]\n\tlogline = log --graph --pretty=format:'" >> "${HOME}/.gitconfig"
-            echo -n '%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' >> "${HOME}/.gitconfig"
-            printf "' --abbrev-commit\n" >> "${HOME}/.gitconfig"
+            {
+                printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n";
+                printf "[alias]\n\tlogline = log --graph --pretty=format:'";
+                echo -n '%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset';
+                printf "' --abbrev-commit\n";
+            } > "${HOME}/.gitconfig"
         fi
 
         # Use Neovim's difftool
@@ -1000,6 +1001,24 @@ case "$response" in
         ;;
     *)
         echo "Skipping Krew setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup Mikrotik's WinBox? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+            mkdir -p "${HOME}/.local/share/mikrotik/"
+            echo "Downloading ..."
+            curl -fsSL 'https://mt.lv/winbox64' -o "${HOME}/.local/share/mikrotik/winbox"
+
+            # Make a script to execute it.
+            echo "#!/bin/sh" > "${HOME}/.local/bin/winbox"
+            echo "wine64 ${HOME}/.local/share/mikrotik/winbox" >> "${HOME}/.local/bin/winbox"
+            chmod +x "${HOME}/.local/bin/winbox"
+            echo "Succesfully installed, use \`winbox\` to open"
+        ;;
+    *)
+        echo "Skipping WinBox setup"
         ;;
 esac
 
