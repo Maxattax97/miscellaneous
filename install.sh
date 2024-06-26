@@ -330,8 +330,11 @@ case "$response" in
             pipx install ansible
             pipx install ansible-core
             pipx install ansible-lint
+            pipx install ansible-navigator
             pipx install flake8
+            pipx install flake8-pyproject
             pipx install isort
+            pipx install molecule
             pipx install neovim
             pipx install shell-gpt
             pipx install thefuck
@@ -1001,6 +1004,22 @@ case "$response" in
         ;;
     *)
         echo "Skipping Krew setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup Protobuf libraries? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        (
+            version="27.2"
+            file="protoc-${version}-linux-x86_64.zip"
+            curl -LO "https://github.com/protocolbuffers/protobuf/releases/download/v${version}/${file}"
+            unzip "${file}" -d "${HOME}/.local"
+            rm -f "${file}"
+        )
+        ;;
+    *)
+        echo "Skipping Protobuf setup"
         ;;
 esac
 
