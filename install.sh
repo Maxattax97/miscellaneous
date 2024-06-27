@@ -443,6 +443,9 @@ case "$response" in
                     # This one works:
                     sudo dnf copr enable ojab/openvpn3
 
+                    # Add Signal Desktop repo
+                    sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
+
                     # Add Github CLI repo
                     sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
@@ -488,6 +491,16 @@ case "$response" in
                                 ;;
                             *)
                                 echo "Skipping Github CLI installation"
+                                ;;
+                    esac
+
+                    read -r -p "Would you like to install Signal Desktop? [y/N] " response
+                    case "$response" in
+                            [yY][eE][sS]|[yY])
+                                sudo dnf install -y signal-desktop
+                                ;;
+                            *)
+                                echo "Skipping Signal Desktop installation"
                                 ;;
                     esac
                 elif [[ -x "$(command -v apt)" ]]; then
