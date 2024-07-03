@@ -349,6 +349,9 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
+    # NOTE: This will append a path which points to a fzf binary which is
+    # provided outside of the package manager. This is ideal behavior because
+    # it offers preference to a distribution managed fzf binary.
     if [ -f "${HOME}/.zplug/repos/junegunn/fzf/shell/key-bindings.zsh" ]; then
         # fzf searches for this, so leave it as it is.
         [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -680,13 +683,70 @@ zshrc_display_banner() {
     fi
 }
 
+# Prepend a path to the $PATH variable if it exists and is not already in the $PATH.
 zshrc_add_path() {
-	if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-		export PATH="${PATH:+"$PATH:"}$1"
-	fi
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="${PATH:+"$PATH:"}$1"
+    fi
 }
 
 zshrc_set_path() {
+    if [ -s "${HOME}/.profile" ]; then
+        echo "Your profile is not empty and is being sourced!"
+    fi
+
+    # Paths on this end supercede lower ones!
+
+    zshrc_add_path "${HOME}/.SpaceVim/bin/"
+
+    zshrc_add_path "${HOME}/.anaconda2/bin/"
+    zshrc_add_path "${HOME}/anaconda2/bin/"
+
+    zshrc_add_path "${HOME}/src/cquery/build/release/bin/"
+    zshrc_add_path "${HOME}/src/depot_tools/"
+
+    zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
+
+    zshrc_add_path "${HOME}/bin/balena-cli"
+
+    zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin"
+
+    zshrc_add_path "${HOME}/.yarn/bin"
+    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
+
+    # Dynamically add the ruby gem paths.
+    if [[ -x "$(command -v gem)" ]]; then
+        # Sometimes this path doesn't exist.
+        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${user_gem_path}/bin"
+        fi
+
+        local gem_path=$(gem env gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${gem_path}/bin"
+        fi
+    fi
+
+    # Override system-installed Rust/Cargo.
+    if [ -s "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+    fi
+
+    if [ -n "$GOPATH" ]; then
+        zshrc_add_path "${GOPATH}/bin/"
+    fi
+
+    if [ -n "$GOROOT" ]; then
+        zshrc_add_path "${GOROOT}/bin/"
+    fi
+
+    # Override system-installed packages with the Go variety.
+    zshrc_add_path "/usr/local/go/bin/"
+
+    zshrc_add_path "${HOME}/bin/"
+    zshrc_add_path "${HOME}/.local/bin/"
+
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if [[ -x "$(command -v brew)" ]]; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
@@ -708,49 +768,14 @@ zshrc_set_path() {
         fi
     fi
 
-    zshrc_add_path "${HOME}/bin/"
-    zshrc_add_path "${HOME}/.local/bin/"
+    zshrc_add_path "/bin/"
+    zshrc_add_path "/usr/bin/"
+
+    # The sbin paths are processed after the general bin paths.
     zshrc_add_path "/sbin/"
     zshrc_add_path "/usr/sbin/"
-    zshrc_add_path "${HOME}/.SpaceVim/bin/"
-    zshrc_add_path "${HOME}/src/depot_tools/"
-    zshrc_add_path "${HOME}/.anaconda2/bin/"
-    zshrc_add_path "${HOME}/anaconda2/bin/"
-    zshrc_add_path "${HOME}/src/cquery/build/release/bin/"
-    zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
-    zshrc_add_path "${HOME}/.cargo/bin/"
-    zshrc_add_path "/usr/local/go/bin/"
-    zshrc_add_path "${HOME}/.yarn/bin"
-    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
-    zshrc_add_path "${HOME}/bin/balena-cli"
-    zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin"
 
-    if [ -n "$GOPATH" ]; then
-        zshrc_add_path "${GOPATH}/bin/"
-    fi
-
-    if [ -n "$GOROOT" ]; then
-        zshrc_add_path "${GOROOT}/bin/"
-    fi
-
-    if [ -s "$HOME/.cargo/env" ]; then
-        . "$HOME/.cargo/env"
-    fi
-
-    # Dynamically add the ruby gem paths.
-    if [[ -x "$(command -v gem)" ]]; then
-        # Sometimes this path doesn't exist.
-        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
-            zshrc_add_path "${user_gem_path}/bin"
-        fi
-
-        local gem_path=$(gem env gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
-            zshrc_add_path "${gem_path}/bin"
-        fi
-    fi
-
+    # Paths on this end are checked last!
 }
 
 zshrc_load_library() {
@@ -1246,6 +1271,20 @@ zshrc_load_library() {
             date -u -r "$1" +"%Y-%m-%dT%H:%M:%S%:z"
         fi
     }
+
+    pretty_path() {
+        IFS=':' # Set the delimiter to ':'
+        path_array=(${=PATH}) # Split PATH into an array
+
+        echo "Precedence order of directories in PATH:"
+        index=1
+        for dir in "${path_array[@]}"; do
+            if [[ -n "$dir" ]]; then
+                echo "$index) $dir"
+                ((index++))
+            fi
+        done
+    }
 }
 
 zshrc_set_aliases() {
@@ -1426,23 +1465,6 @@ zshrc_set_environment_variables() {
     if [[ -s "${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore" ]]; then
         export P4IGNORE="${HOME}/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
     fi
-
-    # >>> conda init >>>
-    # !! Contents within this block are managed by 'conda init' !!
-    __conda_setup="$(CONDA_REPORT_ERRORS=false '/home/max/.anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        \eval "$__conda_setup"
-    else
-        if [ -f "${HOME}/.anaconda3/etc/profile.d/conda.sh" ]; then
-            . "${HOME}/.anaconda3/etc/profile.d/conda.sh"
-            CONDA_CHANGEPS1=false conda activate base
-        else
-            \export PATH="${PATH}:${HOME}/.anaconda3/bin"
-            \export PATH="${PATH}:${HOME}/anaconda3/bin"
-        fi
-    fi
-    unset __conda_setup
-    # <<< conda init <<<
 
     if [[ -d "/usr/lib/oracle/12.1/client64" ]]; then
         export ORACLE_HOME="/usr/lib/oracle/12.1/client64"
