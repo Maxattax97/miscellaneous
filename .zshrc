@@ -684,81 +684,66 @@ zshrc_display_banner() {
 }
 
 # Prepend a path to the $PATH variable if it exists and is not already in the $PATH.
+# This is a derivative of ZSH's pathmunge
 zshrc_add_path() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        export PATH="${PATH:+"$PATH:"}$1"
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]] ; then
+        if [ "$2" = "after" ] ; then
+            PATH=$PATH:$1
+        else
+            # Includes "before" and is the default
+            PATH=$1:$PATH
+        fi
     fi
 }
 
 zshrc_set_path() {
+    pretty_path() {
+        local IFS=':' # Set the delimiter to ':'
+        path_array=(${=PATH}) # Split PATH into an array
+
+        echo "Precedence order of directories in PATH:"
+        index=1
+        for dir in "${path_array[@]}"; do
+            if [[ -n "$dir" ]]; then
+                echo "$index) $dir"
+                ((index++))
+            fi
+        done
+    }
+
+    #echo "BEFORE:"
+    #pretty_path
+
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
     fi
 
-    # Paths on this end supercede lower ones!
-
-    zshrc_add_path "${HOME}/.SpaceVim/bin/"
-
-    zshrc_add_path "${HOME}/.anaconda2/bin/"
-    zshrc_add_path "${HOME}/anaconda2/bin/"
-
-    zshrc_add_path "${HOME}/src/cquery/build/release/bin/"
-    zshrc_add_path "${HOME}/src/depot_tools/"
-
-    zshrc_add_path "${HOME}/.adb-fastboot/platform-tools/"
-
-    zshrc_add_path "${HOME}/bin/balena-cli"
-
-    zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin"
-
-    zshrc_add_path "${HOME}/.yarn/bin"
-    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin"
-
-    # Dynamically add the ruby gem paths.
-    if [[ -x "$(command -v gem)" ]]; then
-        # Sometimes this path doesn't exist.
-        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
-            zshrc_add_path "${user_gem_path}/bin"
-        fi
-
-        local gem_path=$(gem env gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
-            zshrc_add_path "${gem_path}/bin"
-        fi
+    if [ -s "${HOME}/.zshenv" ]; then
+        echo "Your .zshenv is not empty and is being sourced!"
     fi
 
-    # Override system-installed Rust/Cargo.
-    if [ -s "$HOME/.cargo/env" ]; then
-        . "$HOME/.cargo/env"
-    fi
+    # The sbin paths are processed after the general bin paths.
+    zshrc_add_path "/usr/local/bin" after
+    zshrc_add_path "/usr/local/sbin" after
 
-    if [ -n "$GOPATH" ]; then
-        zshrc_add_path "${GOPATH}/bin/"
-    fi
+    zshrc_add_path "/usr/bin" after
+    zshrc_add_path "/usr/sbin" after
 
-    if [ -n "$GOROOT" ]; then
-        zshrc_add_path "${GOROOT}/bin/"
-    fi
-
-    # Override system-installed packages with the Go variety.
-    zshrc_add_path "/usr/local/go/bin/"
-
-    zshrc_add_path "${HOME}/bin/"
-    zshrc_add_path "${HOME}/.local/bin/"
+    zshrc_add_path "/bin" after
+    zshrc_add_path "/sbin" after
 
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if [[ -x "$(command -v brew)" ]]; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
-            export PATH="$(brew --prefix)/opt/curl/bin:${PATH}"
+            zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
         fi
 
         if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
-            export PATH="$(brew --prefix)/opt/make/libexec/gnubin:${PATH}"
+            zshrc_add_path "$(brew --prefix)/opt/make/libexec/gnubin:${PATH}" before
         fi
 
         if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
-            export PATH="$(brew --prefix)/opt/binutils/bin:${PATH}"
+            zshrc_add_path "$(brew --prefix)/opt/binutils/bin:${PATH}" before
             export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
             export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
         fi
@@ -768,14 +753,61 @@ zshrc_set_path() {
         fi
     fi
 
-    zshrc_add_path "/bin/"
-    zshrc_add_path "/usr/bin/"
+    zshrc_add_path "${HOME}/.local/bin" before
 
-    # The sbin paths are processed after the general bin paths.
-    zshrc_add_path "/sbin/"
-    zshrc_add_path "/usr/sbin/"
+    # Override system-installed Rust/Cargo.
+    if [ -s "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+    fi
 
-    # Paths on this end are checked last!
+    # Override system-installed packages with the Go variety.
+    zshrc_add_path "/usr/local/go/bin" before
+
+    if [ -n "$GOPATH" ]; then
+        zshrc_add_path "${GOPATH}/bin" before
+    fi
+
+    if [ -n "$GOROOT" ]; then
+        zshrc_add_path "${GOROOT}/bin" before
+    fi
+
+    # Dynamically add the ruby gem paths.
+    if [[ -x "$(command -v gem)" ]]; then
+        # Sometimes this path doesn't exist.
+        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${user_gem_path}/bin" before
+        fi
+
+        local gem_path=$(gem env gemdir 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            zshrc_add_path "${gem_path}/bin" before
+        fi
+    fi
+
+    zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin" before
+    zshrc_add_path "${HOME}/.yarn/bin" before
+
+    # Miscellaneous paths
+    zshrc_add_path "${HOME}/.SpaceVim/bin" before
+
+    zshrc_add_path "${HOME}/.anaconda2/bin" before
+    zshrc_add_path "${HOME}/anaconda2/bin" before
+
+    zshrc_add_path "${HOME}/src/cquery/build/release/bin" before
+    zshrc_add_path "${HOME}/src/depot_tools" before
+
+    zshrc_add_path "${HOME}/.adb-fastboot/platform-tools" before
+
+    zshrc_add_path "${HOME}/bin/balena-cli" before
+
+    zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin" before
+
+    # Always wins, these are mine.
+    zshrc_add_path "${HOME}/bin" before
+
+    #echo "AFTER:"
+    #pretty_path
 }
 
 zshrc_load_library() {
@@ -1272,20 +1304,6 @@ zshrc_load_library() {
         fi
     }
 
-    pretty_path() {
-        IFS=':' # Set the delimiter to ':'
-        path_array=(${=PATH}) # Split PATH into an array
-
-        echo "Precedence order of directories in PATH:"
-        index=1
-        for dir in "${path_array[@]}"; do
-            if [[ -n "$dir" ]]; then
-                echo "$index) $dir"
-                ((index++))
-            fi
-        done
-    }
-
     web_repo() {
         local repo_url="$(git config --get remote.origin.url)"
 
@@ -1296,7 +1314,7 @@ zshrc_load_library() {
 
         # Transform SSH URLs to HTTPS URLs
         if [[ "$repo_url" == git@* ]]; then
-            repo_url=$(echo "$repo_url" | sed -e 's|^git@|https://|' -e 's|:|/|')
+            repo_url=$(echo "$repo_url" | sed -e 's|:|/|' -e 's|^git@|https://|')
         fi
 
         # Used for both SSH and HTTPS URLs
