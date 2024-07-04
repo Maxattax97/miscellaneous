@@ -1285,6 +1285,31 @@ zshrc_load_library() {
             fi
         done
     }
+
+    web_repo() {
+        local repo_url="$(git config --get remote.origin.url)"
+
+        if [[ -z "$repo_url" ]]; then
+            echo "Not a git repository or no remote.origin.url found"
+            return 1
+        fi
+
+        # Transform SSH URLs to HTTPS URLs
+        if [[ "$repo_url" == git@* ]]; then
+            repo_url=$(echo "$repo_url" | sed -e 's|^git@|https://|' -e 's|:|/|')
+        fi
+
+        # Used for both SSH and HTTPS URLs
+        repo_url=$(echo "$repo_url" | sed -e 's|\.git$||')
+
+        echo "Navigating to: $repo_url ..."
+        case "$OSTYPE" in
+            darwin*)  open "$repo_url" ;;  # MacOS
+            linux*)   xdg-open "$repo_url" ;;  # Linux
+            cygwin* | msys* | mingw*) start "$repo_url" ;;  # Windows
+            *)        echo "Unsupported OS: $OSTYPE" ;;
+        esac
+    }
 }
 
 zshrc_set_aliases() {
