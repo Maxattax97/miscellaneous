@@ -331,26 +331,28 @@ case "$response" in
             pipx install ansible-core
             pipx install ansible-lint
             pipx install ansible-navigator
+            pipx install argcomplete
             pipx install flake8
             pipx install flake8-pyproject
             pipx install isort
             pipx install molecule
             pipx install neovim
+            pipx install pre-commit
             pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
-            pipx install pre-commit
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 ansible \
                 ansible-core \
                 ansible-lint \
+                argcomplete \
                 flake8 \
                 isort \
                 neovim \
                 shell-gpt \
                 thefuck \
-                tmuxp \
+                tmuxp
         else
             echo "You need to install pipx / pip3"
         fi

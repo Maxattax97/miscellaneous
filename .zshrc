@@ -316,6 +316,12 @@ zshrc_setup_completion() {
             gh completion -s zsh > "${HOME}/.zsh_completions/_gh"
         fi
     fi
+
+    if [[ -x "$(command -v activate-global-python-argcomplete)" ]]; then
+        if [[ ! -s "${HOME}/.zsh_completions/_python-argcomplete" ]]; then
+            activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
+        fi
+    fi
 }
 
 zshrc_autoload() {
