@@ -1413,6 +1413,38 @@ zshrc_set_aliases() {
     alias rcat='find . -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
 
     alias awsp="source _awsp"
+
+    if [[ -x "$(command -v bat)" ]]; then
+        alias bat='bat --theme=base16'
+        alias cat='bat'
+    fi
+
+    # Git aliases
+    alias G='git'
+
+    alias Ga='git add'
+
+    alias Gc='git commit'
+    alias Gcm='git commit -m'
+    alias Gca='git commit --amend'
+
+    alias Gcl='git clone'
+
+    alias Gcom='git checkout main'
+    alias Gco='git checkout'
+    alias Gcob='git checkout -b'
+
+    alias Gd='git diff'
+    alias Gds='git diff --staged'
+
+    alias Gpl='git pull'
+    alias Gpu='git push'
+
+    alias Gs='git status'
+    alias Gl='git logline' # This uses a custom Git alias (i.e. gitconfig).
+    alias Gbd='git branch -D'
+    alias Glast='git show HEAD'
+    alias Grs='git restore --staged'
 }
 
 zshrc_set_default_programs() {
