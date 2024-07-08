@@ -1334,6 +1334,33 @@ zshrc_load_library() {
             *)        echo "Unsupported OS: $OSTYPE" ;;
         esac
     }
+
+    troubleshoot() {
+        dir=${1:-.}
+            search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}
+
+        # Check if directory path is provided
+        if [ -z "$dir" ]; then
+            echo "Usage: troubleshoot <directory path>"
+            return 1
+        fi
+
+        # Check if the directory exists
+        if [ ! -d "$dir" ]; then
+            echo "Error: Directory does not exist"
+            return 1
+        fi
+
+        # Regex pattern to match common timestamp formats
+        timestamp_pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}([T ])[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+(Z)?'
+
+        # Search recursively in the directory for log files and process them
+        grep -RiIE "$search" "$dir" | \
+                    sed -E "s/$timestamp_pattern//g" | \
+            sort | \
+            uniq -ic | \
+            sort -n
+    }
 }
 
 zshrc_set_aliases() {
