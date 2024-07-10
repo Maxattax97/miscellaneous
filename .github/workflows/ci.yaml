@@ -32,6 +32,9 @@ jobs:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check .zshrc source idempotency
+        run: ./test/source_idempotency.zsh
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3.1.0
         with:

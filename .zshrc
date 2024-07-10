@@ -1361,6 +1361,45 @@ zshrc_load_library() {
             uniq -ic | \
             sort -n
     }
+
+    zshrc_source_idempotency() {
+        # Path to your shell configuration file
+        CONFIG_FILE="$HOME/.zshrc"
+
+        # Function to capture the current state of environment variables and functions
+        zshrc_capture_state() {
+            env > "$1"
+            declare -f >> "$1"
+            alias >> "$1"
+        }
+
+        # Capture the initial state
+        local pre_state_file="$(mktemp)"
+        zshrc_capture_state "$pre_state_file"
+
+        # Source the configuration file
+        source "$CONFIG_FILE"
+
+        # Capture the state after sourcing
+        local post_state_file="$(mktemp)"
+        zshrc_capture_state "$post_state_file"
+
+        # Compare the environment variables and functions before and after sourcing
+        diff_states=$(diff --color=always "$pre_state_file" "$post_state_file")
+
+        # Clean up temporary files
+        rm "$pre_state_file" "$post_state_file"
+
+        # Check if there are any differences
+        if [ -z "$diff_states" ]; then
+            echo "Re-sourcing the shell configuration is idempotent!"
+            return 0
+        else
+            echo "Re-sourcing the shell configuration is NOT idempotent:"
+            echo "$diff_states"
+            return 1
+        fi
+    }
 }
 
 zshrc_set_aliases() {
