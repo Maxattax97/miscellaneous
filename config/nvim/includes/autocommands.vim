@@ -162,6 +162,11 @@ augroup neovim_studio_folds
 	\ | endif
 augroup end
 
+augroup neovim_studio_pep8
+	" Set PEP8 settings.
+	autocmd FileType python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4 colorcolumn=88
+augroup end
+
 "augroup neovim_studio_auto_open
     "autocmd!
     "autocmd VimEnter * Vista
