@@ -1582,9 +1582,10 @@ zshrc_set_environment_variables() {
     # macOS and some other distros don't use traditional Linux ls colors.
     export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
-    # Enable colors for less by default.
+    # Enable colors for less by default. Disable mouse because while scrolling is nice, it's not worth losing copy-paste.
     # --LINE-NUMBERS
-    export LESS='--RAW-CONTROL-CHARS --mouse --ignore-case --quit-if-one-screen --status-column --tabs=4 --wheel-lines=3'
+    # --mouse
+    export LESS='--RAW-CONTROL-CHARS --ignore-case --quit-if-one-screen --status-column --tabs=4 --wheel-lines=3'
 
     if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
