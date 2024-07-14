@@ -6,9 +6,6 @@ call dein#add('wsdjeg/dein-ui.vim')
 " An autocompletion engine.
 "call dein#add('shougo/deoplete.nvim')
 " INSTALL: yarn
-"call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
-"call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'master', 'build': 'yarn install --frozen-lockfile' })
-"call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
 call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 call dein#add('yaegassy/coc-ansible') " , { 'build': 'yarn install --frozen-lockfile' }
 
