@@ -1400,6 +1400,27 @@ zshrc_load_library() {
             return 1
         fi
     }
+
+    wait_release() {
+        local latest_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+
+        echo "Current latest release: $latest_release_tag"
+
+        while true; do
+            sleep 10
+
+            # Fetch the latest release tag again
+            local new_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+
+            if [ "$new_release_tag" != "$latest_release_tag" ]; then
+                echo "" # Insert a newline before the next print
+                echo "New release detected: $new_release_tag"
+                break
+            else
+                printf "."
+            fi
+        done
+    }
 }
 
 zshrc_set_aliases() {
