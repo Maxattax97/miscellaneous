@@ -1,4 +1,6 @@
 {
+  "ansible.ansible.useFullyQualifiedCollectionNames": false,
+  "ansible.ansibleLint.enabled": true,
   "coc.preferences.enableMessageDialog": true,
   "coc.preferences.extensionUpdateCheck": "weekly",
   "coc.preferences.floatActions": true,
@@ -21,6 +23,12 @@
     "hpp"
   ],
   "coc.preferences.promptInput": true,
+  "coc.source.ansible.filetypes": [
+    "yaml.ansible"
+  ],
+  "coc.source.yaml.filetypes": [
+    "yaml"
+  ],
   "codeLens.enable": false,
   "diagnostic.checkCurrentLine": true,
   "diagnostic.displayByAle": true,
@@ -82,19 +90,19 @@
   "suggest.maxCompleteItemCount": 50,
   "suggest.timeout": 5000,
   "tsserver.npm": "/usr/bin/npm",
-  "yaml.format.printWidth": 80,
+  "yaml.completion": true,
+  "yaml.format.bracketSpacing": true,
+  "yaml.format.enable": true,
+  "yaml.format.printWidth": 88,
+  "yaml.format.proseWrap": "always",
+  "yaml.keyOrdering": true,
+  "yaml.schemaStore.enable": true,
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/tasks.json": [
-      "**/tasks/*.yml",
-      "**/tasks/*.yaml",
-      "**/handlers/*.yml",
-      "**/handlers/*.yaml"
+    "ansible": [
+      "*.yaml"
     ],
-    "https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/$defs/tasks": [
-      "**/tasks/*.yml",
-      "**/tasks/*.yaml",
-      "**/handlers/*.yml",
-      "**/handlers/*.yaml"
-    ]
-  }
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.{yml,yaml}",
+    "kubernetes": "*.k8s.yaml"
+  },
+  "yaml.validate": true
 }
