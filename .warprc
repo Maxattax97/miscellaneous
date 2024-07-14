@@ -5,6 +5,7 @@ asc:~/aura/sc
 ch:~/.local/share/chezmoi
 cp:~/aura/sc/ran-cu-cp-service
 dl:~/Downloads
+fal:~/aura/sc/integ-fos-ansible-library
 fl:/opt/flotilla
 fos:~/aura/sc/fos-data-testsuite
 gvcf:~/aura/sc/gvcf-transcoder-service
