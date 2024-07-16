@@ -689,20 +689,27 @@ zshrc_display_banner() {
     fi
 }
 
-# Prepend a path to the $PATH variable if it exists and is not already in the $PATH.
-# This is a derivative of ZSH's pathmunge
+# Prepend or postpend a path to the $PATH variable if it exists and is not
+# already in the $PATH. This is a derivative of POSIX shell's pathmunge
+# (usually found in /etc/profile)
 zshrc_add_path() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]] ; then
-        if [ "$2" = "after" ] ; then
-            PATH=$PATH:$1
-        else
-            # Includes "before" and is the default
-            PATH=$1:$PATH
-        fi
+    if [ -d "$1" ]; then
+        case ":${PATH}:" in
+            *:"$1":*)
+                ;;
+            *)
+                if [ "$2" = "after" ] ; then
+                    PATH=$PATH:$1
+                else
+                    # Includes "before" and is the default
+                    PATH=$1:$PATH
+                fi
+        esac
     fi
 }
 
 zshrc_set_path() {
+    # Used to debug the PATH variable.
     pretty_path() {
         local IFS=':' # Set the delimiter to ':'
         path_array=(${=PATH}) # Split PATH into an array
@@ -716,9 +723,6 @@ zshrc_set_path() {
             fi
         done
     }
-
-    #echo "BEFORE:"
-    #pretty_path
 
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
@@ -739,7 +743,7 @@ zshrc_set_path() {
     zshrc_add_path "/sbin" after
 
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [[ -x "$(command -v brew)" ]]; then
+    if [ -x "$(command -v brew)" ]; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
             zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
         fi
@@ -750,12 +754,14 @@ zshrc_set_path() {
 
         if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
             zshrc_add_path "$(brew --prefix)/opt/binutils/bin:${PATH}" before
-            export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
-            export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+            LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
+            export LDFLAGS
+            CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+            export CPPFLAGS
         fi
 
-        if [[ -x "$(command -v gsed)" ]]; then
-            alias sed='gsed'
+        if [ -x "$(command -v gsed)" ]; then
+        alias sed='gsed'
         fi
     fi
 
@@ -778,7 +784,7 @@ zshrc_set_path() {
     fi
 
     # Dynamically add the ruby gem paths.
-    if [[ -x "$(command -v gem)" ]]; then
+    if [ -x "$(command -v gem)" ]; then
         # Sometimes this path doesn't exist.
         local user_gem_path=$(gem env user_gemdir 2>/dev/null)
         if [ $? -eq 0 ]; then
@@ -811,9 +817,6 @@ zshrc_set_path() {
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
-
-    #echo "AFTER:"
-    #pretty_path
 }
 
 zshrc_load_library() {
