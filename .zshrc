@@ -39,7 +39,7 @@ zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls 2>/dev/null | grep "^Main" | wc -l)
         if [[ "$session_count" -eq "0" ]]; then
-            if [ -x "$(command -v tmuxp)" ]; then
+            if type tmuxp > /dev/null 2>&1; then
                 tmuxp load "${HOME}/.tmuxp/main.yaml"
             else
                 tmux -2 new-session -s "Main"
@@ -295,12 +295,12 @@ zshrc_setup_completion() {
 
     zstyle :compinstall filename '/home/max/.zshrc'
 
-    if [[ -x "$(command -v rustup)" ]]; then
+    if type rustup > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_rustup" ]]; then
             rustup completions zsh > "${HOME}/.zsh_completions/_rustup"
         fi
 
-        if [[ -x "$(command -v cargo)" ]] && [[ ! -s "${HOME}/.zsh_completions/_cargo" ]]; then
+        if type cargo > /dev/null 2>&1 && [[ ! -s "${HOME}/.zsh_completions/_cargo" ]]; then
             rustup completions zsh cargo > "${HOME}/.zsh_completions/_cargo"
         fi
     fi
@@ -312,13 +312,13 @@ zshrc_setup_completion() {
         complete -C "$aws_completer_path" aws
     fi
 
-    if [[ -x "$(command -v gh)" ]]; then
+    if type gh > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_gh" ]]; then
             gh completion -s zsh > "${HOME}/.zsh_completions/_gh"
         fi
     fi
 
-    if [[ -x "$(command -v activate-global-python-argcomplete)" ]]; then
+    if type activate-global-python-argcomplete > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_python-argcomplete" ]]; then
             activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
         fi
@@ -330,7 +330,7 @@ zshrc_autoload() {
     mkdir -p "${HOME}/.zsh_completions"
     fpath+="${HOME}/.zsh_completions"
 
-    if [[ -x "$(command -v brew)" ]]; then
+    if type brew > /dev/null 2>&1; then
         fpath+="$(brew --prefix)/share/zsh/site-functions"
     fi
 
@@ -651,11 +651,11 @@ zshrc_zplug() {
 }
 
 zshrc_extensions() {
-    if [[ -x "$(command -v navi)" ]]; then
+    if type navi > /dev/null 2>&1; then
         eval "$(navi widget zsh)"
     fi
 
-    if [[ -x "$(command -v keychain)" ]]; then
+    if type keychain > /dev/null 2>&1; then
         eval "$(keychain --eval -q)"
     fi
 
@@ -671,16 +671,16 @@ zshrc_extensions() {
 
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
-        if [[ -x "$(command -v fastfetch)" ]]; then
+        if type fastfetch > /dev/null 2>&1; then
             fastfetch
-        elif [[ -x "$(command -v neofetch)" ]]; then
+        elif type neofetch > /dev/null 2>&1; then
             neofetch --disable "packages"
-        elif [[ -x "$(command -v screenfetch)" ]]; then
+        elif type screenfetch > /dev/null 2>&1; then
             screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
             echo
         fi
 
-        if [[ -x "$(command -v mikaelasay)" ]] && [[ "$CHASSIS" != "laptop" ]]; then
+        if type mikaelasay > /dev/null 2>&1 && [[ "$CHASSIS" != "laptop" ]]; then
             mikaelasay
             echo
         fi
@@ -744,7 +744,7 @@ zshrc_set_path() {
     zshrc_add_path "/sbin" after
 
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [ -x "$(command -v brew)" ]; then
+    if type brew > /dev/null 2>&1; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
             zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
         fi
@@ -761,7 +761,7 @@ zshrc_set_path() {
             export CPPFLAGS
         fi
 
-        if [ -x "$(command -v gsed)" ]; then
+        if type gsed > /dev/null 2>&1; then
             alias sed='gsed'
         fi
     fi
@@ -785,7 +785,7 @@ zshrc_set_path() {
     fi
 
     # Dynamically add the ruby gem paths.
-    if [ -x "$(command -v gem)" ]; then
+    if type gem > /dev/null 2>&1; then
         # Sometimes this path doesn't exist.
         local user_gem_path=$(gem env user_gemdir 2>/dev/null)
         if [ $? -eq 0 ]; then
@@ -1452,7 +1452,7 @@ zshrc_set_aliases() {
     alias l='k -Ah --no-vcs' # ls -lah
 
     # Fix tmux 256 colors:
-    #if [[ -x "$(command -v tmux-next)" ]]; then
+    #if type tmux-next > /dev/null 2>&1; then
     #alias tmux='tmux-next -2'
     #else
     alias tmux='tmux -2'
@@ -1469,7 +1469,7 @@ zshrc_set_aliases() {
     alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
     alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
-    if [[ -x "$(command -v gpg2)" ]]; then
+    if type gpg2 > /dev/null 2>&1; then
         alias gpg='gpg2 --with-subkey-fingerprints'
         alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
     fi
@@ -1486,18 +1486,18 @@ zshrc_set_aliases() {
     alias clip='xclip -selection clipboard'
 
     # btop > htop > top
-    if [[ -x "$(command -v htop)" ]]; then
+    if type htop > /dev/null 2>&1; then
         alias top='htop'
     fi
 
-    if [[ -x "$(command -v btop)" ]]; then
+    if type btop > /dev/null 2>&1; then
         alias top='btop'
         alias htop='btop'
     fi
 
     alias e="$EDITOR"
 
-    if [ -x "$(command -v rofi)" ]; then
+    if type rofi > /dev/null 2>&1; then
         alias dmenu="rofi -dmenu"
     fi
 
@@ -1505,7 +1505,7 @@ zshrc_set_aliases() {
 
     alias awsp="source _awsp"
 
-    if [[ -x "$(command -v bat)" ]]; then
+    if type bat > /dev/null 2>&1; then
         alias bat='bat --theme=base16'
         alias cat='bat'
     fi
@@ -1540,18 +1540,18 @@ zshrc_set_aliases() {
 
 zshrc_set_default_programs() {
     # For heavyweight purposes.
-    if [[ -x "$(command -v nvim)" ]]; then
+    if type nvim > /dev/null 2>&1; then
         export VISUAL="$(which nvim)"
         if [[ -d "${HOME}/.SpaceVim" ]]; then
             alias vim="nvim"
         fi
-    elif [[ -x "$(command -v vim)" ]]; then
+    elif type vim > /dev/null 2>&1; then
         export VISUAL="$(which vim)"
         alias nvim="vim"
-    elif [[ -x "$(command -v vi)" ]]; then
+    elif type vi > /dev/null 2>&1; then
         export VISUAL="$(which vi)"
         alias nvim="vi"
-    elif [[ -x "$(command -v nano)" ]]; then
+    elif type nano > /dev/null 2>&1; then
         export VISUAL="$(which nano)"
     fi
 
@@ -1561,37 +1561,37 @@ zshrc_set_default_programs() {
     export PAGER="less"
     export MANPAGER="less"
 
-    if [[ -x "$(command -v brave)" ]]; then
+    if type brave > /dev/null 2>&1; then
         export BROWSER="$(which brave)"
-    elif [[ -x "$(command -v brave-browser)" ]]; then
+    elif type brave-browser > /dev/null 2>&1; then
         export BROWSER="$(which brave-browser)"
-    elif [[ -x "$(command -v firefox)" ]]; then
+    elif type firefox > /dev/null 2>&1; then
         export BROWSER="$(which firefox)"
-    elif [[ -x "$(command -v chromium)" ]]; then
+    elif type chromium > /dev/null 2>&1; then
         export BROWSER="$(which chromium)"
-    elif [[ -x "$(command -v google-chrome-stable)" ]]; then
+    elif type google-chrome-stable > /dev/null 2>&1; then
         export BROWSER="$(which google-chrome-stable)"
     fi
 
-    if [[ -x "$(command -v st)" ]]; then
+    if type st > /dev/null 2>&1; then
         export TERMINAL="$(which st)"
-    elif [[ -x "$(command -v urxvt-256color)" ]]; then
+    elif type urxvt-256color > /dev/null 2>&1; then
         export TERMINAL="$(which urxvt-256color)"
-    elif [[ -x "$(command -v konsole)" ]]; then
+    elif type konsole > /dev/null 2>&1; then
         export TERMINAL="$(which konsole)"
     fi
 
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 
-    if [[ -x "$(command -v fastfetch)" ]]; then
+    if type fastfetch > /dev/null 2>&1; then
         alias neofetch="fastfetch"
         alias screenfetch="fastfetch"
         alias fetch="fastfetch"
-    elif [[ -x "$(command -v neofetch)" ]]; then
+    elif type neofetch > /dev/null 2>&1; then
         alias fastfetch="neofetch"
         alias screenfetch="neofetch"
         alias fetch="neofetch"
-    elif [[ -x "$(command -v screenfetch)" ]]; then
+    elif type screenfetch > /dev/null 2>&1; then
         alias fastfetch="screenfetch"
         alias neofetch="screenfetch"
         alias fetch="screenfetch"
