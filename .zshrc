@@ -235,7 +235,7 @@ zshrc_setup_completion() {
     #     zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
     # else
     #     if [[ "$HYPHEN_INSENSITIVE" = true ]]; then
-            zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
     #     else
     #         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
     #     fi
@@ -251,7 +251,7 @@ zshrc_setup_completion() {
     # if [[ "$OSTYPE" = solaris* ]]; then
     #     zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm"
     # else
-        zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+    zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
     # fi
 
     # disable named-directories autocompletion
@@ -279,17 +279,18 @@ zshrc_setup_completion() {
     zstyle ':completion:*' use-ip true
 
     # if [[ $COMPLETION_WAITING_DOTS = true ]]; then
-        expand-or-complete-with-dots() {
-            # toggle line-wrapping off and back on again
-            [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
-            print -Pn "%{%F{red}......%f%}"
-            [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
+    expand-or-complete-with-dots() {
+        # toggle line-wrapping off and back on again
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
+        print -Pn "%{%F{red}......%f%}"
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
 
-            zle expand-or-complete
-            zle redisplay
-        }
-        zle -N expand-or-complete-with-dots
-        bindkey "^I" expand-or-complete-with-dots
+        zle expand-or-complete
+        zle redisplay
+    }
+
+    zle -N expand-or-complete-with-dots
+    bindkey "^I" expand-or-complete-with-dots
     # fi
 
     zstyle :compinstall filename '/home/max/.zshrc'
@@ -535,14 +536,14 @@ zshrc_powerlevel9k() {
         # typeset -a chpwd_functions
         # chpwd_functions+=(_rtab_pwd_update)
         # function _rtab_pwd_update() {
-            # export RTAB_PWD=$(rtab -l -t)
+        # export RTAB_PWD=$(rtab -l -t)
         # }
         # _rtab_pwd_update
     fi
 
     # typeset -gA p10k_opts
     # p10k_opts=(
-        # p10ks_cwd ';;;;rtab;-t;-l'
+    # p10ks_cwd ';;;;rtab;-t;-l'
     # )
 
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND="240"
@@ -615,7 +616,7 @@ zshrc_zplug() {
 
         if ( ! "$zshrc_low_power" ); then
             #zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
-			zplug "romkatv/powerlevel10k", as:theme, depth:1
+            zplug "romkatv/powerlevel10k", as:theme, depth:1
         fi
 
         # zplug "ael-code/zsh-colored-man-pages"
@@ -623,15 +624,15 @@ zshrc_zplug() {
         zplug "supercrabtree/k"
 
         # zplug "psprint/zsh-navigation-tools" # deleted
-		# zplug "z-shell/zsh-navigation-tools" # alternate
-		zplug "zdharma-continuum/zsh-navigation-tools"
+        # zplug "z-shell/zsh-navigation-tools" # alternate
+        zplug "zdharma-continuum/zsh-navigation-tools"
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
         # zplug "zdharma/fast-syntax-highlighting", defer:3
         zplug "zdharma-continuum/fast-syntax-highlighting", defer:3
 
-		# Really annoying and doesn't seem to work right?
+        # Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
 
         zplug "plugins/thefuck", from:oh-my-zsh
@@ -650,22 +651,22 @@ zshrc_zplug() {
 }
 
 zshrc_extensions() {
-	if [[ -x "$(command -v navi)" ]]; then
-		eval "$(navi widget zsh)"
-	fi
+    if [[ -x "$(command -v navi)" ]]; then
+        eval "$(navi widget zsh)"
+    fi
 
-	if [[ -x "$(command -v keychain)" ]]; then
-		eval "$(keychain --eval -q)"
-	fi
+    if [[ -x "$(command -v keychain)" ]]; then
+        eval "$(keychain --eval -q)"
+    fi
 
-	#if [[ -z "${SSH_AGENT_PID}" ]]; then
-		#eval $(ssh-agent -t 10m) 1>/dev/null
+    #if [[ -z "${SSH_AGENT_PID}" ]]; then
+        #eval $(ssh-agent -t 10m) 1>/dev/null
 
-		# Add a key:
-		#		ssh-add ~/.ssh/id_rsa
-		# List currently loaded keys:
-		#		ssh-add -L
-	#fi
+        # Add a key:
+        #               ssh-add ~/.ssh/id_rsa
+        # List currently loaded keys:
+        #               ssh-add -L
+    #fi
 }
 
 zshrc_display_banner() {
@@ -761,7 +762,7 @@ zshrc_set_path() {
         fi
 
         if [ -x "$(command -v gsed)" ]; then
-        alias sed='gsed'
+            alias sed='gsed'
         fi
     fi
 
@@ -862,47 +863,47 @@ zshrc_load_library() {
         else
             for n in $@
             do
-            if [ -f "$n" ] ; then
-                case "${n%,}" in
-                    *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-                        tar xvf "$n"
-                        ;;
-                    *.lzma)
-                        unlzma ./"$n"
-                        ;;
-                    *.bz2)
-                        bunzip2 ./"$n"
-                        ;;
-                    *.rar)
-                        unrar x -ad ./"$n"
-                        ;;
-                    *.gz)
-                        gunzip ./"$n"
-                        ;;
-                    *.zip)
-                        unzip ./"$n"
-                        ;;
-                    *.z)
-                        uncompress ./"$n"
-                        ;;
-                    *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                        7z x ./"$n"
-                        ;;
-                    *.xz)
-                        unxz ./"$n"
-                        ;;
-                    *.exe)
-                        cabextract ./"$n"
-                        ;;
-                    *)
-                        echo "inflate: '$n' - unknown archive method"
-                        return 1
-                        ;;
-                esac
-            else
-                echo "'$n' - file does not exist"
-                return 1
-            fi
+                if [ -f "$n" ] ; then
+                    case "${n%,}" in
+                        *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
+                            tar xvf "$n"
+                            ;;
+                        *.lzma)
+                            unlzma ./"$n"
+                            ;;
+                        *.bz2)
+                            bunzip2 ./"$n"
+                            ;;
+                        *.rar)
+                            unrar x -ad ./"$n"
+                            ;;
+                        *.gz)
+                            gunzip ./"$n"
+                            ;;
+                        *.zip)
+                            unzip ./"$n"
+                            ;;
+                        *.z)
+                            uncompress ./"$n"
+                            ;;
+                        *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
+                            7z x ./"$n"
+                            ;;
+                        *.xz)
+                            unxz ./"$n"
+                            ;;
+                        *.exe)
+                            cabextract ./"$n"
+                            ;;
+                        *)
+                            echo "inflate: '$n' - unknown archive method"
+                            return 1
+                            ;;
+                    esac
+                else
+                    echo "'$n' - file does not exist"
+                    return 1
+                fi
             done
         fi
     }
@@ -1234,16 +1235,16 @@ zshrc_load_library() {
         for v in "${@:-$(</dev/stdin)}"; do
             echo $v | awk \
             'BEGIN{IGNORECASE = 1}
-            function printpower(n,b,p) {printf "%u\n", n*b^p; next}
-            /[0-9]$/{print $1;next};
-            /K(iB)?$/{printpower($1,  2, 10)};
-            /M(iB)?$/{printpower($1,  2, 20)};
-            /G(iB)?$/{printpower($1,  2, 30)};
-            /T(iB)?$/{printpower($1,  2, 40)};
-            /KB$/{    printpower($1, 10,  3)};
-            /MB$/{    printpower($1, 10,  6)};
-            /GB$/{    printpower($1, 10,  9)};
-            /TB$/{    printpower($1, 10, 12)}'
+                function printpower(n,b,p) {printf "%u\n", n*b^p; next}
+                /[0-9]$/{print $1;next};
+                /K(iB)?$/{printpower($1,  2, 10)};
+                /M(iB)?$/{printpower($1,  2, 20)};
+                /G(iB)?$/{printpower($1,  2, 30)};
+                /T(iB)?$/{printpower($1,  2, 40)};
+                /KB$/{    printpower($1, 10,  3)};
+                /MB$/{    printpower($1, 10,  6)};
+                /GB$/{    printpower($1, 10,  9)};
+                /TB$/{    printpower($1, 10, 12)}'
         done
     }
 
@@ -1340,7 +1341,7 @@ zshrc_load_library() {
 
     troubleshoot() {
         dir=${1:-.}
-            search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}
+        search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}
 
         # Check if directory path is provided
         if [ -z "$dir" ]; then
@@ -1359,7 +1360,7 @@ zshrc_load_library() {
 
         # Search recursively in the directory for log files and process them
         grep -RiIE "$search" "$dir" | \
-                    sed -E "s/$timestamp_pattern//g" | \
+            sed -E "s/$timestamp_pattern//g" | \
             sort | \
             uniq -ic | \
             sort -n
@@ -1452,9 +1453,9 @@ zshrc_set_aliases() {
 
     # Fix tmux 256 colors:
     #if [[ -x "$(command -v tmux-next)" ]]; then
-        #alias tmux='tmux-next -2'
+    #alias tmux='tmux-next -2'
     #else
-        alias tmux='tmux -2'
+    alias tmux='tmux -2'
     #fi
 
     # Clear color codes before clearing:
@@ -1675,13 +1676,13 @@ zshrc_set_environment_variables() {
 
     # TODO: Won't work on Arch, needed to install other things.
     #if [[ -d "${GOPATH}" ]]; then
-        #temp_go_path=("${GOPATH}/go-"*);
-        #if [[ -d "${temp_go_path[-1]}" ]]; then
-            #export GOROOT=${temp_go_path[-1]}
-            #if [[ -d "${temp_go_path[2]}" ]]; then
-                #echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
-            #fi
-        #fi
+    #temp_go_path=("${GOPATH}/go-"*);
+    #if [[ -d "${temp_go_path[-1]}" ]]; then
+    #export GOROOT=${temp_go_path[-1]}
+    #if [[ -d "${temp_go_path[2]}" ]]; then
+    #echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+    #fi
+    #fi
     #fi
 
     export CHASSIS="$chassis_name"
