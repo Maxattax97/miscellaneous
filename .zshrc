@@ -712,15 +712,18 @@ zshrc_add_path() {
 zshrc_set_path() {
     # Used to debug the PATH variable.
     pretty_path() {
-        local IFS=':' # Set the delimiter to ':'
-        path_array=(${=PATH}) # Split PATH into an array
+        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
+        IFS=':'          # Set the delimiter to ':'
+        # shellcheck disable=SC2086
+        set -- $PATH     # Split PATH into positional parameters
+        IFS=$old_IFS     # Restore the original IFS
 
         echo "Precedence order of directories in PATH:"
         index=1
-        for dir in "${path_array[@]}"; do
-            if [[ -n "$dir" ]]; then
+        for dir in "$@"; do
+            if [ -n "$dir" ]; then
                 echo "$index) $dir"
-                ((index++))
+                index=$((index + 1))
             fi
         done
     }
