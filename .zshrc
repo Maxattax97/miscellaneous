@@ -323,15 +323,55 @@ zshrc_setup_completion() {
             activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
         fi
     fi
+
+    if type rg > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_rg" ]; then
+            rg --generate=complete-zsh > "${HOME}/.zsh_completions/_rg"
+        fi
+    fi
+
+    if type helm > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_helm" ]; then
+            helm completion zsh > "${HOME}/.zsh_completions/_helm"
+        fi
+    fi
 }
 
 zshrc_autoload() {
+    # Used to debug the fpath variable.
+    pretty_fpath() {
+        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
+        IFS=' '          # Set the delimiter to ':'
+        # shellcheck disable=SC2086
+        set -- $fpath     # Split PATH into positional parameters
+        IFS=$old_IFS     # Restore the original IFS
+
+        echo "Precedence order of directories in fpath:"
+        index=1
+        while [ $# -gt 0 ]; do
+            dir=$1
+            shift
+            if [ -n "$dir" ]; then
+                echo "$index) $dir"
+                index=$((index + 1))
+            fi
+        done
+    }
+
     # Setup the ZSH completions directory before we initialize completions.
     mkdir -p "${HOME}/.zsh_completions"
     fpath+="${HOME}/.zsh_completions"
 
     if type brew > /dev/null 2>&1; then
         fpath+="$(brew --prefix)/share/zsh/site-functions"
+    fi
+
+    if [ -d "/usr/share/zsh/functions/Completion/Unix" ]; then
+        fpath+="/usr/share/zsh/functions/Completion/Unix"
+    fi
+
+    if [ -d "/usr/share/zsh/vendor-completions" ]; then
+        fpath+="/usr/share/zsh/vendor-completions"
     fi
 
     autoload -Uz compinit && compinit
