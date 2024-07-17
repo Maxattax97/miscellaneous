@@ -720,7 +720,9 @@ zshrc_set_path() {
 
         echo "Precedence order of directories in PATH:"
         index=1
-        for dir in "$@"; do
+        while [ $# -gt 0 ]; do
+            dir=$1
+            shift
             if [ -n "$dir" ]; then
                 echo "$index) $dir"
                 index=$((index + 1))
@@ -765,7 +767,12 @@ zshrc_set_path() {
         fi
 
         if type gsed > /dev/null 2>&1; then
-            alias sed='gsed'
+            # Make the gsed application universal for this system!
+            if [ ! -e "${HOME}/.local/bin/sed" ]; then
+                mkdir -p "${HOME}/.local/bin"
+                ln -s "$(command -v gsed)" "${HOME}/.local/bin/sed"
+                echo "NOTE: GNU gsed is now linked to sed in ${HOME}/.local/bin; you are no longer using BSD sed!"
+            fi
         fi
     fi
 
