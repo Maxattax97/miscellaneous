@@ -6,6 +6,9 @@ MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
+else
+    # You have to fill it with something otherwise you get a target error.
+    AUTOMATED_PACMAN_FLAGS="--confirm"
 fi
 
 echo "Linking from ${MISC_DIR} ..."
