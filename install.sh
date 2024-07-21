@@ -167,6 +167,7 @@ case "$response" in
             # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             sudo dnf install -y \
+                awscli2 \
                 btop \
                 ctags \
                 curl \
@@ -200,6 +201,7 @@ case "$response" in
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
+                awscli \
                 binutils \
                 btop \
                 chezmoi \
@@ -228,7 +230,9 @@ case "$response" in
                 xclip \
                 zsh
         elif [[ -x "$(command -v apt)" ]]; then
+            # NOTE: On slightly older versions of Debian/Ubuntu awscli is v1, not v2!
             sudo apt install -y \
+                awscli \
                 btop \
                 ctags \
                 curl \
@@ -285,6 +289,7 @@ case "$response" in
 
             if [[ -x "$(command -v yay)" ]]; then
                     yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                        aws-cli-v2 \
                         fastfetch \
                         --needed
             fi
@@ -317,6 +322,8 @@ case "$response" in
                 weechat \
                 xclip \
                 zsh
+
+            # TODO: Install awscli v2 on BSD
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then

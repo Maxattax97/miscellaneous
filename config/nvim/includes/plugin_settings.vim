@@ -49,6 +49,26 @@ let g:copilot_filetypes = {
 \ 'markdown': v:true,
 \ 'yaml': v:true
 \}
+
+function! AddCopilotWorkspaceFolderIfExists(folder)
+    " Expand the folder path to handle ~
+    let l:directory = expand(a:folder)
+
+    " Check if the directory exists
+    if isdirectory(l:directory)
+        " Add the directory to the copilot_workspace_folders list
+        if exists("g:copilot_workspace_folders")
+            " Append to the existing list
+            call add(g:copilot_workspace_folders, l:directory)
+        else
+            " Create a new list with the directory
+            let g:copilot_workspace_folders = [l:directory]
+        endif
+    endif
+endfunction
+
+call AddCopilotWorkspaceFolderIfExists('~/src')
+call AddCopilotWorkspaceFolderIfExists('~/aura')
 " }}}
 
 " Signify {{{

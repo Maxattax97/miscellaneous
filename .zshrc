@@ -39,7 +39,7 @@ zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls 2>/dev/null | grep "^Main" | wc -l)
         if [[ "$session_count" -eq "0" ]]; then
-            if [ -x "$(command -v tmuxp)" ]; then
+            if type tmuxp > /dev/null 2>&1; then
                 tmuxp load "${HOME}/.tmuxp/main.yaml"
             else
                 tmux -2 new-session -s "Main"
@@ -235,7 +235,7 @@ zshrc_setup_completion() {
     #     zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
     # else
     #     if [[ "$HYPHEN_INSENSITIVE" = true ]]; then
-            zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
     #     else
     #         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
     #     fi
@@ -251,7 +251,7 @@ zshrc_setup_completion() {
     # if [[ "$OSTYPE" = solaris* ]]; then
     #     zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm"
     # else
-        zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+    zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
     # fi
 
     # disable named-directories autocompletion
@@ -279,27 +279,28 @@ zshrc_setup_completion() {
     zstyle ':completion:*' use-ip true
 
     # if [[ $COMPLETION_WAITING_DOTS = true ]]; then
-        expand-or-complete-with-dots() {
-            # toggle line-wrapping off and back on again
-            [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
-            print -Pn "%{%F{red}......%f%}"
-            [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
+    expand-or-complete-with-dots() {
+        # toggle line-wrapping off and back on again
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
+        print -Pn "%{%F{red}......%f%}"
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
 
-            zle expand-or-complete
-            zle redisplay
-        }
-        zle -N expand-or-complete-with-dots
-        bindkey "^I" expand-or-complete-with-dots
+        zle expand-or-complete
+        zle redisplay
+    }
+
+    zle -N expand-or-complete-with-dots
+    bindkey "^I" expand-or-complete-with-dots
     # fi
 
     zstyle :compinstall filename '/home/max/.zshrc'
 
-    if [[ -x "$(command -v rustup)" ]]; then
+    if type rustup > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_rustup" ]]; then
             rustup completions zsh > "${HOME}/.zsh_completions/_rustup"
         fi
 
-        if [[ -x "$(command -v cargo)" ]] && [[ ! -s "${HOME}/.zsh_completions/_cargo" ]]; then
+        if type cargo > /dev/null 2>&1 && [[ ! -s "${HOME}/.zsh_completions/_cargo" ]]; then
             rustup completions zsh cargo > "${HOME}/.zsh_completions/_cargo"
         fi
     fi
@@ -311,26 +312,66 @@ zshrc_setup_completion() {
         complete -C "$aws_completer_path" aws
     fi
 
-    if [[ -x "$(command -v gh)" ]]; then
+    if type gh > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_gh" ]]; then
             gh completion -s zsh > "${HOME}/.zsh_completions/_gh"
         fi
     fi
 
-    if [[ -x "$(command -v activate-global-python-argcomplete)" ]]; then
+    if type activate-global-python-argcomplete > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_python-argcomplete" ]]; then
             activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
+        fi
+    fi
+
+    if type rg > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_rg" ]; then
+            rg --generate=complete-zsh > "${HOME}/.zsh_completions/_rg"
+        fi
+    fi
+
+    if type helm > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_helm" ]; then
+            helm completion zsh > "${HOME}/.zsh_completions/_helm"
         fi
     fi
 }
 
 zshrc_autoload() {
+    # Used to debug the fpath variable.
+    pretty_fpath() {
+        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
+        IFS=' '          # Set the delimiter to ':'
+        # shellcheck disable=SC2086
+        set -- $fpath     # Split PATH into positional parameters
+        IFS=$old_IFS     # Restore the original IFS
+
+        echo "Precedence order of directories in fpath:"
+        index=1
+        while [ $# -gt 0 ]; do
+            dir=$1
+            shift
+            if [ -n "$dir" ]; then
+                echo "$index) $dir"
+                index=$((index + 1))
+            fi
+        done
+    }
+
     # Setup the ZSH completions directory before we initialize completions.
     mkdir -p "${HOME}/.zsh_completions"
     fpath+="${HOME}/.zsh_completions"
 
-    if [[ -x "$(command -v brew)" ]]; then
+    if type brew > /dev/null 2>&1; then
         fpath+="$(brew --prefix)/share/zsh/site-functions"
+    fi
+
+    if [ -d "/usr/share/zsh/functions/Completion/Unix" ]; then
+        fpath+="/usr/share/zsh/functions/Completion/Unix"
+    fi
+
+    if [ -d "/usr/share/zsh/vendor-completions" ]; then
+        fpath+="/usr/share/zsh/vendor-completions"
     fi
 
     autoload -Uz compinit && compinit
@@ -535,14 +576,14 @@ zshrc_powerlevel9k() {
         # typeset -a chpwd_functions
         # chpwd_functions+=(_rtab_pwd_update)
         # function _rtab_pwd_update() {
-            # export RTAB_PWD=$(rtab -l -t)
+        # export RTAB_PWD=$(rtab -l -t)
         # }
         # _rtab_pwd_update
     fi
 
     # typeset -gA p10k_opts
     # p10k_opts=(
-        # p10ks_cwd ';;;;rtab;-t;-l'
+    # p10ks_cwd ';;;;rtab;-t;-l'
     # )
 
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND="240"
@@ -615,7 +656,7 @@ zshrc_zplug() {
 
         if ( ! "$zshrc_low_power" ); then
             #zplug "bhilburn/powerlevel9k", at:master, use:powerlevel9k.zsh-theme
-			zplug "romkatv/powerlevel10k", as:theme, depth:1
+            zplug "romkatv/powerlevel10k", as:theme, depth:1
         fi
 
         # zplug "ael-code/zsh-colored-man-pages"
@@ -623,15 +664,15 @@ zshrc_zplug() {
         zplug "supercrabtree/k"
 
         # zplug "psprint/zsh-navigation-tools" # deleted
-		# zplug "z-shell/zsh-navigation-tools" # alternate
-		zplug "zdharma-continuum/zsh-navigation-tools"
+        # zplug "z-shell/zsh-navigation-tools" # alternate
+        zplug "zdharma-continuum/zsh-navigation-tools"
 
         # Must load last.
         # zplug "zsh-users/zsh-syntax-highlighting"
         # zplug "zdharma/fast-syntax-highlighting", defer:3
         zplug "zdharma-continuum/fast-syntax-highlighting", defer:3
 
-		# Really annoying and doesn't seem to work right?
+        # Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
 
         zplug "plugins/thefuck", from:oh-my-zsh
@@ -650,36 +691,36 @@ zshrc_zplug() {
 }
 
 zshrc_extensions() {
-	if [[ -x "$(command -v navi)" ]]; then
-		eval "$(navi widget zsh)"
-	fi
+    if type navi > /dev/null 2>&1; then
+        eval "$(navi widget zsh)"
+    fi
 
-	if [[ -x "$(command -v keychain)" ]]; then
-		eval "$(keychain --eval -q)"
-	fi
+    if type keychain > /dev/null 2>&1; then
+        eval "$(keychain --eval -q)"
+    fi
 
-	#if [[ -z "${SSH_AGENT_PID}" ]]; then
-		#eval $(ssh-agent -t 10m) 1>/dev/null
+    #if [[ -z "${SSH_AGENT_PID}" ]]; then
+        #eval $(ssh-agent -t 10m) 1>/dev/null
 
-		# Add a key:
-		#		ssh-add ~/.ssh/id_rsa
-		# List currently loaded keys:
-		#		ssh-add -L
-	#fi
+        # Add a key:
+        #               ssh-add ~/.ssh/id_rsa
+        # List currently loaded keys:
+        #               ssh-add -L
+    #fi
 }
 
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
-        if [[ -x "$(command -v fastfetch)" ]]; then
+        if type fastfetch > /dev/null 2>&1; then
             fastfetch
-        elif [[ -x "$(command -v neofetch)" ]]; then
+        elif type neofetch > /dev/null 2>&1; then
             neofetch --disable "packages"
-        elif [[ -x "$(command -v screenfetch)" ]]; then
+        elif type screenfetch > /dev/null 2>&1; then
             screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
             echo
         fi
 
-        if [[ -x "$(command -v mikaelasay)" ]] && [[ "$CHASSIS" != "laptop" ]]; then
+        if type mikaelasay > /dev/null 2>&1 && [[ "$CHASSIS" != "laptop" ]]; then
             mikaelasay
             echo
         fi
@@ -689,36 +730,45 @@ zshrc_display_banner() {
     fi
 }
 
-# Prepend a path to the $PATH variable if it exists and is not already in the $PATH.
-# This is a derivative of ZSH's pathmunge
+# Prepend or postpend a path to the $PATH variable if it exists and is not
+# already in the $PATH. This is a derivative of POSIX shell's pathmunge
+# (usually found in /etc/profile)
 zshrc_add_path() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]] ; then
-        if [ "$2" = "after" ] ; then
-            PATH=$PATH:$1
-        else
-            # Includes "before" and is the default
-            PATH=$1:$PATH
-        fi
+    if [ -d "$1" ]; then
+        case ":${PATH}:" in
+            *:"$1":*)
+                ;;
+            *)
+                if [ "$2" = "after" ] ; then
+                    PATH=$PATH:$1
+                else
+                    # Includes "before" and is the default
+                    PATH=$1:$PATH
+                fi
+        esac
     fi
 }
 
 zshrc_set_path() {
+    # Used to debug the PATH variable.
     pretty_path() {
-        local IFS=':' # Set the delimiter to ':'
-        path_array=(${=PATH}) # Split PATH into an array
+        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
+        IFS=':'          # Set the delimiter to ':'
+        # shellcheck disable=SC2086
+        set -- $PATH     # Split PATH into positional parameters
+        IFS=$old_IFS     # Restore the original IFS
 
         echo "Precedence order of directories in PATH:"
         index=1
-        for dir in "${path_array[@]}"; do
-            if [[ -n "$dir" ]]; then
+        while [ $# -gt 0 ]; do
+            dir=$1
+            shift
+            if [ -n "$dir" ]; then
                 echo "$index) $dir"
-                ((index++))
+                index=$((index + 1))
             fi
         done
     }
-
-    #echo "BEFORE:"
-    #pretty_path
 
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
@@ -739,7 +789,7 @@ zshrc_set_path() {
     zshrc_add_path "/sbin" after
 
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
-    if [[ -x "$(command -v brew)" ]]; then
+    if type brew > /dev/null 2>&1; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
             zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
         fi
@@ -750,12 +800,19 @@ zshrc_set_path() {
 
         if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
             zshrc_add_path "$(brew --prefix)/opt/binutils/bin:${PATH}" before
-            export LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
-            export CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+            LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
+            export LDFLAGS
+            CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
+            export CPPFLAGS
         fi
 
-        if [[ -x "$(command -v gsed)" ]]; then
-            alias sed='gsed'
+        if type gsed > /dev/null 2>&1; then
+            # Make the gsed application universal for this system!
+            if [ ! -e "${HOME}/.local/bin/sed" ]; then
+                mkdir -p "${HOME}/.local/bin"
+                ln -s "$(command -v gsed)" "${HOME}/.local/bin/sed"
+                echo "NOTE: GNU gsed is now linked to sed in ${HOME}/.local/bin; you are no longer using BSD sed!"
+            fi
         fi
     fi
 
@@ -778,7 +835,7 @@ zshrc_set_path() {
     fi
 
     # Dynamically add the ruby gem paths.
-    if [[ -x "$(command -v gem)" ]]; then
+    if type gem > /dev/null 2>&1; then
         # Sometimes this path doesn't exist.
         local user_gem_path=$(gem env user_gemdir 2>/dev/null)
         if [ $? -eq 0 ]; then
@@ -811,9 +868,6 @@ zshrc_set_path() {
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
-
-    #echo "AFTER:"
-    #pretty_path
 }
 
 zshrc_load_library() {
@@ -859,47 +913,47 @@ zshrc_load_library() {
         else
             for n in $@
             do
-            if [ -f "$n" ] ; then
-                case "${n%,}" in
-                    *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-                        tar xvf "$n"
-                        ;;
-                    *.lzma)
-                        unlzma ./"$n"
-                        ;;
-                    *.bz2)
-                        bunzip2 ./"$n"
-                        ;;
-                    *.rar)
-                        unrar x -ad ./"$n"
-                        ;;
-                    *.gz)
-                        gunzip ./"$n"
-                        ;;
-                    *.zip)
-                        unzip ./"$n"
-                        ;;
-                    *.z)
-                        uncompress ./"$n"
-                        ;;
-                    *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                        7z x ./"$n"
-                        ;;
-                    *.xz)
-                        unxz ./"$n"
-                        ;;
-                    *.exe)
-                        cabextract ./"$n"
-                        ;;
-                    *)
-                        echo "inflate: '$n' - unknown archive method"
-                        return 1
-                        ;;
-                esac
-            else
-                echo "'$n' - file does not exist"
-                return 1
-            fi
+                if [ -f "$n" ] ; then
+                    case "${n%,}" in
+                        *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
+                            tar xvf "$n"
+                            ;;
+                        *.lzma)
+                            unlzma ./"$n"
+                            ;;
+                        *.bz2)
+                            bunzip2 ./"$n"
+                            ;;
+                        *.rar)
+                            unrar x -ad ./"$n"
+                            ;;
+                        *.gz)
+                            gunzip ./"$n"
+                            ;;
+                        *.zip)
+                            unzip ./"$n"
+                            ;;
+                        *.z)
+                            uncompress ./"$n"
+                            ;;
+                        *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
+                            7z x ./"$n"
+                            ;;
+                        *.xz)
+                            unxz ./"$n"
+                            ;;
+                        *.exe)
+                            cabextract ./"$n"
+                            ;;
+                        *)
+                            echo "inflate: '$n' - unknown archive method"
+                            return 1
+                            ;;
+                    esac
+                else
+                    echo "'$n' - file does not exist"
+                    return 1
+                fi
             done
         fi
     }
@@ -1231,16 +1285,16 @@ zshrc_load_library() {
         for v in "${@:-$(</dev/stdin)}"; do
             echo $v | awk \
             'BEGIN{IGNORECASE = 1}
-            function printpower(n,b,p) {printf "%u\n", n*b^p; next}
-            /[0-9]$/{print $1;next};
-            /K(iB)?$/{printpower($1,  2, 10)};
-            /M(iB)?$/{printpower($1,  2, 20)};
-            /G(iB)?$/{printpower($1,  2, 30)};
-            /T(iB)?$/{printpower($1,  2, 40)};
-            /KB$/{    printpower($1, 10,  3)};
-            /MB$/{    printpower($1, 10,  6)};
-            /GB$/{    printpower($1, 10,  9)};
-            /TB$/{    printpower($1, 10, 12)}'
+                function printpower(n,b,p) {printf "%u\n", n*b^p; next}
+                /[0-9]$/{print $1;next};
+                /K(iB)?$/{printpower($1,  2, 10)};
+                /M(iB)?$/{printpower($1,  2, 20)};
+                /G(iB)?$/{printpower($1,  2, 30)};
+                /T(iB)?$/{printpower($1,  2, 40)};
+                /KB$/{    printpower($1, 10,  3)};
+                /MB$/{    printpower($1, 10,  6)};
+                /GB$/{    printpower($1, 10,  9)};
+                /TB$/{    printpower($1, 10, 12)}'
         done
     }
 
@@ -1334,6 +1388,93 @@ zshrc_load_library() {
             *)        echo "Unsupported OS: $OSTYPE" ;;
         esac
     }
+
+    troubleshoot() {
+        dir=${1:-.}
+        search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}
+
+        # Check if directory path is provided
+        if [ -z "$dir" ]; then
+            echo "Usage: troubleshoot <directory path>"
+            return 1
+        fi
+
+        # Check if the directory exists
+        if [ ! -d "$dir" ]; then
+            echo "Error: Directory does not exist"
+            return 1
+        fi
+
+        # Regex pattern to match common timestamp formats
+        timestamp_pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}([T ])[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+(Z)?'
+
+        # Search recursively in the directory for log files and process them
+        grep -RiIE "$search" "$dir" | \
+            sed -E "s/$timestamp_pattern//g" | \
+            sort | \
+            uniq -ic | \
+            sort -n
+    }
+
+    zshrc_source_idempotency() {
+        # Path to your shell configuration file
+        CONFIG_FILE="$HOME/.zshrc"
+
+        # Function to capture the current state of environment variables and functions
+        zshrc_capture_state() {
+            env > "$1"
+            declare -f >> "$1"
+            alias >> "$1"
+        }
+
+        # Capture the initial state
+        local pre_state_file="$(mktemp)"
+        zshrc_capture_state "$pre_state_file"
+
+        # Source the configuration file
+        source "$CONFIG_FILE"
+
+        # Capture the state after sourcing
+        local post_state_file="$(mktemp)"
+        zshrc_capture_state "$post_state_file"
+
+        # Compare the environment variables and functions before and after sourcing
+        diff_states=$(diff --color=always "$pre_state_file" "$post_state_file")
+
+        # Clean up temporary files
+        rm "$pre_state_file" "$post_state_file"
+
+        # Check if there are any differences
+        if [ -z "$diff_states" ]; then
+            echo "Re-sourcing the shell configuration is idempotent!"
+            return 0
+        else
+            echo "Re-sourcing the shell configuration is NOT idempotent:"
+            echo "$diff_states"
+            return 1
+        fi
+    }
+
+    wait_release() {
+        local latest_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+
+        echo "Current latest release: $latest_release_tag"
+
+        while true; do
+            sleep 10
+
+            # Fetch the latest release tag again
+            local new_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+
+            if [ "$new_release_tag" != "$latest_release_tag" ]; then
+                echo "" # Insert a newline before the next print
+                echo "New release detected: $new_release_tag"
+                break
+            else
+                printf "."
+            fi
+        done
+    }
 }
 
 zshrc_set_aliases() {
@@ -1361,10 +1502,10 @@ zshrc_set_aliases() {
     alias l='k -Ah --no-vcs' # ls -lah
 
     # Fix tmux 256 colors:
-    #if [[ -x "$(command -v tmux-next)" ]]; then
-        #alias tmux='tmux-next -2'
+    #if type tmux-next > /dev/null 2>&1; then
+    #alias tmux='tmux-next -2'
     #else
-        alias tmux='tmux -2'
+    alias tmux='tmux -2'
     #fi
 
     # Clear color codes before clearing:
@@ -1378,7 +1519,7 @@ zshrc_set_aliases() {
     alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
     alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
 
-    if [[ -x "$(command -v gpg2)" ]]; then
+    if type gpg2 > /dev/null 2>&1; then
         alias gpg='gpg2 --with-subkey-fingerprints'
         alias gpgls='gpg2 --list-secret-keys --with-subkey-fingerprints'
     fi
@@ -1395,18 +1536,18 @@ zshrc_set_aliases() {
     alias clip='xclip -selection clipboard'
 
     # btop > htop > top
-    if [[ -x "$(command -v htop)" ]]; then
+    if type htop > /dev/null 2>&1; then
         alias top='htop'
     fi
 
-    if [[ -x "$(command -v btop)" ]]; then
+    if type btop > /dev/null 2>&1; then
         alias top='btop'
         alias htop='btop'
     fi
 
     alias e="$EDITOR"
 
-    if [ -x "$(command -v rofi)" ]; then
+    if type rofi > /dev/null 2>&1; then
         alias dmenu="rofi -dmenu"
     fi
 
@@ -1414,7 +1555,7 @@ zshrc_set_aliases() {
 
     alias awsp="source _awsp"
 
-    if [[ -x "$(command -v bat)" ]]; then
+    if type bat > /dev/null 2>&1; then
         alias bat='bat --theme=base16'
         alias cat='bat'
     fi
@@ -1449,18 +1590,18 @@ zshrc_set_aliases() {
 
 zshrc_set_default_programs() {
     # For heavyweight purposes.
-    if [[ -x "$(command -v nvim)" ]]; then
+    if type nvim > /dev/null 2>&1; then
         export VISUAL="$(which nvim)"
         if [[ -d "${HOME}/.SpaceVim" ]]; then
             alias vim="nvim"
         fi
-    elif [[ -x "$(command -v vim)" ]]; then
+    elif type vim > /dev/null 2>&1; then
         export VISUAL="$(which vim)"
         alias nvim="vim"
-    elif [[ -x "$(command -v vi)" ]]; then
+    elif type vi > /dev/null 2>&1; then
         export VISUAL="$(which vi)"
         alias nvim="vi"
-    elif [[ -x "$(command -v nano)" ]]; then
+    elif type nano > /dev/null 2>&1; then
         export VISUAL="$(which nano)"
     fi
 
@@ -1470,37 +1611,37 @@ zshrc_set_default_programs() {
     export PAGER="less"
     export MANPAGER="less"
 
-    if [[ -x "$(command -v brave)" ]]; then
+    if type brave > /dev/null 2>&1; then
         export BROWSER="$(which brave)"
-    elif [[ -x "$(command -v brave-browser)" ]]; then
+    elif type brave-browser > /dev/null 2>&1; then
         export BROWSER="$(which brave-browser)"
-    elif [[ -x "$(command -v firefox)" ]]; then
+    elif type firefox > /dev/null 2>&1; then
         export BROWSER="$(which firefox)"
-    elif [[ -x "$(command -v chromium)" ]]; then
+    elif type chromium > /dev/null 2>&1; then
         export BROWSER="$(which chromium)"
-    elif [[ -x "$(command -v google-chrome-stable)" ]]; then
+    elif type google-chrome-stable > /dev/null 2>&1; then
         export BROWSER="$(which google-chrome-stable)"
     fi
 
-    if [[ -x "$(command -v st)" ]]; then
+    if type st > /dev/null 2>&1; then
         export TERMINAL="$(which st)"
-    elif [[ -x "$(command -v urxvt-256color)" ]]; then
+    elif type urxvt-256color > /dev/null 2>&1; then
         export TERMINAL="$(which urxvt-256color)"
-    elif [[ -x "$(command -v konsole)" ]]; then
+    elif type konsole > /dev/null 2>&1; then
         export TERMINAL="$(which konsole)"
     fi
 
     export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 
-    if [[ -x "$(command -v fastfetch)" ]]; then
+    if type fastfetch > /dev/null 2>&1; then
         alias neofetch="fastfetch"
         alias screenfetch="fastfetch"
         alias fetch="fastfetch"
-    elif [[ -x "$(command -v neofetch)" ]]; then
+    elif type neofetch > /dev/null 2>&1; then
         alias fastfetch="neofetch"
         alias screenfetch="neofetch"
         alias fetch="neofetch"
-    elif [[ -x "$(command -v screenfetch)" ]]; then
+    elif type screenfetch > /dev/null 2>&1; then
         alias fastfetch="screenfetch"
         alias neofetch="screenfetch"
         alias fetch="screenfetch"
@@ -1516,9 +1657,10 @@ zshrc_set_environment_variables() {
     # macOS and some other distros don't use traditional Linux ls colors.
     export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
-    # Enable colors for less by default.
+    # Enable colors for less by default. Disable mouse because while scrolling is nice, it's not worth losing copy-paste.
     # --LINE-NUMBERS
-    export LESS='--RAW-CONTROL-CHARS --mouse --ignore-case --quit-if-one-screen --status-column --tabs=4 --wheel-lines=3'
+    # --mouse
+    export LESS='--RAW-CONTROL-CHARS --ignore-case --quit-if-one-screen --status-column --tabs=4 --wheel-lines=3'
 
     if [[ "$(uname)" == "Linux" ]]; then
         CPU_CORES="$(grep "^core id" /proc/cpuinfo | sort -u | wc -l)"
@@ -1584,13 +1726,13 @@ zshrc_set_environment_variables() {
 
     # TODO: Won't work on Arch, needed to install other things.
     #if [[ -d "${GOPATH}" ]]; then
-        #temp_go_path=("${GOPATH}/go-"*);
-        #if [[ -d "${temp_go_path[-1]}" ]]; then
-            #export GOROOT=${temp_go_path[-1]}
-            #if [[ -d "${temp_go_path[2]}" ]]; then
-                #echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
-            #fi
-        #fi
+    #temp_go_path=("${GOPATH}/go-"*);
+    #if [[ -d "${temp_go_path[-1]}" ]]; then
+    #export GOROOT=${temp_go_path[-1]}
+    #if [[ -d "${temp_go_path[2]}" ]]; then
+    #echo "WARNING: There is more than one version of golang installed (${temp_go_path[@]}), selected ${GOROOT} ..."
+    #fi
+    #fi
     #fi
 
     export CHASSIS="$chassis_name"
