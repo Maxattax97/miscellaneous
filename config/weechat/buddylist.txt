@@ -1,2 +1,3 @@
 znc_efnet.leku
+znc_libera.sforshee
 znc_rizon.coffeeiazo
