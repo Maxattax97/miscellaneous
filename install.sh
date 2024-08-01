@@ -405,6 +405,9 @@ case "$response" in
         gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
         ## Ben Hutchings
         gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
+        ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
+        gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
+
 
         # Arch Linux Official Keys
         # https://archlinux.org/master-keys/
@@ -1060,6 +1063,65 @@ case "$response" in
         ;;
     *)
         echo "Skipping WinBox setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup WiFi? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y \
+                wpa_supplicant \
+                wireless-regdb
+        elif [[ -x "$(command -v apt)" ]]; then
+            sudo apt install -y \
+                wpa_supplicant \
+                wireless-regdb
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                wpa_supplicant \
+                wireless-regdb \
+                --needed
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                wpa_supplicant \
+                wireless-regdb
+        fi
+
+        if grep -q '^country=' /etc/wpa_supplicant/wpa_supplicant.conf; then
+            sudo sed -i 's/^country=.*$/country=US/' /etc/wpa_supplicant/wpa_supplicant.conf
+        else
+            sudo echo "country=US" | sudo tee "/etc/wpa_supplicant/wpa_supplicant.conf"
+        fi
+
+        sudo echo "country=US" | sudo tee "/etc/sysconfig/regdomain"
+
+        sudo echo "REGDOMAIN=US" | sudo tee "/etc/default/crda"
+
+        # TODO: Supposedly this is needed on Arch Linux?
+        sudo mkdir -p /etc/conf.d/
+        sudo echo "WIRELESS_REGDOM=US" | sudo tee "/etc/conf.d/wireless-regdom"
+
+        sudo echo "options cfg80211 ieee80211_regdom=US" | sudo tee "/etc/modprobe.d/regdom.conf"
+
+        # TODO: is this right?
+        if [[ -z "$(readlink -f /etc/localtime)" ]]; then
+            sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+        fi
+
+        # Debug with this command:
+        # udevadm monitor --environment kernel
+
+        if [[ -x "$(command -v setregdomain)" ]]; then
+            sudo setregdomain us
+        fi
+
+        if [[ -x "$(command -v iw)" ]]; then
+            sudo iw reg set US
+        fi
+        ;;
+    *)
+        echo "Skipping WiFi setup"
         ;;
 esac
 
