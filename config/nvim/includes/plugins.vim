@@ -61,6 +61,9 @@ call dein#add('github/copilot.vim')
 
 " Test runner.
 call dein#add('vim-test/vim-test')
+
+" Submit metrics to Activity Watcher.
+call dein#add('ActivityWatch/aw-watcher-vim')
 " }}}
 
 " Tim Pope Collection {{{
