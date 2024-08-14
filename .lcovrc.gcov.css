@@ -1,0 +1,133 @@
+/* @import url("https://fonts.googleapis.com/css?family=Source Code Pro|Quicksand"); */
+
+:root {
+  --textColor: #e2e2e2;
+  --mainBg: #1b1b1b;
+  --linkColor: #3294ff;
+  --lighter: #ffffff05;
+  --red: #ff511a;
+  --redBg: #ff511a22;
+  --yellow: #a68f01;
+  --yellowBg: #a68f0122;
+  --green: #4ca340;
+  --greenBg: #4ca34022;
+}
+
+a,
+a:visited {
+  color: var(--linkColor);
+  text-decoration: none;
+}
+
+body center table tbody tr:nth-child(even):not(:nth-child(2)) {
+  background-color: var(--lighter);
+}
+
+body {
+  font-family: "FreeSans", "Helvetica", "Roboto", sans-serif;
+  background-color: var(--mainBg);
+  color: var(--textColor);
+}
+
+center table {
+  background-color: var(--lighter);
+  border-radius: 1em;
+  padding: 1em;
+  padding-top: 0;
+}
+
+td,
+th {
+  padding: 0.5em;
+}
+
+td.coverBar > table {
+  background: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+/*code-related style is below this line*/
+
+.source > a {
+  color: var(--textColor);
+  font-family: "Hack Nerd Font Mono", "Source Code Pro", "Deja Vu Sans Mono",
+    monospace;
+}
+
+td.lineCov,
+span.lineCov,
+.covered,
+.coverLegendCov,
+.coverLegendCovHi,
+.tlaGNC {
+  color: var(--green);
+}
+
+span.lineCov,
+.coverLegendCov,
+.coverLegendCovHi,
+.tlaBgGNC {
+  background-color: var(--greenBg);
+}
+
+.coverLegendCovMed {
+  background-color: var(--yellowBg);
+  color: var(--yellow);
+}
+
+body > table:nth-child(2) {
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+}
+
+td.lineNoCov,
+span.lineNoCov,
+.uncovered,
+.coverLegendNoCov,
+.coverLegendCovLo,
+.tlaUNC {
+  color: var(--red);
+}
+
+span.lineNoCov,
+.coverLegendNoCov,
+.coverLegendCovLo,
+.tlaBgUNC {
+  background-color: var(--redBg);
+}
+
+.source {
+  width: 125em;
+}
+
+img[src*="ruby.png"] {
+  opacity: 0;
+  visibility: hidden; /* Hide the image */
+}
+
+img[src*="amber.png"] {
+  opacity: 0;
+  visibility: hidden; /* Hide the image */
+}
+
+img[src*="emerald.png"] {
+  opacity: 0;
+  visibility: hidden; /* Hide the image */
+}
+
+.coverBarOutline {
+  padding: 0;
+}
+
+.coverBarOutline:has(img[src*="ruby.png"]) {
+  background-color: var(--red);
+}
+
+.coverBarOutline:has(img[src*="amber.png"]) {
+  background-color: var(--yellow);
+}
+
+.coverBarOutline:has(img[src*="emerald.png"]) {
+  background-color: var(--green);
+}

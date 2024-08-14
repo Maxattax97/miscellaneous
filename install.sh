@@ -64,6 +64,8 @@ link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
 link_source .xprofile 0
 link_source .warprc 0
+link_source .lcovrc 1
+link_source .lcovrc.gcov.css 1
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
@@ -367,6 +369,7 @@ case "$response" in
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
+            npm install -g @bazel/bazelisk || sudo npm install -g @bazel/bazelisk
 
             # I set this up to use npx instead
             #npm install -g bash-language-server
@@ -455,6 +458,9 @@ case "$response" in
                     # This one works:
                     sudo dnf copr enable ojab/openvpn3
 
+                    # Add Copr repo for Bazel
+                    # This is WAY out of date. Do not use!
+
                     # Add Signal Desktop repo
                     sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
@@ -462,7 +468,7 @@ case "$response" in
                     sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
                     # Update all the new repositories
-                    sudo dnf update -y
+                    sudo dnf check-update --refresh
 
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
@@ -1203,6 +1209,12 @@ case "$response" in
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
+        fi
+
+        if [ -s /usr/share/applications/brave.desktop ]; then
+            xdg-settings set default-web-browser brave.desktop
+        elif [ -s /usr/share/applications/brave-browser.desktop ]; then
+            xdg-settings set default-web-browser brave-browser.desktop
         fi
         ;;
     *)
