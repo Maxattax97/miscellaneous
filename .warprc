@@ -9,7 +9,7 @@ fal:~/aura/sc/integ-fos-ansible-library
 fl:/opt/flotilla
 fos:~/aura/sc/fos-data-testsuite
 gvcf:~/aura/sc/gvcf-transcoder-service
-iac:~/aura/ns/core-poc-iac
+iac:~/aura/sc/core-on-prem-k8s-iac
 m:~/src/miscellaneous
 sr:~/src
 s:~/src
