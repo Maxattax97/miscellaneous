@@ -114,7 +114,7 @@
 
 /* See section in sts config.h that describes XResources (~L175) */
 st*selectToClipboard: true
-st*disallowedWindowOps: 20,21,SetXProp
+st*disallowedWindowOps: 20,21,SetXprop
 ! st.termname: st-256color
 st.borderpx: 0
 st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
