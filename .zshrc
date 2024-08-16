@@ -1475,6 +1475,23 @@ zshrc_load_library() {
             fi
         done
     }
+
+    clipboards() {
+        if [ -x "$(command -v xsel)" ]; then
+            echo "xsel:"
+            echo "Primary: \"$(xsel --output --primary)\""
+            echo "Secondary: \"$(xsel --output --secondary)\""
+            echo "Clipboard: \"$(xsel --output --clipboard)\""
+        fi
+
+        if [ -x "$(command -v xclip)" ]; then
+            echo "\nxclip:"
+            echo "Primary: \"$(xclip -out -selection primary)\""
+            echo "Secondary: \"$(xclip -out -selection secondary)\""
+            echo "Clipboard: \"$(xclip -out -selection clipboard)\""
+            echo "Buffer-cut: \"$(xclip -out -selection buffer-cut)\""
+        fi
+    }
 }
 
 zshrc_set_aliases() {

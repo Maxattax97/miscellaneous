@@ -102,7 +102,7 @@ echo "Mount up"
 #ls /mnt
 
 echo "Install base packages"
-pacstrap /mnt base linux-lts linux-lts-headers linux-firmware e2fsprogs lvm2 cryptsetup iproute2 networkmanager neovim man-db man-pages texinfo git tmux zsh htop curl ripgrep python nodejs xclip weechat newsboat neofetch chezmoi efivars zram-generator sudo reflector rsync base-devel dkms xorg xorg-server xorg-apps xorg-init xorg-twm xorg-xclock xterm wget unzip zip python python-pip rubygems chromium firefox vulcan-icd-loader vulkan-tools xdg-user-dirs thermald ethtool smartmontools gsmartcontrol pipewire wireplumber helvum pipewire-jack pipewire-alsa pipewire-pulse xdg-desktop-portal xdg-desktop-portal-gtk util-linux chrony
+pacstrap /mnt base linux-lts linux-lts-headers linux-firmware e2fsprogs lvm2 cryptsetup iproute2 networkmanager neovim man-db man-pages texinfo git tmux zsh htop curl ripgrep python nodejs xsel weechat newsboat neofetch chezmoi efivars zram-generator sudo reflector rsync base-devel dkms xorg xorg-server xorg-apps xorg-init xorg-twm xorg-xclock xterm wget unzip zip python python-pip rubygems chromium firefox vulcan-icd-loader vulkan-tools xdg-user-dirs thermald ethtool smartmontools gsmartcontrol pipewire wireplumber helvum pipewire-jack pipewire-alsa pipewire-pulse xdg-desktop-portal xdg-desktop-portal-gtk util-linux chrony
 pacstrap /mnt tlp
 pacstrap /mnt amd-ucode
 pacstrap /mnt intel-ucode xf86-video-intel mesa

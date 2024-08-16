@@ -194,7 +194,7 @@ case "$response" in
                 tmux \
                 util-linux-user \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v brew)" ]]; then
             # macOS has outdated version of curl, make, binutils, gcc
@@ -226,7 +226,7 @@ case "$response" in
                 ripgrep \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v apt)" ]]; then
             # NOTE: On slightly older versions of Debian/Ubuntu awscli is v1, not v2!
@@ -255,7 +255,7 @@ case "$response" in
                 ruby-rubygems \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
@@ -283,7 +283,7 @@ case "$response" in
                 rubygems \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
 
             if [[ -x "$(command -v yay)" ]]; then
@@ -319,7 +319,7 @@ case "$response" in
                 ruby \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
 
             # TODO: Install awscli v2 on BSD
@@ -999,7 +999,7 @@ case "$response" in
             ssh-add "${HOME}/.ssh/id_rsa"
         fi
 
-        xclip -sel clip < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+        xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
         cat "${HOME}/.ssh/id_rsa.pub"
         ;;
     *)
