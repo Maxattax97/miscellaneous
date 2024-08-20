@@ -750,6 +750,7 @@ case "$response" in
                 nextcloud-client \
                 p7zip \
                 qalculate-gtk \
+                touchegg \
                 veracrypt \
                 zathura \
                 zathura-pdf-mupdf \
@@ -789,6 +790,7 @@ case "$response" in
                 nextcloud-desktop \
                 p7zip-full \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 zathura \
                 -y
@@ -807,6 +809,7 @@ case "$response" in
                 noto-fonts-emoji \
                 p7zip \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 veracrypt \
                 zathura \
@@ -829,6 +832,7 @@ case "$response" in
                 nextcloudclient \
                 noto-emoji \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 veracrypt \
                 yt-dlp \
@@ -872,6 +876,39 @@ case "$response" in
         ;;
 esac
 
+read -r -p "Would you like to setup Gnome? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        # Set fonts for Gnome.
+        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+            gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
+
+            if [ -s /usr/share/applications/brave.desktop ]; then
+                xdg-settings set default-web-browser brave.desktop
+            elif [ -s /usr/share/applications/brave-browser.desktop ]; then
+                xdg-settings set default-web-browser brave-browser.desktop
+            fi
+
+            # TODO: Install extensions
+            #appindicatorsupport@rgcjonas.gmail.com
+            #blur-my-shell@aunetx
+            #gsconnect@andyholmes.github.io
+            #clipboard-indicator@tudmotu.com
+            #Vitals@CoreCoding.com
+            #x11gestures@joseexposito.github.io
+            #apps-menu@gnome-shell-extensions.gcampax.github.com
+            #background-logo@fedorahosted.org
+            #launch-new-instance@gnome-shell-extensions.gcampax.github.com
+            #places-menu@gnome-shell-extensions.gcampax.github.com
+            #window-list@gnome-shell-extensions.gcampax.github.com
+        fi
+        ;;
+    *)
+        echo "Skipping font installation"
+        ;;
+esac
 
 read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
 case "$response" in
@@ -1209,12 +1246,6 @@ case "$response" in
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
-        fi
-
-        if [ -s /usr/share/applications/brave.desktop ]; then
-            xdg-settings set default-web-browser brave.desktop
-        elif [ -s /usr/share/applications/brave-browser.desktop ]; then
-            xdg-settings set default-web-browser brave-browser.desktop
         fi
         ;;
     *)

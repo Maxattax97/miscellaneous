@@ -1492,6 +1492,39 @@ zshrc_load_library() {
             echo "Buffer-cut: \"$(xclip -out -selection buffer-cut)\""
         fi
     }
+
+    tstamp() {
+        if date --version 2>&1 | grep -q 'GNU coreutils'; then
+            cmd='date -u --iso-8601=ns'
+        else
+            # *BSD
+            cmd='date -u +"%Y-%m-%dT%H:%M:%S%:z"'
+        fi
+        while IFS= read -r line; do
+            printf "[\033[0;34m%s\033[0m] %s\n" "$($cmd)" "$line";
+        done
+    }
+
+    color_codes() {
+        # Define the text attributes and colors
+        attributes=(
+            "0"  "1"  "4"  "5"  "7"
+        )
+        colors=(
+            "30" "31" "32" "33" "34" "35" "36" "37"
+        )
+
+        # Loop through each attribute and color, displaying them horizontally
+        for attribute in "${attributes[@]}"; do
+            for color in "${colors[@]}"; do
+                echo -en "\033[${attribute};${color}m ${attribute};${color} \033[0m\t"
+            done
+            echo ""
+        done
+
+        # Reset to default
+        echo -e "\033[0mDefault Text"
+    }
 }
 
 zshrc_set_aliases() {
@@ -1556,7 +1589,7 @@ zshrc_set_aliases() {
     alias dtail='docker logs -tf --tail="50" "$@"'
 
     # Clipboard
-    alias clip='xclip -selection clipboard'
+    alias clip='xsel --clipboard --trim -i'
 
     # btop > htop > top
     if type htop > /dev/null 2>&1; then
