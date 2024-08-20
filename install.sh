@@ -166,7 +166,6 @@ case "$response" in
             # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             sudo dnf install -y \
-                awscli2 \
                 btop \
                 ctags \
                 curl \
@@ -200,7 +199,6 @@ case "$response" in
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
-                awscli \
                 binutils \
                 btop \
                 chezmoi \
@@ -229,9 +227,7 @@ case "$response" in
                 xsel \
                 zsh
         elif [[ -x "$(command -v apt)" ]]; then
-            # NOTE: On slightly older versions of Debian/Ubuntu awscli is v1, not v2!
             sudo apt install -y \
-                awscli \
                 btop \
                 ctags \
                 curl \
@@ -321,8 +317,6 @@ case "$response" in
                 weechat \
                 xsel \
                 zsh
-
-            # TODO: Install awscli v2 on BSD
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -425,6 +419,9 @@ case "$response" in
         ## Leonidas Spyropoulos
         gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
 
+        # AWS CLI Team
+        gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+
 
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
@@ -432,6 +429,30 @@ case "$response" in
         ;;
     *)
         echo "Skipping common utility installation"
+        ;;
+esac
+
+read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig"
+
+        gpg --verify "awscliv2.sig" "awscliv2.zip"
+        unzip awscliv2.zip
+
+        if [ -d "${HOME}/.local/share/aws-cli" ]; then
+            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli" --update
+        else
+            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli"
+        fi
+
+        rm -rf awscliv2.zip awscliv2.sig aws
+
+        aws --version
+        ;;
+    *)
+        echo "Skipping AWS CLI installation"
         ;;
 esac
 
