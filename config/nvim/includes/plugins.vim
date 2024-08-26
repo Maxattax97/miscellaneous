@@ -199,6 +199,8 @@ call dein#add('gurpreetatwal/vim-avro')
 call dein#add('urbit/hoon.vim')
 
 call dein#add('kalafut/vim-taskjuggler')
+
+call dein#add('momota/cisco.vim')
 " }}}
 
 " Aesthetics {{{
