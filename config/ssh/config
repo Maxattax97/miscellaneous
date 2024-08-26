@@ -17,12 +17,16 @@ Host maxocull.com
 	HostName maxocull.com
 	User entourage
 	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes
 
 Host leviathan
-	HostName 192.168.1.72
+	HostName 192.168.1.11
 	#ProxyJump maxocull.com
 	User max
 	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes
 
 Host rb3011
 	HostName 192.168.1.1
@@ -38,3 +42,5 @@ host libreelec
 	HostName 192.168.1.30
 	User root
 	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes

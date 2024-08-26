@@ -113,10 +113,12 @@ link_source "config/fontconfig/" 0 ".config/fontconfig"
 link_source "config/pcmanfm/" 1 ".config/pcmanfm"
 link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
-link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
-link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+
+mkdir -p "${HOME}/.local/share/applications/"
+link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
+link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
 
 mkdir -p "${HOME}/.config/variety"
 link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
@@ -382,6 +384,9 @@ case "$response" in
         if [[ ! -d "${HOME}/.cache/dein" ]]; then
             sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)" -- "${HOME}/.cache/dein" --use-neovim-config
         fi
+
+        # Forcibly fix permissions on the GnuPG directory
+        chmod u+rwx,go-rwx "${HOME}/.gnupg"
 
         # Pull GPG keys for max.ocull@protonmail.com
         gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
@@ -1217,6 +1222,44 @@ case "$response" in
         ;;
     *)
         echo "Skipping installing configurations with root"
+        ;;
+esac
+
+read -r -p "Would you like to remotely share the clipboard over SSH on this system? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        # install xvfb, xauth, xsel for all systems
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y \
+                xorg-x11-server-Xvfb \
+                xorg-x11-xauth \
+                xsel
+        elif [[ -x "$(command -v apt)" ]]; then
+            sudo apt install -y \
+                xauth \
+                xvfb \
+                xsel
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                xorg-xauth \
+                xorg-server-xvfb \
+                xsel
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                xauth \
+                xorg-vfbserver \
+                xsel
+        fi
+
+        # ensure that X11Forwarding yes is set in /etc/ssh/sshd_config
+        if grep -q '^X11Forwarding no' /etc/ssh/sshd_config; then
+            sudo sed -i 's/^X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
+        else
+            sudo echo "X11Forwarding yes" | sudo tee -a "/etc/ssh/sshd_config"
+        fi
+        ;;
+    *)
+        echo "Skipping remote clipboard setup"
         ;;
 esac
 
