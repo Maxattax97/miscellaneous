@@ -59,7 +59,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.5.1
         with:
-          images: dotfiles:archlinux
+          images: dotfiles
+          tags: latest,archlinux
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.3.0
@@ -96,7 +97,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.5.1
         with:
-          images: dotfiles:fedora
+          images: dotfiles
+          tags: fedora
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.3.0

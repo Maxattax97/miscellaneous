@@ -36,7 +36,12 @@ RUN mkdir -p /home/max/src && \
 COPY --chown=max install.sh /home/max/src/miscellaneous/install.sh
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -o pipefail -c "yes | AUTOMATED=1 /home/max/src/miscellaneous/install.sh"
+RUN /bin/sh -o pipefail -c "yes | \
+	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+	pacman -Scc --noconfirm && \
+	yay -Scc --noconfirm && \
+	rm -rf /home/max/.cache/yay/* && \
+    rm -rf /var/cache/pacman/pkg/*"
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]
