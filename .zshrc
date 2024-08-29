@@ -1657,6 +1657,7 @@ zshrc_set_aliases() {
     alias Gd='git diff'
     alias Gds='git diff --staged'
 
+    alias Gp='git pull && git push'
     alias Gpl='git pull'
     alias Gpu='git push'
 
