@@ -30,3 +30,4 @@ RUN /bin/sh -o pipefail -c "yes | \
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]
+HEALTHCHECK NONE

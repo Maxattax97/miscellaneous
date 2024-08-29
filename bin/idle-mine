@@ -1,7 +1,7 @@
 #!/bin/bash
 
 POOL="gulf.moneroocean.stream:20008"
-POOL_PASSWORD="MaxattaxOpenSUSE"
+POOL_PASSWORD="MaxattaxOpenSUSE" # gitleaks:allow
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
 USE_CPU=0

@@ -1,5 +1,6 @@
 # This is Arch Linux, a rolling release... it doesn't make sense to use
 # anything other than latest.
+# checkov:skip=CKV_DOCKER_7:Arch Linux is a rolling release
 # hadolint ignore=DL3007
 FROM archlinux:latest
 
@@ -45,3 +46,4 @@ RUN /bin/sh -o pipefail -c "yes | \
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]
+HEALTHCHECK NONE
