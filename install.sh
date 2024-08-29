@@ -496,7 +496,11 @@ case "$response" in
                     # Update all the new repositories
                     sudo dnf check-update --refresh
 
-                    read -r -p "Would you like to install Brave? [y/N] " response
+                    if [ -n "${AUTOMATED}" ]; then
+                        response='n'
+                    else
+                        read -r -p "Would you like to install Brave? [y/N] " response
+                    fi
                     case "$response" in
                             [yY][eE][sS]|[yY])
                                 sudo dnf install -y brave-browser
@@ -506,7 +510,11 @@ case "$response" in
                                 ;;
                     esac
 
-                    read -r -p "Would you like to install Docker? [y/N] " response
+                    if [ -n "${AUTOMATED}" ]; then
+                        response='n'
+                    else
+                        read -r -p "Would you like to install Docker? [y/N] " response
+                    fi
                     case "$response" in
                             [yY][eE][sS]|[yY])
                                 sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -538,7 +546,11 @@ case "$response" in
                                 ;;
                     esac
 
-                    read -r -p "Would you like to install Signal Desktop? [y/N] " response
+                    if [ -n "${AUTOMATED}" ]; then
+                        response='n'
+                    else
+                        read -r -p "Would you like to install Signal Desktop? [y/N] " response
+                    fi
                     case "$response" in
                             [yY][eE][sS]|[yY])
                                 sudo dnf install -y signal-desktop
@@ -622,7 +634,11 @@ case "$response" in
                 ;;
 esac
 
-read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+fi
 case "$response" in
         [yY][eE][sS]|[yY])
                 if [[ -x "$(command -v dnf)" ]]; then
@@ -760,7 +776,11 @@ case "$response" in
                 ;;
 esac
 
-read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+fi
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -902,7 +922,11 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Gnome? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to setup Gnome? [y/N] " response
+fi
 case "$response" in
     [yY][eE][sS]|[yY])
         # Set fonts for Gnome.
@@ -936,7 +960,11 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+fi
 case "$response" in
     [yY][eE][sS]|[yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -974,7 +1002,11 @@ esac
 
 
 if [[ -x "$(command -v pacman)" ]]; then
-    read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
+    if [ -n "${AUTOMATED}" ]; then
+        response='n'
+    else
+        read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
+    fi
     case "$response" in
         [yY][eE][sS]|[yY])
                         if [[ -x "$(command -v dnf)" ]]; then
@@ -1056,14 +1088,16 @@ case "$response" in
         # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
         # git config --global commit.gpgsign true
 
-        if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
-            ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
-            eval "$(ssh-agent -s)"
-            ssh-add "${HOME}/.ssh/id_rsa"
-        fi
+        if [ -z "${AUTOMATED}" ]; then
+            if [[ ! -s "${HOME}/.ssh/id_rsa.pub" ]]; then
+                ssh-keygen -t rsa -b 4096 -C "max.ocull@protonmail.com"
+                eval "$(ssh-agent -s)"
+                ssh-add "${HOME}/.ssh/id_rsa"
+            fi
 
-        xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
-        cat "${HOME}/.ssh/id_rsa.pub"
+            xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+            cat "${HOME}/.ssh/id_rsa.pub"
+        fi
         ;;
     *)
         echo "Skipping Git setup"
