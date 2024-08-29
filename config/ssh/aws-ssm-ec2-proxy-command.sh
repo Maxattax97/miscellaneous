@@ -40,18 +40,17 @@ ssh_public_key_path="$4"
 ssh_public_key="$(cat "${ssh_public_key_path}")"
 ssh_public_key_timeout=60
 
-if [[ "${ec2_instance_id}" == *"${REGION_SEPARATOR}"* ]]
-then
-  export AWS_DEFAULT_REGION="${ec2_instance_id##*${REGION_SEPARATOR}}"
-  ec2_instance_id="${ec2_instance_id%%${REGION_SEPARATOR}*}"
+if [[ "${ec2_instance_id}" == *"${REGION_SEPARATOR}"* ]]; then
+    export AWS_DEFAULT_REGION="${ec2_instance_id##*${REGION_SEPARATOR}}"
+    ec2_instance_id="${ec2_instance_id%%${REGION_SEPARATOR}*}"
 fi
 
->/dev/stderr echo "Add public key ${ssh_public_key_path} for ${ssh_user} at instance ${ec2_instance_id} for ${ssh_public_key_timeout} seconds"
+echo "Add public key ${ssh_public_key_path} for ${ssh_user} at instance ${ec2_instance_id} for ${ssh_public_key_timeout} seconds" > /dev/stderr
 aws ssm send-command \
-  --instance-ids "${ec2_instance_id}" \
-  --document-name 'AWS-RunShellScript' \
-  --comment "Add an SSH public key to authorized_keys for ${ssh_public_key_timeout} seconds" \
-  --parameters commands="\"
+    --instance-ids "${ec2_instance_id}" \
+    --document-name 'AWS-RunShellScript' \
+    --comment "Add an SSH public key to authorized_keys for ${ssh_public_key_timeout} seconds" \
+    --parameters commands="\"
     mkdir -p ~${ssh_user}/.ssh && cd ~${ssh_user}/.ssh || exit 1
 
     authorized_key='${ssh_public_key} ssm-session'
@@ -63,8 +62,8 @@ aws ssm send-command \
     mv .authorized_keys authorized_keys
   \""
 
->/dev/stderr echo "Start ssm session to instance ${ec2_instance_id}"
+echo "Start ssm session to instance ${ec2_instance_id}" > /dev/stderr
 aws ssm start-session \
-  --target "${ec2_instance_id}" \
-  --document-name 'AWS-StartSSHSession' \
-  --parameters "portNumber=${ssh_port}"
+    --target "${ec2_instance_id}" \
+    --document-name 'AWS-StartSSHSession' \
+    --parameters "portNumber=${ssh_port}"
