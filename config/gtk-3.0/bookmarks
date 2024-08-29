@@ -1,7 +1,5 @@
-file:///home/max/Downloads Downloads
-file:///home/max/Documents Documents
-file:///home/max/Pictures Pictures
-file:///home/max/Videos Videos
-file:///home/max/src src
-file:///home/max/Nextcloud Nextcloud
-davs://max@cloud.maxocull.com/remote.php/dav/files/max max on cloud.maxocull.com
+file://~/aura/sc/fos-data-testsuite/archives archives
+file://~/aura/sc aura-sc
+file://~/src src
+file://~/Nextcloud Nextcloud
+nfs://maxocull.com/srv/flamenco flamenco on maxocull.com
