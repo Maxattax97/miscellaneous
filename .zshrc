@@ -1885,6 +1885,7 @@ zshrc_setup_repo() {
     FILE_PYPROJECT="${templates}/pyproject.toml"
     FILE_FLAKE8="${templates}/flake8"
     FILE_YAMLLINT="${templates}/yamllint.yml"
+    FILE_EDITORCONFIG="${templates}/editorconfig"
 
     # Update .gitignore
     zshrc_update_or_append "$repo_dir/.gitignore" "$FILE_GITIGNORE"
@@ -1894,6 +1895,9 @@ zshrc_setup_repo() {
 
     # Update .yamllint.yml since all projects can use YAML
     zshrc_update_or_append "$repo_dir/.yamllint.yml" "$FILE_YAMLLINT"
+
+    # Every repo gets this.
+    zshrc_update_or_append "$repo_dir/.editorconfig" "$FILE_EDITORCONFIG"
 
     # Update .pre-commit-config.yaml based on project type
     if [ -s "$repo_dir/Cargo.toml" ]; then
