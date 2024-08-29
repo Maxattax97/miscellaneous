@@ -2,7 +2,7 @@
 
 # TODO: Convert this script to shell so it can run on lighter systems.
 
-MISC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+MISC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
@@ -10,13 +10,13 @@ fi
 
 echo "Linking from ${MISC_DIR} ..."
 
-TEXT_RED='\033[0;91m';
-TEXT_RESET='\033[0m';
-TEXT_BLINK='\033[5m';
+TEXT_RED='\033[0;91m'
+TEXT_RESET='\033[0m'
+TEXT_BLINK='\033[5m'
 
-link_skipped_files="";
-link_linked_files="";
-link_overwritten_files="";
+link_skipped_files=""
+link_linked_files=""
+link_overwritten_files=""
 
 link_source() {
     src="${MISC_DIR}/${1}"
@@ -162,7 +162,7 @@ echo "Environment installation complete"
 
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
             # shell-gpt needs python3-devel on Fedora.
@@ -285,10 +285,10 @@ case "$response" in
                 zsh
 
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                        aws-cli-v2 \
-                        fastfetch \
-                        --needed
+                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                    aws-cli-v2 \
+                    fastfetch \
+                    --needed
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
@@ -323,7 +323,8 @@ case "$response" in
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
             previous_dir="$(pwd)"
-            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh; cd "$previous_dir" || exit
+            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
+            cd "$previous_dir" || exit
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -410,7 +411,6 @@ case "$response" in
         ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
         gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
 
-
         # Arch Linux Official Keys
         # https://archlinux.org/master-keys/
         ## Florian Pritz
@@ -427,7 +427,6 @@ case "$response" in
         # AWS CLI Team
         gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
-
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
         fi
@@ -439,7 +438,7 @@ esac
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig"
 
@@ -463,175 +462,175 @@ esac
 
 read -r -p "Would you like to add unofficial package repositories? [y/N] " response
 case "$response" in
-        [yY][eE][sS]|[yY])
-                if [[ -x "$(command -v dnf)" ]]; then
-                    sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-                    sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+    [yY][eE][sS] | [yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+            sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
-                    # Add repo for Brave
-                    sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-                    sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+            # Add repo for Brave
+            sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+            sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
-                    # Add repo for Docker
-                    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            # Add repo for Docker
+            sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 
-                    # Import PGP key for VeraCrypt.
-                    sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
+            # Import PGP key for VeraCrypt.
+            sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
 
-                    # Add Copr repo for OpenVPN Connect
-                    ## This repo does not have an x64 build for Fedora 39 for some reason?
-                    ##sudo dnf copr enable dsommers/openvpn3
-                    # This one works:
-                    sudo dnf copr enable ojab/openvpn3
+            # Add Copr repo for OpenVPN Connect
+            ## This repo does not have an x64 build for Fedora 39 for some reason?
+            ##sudo dnf copr enable dsommers/openvpn3
+            # This one works:
+            sudo dnf copr enable ojab/openvpn3
 
-                    # Add Copr repo for Bazel
-                    # This is WAY out of date. Do not use!
+            # Add Copr repo for Bazel
+            # This is WAY out of date. Do not use!
 
-                    # Add Signal Desktop repo
-                    sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
+            # Add Signal Desktop repo
+            sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
-                    # Add Github CLI repo
-                    sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+            # Add Github CLI repo
+            sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
-                    # Update all the new repositories
-                    sudo dnf check-update --refresh
+            # Update all the new repositories
+            sudo dnf check-update --refresh
 
-                    if [ -n "${AUTOMATED}" ]; then
-                        response='n'
-                    else
-                        read -r -p "Would you like to install Brave? [y/N] " response
-                    fi
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo dnf install -y brave-browser
-                                ;;
-                            *)
-                                echo "Skipping Brave installation"
-                                ;;
-                    esac
+            if [ -n "${AUTOMATED}" ]; then
+                response='n'
+            else
+                read -r -p "Would you like to install Brave? [y/N] " response
+            fi
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo dnf install -y brave-browser
+                    ;;
+                *)
+                    echo "Skipping Brave installation"
+                    ;;
+            esac
 
-                    if [ -n "${AUTOMATED}" ]; then
-                        response='n'
-                    else
-                        read -r -p "Would you like to install Docker? [y/N] " response
-                    fi
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-                                sudo systemctl enable docker
-                                sudo systemctl start docker
-                                ;;
-                            *)
-                                echo "Skipping Docker installation"
-                                ;;
-                    esac
+            if [ -n "${AUTOMATED}" ]; then
+                response='n'
+            else
+                read -r -p "Would you like to install Docker? [y/N] " response
+            fi
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                    sudo systemctl enable docker
+                    sudo systemctl start docker
+                    ;;
+                *)
+                    echo "Skipping Docker installation"
+                    ;;
+            esac
 
-                    read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
-                                ;;
-                            *)
-                                echo "Skipping AWS Session Manager Plugin installation"
-                                ;;
-                    esac
+            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
+                    ;;
+                *)
+                    echo "Skipping AWS Session Manager Plugin installation"
+                    ;;
+            esac
 
-                    read -r -p "Would you like to install Github CLI? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo dnf install -y gh
-                                ;;
-                            *)
-                                echo "Skipping Github CLI installation"
-                                ;;
-                    esac
+            read -r -p "Would you like to install Github CLI? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo dnf install -y gh
+                    ;;
+                *)
+                    echo "Skipping Github CLI installation"
+                    ;;
+            esac
 
-                    if [ -n "${AUTOMATED}" ]; then
-                        response='n'
-                    else
-                        read -r -p "Would you like to install Signal Desktop? [y/N] " response
-                    fi
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo dnf install -y signal-desktop
-                                ;;
-                            *)
-                                echo "Skipping Signal Desktop installation"
-                                ;;
-                    esac
-                elif [[ -x "$(command -v apt)" ]]; then
-                    # Install tools for adding repositories
-                    sudo apt-get install -y apt-transport-https
+            if [ -n "${AUTOMATED}" ]; then
+                response='n'
+            else
+                read -r -p "Would you like to install Signal Desktop? [y/N] " response
+            fi
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo dnf install -y signal-desktop
+                    ;;
+                *)
+                    echo "Skipping Signal Desktop installation"
+                    ;;
+            esac
+        elif [[ -x "$(command -v apt)" ]]; then
+            # Install tools for adding repositories
+            sudo apt-get install -y apt-transport-https
 
-                    # Make sure the keyrings directory exists
-                    sudo mkdir -p -m 755 /etc/apt/keyrings
+            # Make sure the keyrings directory exists
+            sudo mkdir -p -m 755 /etc/apt/keyrings
 
-                    # Keys and repository for Kubernetes
-                    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-                    sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
-                    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-                    sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
+            # Keys and repository for Kubernetes
+            curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+            sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+            echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+            sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list # helps tools such as command-not-found to work correctly
 
-                    # Keys and repository for Helm
-                    curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+            # Keys and repository for Helm
+            curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
 
-                    # Keys and repository for Github CLI
-                    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
-                    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            # Keys and repository for Github CLI
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+            sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
 
-                    sudo apt-get update
+            sudo apt-get update
 
-                    read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
-                                sudo dpkg -i "session-manager-plugin.deb"
-                                rm -f "session-manager-plugin.deb"
-                                ;;
-                            *)
-                                echo "Skipping AWS Session Manager Plugin installation"
-                                ;;
-                    esac
+            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+                    sudo dpkg -i "session-manager-plugin.deb"
+                    rm -f "session-manager-plugin.deb"
+                    ;;
+                *)
+                    echo "Skipping AWS Session Manager Plugin installation"
+                    ;;
+            esac
 
-                    read -r -p "Would you like to install Kubernetes? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo apt-get install -y kubectl
-                                ;;
-                            *)
-                                echo "Skipping Kubernetes installation"
-                                ;;
-                    esac
+            read -r -p "Would you like to install Kubernetes? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo apt-get install -y kubectl
+                    ;;
+                *)
+                    echo "Skipping Kubernetes installation"
+                    ;;
+            esac
 
-                    read -r -p "Would you like to install Helm? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo apt-get install -y helm
-                                ;;
-                            *)
-                                echo "Skipping Helm installation"
-                                ;;
-                    esac
+            read -r -p "Would you like to install Helm? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo apt-get install -y helm
+                    ;;
+                *)
+                    echo "Skipping Helm installation"
+                    ;;
+            esac
 
-                    read -r -p "Would you like to install Github CLI? [y/N] " response
-                    case "$response" in
-                            [yY][eE][sS]|[yY])
-                                sudo apt-get install -y gh
-                                ;;
-                            *)
-                                echo "Skipping Github CLI installation"
-                                ;;
-                    esac
-                elif [[ -x "$(command -v pacman)" ]]; then
-                    echo "No repositories for pacman yet"
-                    # TODO: Set up yay.
-                fi
-                ;;
-        *)
-                echo "Skipping unofficial package repository installation"
-                ;;
+            read -r -p "Would you like to install Github CLI? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY])
+                    sudo apt-get install -y gh
+                    ;;
+                *)
+                    echo "Skipping Github CLI installation"
+                    ;;
+            esac
+        elif [[ -x "$(command -v pacman)" ]]; then
+            echo "No repositories for pacman yet"
+            # TODO: Set up yay.
+        fi
+        ;;
+    *)
+        echo "Skipping unofficial package repository installation"
+        ;;
 esac
 
 if [ -n "${AUTOMATED}" ]; then
@@ -640,140 +639,140 @@ else
     read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
 fi
 case "$response" in
-        [yY][eE][sS]|[yY])
-                if [[ -x "$(command -v dnf)" ]]; then
-                        # TODO: Fill the rest in.
-                        sudo dnf install \
-                            @base-x \
-                            bspwm \
-                            copyq \
-                            dunst \
-                            lxappearance \
-                            materia-gtk-theme \
-                            materia-kde \
-                            nitrogen \
-                            papirus-icon-theme \
-                            pcmanfm \
-                            qt6ct \
-                            rofi \
-                            sxhkd \
-                            sxiv \
-                            variety \
-                            yad \
-                            xarchiver \
-                            -y
-                elif [[ -x "$(command -v apt)" ]]; then
-                        # NetworkManager pre-installed.
-                        sudo apt install \
-                            bspwm \
-                            copyq \
-                            dunst \
-                            lxappearance \
-                            materia-gtk-theme \
-                            materia-kde \
-                            murrine-themes \
-                            nitrogen \
-                            papirus-icon-theme \
-                            pcmanfm \
-                            qt6ct \
-                            rofi \
-                            sxhkd \
-                            sxiv \
-                            variety \
-                            xarchiver \
-                            xorg \
-                            yad \
-                            -y
+    [yY][eE][sS] | [yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            # TODO: Fill the rest in.
+            sudo dnf install \
+                @base-x \
+                bspwm \
+                copyq \
+                dunst \
+                lxappearance \
+                materia-gtk-theme \
+                materia-kde \
+                nitrogen \
+                papirus-icon-theme \
+                pcmanfm \
+                qt6ct \
+                rofi \
+                sxhkd \
+                sxiv \
+                variety \
+                yad \
+                xarchiver \
+                -y
+        elif [[ -x "$(command -v apt)" ]]; then
+            # NetworkManager pre-installed.
+            sudo apt install \
+                bspwm \
+                copyq \
+                dunst \
+                lxappearance \
+                materia-gtk-theme \
+                materia-kde \
+                murrine-themes \
+                nitrogen \
+                papirus-icon-theme \
+                pcmanfm \
+                qt6ct \
+                rofi \
+                sxhkd \
+                sxiv \
+                variety \
+                xarchiver \
+                xorg \
+                yad \
+                -y
 
-                        echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
-                        echo "python-xcbgen may need to be changed to python3-xcbgen"
-                        sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+            echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
+            echo "python-xcbgen may need to be changed to python3-xcbgen"
+            sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
 
-                        echo "You will need to build picom from source: https://github.com/yshui/picom#build"
-                        sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
-                elif [[ -x "$(command -v pacman)" ]]; then
-                        sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                            bspwm \
-                            copyq \
-                            dunst \
-                            gtk-engine-murrine \
-                            kvantum-theme-materia \
-                            lxappearance \
-                            materia-gtk-theme \
-                            materia-kde \
-                            network-manager-applet \
-                            nitrogen \
-                            nm-connection-editor \
-                            papirus-icon-theme \
-                            pcmanfm-gtk3 \
-                            picom \
-                            polybar \
-                            qt6ct \
-                            rofi \
-                            sxhkd \
-                            variety \
-                            xarchiver \
-                            xorg-server \
-                            yad \
-                            --needed
+            echo "You will need to build picom from source: https://github.com/yshui/picom#build"
+            sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                bspwm \
+                copyq \
+                dunst \
+                gtk-engine-murrine \
+                kvantum-theme-materia \
+                lxappearance \
+                materia-gtk-theme \
+                materia-kde \
+                network-manager-applet \
+                nitrogen \
+                nm-connection-editor \
+                papirus-icon-theme \
+                pcmanfm-gtk3 \
+                picom \
+                polybar \
+                qt6ct \
+                rofi \
+                sxhkd \
+                variety \
+                xarchiver \
+                xorg-server \
+                yad \
+                --needed
 
-                        if [[ -x "$(command -v yay)" ]]; then
-                                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                                    ly \
-                                    nsxiv \
-                                    --needed
-                        fi
-                elif [[ -x "$(command -v pkg)" ]]; then
-                        sudo pkg install \
-                            Kvantum-qt5 \
-                            bspwm \
-                            copyq \
-                            dunst \
-                            gtk-murrine-engine \
-                            lxappearance \
-                            ly \
-                            materia-gtk-theme \
-                            ncurses \
-                            nitrogen \
-                            nsxiv \
-                            papirus-icon-theme \
-                            pcmanfm-gtk3 \
-                            picom \
-                            pidof \
-                            polybar \
-                            qt6ct \
-                            rofi \
-                            sxhkd \
-                            variety \
-                            xarchiver \
-                            xorg \
-                            yad
+            if [[ -x "$(command -v yay)" ]]; then
+                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                    ly \
+                    nsxiv \
+                    --needed
+            fi
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                Kvantum-qt5 \
+                bspwm \
+                copyq \
+                dunst \
+                gtk-murrine-engine \
+                lxappearance \
+                ly \
+                materia-gtk-theme \
+                ncurses \
+                nitrogen \
+                nsxiv \
+                papirus-icon-theme \
+                pcmanfm-gtk3 \
+                picom \
+                pidof \
+                polybar \
+                qt6ct \
+                rofi \
+                sxhkd \
+                variety \
+                xarchiver \
+                xorg \
+                yad
 
-                            # Could not find these:
-                            #materia-kde \
-                            #network-manager-applet \
-                            #nm-connection-editor \
-                fi
+            # Could not find these:
+            #materia-kde \
+            #network-manager-applet \
+            #nm-connection-editor \
+        fi
 
-                #if [[ -x "$(command -v pip3)" ]]; then
-                        #pip3 install --user \
-                #fi
+        #if [[ -x "$(command -v pip3)" ]]; then
+        #pip3 install --user \
+        #fi
 
-                # copy service files
-                #mkdir -p ~/.config/systemd/user/
-                #cp -u services/redrum.service ~/.config/systemd/user/
-                #cp -u services/redrum.timer ~/.config/systemd/user/
+        # copy service files
+        #mkdir -p ~/.config/systemd/user/
+        #cp -u services/redrum.service ~/.config/systemd/user/
+        #cp -u services/redrum.timer ~/.config/systemd/user/
 
-                # enable and start systemd timer
-                #systemctl --user enable redrum.timer
-                #systemctl --user start redrum.timer
+        # enable and start systemd timer
+        #systemctl --user enable redrum.timer
+        #systemctl --user start redrum.timer
 
-                # the service can be triggered manually as well
-                #systemctl --user start redrum
-                ;;
-        *)
-                echo "Skipping bspwm installation"
-                ;;
+        # the service can be triggered manually as well
+        #systemctl --user start redrum
+        ;;
+    *)
+        echo "Skipping bspwm installation"
+        ;;
 esac
 
 if [ -n "${AUTOMATED}" ]; then
@@ -782,7 +781,7 @@ else
     read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
 fi
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install \
                 brave-browser \
@@ -862,10 +861,10 @@ case "$response" in
                 zathura-pdf-mupdf \
                 --needed
             if [[ -x "$(command -v yay)" ]]; then
-                    yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                        brave-bin \
-                        yt-dlp \
-                        --needed
+                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                    brave-bin \
+                    yt-dlp \
+                    --needed
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
@@ -907,7 +906,7 @@ case "$response" in
                 read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
             fi
             case "$response" in
-                [yY][eE][sS]|[yY])
+                [yY][eE][sS] | [yY])
                     xdg-open 'https://veracrypt.eu/en/Downloads.html'
                     ;;
                 *)
@@ -928,7 +927,7 @@ else
     read -r -p "Would you like to setup Gnome? [y/N] " response
 fi
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         # Set fonts for Gnome.
         if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
@@ -966,7 +965,7 @@ else
     read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
 fi
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install \
                 fontconfig-devel \
@@ -978,14 +977,14 @@ case "$response" in
 
         # TODO: The other package managers
         #elif [[ -x "$(command -v brew)" ]]; then
-            #brew install \
+        #brew install \
         #elif [[ -x "$(command -v apt)" ]]; then
-            #sudo apt install \
+        #sudo apt install \
         #elif [[ -x "$(command -v pacman)" ]]; then
-            #sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                #--needed
+        #sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
+        #--needed
         #elif [[ -x "$(command -v pkg)" ]]; then
-            #sudo pkg install \
+        #sudo pkg install \
         #fi
 
         if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
@@ -1000,7 +999,6 @@ case "$response" in
         ;;
 esac
 
-
 if [[ -x "$(command -v pacman)" ]]; then
     if [ -n "${AUTOMATED}" ]; then
         response='n'
@@ -1008,34 +1006,34 @@ if [[ -x "$(command -v pacman)" ]]; then
         read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
     fi
     case "$response" in
-        [yY][eE][sS]|[yY])
-                        if [[ -x "$(command -v dnf)" ]]; then
-                                sudo dnf install -y \
-                                    cmake \
-                                    gcc \
-                                    gcc-c++ \
-                                    git \
-                                    hwloc-devel \
-                                    libstdc++-static \
-                                    libuv-static \
-                                    make \
-                                    msr-tools \
-                                    nyx \
-                                    openssl-devel \
-                                    tor
-                        elif [[ -x "$(command -v pacman)" ]]; then
-                                sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
-                                    msr-tools \
-                                    nyx \
-                                    tor
+        [yY][eE][sS] | [yY])
+            if [[ -x "$(command -v dnf)" ]]; then
+                sudo dnf install -y \
+                    cmake \
+                    gcc \
+                    gcc-c++ \
+                    git \
+                    hwloc-devel \
+                    libstdc++-static \
+                    libuv-static \
+                    make \
+                    msr-tools \
+                    nyx \
+                    openssl-devel \
+                    tor
+            elif [[ -x "$(command -v pacman)" ]]; then
+                sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                    msr-tools \
+                    nyx \
+                    tor
 
-                                if [[ -x "$(command -v yay)" ]]; then
-                                        yay -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
-                                            xmrig-donateless
-                                fi
-                        fi
+                if [[ -x "$(command -v yay)" ]]; then
+                    yay -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                        xmrig-donateless
+                fi
+            fi
 
-cat >> /etc/tor/torrc<< EOF
+            cat >> /etc/tor/torrc << EOF
 ControlPort 9051
 CookieAuthentication 1
 CookieAuthFile /var/lib/tor/control_auth_cookie
@@ -1043,11 +1041,11 @@ CookieAuthFileGroupReadable 1
 DataDirectoryGroupReadable 1
 EOF
 
-                        if [[ -x "$(command -v dnf)" ]]; then
-                                sudo usermod -a -G toranon "$USER"
-                        elif [[ -x "$(command -v pacman)" ]]; then
-                                sudo usermod -a -G tor "$USER"
-                        fi
+            if [[ -x "$(command -v dnf)" ]]; then
+                sudo usermod -a -G toranon "$USER"
+            elif [[ -x "$(command -v pacman)" ]]; then
+                sudo usermod -a -G tor "$USER"
+            fi
             echo "You will want to refresh your groups before running Nyx: newgrp tor"
             echo "To start Tor: sudo systemctl restart tor"
             ;;
@@ -1059,13 +1057,13 @@ fi
 
 read -r -p "Would you like to setup Git? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
             {
-                printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n";
-                printf "[alias]\n\tlogline = log --graph --pretty=format:'";
-                echo -n '%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset';
-                printf "' --abbrev-commit\n";
+                printf "[user]\n\tname = Max O'Cull\n\temail = max.ocull@protonmail.com\n"
+                printf "[alias]\n\tlogline = log --graph --pretty=format:'"
+                echo -n '%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+                printf "' --abbrev-commit\n"
             } > "${HOME}/.gitconfig"
         fi
 
@@ -1106,7 +1104,7 @@ esac
 
 read -r -p "Would you like to setup Rust? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
         # For Neovim
@@ -1119,15 +1117,16 @@ esac
 
 read -r -p "Would you like to setup Krew? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         (
-            set -x; cd "$(mktemp -d)" &&
-            OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-            ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-            KREW="krew-${OS}_${ARCH}" &&
-            curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-            tar zxvf "${KREW}.tar.gz" &&
-            ./"${KREW}" install krew
+            set -x
+            cd "$(mktemp -d)" \
+                && OS="$(uname | tr '[:upper:]' '[:lower:]')" \
+                && ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" \
+                && KREW="krew-${OS}_${ARCH}" \
+                && curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" \
+                && tar zxvf "${KREW}.tar.gz" \
+                && ./"${KREW}" install krew
         )
         ;;
     *)
@@ -1137,7 +1136,7 @@ esac
 
 read -r -p "Would you like to setup Protobuf libraries? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         (
             version="27.2"
             file="protoc-${version}-linux-x86_64.zip"
@@ -1153,16 +1152,16 @@ esac
 
 read -r -p "Would you like to setup Mikrotik's WinBox? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
-            mkdir -p "${HOME}/.local/share/mikrotik/"
-            echo "Downloading ..."
-            curl -fsSL 'https://mt.lv/winbox64' -o "${HOME}/.local/share/mikrotik/winbox"
+    [yY][eE][sS] | [yY])
+        mkdir -p "${HOME}/.local/share/mikrotik/"
+        echo "Downloading ..."
+        curl -fsSL 'https://mt.lv/winbox64' -o "${HOME}/.local/share/mikrotik/winbox"
 
-            # Make a script to execute it.
-            echo "#!/bin/sh" > "${HOME}/.local/bin/winbox"
-            echo "wine64 ${HOME}/.local/share/mikrotik/winbox" >> "${HOME}/.local/bin/winbox"
-            chmod +x "${HOME}/.local/bin/winbox"
-            echo "Succesfully installed, use \`winbox\` to open"
+        # Make a script to execute it.
+        echo "#!/bin/sh" > "${HOME}/.local/bin/winbox"
+        echo "wine64 ${HOME}/.local/share/mikrotik/winbox" >> "${HOME}/.local/bin/winbox"
+        chmod +x "${HOME}/.local/bin/winbox"
+        echo "Succesfully installed, use \`winbox\` to open"
         ;;
     *)
         echo "Skipping WinBox setup"
@@ -1171,7 +1170,7 @@ esac
 
 read -r -p "Would you like to setup WiFi? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y \
                 wpa_supplicant \
@@ -1191,7 +1190,7 @@ case "$response" in
                 wireless-regdb
         fi
 
-        if grep -q '^country=' /etc/wpa_supplicant/wpa_supplicant.conf; then
+        if sudo grep -q '^country=' /etc/wpa_supplicant/wpa_supplicant.conf; then
             sudo sed -i 's/^country=.*$/country=US/' /etc/wpa_supplicant/wpa_supplicant.conf
         else
             sudo echo "country=US" | sudo tee "/etc/wpa_supplicant/wpa_supplicant.conf"
@@ -1230,14 +1229,16 @@ esac
 
 read -r -p "Would you like to copy install configurations with root? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         sudo rm -f "/etc/chrony.conf"
         sudo cp -f "${MISC_DIR}/config/chrony.conf" "/etc/chrony.conf"
 
         sudo rm -f "/etc/xdg/reflector/reflector.conf"
+        sudo mkdir -p "/etc/xdg/reflector/"
         sudo cp -f "${MISC_DIR}/config/xdg/reflector/reflector.conf" "/etc/xdg/reflector/reflector.conf"
 
         sudo rm -f "/etc/systemd/zram-generator.conf"
+        sudo mkdir -p "/etc/systemd/"
         sudo cp -f "${MISC_DIR}/config/systemd/zram-generator.conf" "/etc/systemd/zram-generator.conf"
 
         sudo rm -f "/etc/pacman.conf"
@@ -1250,6 +1251,7 @@ case "$response" in
         sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
 
         sudo rm -f "/etc/dnf/dnf.conf"
+        sudo mkdir -p "/etc/dnf/"
         sudo cp -f "${MISC_DIR}/config/dnf.conf" "/etc/dnf/dnf.conf"
 
         # NOTE: Skipped mkinitcpio because it's system dependent... use Chezmoi!
@@ -1259,9 +1261,13 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to remotely share the clipboard over SSH on this system? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to remotely share the clipboard over SSH on this system? [y/N] " response
+fi
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         # install xvfb, xauth, xsel for all systems
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install -y \
@@ -1299,7 +1305,7 @@ esac
 
 read -r -p "Would you like to setup system permissions? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
 
         if [[ -x "$(command -v pw)" ]]; then
             sudo pw groupmod video -m "$USER"
@@ -1328,14 +1334,18 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to install fonts? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='n'
+else
+    read -r -p "Would you like to install fonts? [y/N] " response
+fi
 case "$response" in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS] | [yY])
         if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                    all-repository-fonts \
-                    ttf-ms-fonts \
-                    --needed
+            yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                all-repository-fonts \
+                ttf-ms-fonts \
+                --needed
         fi
         ./scripts/font-install.sh
 

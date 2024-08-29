@@ -7,5 +7,5 @@ indent_size = 4
 binary_next_line   = true
 switch_case_indent = true
 space_redirects    = true
-keep_padding       = true
+;keep_padding       = true
 simplify           = true

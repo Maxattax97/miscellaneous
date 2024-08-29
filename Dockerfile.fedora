@@ -12,6 +12,7 @@ RUN dnf install -y \
 RUN useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER max
+ENV USER=max
 
 # NOTE: This is dangerous because it will include decrypted secrets in the image!
 #RUN mkdir -p /home/max/src/miscellaneous

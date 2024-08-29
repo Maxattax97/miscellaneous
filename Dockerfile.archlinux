@@ -25,6 +25,7 @@ RUN git clone https://aur.archlinux.org/yay.git /tmp/yay && \
 USER root
 RUN rm -rf /tmp/yay
 USER max
+ENV USER=max
 
 # NOTE: This is dangerous because it will include decrypted secrets in the image!
 #RUN mkdir -p /home/max/src/miscellaneous
