@@ -1,5 +1,5 @@
-file://~/aura/sc/fos-data-testsuite/archives archives
-file://~/aura/sc aura-sc
-file://~/src src
-file://~/Nextcloud Nextcloud
-nfs://maxocull.com/srv/flamenco flamenco on maxocull.com
+file:///home/mocull/src src
+file:///home/mocull/aura/sc aura-sc
+file:///home/mocull/aura/sc/fos-data-testsuite/archives Test Archives
+file:///home/mocull/Nextcloud Nextcloud
+nfs://maxocull.com/src/flamenco flamenco@maxocull.com

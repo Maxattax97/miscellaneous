@@ -25,8 +25,8 @@ let g:coc_global_extensions = [
     \ 'coc-tslint-plugin',
     \ 'coc-tsserver',
     \ 'coc-vetur',
-    \ 'coc-vimtex',
     \ 'coc-vimlsp',
+    \ 'coc-vimtex',
     \ 'coc-yaml',
     \ 'coc-yank',
     \]
@@ -41,6 +41,7 @@ let g:coc_global_extensions = [
     "\ 'coc-neco', " Install via plugin manager.
     "\ 'coc-neoinclude', " Install via plugin manager.
     "\ 'coc-word',
+    "\ 'coc-xml', " it's lame
 
 " INSTALL: go get golang.org/x/tools/cmd/gopls
 " INSTALL: pacman -Syu lua53 luarocks

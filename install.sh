@@ -952,6 +952,25 @@ case "$response" in
             #launch-new-instance@gnome-shell-extensions.gcampax.github.com
             #places-menu@gnome-shell-extensions.gcampax.github.com
             #window-list@gnome-shell-extensions.gcampax.github.com
+
+            # Clear the bookmarks file
+            printf "" > "${HOME}/.config/gtk-3.0/bookmarks"
+
+            add_bookmark() {
+                path="${1}"
+                name="${2}"
+
+                if [ -d "$path" ]; then
+                    printf "file://%s %s\n" "$(realpath "$path")" "$name" >> "${HOME}/.config/gtk-3.0/bookmarks"
+                fi
+            }
+
+            add_bookmark "${HOME}/src" "src"
+            add_bookmark "${HOME}/aura/sc" "aura-sc"
+            add_bookmark "${HOME}/aura/sc/fos-data-testsuite/archives" "Test Archives"
+            add_bookmark "${HOME}/Nextcloud" "Nextcloud"
+
+            printf "nfs://maxocull.com/src/flamenco flamenco@maxocull.com\n" >> "${HOME}/.config/gtk-3.0/bookmarks"
         fi
         ;;
     *)

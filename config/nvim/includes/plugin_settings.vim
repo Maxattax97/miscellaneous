@@ -13,11 +13,12 @@ let g:ale_virtualtext_prefix = ' ]] '
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
-\   'jsx': ['eslint'],
 \   'json': ['jq'],
+\   'jsx': ['eslint'],
 \   'python': ['black'],
 \   'rust': ['rustfmt'],
+\   'typescript': ['eslint'],
+\   'xml': ['xmllint'],
 \   'yaml': [],
 \}
 
@@ -25,17 +26,17 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \   'c': [],
 \   'cpp': [],
-\   'python': [],
-\   'java': [],
-\   'json': [],
-\   'javascript': [],
-\   'typescript': [],
-\   'jsx': [],
 \   'css': [],
+\   'go': [],
 \   'html': [],
+\   'java': [],
+\   'javascript': [],
+\   'json': [],
+\   'jsx': [],
+\   'python': [],
 \   'ruby': [],
 \   'rust': [],
-\   'go': [],
+\   'typescript': [],
 \   'yaml': [],
 \}
 
