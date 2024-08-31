@@ -228,6 +228,34 @@ case "$response" in
                 weechat \
                 xsel \
                 zsh
+        elif [[ -x "$(command -v emerge)" ]]; then
+            # Possibly missing: npm, python3-neovim
+            sudo emerge --ask --verbose --noreplace \
+                app-crypt/gnupg \
+                app-editors/neovim \
+                app-misc/fastfetch \
+                app-misc/tmux \
+                app-shells/zsh \
+                dev-build/make \
+                dev-lang/python \
+                dev-lang/ruby \
+                dev-python/pip \
+                dev-python/pipx \
+                dev-ruby/rubygems \
+                dev-util/ctags \
+                dev-vcs/git \
+                dev-vcs/git-crypt \
+                dev-vcs/git-lfs \
+                net-irc/weechat \
+                net-libs/nodejs \
+                net-misc/curl \
+                net-misc/keychain \
+                net-news/newsboat \
+                sys-apps/ripgrep \
+                sys-apps/util-linux \
+                sys-devel/gcc \
+                sys-process/btop \
+                x11-misc/xsel
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y \
                 btop \
@@ -824,6 +852,22 @@ case "$response" in
                 veracrypt \
                 vlc \
                 wireshark
+        elif [[ -x "$(command -v emerge)" ]]; then
+            # Possibly missing: brave-browser, touchegg
+            sudo emerge --ask --verbose --noreplace \
+                app-arch/p7zip \
+                app-crypt/veracrypt \
+                app-office/libreoffice \
+                app-text/zathura \
+                app-text/zathura-pdf-mupdf \
+                media-fonts/noto-emoji \
+                media-gfx/flameshot \
+                media-gfx/inkscape \
+                media-video/mpv \
+                net-misc/nextcloud-client \
+                sci-calculators/qalculate-gtk \
+                sys-block/gparted \
+                www-client/firefox
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install \
                 flameshot \
@@ -1194,6 +1238,10 @@ case "$response" in
             sudo dnf install -y \
                 wpa_supplicant \
                 wireless-regdb
+        elif [[ -x "$(command -v emerge)" ]]; then
+            sudo emerge --ask --verbose --noreplace \
+                net-wireless/wireless-regdb \
+                net-wireless/wpa_supplicant
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y \
                 wpa_supplicant \
@@ -1293,6 +1341,12 @@ case "$response" in
                 xorg-x11-server-Xvfb \
                 xorg-x11-xauth \
                 xsel
+        elif [[ -x "$(command -v emerge)" ]]; then
+            # Possibly missing: xorg-x11-server-Xvfb
+            sudo emerge --ask --verbose --noreplace \
+                x11-apps/xauth \
+                x11-misc/xsel \
+                x11-misc/xvfb-run
         elif [[ -x "$(command -v apt)" ]]; then
             sudo apt install -y \
                 xauth \
