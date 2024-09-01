@@ -1,0 +1,18 @@
+---
+session_name: Leviathan
+windows:
+  - window_name: SYS
+    environment:
+      DISABLE_AUTO_TITLE: "true"
+    # focus: true
+    options:
+      allow-rename: false
+      automatic-rename: false
+    panes:
+      - shell_command: sudo top
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+  - focus: true

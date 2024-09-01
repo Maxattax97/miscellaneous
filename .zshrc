@@ -39,10 +39,15 @@ zshrc_probe() {
 
 zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
-        local session_count=$(tmux ls 2>/dev/null | grep "^Main" | wc -l)
+        local session_count=$(tmux ls 2>/dev/null | wc -l)
         if [[ "$session_count" -eq "0" ]]; then
             if type tmuxp > /dev/null 2>&1; then
-                tmuxp load "${HOME}/.tmuxp/main.yaml"
+                local host_config="${HOME}/.tmuxp/$(hostname).yml"
+                if [ -s "${host_config}" ]; then
+                    tmuxp load "${host_config}"
+                else
+                    tmuxp load "${HOME}/.tmuxp/main.yaml"
+                fi
             else
                 tmux -2 new-session -s "Main"
             fi
@@ -1671,9 +1676,9 @@ zshrc_set_aliases() {
     alias kernlog='sudo dmesg --time-format iso --kernel -H --color=always -w | less +F'
 
     alias Eupdate='sudo emerge --sync'
-    alias Eupgrade='sudo emerge --tree --update --verbose --deep --newuse @world'
+    alias Eupgrade='sudo emerge --ask --tree --update --verbose --deep --newuse @world'
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
-    alias Eclean='sudo emerge --depclean'
+    alias Eclean='sudo emerge --ask --depclean'
 }
 
 zshrc_set_default_programs() {

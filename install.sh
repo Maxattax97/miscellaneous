@@ -56,6 +56,7 @@ link_source .ctags 1
 link_source .bashrc 1
 link_source .zshrc 1
 link_source .tmux.conf 1
+link_source .tmux.sh 1
 link_source .tmuxline.conf 1
 link_source .Xdefaults 1
 link_source .Xdefaults 1 .Xresources
@@ -455,8 +456,10 @@ case "$response" in
         # AWS CLI Team
         gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
-        if [[ ! "$SHELL" =~ "zsh" ]]; then
-            chsh -s "$(command -v zsh)" "${USER}"
+        if [ -s /bin/zsh ]; then
+            if [[ ! "$SHELL" =~ "zsh" ]]; then
+                chsh -s /bin/zsh "${USER}"
+            fi
         fi
         ;;
     *)
