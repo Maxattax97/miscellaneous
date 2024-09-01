@@ -1669,6 +1669,11 @@ zshrc_set_aliases() {
     alias Grs='git restore --staged'
 
     alias kernlog='sudo dmesg --time-format iso --kernel -H --color=always -w | less +F'
+
+    alias Eupdate='sudo emerge --sync'
+    alias Eupgrade='sudo emerge --tree --update --verbose --deep --newuse @world'
+    alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
+    alias Eclean='sudo emerge --depclean'
 }
 
 zshrc_set_default_programs() {

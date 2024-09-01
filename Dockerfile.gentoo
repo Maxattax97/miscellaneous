@@ -8,16 +8,16 @@ COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
 RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo.org/output/service-keys.gpg
 
 # Update the system and select a profile.
-RUN emaint --auto sync && \
-	emerge --update --deep --newuse @world && \
+RUN emerge --sync && \
+	emerge --tree --update --deep --newuse @world && \
 	emerge --depclean && \
 	eselect profile set default/linux/amd64/23.0 && \
-	emerge --update --deep --newuse @world && \
+	emerge --tree --update --deep --newuse @world && \
 	emerge --depclean
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3041
-RUN emerge --noreplace \
+RUN emerge --tree --noreplace \
 	net-misc/curl \
 	dev-vcs/git \
 	app-admin/sudo \
