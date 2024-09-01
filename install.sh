@@ -230,7 +230,7 @@ case "$response" in
                 zsh
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
-            sudo emerge --ask --verbose --noreplace \
+            sudo emerge --noreplace \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -256,8 +256,8 @@ case "$response" in
                 sys-devel/gcc \
                 sys-process/btop \
                 x11-misc/xsel
-        elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y \
+        elif [[ -x "$(command -v apt-get)" ]]; then
+            sudo apt-get install -y \
                 btop \
                 ctags \
                 curl \
@@ -586,7 +586,7 @@ case "$response" in
                     echo "Skipping Signal Desktop installation"
                     ;;
             esac
-        elif [[ -x "$(command -v apt)" ]]; then
+        elif [[ -x "$(command -v apt-get)" ]]; then
             # Install tools for adding repositories
             sudo apt-get install -y apt-transport-https
 
@@ -689,9 +689,9 @@ case "$response" in
                 yad \
                 xarchiver \
                 -y
-        elif [[ -x "$(command -v apt)" ]]; then
+        elif [[ -x "$(command -v apt-get)" ]]; then
             # NetworkManager pre-installed.
-            sudo apt install \
+            sudo apt-get install \
                 bspwm \
                 copyq \
                 dunst \
@@ -714,10 +714,10 @@ case "$response" in
 
             echo "You will need to build polybar from source: https://github.com/polybar/polybar/wiki/Compiling"
             echo "python-xcbgen may need to be changed to python3-xcbgen"
-            sudo apt install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+            sudo apt-get install -y build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
 
             echo "You will need to build picom from source: https://github.com/yshui/picom#build"
-            sudo apt install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
+            sudo apt-get install -y libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-randr0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libxcb-glx0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libpcre3-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
                 bspwm \
@@ -854,7 +854,7 @@ case "$response" in
                 wireshark
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
-            sudo emerge --ask --verbose --noreplace \
+            sudo emerge --noreplace \
                 app-arch/p7zip \
                 app-crypt/veracrypt \
                 app-office/libreoffice \
@@ -868,8 +868,8 @@ case "$response" in
                 sci-calculators/qalculate-gtk \
                 sys-block/gparted \
                 www-client/firefox
-        elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install \
+        elif [[ -x "$(command -v apt-get)" ]]; then
+            sudo apt-get install \
                 flameshot \
                 fonts-noto-color-emoji \
                 gparted \
@@ -1041,8 +1041,8 @@ case "$response" in
         # TODO: The other package managers
         #elif [[ -x "$(command -v brew)" ]]; then
         #brew install \
-        #elif [[ -x "$(command -v apt)" ]]; then
-        #sudo apt install \
+        #elif [[ -x "$(command -v apt-get)" ]]; then
+        #sudo apt-get install \
         #elif [[ -x "$(command -v pacman)" ]]; then
         #sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
         #--needed
@@ -1239,12 +1239,12 @@ case "$response" in
                 wpa_supplicant \
                 wireless-regdb
         elif [[ -x "$(command -v emerge)" ]]; then
-            sudo emerge --ask --verbose --noreplace \
+            sudo emerge --noreplace \
                 net-wireless/wireless-regdb \
                 net-wireless/wpa_supplicant
-        elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y \
-                wpa_supplicant \
+        elif [[ -x "$(command -v apt-get)" ]]; then
+            sudo apt-get install -y \
+                wpasupplicant \
                 wireless-regdb
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
@@ -1263,6 +1263,8 @@ case "$response" in
             sudo echo "country=US" | sudo tee "/etc/wpa_supplicant/wpa_supplicant.conf"
         fi
 
+        # TODO: Not used on Debian?
+        sudo mkdir -p /etc/sysconfig/
         sudo echo "country=US" | sudo tee "/etc/sysconfig/regdomain"
 
         sudo echo "REGDOMAIN=US" | sudo tee "/etc/default/crda"
@@ -1271,6 +1273,7 @@ case "$response" in
         sudo mkdir -p /etc/conf.d/
         sudo echo "WIRELESS_REGDOM=US" | sudo tee "/etc/conf.d/wireless-regdom"
 
+        sudo mkdir -p /etc/modprobe.d/
         sudo echo "options cfg80211 ieee80211_regdom=US" | sudo tee "/etc/modprobe.d/regdom.conf"
 
         # TODO: is this right?
@@ -1343,12 +1346,12 @@ case "$response" in
                 xsel
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: xorg-x11-server-Xvfb
-            sudo emerge --ask --verbose --noreplace \
+            sudo emerge --noreplace \
                 x11-apps/xauth \
                 x11-misc/xsel \
                 x11-misc/xvfb-run
-        elif [[ -x "$(command -v apt)" ]]; then
-            sudo apt install -y \
+        elif [[ -x "$(command -v apt-get)" ]]; then
+            sudo apt-get install -y \
                 xauth \
                 xvfb \
                 xsel

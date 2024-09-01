@@ -1536,6 +1536,7 @@ zshrc_load_library() {
 
         # Reset to default
         echo -e "\033[0mDefault Text"
+        echo "Example: \\\\033[1;34mBold Blue Text\\\\033[0m (Reset)"
     }
 
     random_string() {

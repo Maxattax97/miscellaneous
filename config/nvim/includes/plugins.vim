@@ -201,6 +201,9 @@ call dein#add('urbit/hoon.vim')
 call dein#add('kalafut/vim-taskjuggler')
 
 call dein#add('momota/cisco.vim')
+
+" Display ANSI color codes
+call dein#add('powerman/vim-plugin-AnsiEsc')
 " }}}
 
 " Aesthetics {{{

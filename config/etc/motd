@@ -1,9 +1,10 @@
-Welcome back to <hostname>!
+[1;34mWelcome back to <hostname>![0m
 
-<word>, <part of speech>.
-<Oxford English Dictionary definition>
+[0;35m<word>[0m, [0;36m<part of speech>[0m.
+[0;32m<Oxford English Dictionary definition>[0m
 
-<brief description of this host>
+[0;31m<brief description of this host>[0m
 
-Domain: <domain name>
-Location: <physical address>
+[1;37mHardware[0;37m: <pc part picker url>[0m
+[1;37mDomain[0;37m: <domain name>[0m
+[1;37mLocation[0;37m: <physical address>[0m
