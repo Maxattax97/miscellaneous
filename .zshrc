@@ -1636,7 +1636,10 @@ zshrc_set_aliases() {
         alias dmenu="rofi -dmenu"
     fi
 
-    alias rcat='find . -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
+    # "Recursive Cat"
+    # Used for feeding file data into an LLM
+    # Ignores hidden files. (like git)
+    alias rcat='find . -not -path "*/.*" -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
 
     alias awsp="source _awsp"
 
