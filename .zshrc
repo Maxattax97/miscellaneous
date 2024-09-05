@@ -1603,8 +1603,7 @@ zshrc_set_aliases() {
     alias network-relocate='rsync -azP --delete --info=progress2'
 
     # Add progress indicator because I always forget.
-    alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
-    alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
+    alias ddd='sudo dd iflag=nocache oflag=nocache,sync bs=16M status=progress'
 
     if type gpg2 > /dev/null 2>&1; then
         alias gpg='gpg2 --with-subkey-fingerprints'

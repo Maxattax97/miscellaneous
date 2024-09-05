@@ -28,6 +28,14 @@ Host leviathan
 	ForwardX11 yes
 	ForwardX11Trusted yes
 
+Host citadel
+	HostName 192.168.1.13
+	#ProxyJump maxocull.com
+	User citadel
+	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes
+
 Host rb3011
 	HostName 192.168.1.1
 	User max
