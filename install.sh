@@ -1300,32 +1300,32 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to copy install configurations with root? [y/N] " response
+read -r -p "Would you like to install /etc/ configurations with root? [y/N] " response
 case "$response" in
     [yY][eE][sS] | [yY])
         sudo rm -f "/etc/chrony.conf"
-        sudo cp -f "${MISC_DIR}/config/chrony.conf" "/etc/chrony.conf"
+        sudo cp -f "${MISC_DIR}/config/etc/chrony.conf" "/etc/chrony.conf"
 
         sudo rm -f "/etc/xdg/reflector/reflector.conf"
         sudo mkdir -p "/etc/xdg/reflector/"
-        sudo cp -f "${MISC_DIR}/config/xdg/reflector/reflector.conf" "/etc/xdg/reflector/reflector.conf"
+        sudo cp -f "${MISC_DIR}/config/etc/xdg/reflector/reflector.conf" "/etc/xdg/reflector/reflector.conf"
 
         sudo rm -f "/etc/systemd/zram-generator.conf"
         sudo mkdir -p "/etc/systemd/"
-        sudo cp -f "${MISC_DIR}/config/systemd/zram-generator.conf" "/etc/systemd/zram-generator.conf"
+        sudo cp -f "${MISC_DIR}/config/etc/systemd/zram-generator.conf" "/etc/systemd/zram-generator.conf"
 
         sudo rm -f "/etc/pacman.conf"
-        sudo cp -f "${MISC_DIR}/config/pacman.conf" "/etc/pacman.conf"
+        sudo cp -f "${MISC_DIR}/config/etc/pacman.conf" "/etc/pacman.conf"
 
         sudo mkdir -p "/etc/pacman.d/hooks/"
         sudo rm -f "/etc/pacman.d/hooks/nvidia.hook"
-        sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/nvidia.hook" "/etc/pacman.d/hooks/nvidia.hook"
+        sudo cp -f "${MISC_DIR}/config/etc/pacman.d/hooks/nvidia.hook" "/etc/pacman.d/hooks/nvidia.hook"
         sudo rm -f "/etc/pacman.d/hooks/refind.hook"
-        sudo cp -f "${MISC_DIR}/config/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
+        sudo cp -f "${MISC_DIR}/config/etc/pacman.d/hooks/refind.hook" "/etc/pacman.d/hooks/refind.hook"
 
         sudo rm -f "/etc/dnf/dnf.conf"
         sudo mkdir -p "/etc/dnf/"
-        sudo cp -f "${MISC_DIR}/config/dnf.conf" "/etc/dnf/dnf.conf"
+        sudo cp -f "${MISC_DIR}/config/etc/dnf/dnf.conf" "/etc/dnf/dnf.conf"
 
         # NOTE: Skipped mkinitcpio because it's system dependent... use Chezmoi!
         ;;
@@ -1371,7 +1371,7 @@ case "$response" in
         fi
 
         # ensure that X11Forwarding yes is set in /etc/ssh/sshd_config
-        if grep -q '^X11Forwarding no' /etc/ssh/sshd_config; then
+        if sudo grep -q '^X11Forwarding no' /etc/ssh/sshd_config; then
             sudo sed -i 's/^X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
         else
             sudo echo "X11Forwarding yes" | sudo tee -a "/etc/ssh/sshd_config"
