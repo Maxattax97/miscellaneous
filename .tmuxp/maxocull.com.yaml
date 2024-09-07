@@ -15,7 +15,7 @@ windows:
           allow-rename: false
           automatic-rename: false
   - window_name: DKR
-    layout: main-vertical
+    layout: main-horizontal
     environment:
       DISABLE_AUTO_TITLE: "true"
     options:
@@ -25,10 +25,10 @@ windows:
       - shell_command: ctop
         environment:
           DISABLE_AUTO_TITLE: "true"
-        options:
+        optionsa:
           allow-rename: false
           automatic-rename: false
-      - shell_command: docker-compose -f /opt/flotilla/docker-compose.yaml logs -f
+      - shell_command: docker-compose -f /opt/flotilla/docker-compose.yml logs -f
         focus: true
         environment:
           DISABLE_AUTO_TITLE: "true"
