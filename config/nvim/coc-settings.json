@@ -72,6 +72,7 @@
     }
   },
   "prettier.printWidth": 80,
+  "pyright.inlayHints.parameterTypes": false,
   "python.linting.pep8Enabled": true,
   "python.linting.pylintEnabled": false,
   "python.pythonPath": "python3",
