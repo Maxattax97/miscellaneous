@@ -369,9 +369,11 @@ case "$response" in
             pipx install argcomplete
             pipx install flake8
             pipx install flake8-pyproject
+            pipx install huggingface_hub
             pipx install isort
             pipx install molecule
             pipx install neovim
+            pipx install poetry
             pipx install pre-commit
             pipx install shell-gpt
             pipx install thefuck
@@ -383,8 +385,10 @@ case "$response" in
                 ansible-lint \
                 argcomplete \
                 flake8 \
+                huggingface_hub \
                 isort \
                 neovim \
+                poetry \
                 shell-gpt \
                 thefuck \
                 tmuxp
