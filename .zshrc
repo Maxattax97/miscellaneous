@@ -40,32 +40,40 @@ zshrc_probe() {
 zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls 2>/dev/null | wc -l)
-        if [[ "$session_count" -eq "0" ]]; then
-            if type tmuxp > /dev/null 2>&1; then
-                local host_config="${HOME}/.tmuxp/$(hostname).yml"
+        if type tmuxp > /dev/null 2>&1; then
+            if [[ "$session_count" -eq "0" ]]; then
+                # Load the tmuxp configuration for the current host, and attach
+                # if it already exists.
+                local host_config="${HOME}/.tmuxp/$(hostname).yaml"
                 if [ -s "${host_config}" ]; then
-                    tmuxp load "${host_config}"
+                    tmuxp load -y "${host_config}"
                 else
-                    tmuxp load "${HOME}/.tmuxp/main.yaml"
+                    tmuxp load -y "${HOME}/.tmuxp/main.yaml"
                 fi
-            else
-                tmux -2 new-session -s "Main"
+            elif [[ -n "$TMUX" ]]; then
+                # If we are already in a tmux session, just display the banner for this shell.
+                zshrc_display_banner
             fi
         else
-            # Make sure we are not already in a tmux session
-            if [[ -z "$TMUX" ]]; then
-                # Session id is date and time to prevent conflict
-                # TODO: Make session number more... meaningful?
-                local session_id="$(date +%H%M%S)"
-
-                # Create a new session (without attaching it) and link to base session
-                # to share windows
-                tmux -2 new-session -d -t Main -s "$session_id"
-
-                # Attach to the new session & kill it once orphaned
-                tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+            local session_count=$(tmux ls 2>/dev/null | wc -l)
+            if [[ "$session_count" -eq "0" ]]; then
+                tmux -2 new-session -s "Main"
             else
-                zshrc_display_banner
+                # Make sure we are not already in a tmux session
+                if [[ -z "$TMUX" ]]; then
+                    # Session id is date and time to prevent conflict
+                    # TODO: Make session number more... meaningful?
+                    local session_id="$(date +%H%M%S)"
+
+                    # Create a new session (without attaching it) and link to base session
+                    # to share windows
+                    tmux -2 new-session -d -t Main -s "$session_id"
+
+                    # Attach to the new session & kill it once orphaned
+                    tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+                else
+                    zshrc_display_banner
+                fi
             fi
         fi
     else
