@@ -1343,8 +1343,23 @@ zshrc_load_library() {
         fi
     }
 
-    enhance() {
+    image-boost() {
         mogrify -auto-gamma -auto-level -normalize $@
+    }
+
+    image-optimize() {
+        mogrify -sampling-factor 4:2:0 -auto-orient -strip -quality 85 -interlace JPEG -colorspace sRGB $@
+    }
+
+    image-shrink() {
+        # Golden ratio
+        mogrify -resize 61.8% $@
+    }
+
+    image-enhance() {
+        image-shrink $@
+        image-boost $@
+        image-optimize $@
     }
 
     scale() {
@@ -1563,6 +1578,10 @@ zshrc_load_library() {
         local key_filename="key_$(random_string 5).txt"
 
         ssh "$userAtHost" "/file add name=${key_filename} contents=\"$(cat ~/.ssh/id_rsa.pub)\"; /user ssh-keys import user=${user} public-key-file=${key_filename}; /file remove ${key_filename};"
+    }
+
+    rf-link() {
+        iw dev "$(iw dev | grep Interface | awk '{ print $2 }' | head -n1)" link
     }
 }
 
