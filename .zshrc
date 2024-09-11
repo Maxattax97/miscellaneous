@@ -41,9 +41,10 @@ zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
         local session_count=$(tmux ls 2>/dev/null | wc -l)
         if type tmuxp > /dev/null 2>&1; then
-            if [[ "$session_count" -eq "0" ]]; then
-                # Load the tmuxp configuration for the current host, and attach
-                # if it already exists.
+            if [[ -z "$TMUX" ]]; then
+                # If we haven't entered tmux yet, then load the tmuxp
+                # configuration for the current host, and attach if it already
+                # exists.
                 local host_config="${HOME}/.tmuxp/$(hostname).yaml"
                 if [ -s "${host_config}" ]; then
                     tmuxp load -y "${host_config}"
@@ -350,6 +351,12 @@ zshrc_setup_completion() {
             helm completion zsh > "${HOME}/.zsh_completions/_helm"
         fi
     fi
+
+    #if type pipx > /dev/null 2>&1; then
+        #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
+            #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
+        #fi
+    #fi
 
     # Takes a lot of extra time ...
     #if type molecule > /dev/null 2>&1; then
