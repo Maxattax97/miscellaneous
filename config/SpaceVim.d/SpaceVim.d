@@ -1,1 +1,0 @@
-/home/max/src/miscellaneous/config/SpaceVim.d
