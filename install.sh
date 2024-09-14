@@ -460,6 +460,11 @@ case "$response" in
         # AWS CLI Team
         gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
+        # Github CLI: opensource+cli@github.com
+        ## You may need this:
+        ## https://github.com/cli/cli/issues/9569
+        gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
+
         if [ -s /bin/zsh ]; then
             if [[ ! "$SHELL" =~ "zsh" ]]; then
                 chsh -s /bin/zsh "${USER}"
