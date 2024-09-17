@@ -1575,6 +1575,12 @@ zshrc_load_library() {
     rf-link() {
         iw dev "$(iw dev | grep Interface | awk '{ print $2 }' | head -n1)" link
     }
+
+    screen-rescale() {
+        local factor="$(zcalc -f -e "1 / ${1:-1}")"
+        local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tr -d '\n' | head -n 1)"
+        xrandr --output "${monitor}" --scale "${factor}x${factor}"
+    }
 }
 
 zshrc_set_aliases() {
