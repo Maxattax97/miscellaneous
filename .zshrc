@@ -1587,6 +1587,21 @@ zshrc_load_library() {
         ssh "$userAtHost" "/file add name=${key_filename} contents=\"$(cat ~/.ssh/id_rsa.pub)\"; /user ssh-keys import user=${user} public-key-file=${key_filename}; /file remove ${key_filename};"
     }
 
+    mtik-exec() {
+        local mtik_host="${1:-rb3011}"
+        local script_path="${2}"
+        local script_name="$(basename "$script_path")"
+
+        # Create a temporary file to store our scripts.
+        ssh "$mtik_host" "/file/add type=directory name=scripts" > /dev/null
+
+        # Upload the script to the MikroTik router, under the scripts folder.
+        scp "$script_path" "$mtik_host:/scripts/$script_name"
+
+        # Connect to the MikroTik router and execute the script
+        ssh "$mtik_host" "/import scripts/$script_name"
+    }
+
     rf-link() {
         iw dev "$(iw dev | grep Interface | awk '{ print $2 }' | head -n1)" link
     }
