@@ -23,13 +23,13 @@ windows:
       automatic-rename: false
     panes:
       - shell_command: ctop
+        focus: true
         environment:
           DISABLE_AUTO_TITLE: "true"
         optionsa:
           allow-rename: false
           automatic-rename: false
       - shell_command: docker-compose -f /opt/flotilla/docker-compose.yml logs -f
-        focus: true
         environment:
           DISABLE_AUTO_TITLE: "true"
         options:

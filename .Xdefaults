@@ -117,7 +117,7 @@ st*selectToClipboard: true
 st*disallowedWindowOps: 20,21,SetXprop
 ! st.termname: st-256color
 st.borderpx: 0
-st.font: Hack Nerd Font Mono:size=9:antialias=true:autohint=true
+st.font: Hack Nerd Font Mono:pixelsize=12:antialias=true:autohint=true
 st.alpha: 0.9
 st.alphaOffset: 0.0
 st.alphaUnfocus: 0.0
@@ -132,6 +132,7 @@ Xft.antialias: 	1
 Xft.hinting: 	true
 !Xft.hintstyle: 	hintslight
 Xft.hintstyle:  hintfull
+/* This is the default DPI and unfortunately does not scale according to Gnome: */
 Xft.dpi: 	96
 !Xft.rgba: 	rgb
 Xft.rgba: 	none
