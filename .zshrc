@@ -1715,6 +1715,7 @@ zshrc_set_aliases() {
     alias Eupgrade='sudo emerge --ask --tree --update --verbose --deep --newuse @world'
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
     alias Eclean='sudo emerge --ask --depclean'
+    alias Esearch='emerge --search'
 }
 
 zshrc_set_default_programs() {
