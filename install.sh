@@ -847,8 +847,7 @@ case "$response" in
                 p7zip \
                 qalculate-gtk \
                 qemu \
-                rar \
-                yt-dlp
+                rar
 
             brew install --cask \
                 brave-browser \
@@ -919,7 +918,6 @@ case "$response" in
             if [[ -x "$(command -v yay)" ]]; then
                 yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
                     brave-bin \
-                    yt-dlp \
                     --needed
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
@@ -936,7 +934,6 @@ case "$response" in
                 touchegg \
                 unrar \
                 veracrypt \
-                yt-dlp \
                 zathura \
                 zathura-pdf-mupdf
         fi
@@ -971,6 +968,12 @@ case "$response" in
             esac
         fi
 
+        # Install yt-dlp, to nightly edition
+        if [[ ! -x "$(command -v yt-dlp)" ]]; then
+            curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o ~/.local/bin/yt-dlp
+            chmod a+rx ~/.local/bin/yt-dlp
+            yt-dlp --update-to nightly
+        fi
         ;;
     *)
         echo "Skipping workstation utility installation"
