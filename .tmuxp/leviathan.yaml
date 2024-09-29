@@ -4,12 +4,45 @@ windows:
   - window_name: SYS
     environment:
       DISABLE_AUTO_TITLE: "true"
-    # focus: true
     options:
       allow-rename: false
       automatic-rename: false
     panes:
-      - shell_command: sudo top
+      - shell_command: sudo btop
+        focus: true
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+  - window_name: XMR / LLM
+    layout: main-vertical
+    environment:
+      DISABLE_AUTO_TITLE: "true"
+    options:
+      allow-rename: false
+      automatic-rename: false
+    panes:
+      - shell_command: ~/mine
+        focus: true
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+      - shell_command: tail -f /var/log/ollama/ollama.log
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+      - shell_command: tail -f /var/log/flamenco/flamenco.log
+        environment:
+          DISABLE_AUTO_TITLE: "true"
+        options:
+          allow-rename: false
+          automatic-rename: false
+      - shell_command: kernlog
         environment:
           DISABLE_AUTO_TITLE: "true"
         options:

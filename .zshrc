@@ -352,6 +352,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type docker > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_docker" ]; then
+            docker completion zsh > "${HOME}/.zsh_completions/_docker"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -1701,6 +1707,10 @@ zshrc_load_library() {
         local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tail -n 1)"
         xrandr --output "${monitor}" --scale "${factor}x${factor}"
     }
+
+    public-ip() {
+        curl -s https://ipinfo.io
+    }
 }
 
 zshrc_set_aliases() {
@@ -1758,10 +1768,17 @@ zshrc_set_aliases() {
     alias please='sudo'
 
     # Docker commands
-    alias dcp='docker-compose -f /opt/docker-compose.yml '
-    alias dcpull='docker-compose -f /opt/docker-compose.yml pull --parallel'
-    alias dclogs='docker-compose -f /opt/docker-compose.yml logs -tf --tail="50" '
-    alias dtail='docker logs -tf --tail="50" "$@"'
+    ## Don't use the old version of compose, use the new, official one.
+    alias docker-compose="docker compose"
+    alias Dc='docker compose'
+    alias Dcrm='docker compose rm -sf'
+    alias Dcpl='docker compose pull --parallel'
+    alias Dcup='docker compose up -d'
+    alias Dcl='docker compose logs -tf --tail="50" '
+    alias Dce="docker compose exec"
+
+    alias Dr="docker run --rm -it"
+    alias Dtail='docker logs -tf --tail="50" "$@"'
 
     # Clipboard
     alias clip='xsel --clipboard --trim -i'
@@ -1826,6 +1843,7 @@ zshrc_set_aliases() {
     alias Eupgrade='sudo emerge --ask --tree --update --verbose --deep --newuse @world'
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
     alias Eclean='sudo emerge --ask --depclean'
+    alias Esearch='emerge --search'
 }
 
 zshrc_set_default_programs() {
