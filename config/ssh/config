@@ -19,6 +19,10 @@ Host entourage maxocull.com
 	ForwardX11 yes
 	ForwardX11Trusted yes
 
+Host git.alanocull.com pi.alanocull.com git.maxocull.com
+	HostName git.alanocull.com
+	Port 2212
+
 Host leviathan
 	HostName 192.168.1.11
 	#ProxyJump maxocull.com
