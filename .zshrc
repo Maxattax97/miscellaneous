@@ -1369,10 +1369,82 @@ zshrc_load_library() {
         image-optimize $@
     }
 
-    scale() {
+    image-scale() {
         scale=$1
         shift
         mogrify -scale $scale $@
+    }
+
+    audio-normalize() {
+        for file in "$@"; do
+            ffmpeg -i "$file" -filter:a loudnorm=I=-23:TP=-1.5:LRA=11 "normalized_${file}"
+            mv "normalized_${file}" "$file"
+        done
+    }
+
+    # Adds reverb, slows down, and boosts the bass.
+    audio-boost() {
+        for file in "$@"; do
+            base="${file%.*}"
+            # SoX has limited output support, so we have to convert between FLAC and MP4.
+            ffmpeg -i "$file" "${base}.flac"
+            rm "$file"
+
+            sox "${base}.flac" "boosted_${base}.flac" speed 0.85 reverb 50 equalizer 60 1q +6
+            rm "${base}.flac"
+
+            audio-optimize "boosted_${base}.flac"
+            mv "boosted_${base}.mp4" "${base}.mp4"
+        done
+    }
+
+    audio-optimize() {
+        for file in "$@"; do
+            noextension="${file%.*}"
+            ffmpeg -i "$file" -c:a aac -b:a 192k -filter:a "volume=replaygain=track" "${noextension}.mp4"
+            rm "$file"
+        done
+    }
+
+    audio-clip() {
+        file="$1"
+        start_secs="$2"
+        end_secs="$3"
+        ffmpeg -ss "$start_secs" -to "$end_secs" -i "$file" "clip_${start_secs}_${end_secs}_${file}"
+    }
+
+    audio-enhance() {
+        audio-normalize $@
+        audio-optimize $@
+    }
+
+    audio-remote-play() {
+        ssh "$1" "cat $2" | mpv -
+    }
+
+    video-enhance() {
+        # TODO: auto-pick threads
+        # TODO: crf to 20?
+        #
+        for file in "$@"; do
+            ffmpeg -i "$file" \
+            -vf "
+                yadif,
+                format=yuv420p,
+                " \
+            -c:v libvpx-vp9 -crf 32 -b:v 0 -threads 0 -speed 1 -tile-columns 4 -frame-parallel 1 \
+            -an \
+            -c:a libopus -b:a 128k -ar 48000 -ac 2 -af loudnorm \
+            -y "enhanced_${file%.*}.webm"
+        done
+    }
+
+    iperf-host() {
+        iperf3 -s
+    }
+
+    iperf-client() {
+        iperf3 -c "$1" -P 8 -t 10
     }
 
     poor_mans_scp_upload() {
@@ -1572,6 +1644,8 @@ zshrc_load_library() {
         # Reset to default
         echo -e "\033[0mDefault Text"
         echo "Example: \\\\033[1;34mBold Blue Text\\\\033[0m (Reset)"
+        echo "To type an ANSI color code in Vim, use \`Ctrl+v Esc\`, then enter the digits"
+        # :help i_CTRL-V_digit
     }
 
     random_string() {
@@ -1608,7 +1682,7 @@ zshrc_load_library() {
 
     screen-rescale() {
         local factor="$(zcalc -f -e "1 / ${1:-1}")"
-        local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tr -d '\n' | head -n 1)"
+        local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tail -n 1)"
         xrandr --output "${monitor}" --scale "${factor}x${factor}"
     }
 }
