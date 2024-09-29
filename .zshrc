@@ -1355,7 +1355,11 @@ zshrc_load_library() {
     }
 
     image-optimize() {
-        mogrify -sampling-factor 4:2:0 -auto-orient -strip -quality 85 -interlace JPEG -colorspace sRGB $@
+        for file in "$@"; do
+            # Strip metadata, reduce quality, and convert to sRGB.
+            magick "$file" -sampling-factor 4:2:0 -auto-orient -strip -quality 85 -interlace JPEG -colorspace sRGB "${file%.*}.jpg"
+            rm "$file"
+        done
     }
 
     image-shrink() {
@@ -1364,7 +1368,7 @@ zshrc_load_library() {
     }
 
     image-enhance() {
-        image-shrink $@
+        #image-shrink $@
         image-boost $@
         image-optimize $@
     }
@@ -1420,6 +1424,18 @@ zshrc_load_library() {
 
     audio-remote-play() {
         ssh "$1" "cat $2" | mpv -
+    }
+
+    audio-fade() {
+        for file in "$@"; do
+            duration=$(ffprobe -v error -show_entries format=duration "$file"  | awk -F'[= ]+' '/duration/{print $2}')
+
+            fade_in_start=0
+            fade_out_start="$(( duration - 1.0 ))"
+
+            ffmpeg -i "$file" -af "afade=st=0:d=1:t=in,afade=st=${fade_out_start}:d=1:t=out" "faded_$file"
+            mv "faded_$file" "$file"
+        done
     }
 
     video-enhance() {
