@@ -367,6 +367,8 @@ case "$response" in
             pipx install ansible-lint
             pipx install ansible-navigator
             pipx install argcomplete
+            pipx install bandit
+            pipx install black
             pipx install flake8
             pipx install flake8-pyproject
             pipx install huggingface_hub
@@ -384,6 +386,8 @@ case "$response" in
                 ansible-core \
                 ansible-lint \
                 argcomplete \
+                bandit \
+                black \
                 flake8 \
                 huggingface_hub \
                 isort \
@@ -825,6 +829,7 @@ case "$response" in
         if [[ -x "$(command -v dnf)" ]]; then
             sudo dnf install \
                 brave-browser \
+                dex-autostart \
                 firefox \
                 flameshot \
                 google-noto-emoji-color-fonts \
@@ -878,9 +883,11 @@ case "$response" in
                 net-misc/nextcloud-client \
                 sci-calculators/qalculate-gtk \
                 sys-block/gparted \
-                www-client/firefox
+                www-client/firefox \
+                x11-misc/dex
         elif [[ -x "$(command -v apt-get)" ]]; then
             sudo apt-get install \
+                dex \
                 flameshot \
                 fonts-noto-color-emoji \
                 gparted \
@@ -899,6 +906,7 @@ case "$response" in
             # TODO: Add ppa for Brave on Ubuntu
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                dex \
                 flameshot \
                 girara \
                 gnome-keyring \
@@ -921,6 +929,7 @@ case "$response" in
                     --needed
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
+            # FreeBSD does not have dex
             sudo pkg install \
                 flameshot \
                 girara \
@@ -1240,6 +1249,29 @@ case "$response" in
         echo "wine64 ${HOME}/.local/share/mikrotik/winbox" >> "${HOME}/.local/bin/winbox"
         chmod +x "${HOME}/.local/bin/winbox"
         echo "Succesfully installed, use \`winbox\` to open"
+        ;;
+    *)
+        echo "Skipping WinBox setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup Activity Watch? [y/N] " response
+case "$response" in
+    [yY][eE][sS] | [yY])
+        mkdir -p "${HOME}/.local/opt/activitywatch/"
+        echo "Downloading ..."
+        curl -fSL 'https://github.com/ActivityWatch/activitywatch/releases/download/v0.13.2/activitywatch-v0.13.2-linux-x86_64.zip' -O "${HOME}/.local/opt/activitywatch/"
+        unzip "${HOME}/.local/opt/activitywatch/activitywatch-v0.13.2-linux-x86_64.zip" -d "${HOME}/.local/opt/activitywatch/"
+
+        mkdir -p "${HOME}/.local/bin/"
+        ln -s "${HOME}/.local/opt/activitywatch/aw-qt" "${HOME}/.local/bin/aw-qt"
+
+        # there are more smaller things to symlink here.
+        # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=activitywatch-bin
+
+        mkdir -p "${HOME}/.config/autostart/"
+        ln -s "${HOME}/.local/opt/activitywatch/aw-qt.desktop" "${HOME}/.local/share/applications/aw-qt.desktop"
+        ln -s "${HOME}/.local/opt/activitywatch/aw-qt.desktop" "${HOME}/.config/autostart/aw-qt.desktop"
         ;;
     *)
         echo "Skipping WinBox setup"
