@@ -1364,7 +1364,9 @@ zshrc_load_library() {
         for file in "$@"; do
             # Strip metadata, reduce quality, and convert to sRGB.
             magick "$file" -sampling-factor 4:2:0 -auto-orient -strip -quality 85 -interlace JPEG -colorspace sRGB "${file%.*}.jpg"
-            rm "$file"
+            if [ "$file" != "${file%.*}.jpg" ]; then
+                rm "$file"
+            fi
         done
     }
 
@@ -1374,7 +1376,7 @@ zshrc_load_library() {
     }
 
     image-enhance() {
-        #image-shrink $@
+        image-shrink $@
         image-boost $@
         image-optimize $@
     }
@@ -1844,6 +1846,10 @@ zshrc_set_aliases() {
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
     alias Eclean='sudo emerge --ask --depclean'
     alias Esearch='emerge --search'
+
+    alias pytest='pytest --capture=tee-sys -vv'
+
+    alias dex='dex-autostart'
 }
 
 zshrc_set_default_programs() {
