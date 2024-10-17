@@ -308,4 +308,7 @@ let g:list_of_insert_keys = []
 let g:list_of_disabled_keys = []
 let g:hardtime_timeout = 2000
 let g:hardtime_maxcount = 0
+
+" Add spaces after the comment leader.
+let g:NERDSpaceDelims = 1
 " }}}
