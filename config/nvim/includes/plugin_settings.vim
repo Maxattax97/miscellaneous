@@ -311,4 +311,7 @@ let g:hardtime_maxcount = 0
 
 " Add spaces after the comment leader.
 let g:NERDSpaceDelims = 1
+
+" Preserve indentation when block commenting
+let g:NERDDefaultAlign = 'left'
 " }}}
