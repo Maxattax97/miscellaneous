@@ -5,8 +5,7 @@ friends=("aneusted" "aurnes" "yu646" "dkrolopp" "girishg" "liu2034" "buckmast" "
 echo "Scanning for online users ..."
 count=0
 
-for user in "${friends[@]}"
-do
+for user in "${friends[@]}"; do
     if [ "$USER" != "$user" ]; then
         if [ ! -z "$(w | grep "$user")" ]; then
             echo "$user is online."

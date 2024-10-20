@@ -13,28 +13,40 @@ Host *
 	AddKeysToAgent yes
 	IdentityFile ~/.ssh/id_rsa
 
-Host maxocull.com
+Host entourage maxocull.com
 	HostName maxocull.com
 	User entourage
-	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes
+
+Host git.alanocull.com pi.alanocull.com git.maxocull.com
+	HostName git.alanocull.com
+	Port 2212
 
 Host leviathan
-	HostName 192.168.1.72
+	HostName 192.168.1.11
 	#ProxyJump maxocull.com
 	User max
-	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes
+
+Host citadel
+	HostName 192.168.1.13
+	#ProxyJump maxocull.com
+	User citadel
+	ForwardX11 yes
+	ForwardX11Trusted yes
 
 Host rb3011
 	HostName 192.168.1.1
 	User max
-	IdentityFile ~/.ssh/id_rsa
 
 Host capax
 	HostName 192.168.1.2
 	User max
-	IdentityFile ~/.ssh/id_rsa
 
-host libreelec
+Host libreelec
 	HostName 192.168.1.30
 	User root
-	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+	ForwardX11Trusted yes

@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
 
+DOTFILES_PATH="${HOME}/src/miscellaneous"
+
 config_help=false
 config_benchmark=false
 if [[ -z "$zshrc_low_power" ]]; then
@@ -37,28 +39,42 @@ zshrc_probe() {
 
 zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
-        local session_count=$(tmux ls 2>/dev/null | grep "^Main" | wc -l)
-        if [[ "$session_count" -eq "0" ]]; then
-            if type tmuxp > /dev/null 2>&1; then
-                tmuxp load "${HOME}/.tmuxp/main.yaml"
-            else
-                tmux -2 new-session -s "Main"
+        local session_count=$(tmux ls 2>/dev/null | wc -l)
+        if type tmuxp > /dev/null 2>&1; then
+            if [[ -z "$TMUX" ]]; then
+                # If we haven't entered tmux yet, then load the tmuxp
+                # configuration for the current host, and attach if it already
+                # exists.
+                local host_config="${HOME}/.tmuxp/$(hostname).yaml"
+                if [ -s "${host_config}" ]; then
+                    tmuxp load -y "${host_config}"
+                else
+                    tmuxp load -y "${HOME}/.tmuxp/main.yaml"
+                fi
+            elif [[ -n "$TMUX" ]]; then
+                # If we are already in a tmux session, just display the banner for this shell.
+                zshrc_display_banner
             fi
         else
-            # Make sure we are not already in a tmux session
-            if [[ -z "$TMUX" ]]; then
-                # Session id is date and time to prevent conflict
-                # TODO: Make session number more... meaningful?
-                local session_id="$(date +%H%M%S)"
-
-                # Create a new session (without attaching it) and link to base session
-                # to share windows
-                tmux -2 new-session -d -t Main -s "$session_id"
-
-                # Attach to the new session & kill it once orphaned
-                tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+            local session_count=$(tmux ls 2>/dev/null | wc -l)
+            if [[ "$session_count" -eq "0" ]]; then
+                tmux -2 new-session -s "Main"
             else
-                zshrc_display_banner
+                # Make sure we are not already in a tmux session
+                if [[ -z "$TMUX" ]]; then
+                    # Session id is date and time to prevent conflict
+                    # TODO: Make session number more... meaningful?
+                    local session_id="$(date +%H%M%S)"
+
+                    # Create a new session (without attaching it) and link to base session
+                    # to share windows
+                    tmux -2 new-session -d -t Main -s "$session_id"
+
+                    # Attach to the new session & kill it once orphaned
+                    tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+                else
+                    zshrc_display_banner
+                fi
             fi
         fi
     else
@@ -293,7 +309,7 @@ zshrc_setup_completion() {
     bindkey "^I" expand-or-complete-with-dots
     # fi
 
-    zstyle :compinstall filename '/home/max/.zshrc'
+    zstyle :compinstall filename '~/.zshrc'
 
     if type rustup > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_rustup" ]]; then
@@ -335,6 +351,28 @@ zshrc_setup_completion() {
             helm completion zsh > "${HOME}/.zsh_completions/_helm"
         fi
     fi
+
+    if type docker > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_docker" ]; then
+            docker completion zsh > "${HOME}/.zsh_completions/_docker"
+        fi
+    fi
+
+    #if type pipx > /dev/null 2>&1; then
+        #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
+            #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
+        #fi
+    #fi
+
+    # Takes a lot of extra time ...
+    #if type molecule > /dev/null 2>&1; then
+        # Because it may be in a venv, we will have to do this on-demand.
+        #eval "$(_MOLECULE_COMPLETE=zsh_source molecule)"
+
+        #if [ ! -s "${HOME}/.zsh_completions/_molecule" ]; then
+            #_MOLECULE_COMPLETE=zsh_source molecule > "${HOME}/.zsh_completions/_molecule"
+        #fi
+    #fi
 }
 
 zshrc_autoload() {
@@ -1318,14 +1356,119 @@ zshrc_load_library() {
         fi
     }
 
-    enhance() {
+    image-boost() {
         mogrify -auto-gamma -auto-level -normalize $@
     }
 
-    scale() {
+    image-optimize() {
+        for file in "$@"; do
+            # Strip metadata, reduce quality, and convert to sRGB.
+            magick "$file" -sampling-factor 4:2:0 -auto-orient -strip -quality 85 -interlace JPEG -colorspace sRGB "${file%.*}.jpg"
+            if [ "$file" != "${file%.*}.jpg" ]; then
+                rm "$file"
+            fi
+        done
+    }
+
+    image-shrink() {
+        # Golden ratio
+        mogrify -resize 61.8% $@
+    }
+
+    image-enhance() {
+        image-shrink $@
+        image-boost $@
+        image-optimize $@
+    }
+
+    image-scale() {
         scale=$1
         shift
         mogrify -scale $scale $@
+    }
+
+    audio-normalize() {
+        for file in "$@"; do
+            ffmpeg -i "$file" -filter:a loudnorm=I=-23:TP=-1.5:LRA=11 "normalized_${file}"
+            mv "normalized_${file}" "$file"
+        done
+    }
+
+    # Adds reverb, slows down, and boosts the bass.
+    audio-boost() {
+        for file in "$@"; do
+            base="${file%.*}"
+            # SoX has limited output support, so we have to convert between FLAC and MP4.
+            ffmpeg -i "$file" "${base}.flac"
+            rm "$file"
+
+            sox "${base}.flac" "boosted_${base}.flac" speed 0.85 reverb 50 equalizer 60 1q +6
+            rm "${base}.flac"
+
+            audio-optimize "boosted_${base}.flac"
+            mv "boosted_${base}.mp4" "${base}.mp4"
+        done
+    }
+
+    audio-optimize() {
+        for file in "$@"; do
+            noextension="${file%.*}"
+            ffmpeg -i "$file" -c:a aac -b:a 192k -filter:a "volume=replaygain=track" "${noextension}.mp4"
+            rm "$file"
+        done
+    }
+
+    audio-clip() {
+        file="$1"
+        start_secs="$2"
+        end_secs="$3"
+        ffmpeg -ss "$start_secs" -to "$end_secs" -i "$file" "clip_${start_secs}_${end_secs}_${file}"
+    }
+
+    audio-enhance() {
+        audio-normalize $@
+        audio-optimize $@
+    }
+
+    audio-remote-play() {
+        ssh "$1" "cat $2" | mpv -
+    }
+
+    audio-fade() {
+        for file in "$@"; do
+            duration=$(ffprobe -v error -show_entries format=duration "$file"  | awk -F'[= ]+' '/duration/{print $2}')
+
+            fade_in_start=0
+            fade_out_start="$(( duration - 1.0 ))"
+
+            ffmpeg -i "$file" -af "afade=st=0:d=1:t=in,afade=st=${fade_out_start}:d=1:t=out" "faded_$file"
+            mv "faded_$file" "$file"
+        done
+    }
+
+    video-enhance() {
+        # TODO: auto-pick threads
+        # TODO: crf to 20?
+        #
+        for file in "$@"; do
+            ffmpeg -i "$file" \
+            -vf "
+                yadif,
+                format=yuv420p,
+                " \
+            -c:v libvpx-vp9 -crf 32 -b:v 0 -threads 0 -speed 1 -tile-columns 4 -frame-parallel 1 \
+            -an \
+            -c:a libopus -b:a 128k -ar 48000 -ac 2 -af loudnorm \
+            -y "enhanced_${file%.*}.webm"
+        done
+    }
+
+    iperf-host() {
+        iperf3 -s
+    }
+
+    iperf-client() {
+        iperf3 -c "$1" -P 8 -t 10
     }
 
     poor_mans_scp_upload() {
@@ -1524,6 +1667,51 @@ zshrc_load_library() {
 
         # Reset to default
         echo -e "\033[0mDefault Text"
+        echo "Example: \\\\033[1;34mBold Blue Text\\\\033[0m (Reset)"
+        echo "To type an ANSI color code in Vim, use \`Ctrl+v Esc\`, then enter the digits"
+        # :help i_CTRL-V_digit
+    }
+
+    random_string() {
+        local length="${1:-16}"
+        tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w "$length" | head -n 1
+    }
+
+    ssh-copy-id-mikrotik() {
+        local userAtHost="$1"
+        local user=$(echo "$userAtHost" | cut -d "@" -f 1)
+        local key_filename="key_$(random_string 5).txt"
+
+        ssh "$userAtHost" "/file add name=${key_filename} contents=\"$(cat ~/.ssh/id_rsa.pub)\"; /user ssh-keys import user=${user} public-key-file=${key_filename}; /file remove ${key_filename};"
+    }
+
+    mtik-exec() {
+        local mtik_host="${1:-rb3011}"
+        local script_path="${2}"
+        local script_name="$(basename "$script_path")"
+
+        # Create a temporary file to store our scripts.
+        ssh "$mtik_host" "/file/add type=directory name=scripts" > /dev/null
+
+        # Upload the script to the MikroTik router, under the scripts folder.
+        scp "$script_path" "$mtik_host:/scripts/$script_name"
+
+        # Connect to the MikroTik router and execute the script
+        ssh "$mtik_host" "/import scripts/$script_name"
+    }
+
+    rf-link() {
+        iw dev "$(iw dev | grep Interface | awk '{ print $2 }' | head -n1)" link
+    }
+
+    screen-rescale() {
+        local factor="$(zcalc -f -e "1 / ${1:-1}")"
+        local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tail -n 1)"
+        xrandr --output "${monitor}" --scale "${factor}x${factor}"
+    }
+
+    public-ip() {
+        curl -s https://ipinfo.io
     }
 }
 
@@ -1572,8 +1760,7 @@ zshrc_set_aliases() {
     alias network-relocate='rsync -azP --delete --info=progress2'
 
     # Add progress indicator because I always forget.
-    alias ddd='dd iflag=nocache oflag=nocache bs=64K status=progress'
-    alias sudo ddd='sudo dd iflag=nocache oflag=nocache bs=64K status=progress'
+    alias ddd='sudo dd iflag=nocache oflag=nocache,sync bs=16M status=progress'
 
     if type gpg2 > /dev/null 2>&1; then
         alias gpg='gpg2 --with-subkey-fingerprints'
@@ -1583,10 +1770,17 @@ zshrc_set_aliases() {
     alias please='sudo'
 
     # Docker commands
-    alias dcp='docker-compose -f /opt/docker-compose.yml '
-    alias dcpull='docker-compose -f /opt/docker-compose.yml pull --parallel'
-    alias dclogs='docker-compose -f /opt/docker-compose.yml logs -tf --tail="50" '
-    alias dtail='docker logs -tf --tail="50" "$@"'
+    ## Don't use the old version of compose, use the new, official one.
+    alias docker-compose="docker compose"
+    alias Dc='docker compose'
+    alias Dcrm='docker compose rm -sf'
+    alias Dcpl='docker compose pull --parallel'
+    alias Dcup='docker compose up -d'
+    alias Dcl='docker compose logs -tf --tail="50" '
+    alias Dce="docker compose exec"
+
+    alias Dr="docker run --rm -it"
+    alias Dtail='docker logs -tf --tail="50" "$@"'
 
     # Clipboard
     alias clip='xsel --clipboard --trim -i'
@@ -1605,7 +1799,10 @@ zshrc_set_aliases() {
         alias dmenu="rofi -dmenu"
     fi
 
-    alias rcat='find . -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
+    # "Recursive Cat"
+    # Used for feeding file data into an LLM
+    # Ignores hidden files. (like git)
+    alias rcat='find . -not -path "*/.*" -type f -exec sh -c '\''for file; do printf "\033[0;92m=== BEGIN $file ===\033[0m\n"; cat "$file"; printf "\n\033[0;91m=== END $file ===\033[0m\n"; done'\'' sh {} +'
 
     alias awsp="source _awsp"
 
@@ -1632,6 +1829,7 @@ zshrc_set_aliases() {
     alias Gd='git diff'
     alias Gds='git diff --staged'
 
+    alias Gp='git pull && git push'
     alias Gpl='git pull'
     alias Gpu='git push'
 
@@ -1642,6 +1840,16 @@ zshrc_set_aliases() {
     alias Grs='git restore --staged'
 
     alias kernlog='sudo dmesg --time-format iso --kernel -H --color=always -w | less +F'
+
+    alias Eupdate='sudo emerge --sync'
+    alias Eupgrade='sudo emerge --ask --tree --update --verbose --deep --newuse @world'
+    alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
+    alias Eclean='sudo emerge --ask --depclean'
+    alias Esearch='emerge --search'
+
+    alias pytest='pytest --capture=tee-sys -vv'
+
+    alias dex='dex-autostart'
 }
 
 zshrc_set_default_programs() {
@@ -1687,7 +1895,7 @@ zshrc_set_default_programs() {
         export TERMINAL="$(which konsole)"
     fi
 
-    export P4IGNORE="/home/max/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+    export P4IGNORE="~/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 
     if type fastfetch > /dev/null 2>&1; then
         alias neofetch="fastfetch"
@@ -1817,7 +2025,7 @@ zshrc_aura_shrc() {
 
 zshrc_update_or_append() {
     file="$1"
-    content="$2"
+    content="$(cat "$2")"
 
     static_marker="# MOCULL STATIC"
     start_marker="##### MOCULL AUTOGENERATED ### DO NOT EDIT #####"
@@ -1846,17 +2054,54 @@ zshrc_update_or_append() {
 }
 
 zshrc_setup_repo() {
-    repo_dir=$(pwd)
+    local repo_dir="${PWD}"
+
+    local templates="${DOTFILES_PATH}/templates"
+    FILE_CARGO_TOML_CLIPPY_LINTS="${templates}/Cargo.clippy.toml"
+    FILE_GITATTRIBUTES="${templates}/gitattributes"
+    FILE_GITIGNORE="${templates}/gitignore"
+    FILE_PRE_COMMIT_CONFIG_PYTHON="${templates}/pre-commit-config.python.yaml"
+    FILE_PRE_COMMIT_CONFIG_RUST="${templates}/pre-commit-config.rust.yaml"
+    FILE_PRE_COMMIT_CONFIG_HELM="${templates}/pre-commit-config.helm.yaml"
+    FILE_PRE_COMMIT_CONFIG_GENERAL="${templates}/pre-commit-config.general.yaml"
+    FILE_PYPROJECT="${templates}/pyproject.toml"
+    FILE_FLAKE8="${templates}/flake8"
+    FILE_YAMLLINT="${templates}/yamllint.yml"
+    FILE_EDITORCONFIG="${templates}/editorconfig"
 
     # Update .gitignore
-    #zshrc_update_or_append "$repo_dir/.gitignore" "$FILE_GITIGNORE"
+    zshrc_update_or_append "$repo_dir/.gitignore" "$FILE_GITIGNORE"
 
     # Update .gitattributes
-    #zshrc_update_or_append "$repo_dir/.gitattributes" "$FILE_GITATTRIBUTES"
+    zshrc_update_or_append "$repo_dir/.gitattributes" "$FILE_GITATTRIBUTES"
+
+    # Update .yamllint.yml since all projects can use YAML
+    zshrc_update_or_append "$repo_dir/.yamllint.yml" "$FILE_YAMLLINT"
+
+    # Every repo gets this.
+    zshrc_update_or_append "$repo_dir/.editorconfig" "$FILE_EDITORCONFIG"
+
+    # Update .pre-commit-config.yaml based on project type
+    if [ -s "$repo_dir/Cargo.toml" ]; then
+        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_RUST"
+    elif [ -s "$repo_dir/requirements.txt" ] || [ -n "$(find . -name '*.py' -print -quit)" ]; then
+        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
+        zshrc_update_or_append "$repo_dir/pyproject.toml" "$FILE_PYPROJECT"
+        zshrc_update_or_append "$repo_dir/.flake8" "$FILE_FLAKE8"
+    elif [ -n "$(find "$repo_dir" -iname "chart*.y*ml")" ]; then
+        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
+    else
+        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
+    fi
 
     # Install pre-commit hooks if .pre-commit-config.yaml exists and the hooks do not.
     if [ -s "$repo_dir/.pre-commit-config.yaml" ] && [ ! -s "${repo_dir}/.git/hooks/pre-commit" ]; then
         pre-commit install
+    fi
+
+    # If we have Cargo.toml, then add clippy lints
+    if [ -s "$repo_dir/Cargo.toml" ]; then
+        zshrc_update_or_append "$repo_dir/Cargo.toml" "$FILE_CARGO_TOML_CLIPPY_LINTS"
     fi
 
     # Install git LFS if not already installed and pull objects
@@ -1871,7 +2116,7 @@ zshrc_setup_repo() {
 zshrc_check_directory() {
     if [ -d "${PWD}/.git" ]; then
         # Is the root of a git repo.
-        if git remote -v | grep -qE "(Maxattax97|maxocull\\.com)"; then
+        if git remote -v | grep -qE "(Maxattax97|maxocull\\.com|alanocull\\.com)"; then
             zshrc_setup_repo
             echo "Personal repository detected and updated"
         fi

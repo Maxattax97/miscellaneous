@@ -1,21 +1,22 @@
+/* stylelint-disable selector-class-pattern */
 /* @import url("https://fonts.googleapis.com/css?family=Source Code Pro|Quicksand"); */
 
 :root {
-  --textColor: #e2e2e2;
-  --mainBg: #1b1b1b;
-  --linkColor: #3294ff;
+  --text-color: #e2e2e2;
+  --main-background: #1b1b1b;
+  --link-color: #3294ff;
   --lighter: #ffffff05;
   --red: #ff511a;
-  --redBg: #ff511a22;
+  --red-background: #ff511a22;
   --yellow: #a68f01;
-  --yellowBg: #a68f0122;
+  --yellow-background: #a68f0122;
   --green: #4ca340;
-  --greenBg: #4ca34022;
+  --green-background: #4ca34022;
 }
 
 a,
 a:visited {
-  color: var(--linkColor);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -24,9 +25,9 @@ body center table tbody tr:nth-child(even):not(:nth-child(2)) {
 }
 
 body {
-  font-family: "FreeSans", "Helvetica", "Roboto", sans-serif;
-  background-color: var(--mainBg);
-  color: var(--textColor);
+  font-family: FreeSans, Helvetica, Roboto, sans-serif;
+  background-color: var(--main-background);
+  color: var(--text-color);
 }
 
 center table {
@@ -50,7 +51,7 @@ td.coverBar > table {
 /*code-related style is below this line*/
 
 .source > a {
-  color: var(--textColor);
+  color: var(--text-color);
   font-family: "Hack Nerd Font Mono", "Source Code Pro", "Deja Vu Sans Mono",
     monospace;
 }
@@ -68,11 +69,11 @@ span.lineCov,
 .coverLegendCov,
 .coverLegendCovHi,
 .tlaBgGNC {
-  background-color: var(--greenBg);
+  background-color: var(--green-background);
 }
 
 .coverLegendCovMed {
-  background-color: var(--yellowBg);
+  background-color: var(--yellow-background);
   color: var(--yellow);
 }
 
@@ -94,7 +95,7 @@ span.lineNoCov,
 .coverLegendNoCov,
 .coverLegendCovLo,
 .tlaBgUNC {
-  background-color: var(--redBg);
+  background-color: var(--red-background);
 }
 
 .source {

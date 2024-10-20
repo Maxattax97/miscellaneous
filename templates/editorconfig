@@ -1,0 +1,11 @@
+# Using [[shell]] rather than [*.sh] will capture files with no extension
+[[shell]]
+# Used by shfmt
+indent_style = space
+indent_size = 4
+;shell_variant      = posix
+binary_next_line   = true
+switch_case_indent = true
+space_redirects    = true
+;keep_padding       = true
+simplify           = true

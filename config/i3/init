@@ -9,7 +9,7 @@ export ETH_INTERFACE=enp0s31f6
 
 # Compton
 killall -q compton
-while pgrep -x compton >/dev/null; do sleep 0.1s; done
+while pgrep -x compton > /dev/null; do sleep 0.1s; done
 #compton -f -D 2 -i 0.85 -z \
     #--backend glx --glx-no-stencil --glx-no-rebind-pixmap --glx-swap-method exchange \
     #-b
@@ -17,7 +17,7 @@ compton --opengl --vsync opengl-swc --paint-on-overlay -cCG -r 10 -o 0.5 -l-12 -
 
 # Polybar
 killall -q polybar
-while pgrep -x polybar >/dev/null; do sleep 0.1s; done
+while pgrep -x polybar > /dev/null; do sleep 0.1s; done
 
 polybar main &
 
@@ -28,6 +28,6 @@ polybar main &
 # ckb-next
 
 killall -q ckb-next
-while pgrep -x ckb-next >/dev/null; do sleep 0.1s; done
+while pgrep -x ckb-next > /dev/null; do sleep 0.1s; done
 
 ckb-next -b &

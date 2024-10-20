@@ -1,6 +1,6 @@
 # `dotfiles`
 
-[![Super-Linter](https://github.com/Maxattax97/miscellaneous/actions/workflows/ci.yaml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Build Status](https://github.com/Maxattax97/miscellaneous/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/Maxattax97/miscellaneous/actions/workflows/ci.yaml)
 
 ## Screenshots
 
@@ -18,16 +18,16 @@
 
 ## Installation
 
-```
-$ ./install.sh
+```bash
+./install.sh
 ```
 
 ### `zsh`
 
 Open a fresh shell and let the zsh plugins automatically install. You may have to restart your shell, sometimes it breaks.
 
-```
-$ zsh
+```bash
+zsh
 ```
 
 ### `tmux`
@@ -38,8 +38,8 @@ In tmux, you must install your plugins with the key combination `Ctrl-a I`.
 
 Open neovim to have it automatically install plugins. It will also automatically update every week.
 
-```
-$ nvim
+```bash
+nvim
 ```
 
 ## Updating
@@ -85,4 +85,4 @@ This repository contains configurations for:
 
 Environment inspired by [Bresilla](https://github.com/bresilla/dotfiles/).
 
-Check out my website at [maxocull.com](https://www.maxocull.com/)!
+Check out my site at [maxocull.com](https://www.maxocull.com/)!

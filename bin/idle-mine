@@ -1,7 +1,7 @@
 #!/bin/bash
 
 POOL="gulf.moneroocean.stream:20008"
-POOL_PASSWORD="MaxattaxOpenSUSE"
+POOL_PASSWORD="MaxattaxOpenSUSE" # gitleaks:allow
 WALLET="46cWMT5YP2A8a8bSDzj3r7C7XkCkTWvJz2FFDjqnk8hnATYCrBJD22R1cyZJwK4tDTNGHFMTuSkCbNZeaYjhPADx9QisCcA"
 
 USE_CPU=0
@@ -55,14 +55,14 @@ getCharging() {
 
 getActiveSSHSessions() {
     lines="$(ps aux | grep sshd | wc -l)"
-    echo "$(( (lines - 1) / 2 ))"
+    echo "$(((lines - 1) / 2))"
 }
 
 getLockedTime() {
     # Time is in milliseconds.
     rawTime=""
     if [ "$XDG_CURRENT_DESKTOP" == "GNOME" ]; then
-	rawTime="$(dbus-send --session --dest=org.gnome.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActiveTime | grep uint32 | awk '{ printf $2 };')"
+        rawTime="$(dbus-send --session --dest=org.gnome.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActiveTime | grep uint32 | awk '{ printf $2 };')"
     else
         rawTime="$(dbus-send --session --dest=org.freedesktop.ScreenSaver --type=method_call --print-reply --reply-timeout=20000 /org/freedesktop/ScreenSaver org.freedesktop.ScreenSaver.GetActiveTime | grep uint32 | awk '{ printf $2 };')"
     fi
@@ -102,7 +102,7 @@ initMining() {
         USE_GPU=0
     fi
 
-    tmux has-session -t "$session" 2>/dev/null
+    tmux has-session -t "$session" 2> /dev/null
 
     if [ "$?" -ne 1 ]; then
         log "An idling tmux session already exists; exiting"
@@ -219,7 +219,6 @@ tick() {
 
         IN_USE=0
     fi
-
 
     if [ -n "$DEBUG" ]; then
         echo "MINING: $MINING | IN_USE: $IN_USE | LOCKED_TIME: $(getLockedTime) | IDLE_TO_START: $IDLE_TO_START"

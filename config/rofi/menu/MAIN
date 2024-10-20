@@ -23,46 +23,46 @@ $task
 $proj
 $usem" | rofi "${ROFI_OPTIONS[@]}" -dmenu -i -p "search: ")
 
-if [ "$another" == "$file" ] ; then
+if [ "$another" == "$file" ]; then
     $HOME/.config/rofi/menu/locate
 
-elif [ "$another" == "$task" ] ; then
+elif [ "$another" == "$task" ]; then
     $HOME/.config/rofi/menu/task
 
-elif [ "$another" == "$book" ] ; then
+elif [ "$another" == "$book" ]; then
     $HOME/.config/rofi/menu/books
 
-elif [ "$another" == "$note" ] ; then
+elif [ "$another" == "$note" ]; then
     $HOME/.config/rofi/menu/note
 
-elif [ "$another" == "$locl" ] ; then
+elif [ "$another" == "$locl" ]; then
     exec $HOME/.config/rofi/menu/marks $HOME/sets/.notes/localhost.wiki
 
-elif [ "$another" == "$clip" ] ; then
+elif [ "$another" == "$clip" ]; then
     rofi "${ROFI_OPTIONS[@]}" -modi "clipboard:greenclip print" -show clipboard
 
-elif [ "$another" == "$usem" ] ; then
+elif [ "$another" == "$usem" ]; then
     appname=$(cat $HOME/.config/applist |  grep "\S" | rofi "${ROFI_OPTIONS[@]}" -threads 0 -dmenu -i -p 'apps:')
     thelink=$(echo $appname | cut -d'+' -f3 | tr -d ' ')
     [[ ! -n $appname ]] && exit
     regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
-    [[ $thelink =~ $regex ]]&& brave $thelink || $edit_with -e nvim ~/.config/applist
+    [[ $thelink =~ $regex ]] && brave $thelink || $edit_with -e nvim ~/.config/applist
 
-elif [ "$another" == "$cont" ] ; then
+elif [ "$another" == "$cont" ]; then
     exec $HOME/.config/rofi/menu/contacts
 
-elif [ "$another" == "$proj" ] ; then
+elif [ "$another" == "$proj" ]; then
     pather=$(/env/go/bin/proji ls | head -n-1 | tail -n+4 | cut -d "|" -f3-5 | tr "|" "\t" | rofi "${ROFI_OPTIONS[@]}" -threads 0 -dmenu -i -p 'projects:' | cut -f2)
     nameer=$(basename $pather)
     [[ $pather ]] && sed -e "s|.*root.*|    root: $pather|" -e "1cname: \"$nameer\"" $HOME/.config/tmux/PRO.yml > $HOME/.config/tmux/prot.yml && /env/cpp/bin/tmass -l $HOME/.config/tmux load prot && kitty --class=til tmux attach -t $nameer
     # kitty --class=til tmux attach -t $nameer
 
-elif [ "$another" == "$pass" ] ; then
+elif [ "$another" == "$pass" ]; then
     exec $HOME/.config/rofi/menu/pass
 
-elif [ -z "$another" ] ; then
-	echo "variable empty" && exit 1
+elif [ -z "$another" ]; then
+    echo "variable empty" && exit 1
 
 else
-  exec nohup $another > /dev/null 2>&1 &
+    exec nohup $another > /dev/null 2>&1 &
 fi

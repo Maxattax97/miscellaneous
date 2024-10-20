@@ -1,0 +1,49 @@
+FROM gentoo/stage3:amd64-openrc
+
+# Copy our configurations in so it builds faster.
+COPY --chown=root:root config/portage/make.conf /etc/portage/make.conf
+COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
+
+# Update the release key.
+RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo.org/output/service-keys.gpg
+
+# Update the system and select a profile.
+RUN emerge --sync && \
+	emerge --tree --update --deep --newuse @world && \
+	emerge --depclean && \
+	eselect profile set default/linux/amd64/23.0 && \
+	emerge --tree --update --deep --newuse @world && \
+	emerge --depclean
+
+# This is a very up-to-date image, so we aren't going to lock package versions.
+# hadolint ignore=DL3041
+RUN emerge --tree --noreplace \
+	net-misc/curl \
+	dev-vcs/git \
+	app-admin/sudo \
+	sys-apps/coreutils && \
+	emerge --depclean
+
+RUN useradd -m max && \
+	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER max
+ENV USER=max
+
+# NOTE: This is dangerous because it will include decrypted secrets in the image!
+#RUN mkdir -p /home/max/src/miscellaneous
+#COPY --chown=max . /home/max/src/miscellaneous/
+
+RUN mkdir -p /home/max/src && \
+	git clone https://github.com/Maxattax97/miscellaneous.git /home/max/src/miscellaneous
+
+# Overwrite the install script with the latest one in the repository.
+COPY --chown=max install.sh /home/max/src/miscellaneous/install.sh
+
+WORKDIR /home/max/src/miscellaneous
+RUN /bin/sh -o pipefail -c "yes | \
+	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+	emerge --verbose --depclean"
+
+WORKDIR /home/max
+ENTRYPOINT ["/bin/zsh"]
+HEALTHCHECK NONE

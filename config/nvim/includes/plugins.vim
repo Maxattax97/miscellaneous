@@ -63,7 +63,9 @@ call dein#add('github/copilot.vim')
 call dein#add('vim-test/vim-test')
 
 " Submit metrics to Activity Watcher.
-call dein#add('ActivityWatch/aw-watcher-vim')
+if executable('aw-qt')
+	call dein#add('ActivityWatch/aw-watcher-vim')
+endif
 " }}}
 
 " Tim Pope Collection {{{
@@ -199,6 +201,11 @@ call dein#add('gurpreetatwal/vim-avro')
 call dein#add('urbit/hoon.vim')
 
 call dein#add('kalafut/vim-taskjuggler')
+
+call dein#add('momota/cisco.vim')
+
+" Display ANSI color codes
+call dein#add('powerman/vim-plugin-AnsiEsc')
 " }}}
 
 " Aesthetics {{{

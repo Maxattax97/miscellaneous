@@ -1,9 +1,10 @@
+---
 session_name: Main
 windows:
   - window_name: SYS
     environment:
       DISABLE_AUTO_TITLE: "true"
-    #focus: true
+    # focus: true
     options:
       allow-rename: false
       automatic-rename: false
