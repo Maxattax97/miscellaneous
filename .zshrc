@@ -661,7 +661,7 @@ zshrc_zplug() {
 
         # zplug "ael-code/zsh-colored-man-pages"
 
-        zplug "supercrabtree/k"
+        # zplug "supercrabtree/k"
 
         # zplug "psprint/zsh-navigation-tools" # deleted
         # zplug "z-shell/zsh-navigation-tools" # alternate
@@ -1475,6 +1475,56 @@ zshrc_load_library() {
             fi
         done
     }
+
+    clipboards() {
+        if [ -x "$(command -v xsel)" ]; then
+            echo "xsel:"
+            echo "Primary: \"$(xsel --output --primary)\""
+            echo "Secondary: \"$(xsel --output --secondary)\""
+            echo "Clipboard: \"$(xsel --output --clipboard)\""
+        fi
+
+        if [ -x "$(command -v xclip)" ]; then
+            echo "\nxclip:"
+            echo "Primary: \"$(xclip -out -selection primary)\""
+            echo "Secondary: \"$(xclip -out -selection secondary)\""
+            echo "Clipboard: \"$(xclip -out -selection clipboard)\""
+            echo "Buffer-cut: \"$(xclip -out -selection buffer-cut)\""
+        fi
+    }
+
+    tstamp() {
+        if date --version 2>&1 | grep -q 'GNU coreutils'; then
+            cmd='date -u --iso-8601=ns'
+        else
+            # *BSD
+            cmd='date -u +"%Y-%m-%dT%H:%M:%S%:z"'
+        fi
+        while IFS= read -r line; do
+            printf "[\033[0;34m%s\033[0m] %s\n" "$($cmd)" "$line";
+        done
+    }
+
+    color_codes() {
+        # Define the text attributes and colors
+        attributes=(
+            "0"  "1"  "4"  "5"  "7"
+        )
+        colors=(
+            "30" "31" "32" "33" "34" "35" "36" "37"
+        )
+
+        # Loop through each attribute and color, displaying them horizontally
+        for attribute in "${attributes[@]}"; do
+            for color in "${colors[@]}"; do
+                echo -en "\033[${attribute};${color}m ${attribute};${color} \033[0m\t"
+            done
+            echo ""
+        done
+
+        # Reset to default
+        echo -e "\033[0mDefault Text"
+    }
 }
 
 zshrc_set_aliases() {
@@ -1487,6 +1537,7 @@ zshrc_set_aliases() {
     if [ -x /usr/bin/dircolors ]; then
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
         alias ls='ls --color=auto'
+        alias sl="sudo ls --color=auto"
         #alias dir='dir --color=auto'
         #alias vdir='vdir --color=auto'
 
@@ -1496,10 +1547,15 @@ zshrc_set_aliases() {
 
         alias pacman='pacman --color=auto'
         alias yay='yay --color=auto'
+    else
+        alias sl="sudo ls"
     fi
 
+    alias e="$EDITOR"
+    alias se="sudoedit"
+
     # some more ls aliases
-    alias l='k -Ah --no-vcs' # ls -lah
+    alias l='ls -l --all --human-readable --time-style=long-iso --group-directories-first --color=auto'
 
     # Fix tmux 256 colors:
     #if type tmux-next > /dev/null 2>&1; then
@@ -1533,7 +1589,7 @@ zshrc_set_aliases() {
     alias dtail='docker logs -tf --tail="50" "$@"'
 
     # Clipboard
-    alias clip='xclip -selection clipboard'
+    alias clip='xsel --clipboard --trim -i'
 
     # btop > htop > top
     if type htop > /dev/null 2>&1; then
@@ -1544,8 +1600,6 @@ zshrc_set_aliases() {
         alias top='btop'
         alias htop='btop'
     fi
-
-    alias e="$EDITOR"
 
     if type rofi > /dev/null 2>&1; then
         alias dmenu="rofi -dmenu"
@@ -1586,6 +1640,8 @@ zshrc_set_aliases() {
     alias Gbd='git branch -D'
     alias Glast='git show HEAD'
     alias Grs='git restore --staged'
+
+    alias kernlog='sudo dmesg --time-format iso --kernel -H --color=always -w | less +F'
 }
 
 zshrc_set_default_programs() {

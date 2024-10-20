@@ -4,14 +4,14 @@
 call dein#add('wsdjeg/dein-ui.vim')
 
 " An autocompletion engine.
-"call dein#add('shougo/deoplete.nvim')
+"call dein#add('Shougo/deoplete.nvim')
 " INSTALL: yarn
 call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 call dein#add('yaegassy/coc-ansible') " , { 'build': 'yarn install --frozen-lockfile' }
 
 " Display function arguments in command bar. Works with deoplete.
 " TODO: Not displaying?
-call dein#add('shougo/echodoc.vim')
+call dein#add('Shougo/echodoc.vim')
 
 " Asynchronous Lint Engine.
 call dein#add('w0rp/ale')
@@ -22,7 +22,7 @@ call dein#add('preservim/nerdtree')
 call dein#add('xuyuanp/nerdtree-git-plugin')
 call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
 "call dein#add('jistr/vim-nerdtree-tabs')
-"call dein#add('shougo/defx.nvim')
+"call dein#add('Shougo/defx.nvim')
 "call dein#add('kristijanhusak/defx-git')
 "call dein#add('kristijanhusak/defx-icons')
 
@@ -48,10 +48,10 @@ call dein#add('godlygeek/tabular')
 " Asynchronous fuzzy finder.
 " INSTALL: pip3 install pynvim
 " INSTALL: cargo install ripgrep
-call dein#add('shougo/denite.nvim')
+"call dein#add('Shougo/denite.nvim')
 
 " file_mru plugin for Denite.
-call dein#add('shougo/neomru.vim')
+"call dein#add('Shougo/neomru.vim')
 
 " Vim colortemplate generator.
 call dein#add('lifepillar/vim-colortemplate')
@@ -61,6 +61,9 @@ call dein#add('github/copilot.vim')
 
 " Test runner.
 call dein#add('vim-test/vim-test')
+
+" Submit metrics to Activity Watcher.
+call dein#add('ActivityWatch/aw-watcher-vim')
 " }}}
 
 " Tim Pope Collection {{{
@@ -135,11 +138,11 @@ call dein#add('tpope/vim-dotenv')
 
 " Autocompletion {{{
 " Include/import files from headers for autocompletion, etc.
-call dein#add('shougo/neoinclude.vim')
+call dein#add('Shougo/neoinclude.vim')
 call dein#add('jsfaint/coc-neoinclude')
 
 " VimL support.
-call dein#add('shougo/neco-vim')
+call dein#add('Shougo/neco-vim')
 call dein#add('neoclide/coc-neco')
 
 " C languages
@@ -163,7 +166,7 @@ call dein#add('neoclide/coc-neco')
 "call dein#add('c9s/perlomni.vim')
 
 " Vimscript
-"call dein#add('shougo/neco-vim')
+"call dein#add('Shougo/neco-vim')
 
 " Godot's GDScript
 "call dein#add('calviken/vim-gdscript3')

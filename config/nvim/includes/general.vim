@@ -38,6 +38,13 @@ endif
 if !isdirectory(&undodir)
     call mkdir(&undodir, "p")
 endif
+
+" Set the title string to the current filename
+" Useful for ActivityWatcher
+" For some reason, it seems something is overwriting this setting.
+set title
+"set titlestring="%F %y"
+"set titlestring="%t %{expand(\"%:p:h\")}"
 " }}}
 
 " File Format {{{

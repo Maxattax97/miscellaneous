@@ -52,29 +52,34 @@ files. Execute `./install.sh` after a pull to get any new packages or other upda
 
 This repository contains configurations for:
 
+- `bash`
 - `bspwm`
 - `btop`
-- `picom`
+- `chrony`
 - `copyq`
 - `dunst`
+- `lcov`
 - `mpd`
 - `ncmpcpp`
+- `neovim`
 - `newsboat`
+- `pacman`
 - `pcmanfm`
+- `picom`
 - `polybar`
+- `radare`
 - `rofi`
 - `sxhkd`
+- `tmux`
 - `variety`
 - `weechat`
-- `zathura`
-- `chrony`
-- `pacman`
-- `zsh`
-- `bash`
-- `radare`
-- `tmux`
-- `neovim`
 - `x11`
+- `zathura`
+- `zsh`
+
+## `lcov`
+
+![lcov](assets/lcov.png)
 
 ## Credits
 

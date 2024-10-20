@@ -67,6 +67,8 @@ link_source ".gtkrc-2.0" 0
 link_source .xinitrc 0
 link_source .xprofile 0
 link_source .warprc 0
+link_source .lcovrc 1
+link_source .lcovrc.gcov.css 1
 
 # Dot directories
 mkdir -p "${HOME}/.config/"
@@ -167,7 +169,6 @@ case "$response" in
             # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             sudo dnf install -y \
-                awscli2 \
                 btop \
                 ctags \
                 curl \
@@ -195,13 +196,12 @@ case "$response" in
                 tmux \
                 util-linux-user \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v brew)" ]]; then
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
-                awscli \
                 binutils \
                 btop \
                 chezmoi \
@@ -227,12 +227,10 @@ case "$response" in
                 ripgrep \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v apt)" ]]; then
-            # NOTE: On slightly older versions of Debian/Ubuntu awscli is v1, not v2!
             sudo apt install -y \
-                awscli \
                 btop \
                 ctags \
                 curl \
@@ -256,7 +254,7 @@ case "$response" in
                 ruby-rubygems \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
@@ -284,7 +282,7 @@ case "$response" in
                 rubygems \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
 
             if [[ -x "$(command -v yay)" ]]; then
@@ -320,10 +318,8 @@ case "$response" in
                 ruby \
                 tmux \
                 weechat \
-                xclip \
+                xsel \
                 zsh
-
-            # TODO: Install awscli v2 on BSD
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
@@ -370,6 +366,7 @@ case "$response" in
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
+            npm install -g @bazel/bazelisk || sudo npm install -g @bazel/bazelisk
 
             # I set this up to use npx instead
             #npm install -g bash-language-server
@@ -408,6 +405,9 @@ case "$response" in
         gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
         ## Ben Hutchings
         gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
+        ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
+        gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
+
 
         # Arch Linux Official Keys
         # https://archlinux.org/master-keys/
@@ -422,6 +422,9 @@ case "$response" in
         ## Leonidas Spyropoulos
         gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
 
+        # AWS CLI Team
+        gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+
 
         if [[ ! "$SHELL" =~ "zsh" ]]; then
             chsh -s "$(command -v zsh)" "${USER}"
@@ -429,6 +432,30 @@ case "$response" in
         ;;
     *)
         echo "Skipping common utility installation"
+        ;;
+esac
+
+read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig"
+
+        gpg --verify "awscliv2.sig" "awscliv2.zip"
+        unzip awscliv2.zip
+
+        if [ -d "${HOME}/.local/share/aws-cli" ]; then
+            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli" --update
+        else
+            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli"
+        fi
+
+        rm -rf awscliv2.zip awscliv2.sig aws
+
+        aws --version
+        ;;
+    *)
+        echo "Skipping AWS CLI installation"
         ;;
 esac
 
@@ -455,6 +482,9 @@ case "$response" in
                     # This one works:
                     sudo dnf copr enable ojab/openvpn3
 
+                    # Add Copr repo for Bazel
+                    # This is WAY out of date. Do not use!
+
                     # Add Signal Desktop repo
                     sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
@@ -462,7 +492,7 @@ case "$response" in
                     sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
                     # Update all the new repositories
-                    sudo dnf update -y
+                    sudo dnf check-update --refresh
 
                     read -r -p "Would you like to install Brave? [y/N] " response
                     case "$response" in
@@ -744,6 +774,7 @@ case "$response" in
                 nextcloud-client \
                 p7zip \
                 qalculate-gtk \
+                touchegg \
                 veracrypt \
                 zathura \
                 zathura-pdf-mupdf \
@@ -783,6 +814,7 @@ case "$response" in
                 nextcloud-desktop \
                 p7zip-full \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 zathura \
                 -y
@@ -801,6 +833,7 @@ case "$response" in
                 noto-fonts-emoji \
                 p7zip \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 veracrypt \
                 zathura \
@@ -823,6 +856,7 @@ case "$response" in
                 nextcloudclient \
                 noto-emoji \
                 qalculate-gtk \
+                touchegg \
                 unrar \
                 veracrypt \
                 yt-dlp \
@@ -866,6 +900,39 @@ case "$response" in
         ;;
 esac
 
+read -r -p "Would you like to setup Gnome? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        # Set fonts for Gnome.
+        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+            gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
+            gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
+
+            if [ -s /usr/share/applications/brave.desktop ]; then
+                xdg-settings set default-web-browser brave.desktop
+            elif [ -s /usr/share/applications/brave-browser.desktop ]; then
+                xdg-settings set default-web-browser brave-browser.desktop
+            fi
+
+            # TODO: Install extensions
+            #appindicatorsupport@rgcjonas.gmail.com
+            #blur-my-shell@aunetx
+            #gsconnect@andyholmes.github.io
+            #clipboard-indicator@tudmotu.com
+            #Vitals@CoreCoding.com
+            #x11gestures@joseexposito.github.io
+            #apps-menu@gnome-shell-extensions.gcampax.github.com
+            #background-logo@fedorahosted.org
+            #launch-new-instance@gnome-shell-extensions.gcampax.github.com
+            #places-menu@gnome-shell-extensions.gcampax.github.com
+            #window-list@gnome-shell-extensions.gcampax.github.com
+        fi
+        ;;
+    *)
+        echo "Skipping font installation"
+        ;;
+esac
 
 read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
 case "$response" in
@@ -993,7 +1060,7 @@ case "$response" in
             ssh-add "${HOME}/.ssh/id_rsa"
         fi
 
-        xclip -sel clip < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+        xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
         cat "${HOME}/.ssh/id_rsa.pub"
         ;;
     *)
@@ -1063,6 +1130,65 @@ case "$response" in
         ;;
     *)
         echo "Skipping WinBox setup"
+        ;;
+esac
+
+read -r -p "Would you like to setup WiFi? [y/N] " response
+case "$response" in
+    [yY][eE][sS]|[yY])
+        if [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install -y \
+                wpa_supplicant \
+                wireless-regdb
+        elif [[ -x "$(command -v apt)" ]]; then
+            sudo apt install -y \
+                wpa_supplicant \
+                wireless-regdb
+        elif [[ -x "$(command -v pacman)" ]]; then
+            sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
+                wpa_supplicant \
+                wireless-regdb \
+                --needed
+        elif [[ -x "$(command -v pkg)" ]]; then
+            sudo pkg install \
+                wpa_supplicant \
+                wireless-regdb
+        fi
+
+        if grep -q '^country=' /etc/wpa_supplicant/wpa_supplicant.conf; then
+            sudo sed -i 's/^country=.*$/country=US/' /etc/wpa_supplicant/wpa_supplicant.conf
+        else
+            sudo echo "country=US" | sudo tee "/etc/wpa_supplicant/wpa_supplicant.conf"
+        fi
+
+        sudo echo "country=US" | sudo tee "/etc/sysconfig/regdomain"
+
+        sudo echo "REGDOMAIN=US" | sudo tee "/etc/default/crda"
+
+        # TODO: Supposedly this is needed on Arch Linux?
+        sudo mkdir -p /etc/conf.d/
+        sudo echo "WIRELESS_REGDOM=US" | sudo tee "/etc/conf.d/wireless-regdom"
+
+        sudo echo "options cfg80211 ieee80211_regdom=US" | sudo tee "/etc/modprobe.d/regdom.conf"
+
+        # TODO: is this right?
+        if [[ -z "$(readlink -f /etc/localtime)" ]]; then
+            sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+        fi
+
+        # Debug with this command:
+        # udevadm monitor --environment kernel
+
+        if [[ -x "$(command -v setregdomain)" ]]; then
+            sudo setregdomain us
+        fi
+
+        if [[ -x "$(command -v iw)" ]]; then
+            sudo iw reg set US
+        fi
+        ;;
+    *)
+        echo "Skipping WiFi setup"
         ;;
 esac
 
