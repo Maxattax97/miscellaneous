@@ -449,6 +449,11 @@ zshrc_source() {
     if [ -s "$HOME/.luaver/luaver" ]; then
         source "$HOME/.luaver/luaver"
     fi
+
+    if [ -n "${PYENV_ROOT}" ]; then
+        eval "$(pyenv init -)"
+        eval "$(pyenv virtualenv-init -)"
+    fi
 }
 
 zshrc_set_options() {
@@ -903,6 +908,10 @@ zshrc_set_path() {
     zshrc_add_path "${HOME}/bin/balena-cli" before
 
     zshrc_add_path "${KREW_ROOT:-$HOME/.krew}/bin" before
+
+    if [ -n "${PYENV_ROOT}" ]; then
+        zshrc_add_path "${PYENV_ROOT}/bin" before
+    fi
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
@@ -2012,6 +2021,10 @@ zshrc_set_environment_variables() {
     # Python on macOS uses ~/Library/Python/X.Y/lib/python/site-packages
     # ... this is madness, unify them.
     export PYTHONUSERBASE="$HOME/.local"
+
+    if [ -d "${HOME}/.pyenv" ]; then
+        export PYENV_ROOT="${HOME}/.pyenv"
+    fi
 }
 
 zshrc_aura_shrc() {
