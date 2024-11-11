@@ -1056,33 +1056,28 @@ else
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
-        if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install \
-                fontconfig-devel \
-                freetype-devel \
-                libX11-devel \
-                libXft-devel \
-                -y
-        fi
+        if [[ -x "$(command -v yay)" ]]; then
+            yay -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                st-luke-git
 
-        # TODO: The other package managers
-        #elif [[ -x "$(command -v brew)" ]]; then
-        #brew install \
-        #elif [[ -x "$(command -v apt-get)" ]]; then
-        #sudo apt-get install \
-        #elif [[ -x "$(command -v pacman)" ]]; then
-        #sudo pacman -Syu "$AUTOMATED_PACMAN_FLAGS" \
-        #--needed
-        #elif [[ -x "$(command -v pkg)" ]]; then
-        #sudo pkg install \
-        #fi
+            dex -c "$(command -v st)" "${HOME}/.local/share/applications/st.desktop"
+        else
+            if [[ -x "$(command -v dnf)" ]]; then
+                sudo dnf install \
+                    fontconfig-devel \
+                    freetype-devel \
+                    libX11-devel \
+                    libXft-devel \
+                    -y
+            fi
 
-        if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
-            git clone https://github.com/LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+            if [[ ! -d "${MISC_DIR}/../lukesmithxyz-st/" ]]; then
+                git clone https://github.com/LukeSmithxyz/st.git "${MISC_DIR}/../lukesmithxyz-st/"
+            fi
+            (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
+            sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
+            xrdb "${MISC_DIR}/.Xdefaults"
         fi
-        (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
-        sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
-        xrdb "${MISC_DIR}/.Xdefaults"
         ;;
     *)
         echo "Skipping Suckless Terminal (st) installation"

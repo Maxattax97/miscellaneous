@@ -1849,7 +1849,9 @@ zshrc_set_aliases() {
 
     alias pytest='pytest --capture=tee-sys -vv'
 
-    alias dex='dex-autostart'
+    if [[ -x "$(command -v dex-autostart)" ]]; then
+        alias dex='dex-autostart'
+    fi
 }
 
 zshrc_set_default_programs() {
