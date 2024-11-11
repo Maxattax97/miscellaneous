@@ -1011,18 +1011,19 @@ case "$response" in
                 xdg-settings set default-web-browser brave-browser.desktop
             fi
 
-            # TODO: Install extensions
-            #appindicatorsupport@rgcjonas.gmail.com
-            #blur-my-shell@aunetx
-            #gsconnect@andyholmes.github.io
-            #clipboard-indicator@tudmotu.com
-            #Vitals@CoreCoding.com
-            #x11gestures@joseexposito.github.io
-            #apps-menu@gnome-shell-extensions.gcampax.github.com
-            #background-logo@fedorahosted.org
-            #launch-new-instance@gnome-shell-extensions.gcampax.github.com
-            #places-menu@gnome-shell-extensions.gcampax.github.com
-            #window-list@gnome-shell-extensions.gcampax.github.com
+            extensions=(
+                "appindicatorsupport@rgcjonas.gmail.com"
+                "blur-my-shell@aunetx"
+                "gsconnect@andyholmes.github.io"
+                "clipboard-indicator@tudmotu.com"
+                "HeadsetControl@lauinger-clan.de"
+            )
+
+            for extension in "${extensions[@]}"; do
+                # TODO: Need to download the extensions first.
+                # gnome-extensions install "$extension"
+                gnome-extensions enable "$extension"
+            done
 
             # Clear the bookmarks file
             printf "" > "${HOME}/.config/gtk-3.0/bookmarks"
@@ -1424,36 +1425,38 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup system permissions? [y/N] " response
-case "$response" in
-    [yY][eE][sS] | [yY])
+if [[ "$(uname)" != "Darwin" ]]; then
+    read -r -p "Would you like to setup system permissions? [y/N] " response
+    case "$response" in
+        [yY][eE][sS] | [yY])
 
-        if [[ -x "$(command -v pw)" ]]; then
-            sudo pw groupmod video -m "$USER"
-            sudo pw groupmod docker -m "$USER"
-            sudo pw groupmod wireshark -m "$USER"
-            sudo pw groupmod wheel -m "$USER"
-            sudo pw groupmod tty -m "$USER"
-            sudo pw groupmod nordvpn -m "$USER"
-        else
-            # TODO: Check that these are correct groupadd commands.
-            sudo groupadd -r docker
-            sudo usermod -a -G docker "$USER"
+            if [[ -x "$(command -v pw)" ]]; then
+                sudo pw groupmod video -m "$USER"
+                sudo pw groupmod docker -m "$USER"
+                sudo pw groupmod wireshark -m "$USER"
+                sudo pw groupmod wheel -m "$USER"
+                sudo pw groupmod tty -m "$USER"
+                sudo pw groupmod nordvpn -m "$USER"
+            else
+                # TODO: Check that these are correct groupadd commands.
+                sudo groupadd -r docker
+                sudo usermod -a -G docker "$USER"
 
-            sudo groupadd -r wireshark
-            sudo usermod -a -G wireshark "$USER"
+                sudo groupadd -r wireshark
+                sudo usermod -a -G wireshark "$USER"
 
-            sudo groupadd -r tty
-            sudo usermod -a -G tty "$USER"
+                sudo groupadd -r tty
+                sudo usermod -a -G tty "$USER"
 
-            sudo groupadd -r nordvpn
-            sudo usermod -a -G nordvpn "$USER"
-        fi
-        ;;
-    *)
-        echo "Skipping permission setup"
-        ;;
-esac
+                sudo groupadd -r nordvpn
+                sudo usermod -a -G nordvpn "$USER"
+            fi
+            ;;
+        *)
+            echo "Skipping permission setup"
+            ;;
+    esac
+fi
 
 if [ -n "${AUTOMATED}" ]; then
     response='n'
