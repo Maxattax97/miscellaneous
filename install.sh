@@ -1011,6 +1011,11 @@ case "$response" in
                 xdg-settings set default-web-browser brave-browser.desktop
             fi
 
+            if [[ -x "$(command -v pacman)" ]]; then
+                sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                    gnome-browser-connector
+            fi
+
             extensions=(
                 "appindicatorsupport@rgcjonas.gmail.com"
                 "blur-my-shell@aunetx"
