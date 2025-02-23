@@ -358,6 +358,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type tailscale > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_tailscale" ]; then
+            tailscale completion zsh > "${HOME}/.zsh_completions/_tailscale"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -1859,6 +1865,23 @@ zshrc_set_aliases() {
     alias pytest='pytest --capture=tee-sys -vv'
 
     alias dex='dex-autostart'
+
+    alias ts='tailscale'
+    alias tsu='tailscale up --login-server https://mesh.maxocull.com --accept-routes --exit-node=citadel.mesh.net'
+    alias tsd='tailscale down'
+    alias tss='tailscale status'
+    alias tsn='tailscale netcheck'
+    alias tsp='tailscale ping'
+
+    # for the lulz
+    alias vibes='git status'
+    alias slay='git add'
+    alias rizz='git commit -m'
+    alias yeet='git push'
+    alias yolo='git push --force'
+    alias sus='git diff'
+    alias lore='git log --graph --pretty'
+    alias bet='git merge'
 }
 
 zshrc_set_default_programs() {
