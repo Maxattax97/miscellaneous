@@ -1864,7 +1864,9 @@ zshrc_set_aliases() {
 
     alias pytest='pytest --capture=tee-sys -vv'
 
-    alias dex='dex-autostart'
+    if [[ -x "$(command -v dex-autostart)" ]]; then
+        alias dex='dex-autostart'
+    fi
 
     alias ts='tailscale'
     alias tsu='tailscale up --login-server https://mesh.maxocull.com --accept-routes --exit-node=citadel.mesh.net'
