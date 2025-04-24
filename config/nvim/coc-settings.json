@@ -28,6 +28,9 @@
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextPrefix": " ]] ",
   "diagnostic.warningSign": ">>",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
   "eslint.autoFixOnSave": true,
   "eslint.format.enable": true,
   "eslint.nodePath": "~/batsrc/.local/node_modules/",
@@ -76,7 +79,7 @@
   "python.linting.pep8Enabled": true,
   "python.linting.pylintEnabled": false,
   "python.pythonPath": "python3",
-  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.check.command": "clippy",
   "suggest.echodocSupport": true,
   "suggest.enableFloat": true,
   "suggest.enablePreview": true,

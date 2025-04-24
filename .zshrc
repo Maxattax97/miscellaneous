@@ -1402,6 +1402,10 @@ zshrc_load_library() {
         mogrify -scale $scale $@
     }
 
+    pdf-optimize() {
+        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/ebook -dNOPAUSE -dBATCH -dQUIET -sOutputFile=$1 $1
+    }
+
     audio-normalize() {
         for file in "$@"; do
             ffmpeg -i "$file" -filter:a loudnorm=I=-23:TP=-1.5:LRA=11 "normalized_${file}"
