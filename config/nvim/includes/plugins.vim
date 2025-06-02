@@ -63,9 +63,9 @@ call dein#add('github/copilot.vim')
 call dein#add('vim-test/vim-test')
 
 " Submit metrics to Activity Watcher.
-if executable('aw-qt')
-	call dein#add('ActivityWatch/aw-watcher-vim')
-endif
+" if executable('aw-qt')
+"     call dein#add('ActivityWatch/aw-watcher-vim')
+" endif
 " }}}
 
 " Tim Pope Collection {{{

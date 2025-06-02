@@ -358,6 +358,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type tailscale > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_tailscale" ]; then
+            tailscale completion zsh > "${HOME}/.zsh_completions/_tailscale"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -1396,6 +1402,10 @@ zshrc_load_library() {
         mogrify -scale $scale $@
     }
 
+    pdf-optimize() {
+        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/ebook -dNOPAUSE -dBATCH -dQUIET -sOutputFile=$1 $1
+    }
+
     audio-normalize() {
         for file in "$@"; do
             ffmpeg -i "$file" -filter:a loudnorm=I=-23:TP=-1.5:LRA=11 "normalized_${file}"
@@ -1861,6 +1871,23 @@ zshrc_set_aliases() {
     if [[ -x "$(command -v dex-autostart)" ]]; then
         alias dex='dex-autostart'
     fi
+
+    alias ts='tailscale'
+    alias tsu='tailscale up --login-server https://mesh.maxocull.com --accept-routes --exit-node=citadel.mesh.net'
+    alias tsd='tailscale down'
+    alias tss='tailscale status'
+    alias tsn='tailscale netcheck'
+    alias tsp='tailscale ping'
+
+    # for the lulz
+    alias vibes='git status'
+    alias slay='git add'
+    alias rizz='git commit -m'
+    alias yeet='git push'
+    alias yolo='git push --force'
+    alias sus='git diff'
+    alias lore='git log --graph --pretty'
+    alias bet='git merge'
 }
 
 zshrc_set_default_programs() {
