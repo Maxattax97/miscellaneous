@@ -179,6 +179,9 @@ call dein#add('neoclide/coc-neco')
 "call dein#add('othree/xml.vim')
 
 "call dein#add('sbdchd/neoformat')
+
+" Language Server Protocol support for NeoVim's built-in LSP client.
+call dein#add('neovim/nvim-lspconfig')
 " }}}
 
 " Syntax / File Support {{{
