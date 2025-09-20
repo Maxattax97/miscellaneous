@@ -72,6 +72,16 @@
       "filetypes": [
         "lua"
       ]
+    },
+    "qmlls": {
+      "command": "qmlls",
+      "filetypes": [
+        "qml",
+        "qmljs"
+      ],
+      "rootPatterns": [
+        ".git/"
+      ]
     }
   },
   "prettier.printWidth": 80,

@@ -13,7 +13,6 @@ set hidden
 " Attempt to fix colors and improve performance cheaply.
 set termguicolors
 set lazyredraw
-set guioptions=M
 
 " Faster cursorhold events and swapfile writing.
 set updatetime=250

@@ -2059,6 +2059,7 @@ zshrc_set_environment_variables() {
 zshrc_aura_shrc() {
     export AURA_DEVELOPMENT_TOOLS_PATH="${HOME}/aura/ns/aura-development-tools"
     export AURA_VPN_CONFIG="${HOME}/Documents/OpenVPN/aura_profile-5075079927914878174.ovpn"
+    export AURA_GC_VPN_CONFIG="${HOME}/Documents/OpenVPN/aura_gc-dev.ovpn"
 
     if [[ -s "$AURA_DEVELOPMENT_TOOLS_PATH"/aura_shrc ]]; then
         source "$AURA_DEVELOPMENT_TOOLS_PATH"/aura_shrc

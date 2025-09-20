@@ -1446,6 +1446,7 @@ if [[ "$(uname)" != "Darwin" ]]; then
                 sudo pw groupmod wheel -m "$USER"
                 sudo pw groupmod tty -m "$USER"
                 sudo pw groupmod nordvpn -m "$USER"
+                sudo pw groupmod dialout -m "$USER"
             else
                 # TODO: Check that these are correct groupadd commands.
                 sudo groupadd -r docker
@@ -1459,6 +1460,9 @@ if [[ "$(uname)" != "Darwin" ]]; then
 
                 sudo groupadd -r nordvpn
                 sudo usermod -a -G nordvpn "$USER"
+
+                sudo groupadd -r dialout
+                sudo usermod -a -G dialout "$USER"
             fi
             ;;
         *)
