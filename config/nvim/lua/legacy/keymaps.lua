@@ -10,8 +10,6 @@ map("n", "<S-Tab>", "<C-w><S-w>")
 map("n", "<C-z>", "<nop>")
 
 -- Function keys / tools
-map("n", "<F2>", ":NERDTreeToggle<CR>")
--- map("n", "<F2>", ":Defx<CR>")
 -- map("n", "<F3>", ":TagbarToggle<CR>")
 map("n", "<F3>", ":Vista!!<CR>")
 map("n", "<F5>", ":make<CR>")
