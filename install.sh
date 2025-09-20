@@ -1169,7 +1169,7 @@ case "$response" in
         git config --global --add difftool.prompt false
 
         # Automatically set up remotes if they don't exist when pushing.
-        git config --global push.autoSetupRemote
+        git config --global push.autoSetupRemote true
 
         # Merge by default.
         git config --global pull.rebase false
