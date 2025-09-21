@@ -5,17 +5,17 @@
 return {
 
   -- ===== Modules =====
-  { "wsdjeg/dein-ui.vim" },
+  --{ "wsdjeg/dein-ui.vim" },
 
   -- Autocompletion (CoC-era)
-  { "neoclide/coc.nvim", branch = "release" },
-  { "yaegassy/coc-ansible", dependencies = { "neoclide/coc.nvim" } },
+  --{ "neoclide/coc.nvim", branch = "release", enabled = false },
+  --{ "yaegassy/coc-ansible", dependencies = { "neoclide/coc.nvim" }, enabled = false },
 
   -- Echo function signatures (for deoplete-era)
-  { "Shougo/echodoc.vim" },
+  --{ "Shougo/echodoc.vim" },
 
   -- Linting
-  { "w0rp/ale" }, -- upstream repo is dense-analysis/ale; keeping as-is for parity
+  --{ "w0rp/ale" }, -- upstream repo is dense-analysis/ale; keeping as-is for parity
 
   -- Tags / Symbols sidebars
   -- { "majutsushi/tagbar" },
@@ -50,37 +50,12 @@ return {
     enabled = (vim.fn.executable("aw-qt") == 1),
   },
 
-  -- ===== Tim Pope Collection =====
-  { "tpope/vim-fugitive" },
-  { "tpope/vim-rhubarb", dependencies = { "tpope/vim-fugitive" } },
-  { "tpope/vim-surround" },
-  { "tpope/vim-sleuth" },
-  { "tpope/vim-unimpaired" },
-  { "tpope/vim-sensible" },
-  { "tpope/vim-dispatch" },
-  { "tpope/vim-dadbod" },
-  { "tpope/vim-abolish" },
-  { "tpope/vim-repeat" },
-  { "tpope/vim-eunuch" },
-  { "tpope/vim-obsession" },
-  -- { "tpope/vim-endwise" },
-  { "tpope/vim-projectionist" },
-  { "tpope/vim-speeddating" },
-  { "tpope/vim-rsi" },
-  { "tpope/vim-tbone" },
-  { "tpope/vim-jdaddy" },
-  { "tpope/vim-vividchalk" },
-  { "tpope/vim-characterize" },
-  { "tpope/vim-afterimage" },
-  { "tpope/vim-apathy" },
-  { "tpope/vim-dotenv" },
-
   -- ===== Autocompletion addons (legacy) =====
-  { "Shougo/neoinclude.vim" },
-  { "jsfaint/coc-neoinclude", dependencies = { "neoclide/coc.nvim" } },
+  --{ "Shougo/neoinclude.vim" },
+  --{ "jsfaint/coc-neoinclude", dependencies = { "neoclide/coc.nvim" } },
 
-  { "Shougo/neco-vim" },
-  { "neoclide/coc-neco", dependencies = { "neoclide/coc.nvim" } },
+  --{ "Shougo/neco-vim" },
+  --{ "neoclide/coc-neco", dependencies = { "neoclide/coc.nvim" } },
 
   -- { "zchee/deoplete-clang" },
   -- { "carlitux/deoplete-ternjs" },
@@ -96,9 +71,6 @@ return {
   -- { "othree/xml.vim" },
 
   -- { "sbdchd/neoformat" },
-
-  -- Built-in LSP config (you already had it listed)
-  { "neovim/nvim-lspconfig" },
 
   -- ===== Syntax / File Support =====
   { "sheerun/vim-polyglot", enabled = false },

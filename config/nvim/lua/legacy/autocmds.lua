@@ -13,11 +13,11 @@ api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 -- CoC hover/signature (only if CocActionAsync exists)
-if fn.exists("*CocActionAsync") == 1 then
-  local cocg = api.nvim_create_augroup("neovim_studio_coc", { clear = true })
-  api.nvim_create_autocmd("CursorHold", { group = cocg, command = "silent call CocActionAsync('highlight')" })
-  api.nvim_create_autocmd("User", { group = cocg, pattern = "CocJumpPlaceholder", command = "call CocActionAsync('showSignatureHelp')" })
-end
+--if fn.exists("*CocActionAsync") == 1 then
+  --local cocg = api.nvim_create_augroup("neovim_studio_coc", { clear = true })
+  --api.nvim_create_autocmd("CursorHold", { group = cocg, command = "silent call CocActionAsync('highlight')" })
+  --api.nvim_create_autocmd("User", { group = cocg, pattern = "CocJumpPlaceholder", command = "call CocActionAsync('showSignatureHelp')" })
+--end
 
 -- English spelling in prose
 local sp = api.nvim_create_augroup("neovim_studio_english_spelling", { clear = true })

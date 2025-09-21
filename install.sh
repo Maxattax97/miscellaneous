@@ -422,10 +422,6 @@ case "$response" in
             echo "You need to install gem"
         fi
 
-        if [[ ! -d "${HOME}/.cache/dein" ]]; then
-            sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)" -- "${HOME}/.cache/dein" --use-neovim-config
-        fi
-
         # Forcibly fix permissions on the GnuPG directory
         chmod u+rwx,go-rwx "${HOME}/.gnupg"
 
@@ -1285,6 +1281,10 @@ case "$response" in
         echo "Skipping WinBox setup"
         ;;
 esac
+
+# TODO: Add lua-language-server via Nix instead of having a curl download
+# https://github.com/LuaLS/lua-language-server
+# https://repology.org/project/lua-language-server/versions
 
 read -r -p "Would you like to setup WiFi? [y/N] " response
 case "$response" in

@@ -18,55 +18,55 @@ map("n", "<F6>", ":MundoToggle<CR>")
 map("n", "<F12>", ":ALEFix<CR>")
 
 -- CoC completion helpers (expr mappings)
-local function coc_visible() return fn["coc#pum#visible"]() == 1 end
-local function check_backspace()
-  local col = fn.col(".") - 1
-  return (col == 0) or fn.getline("."):sub(col, col):match("%s") ~= nil
-end
+--local function coc_visible() return fn["coc#pum#visible"]() == 1 end
+--local function check_backspace()
+  --local col = fn.col(".") - 1
+  --return (col == 0) or fn.getline("."):sub(col, col):match("%s") ~= nil
+--end
 
-map("i", "<Tab>", function()
-  if coc_visible() then
-    return fn
-  elseif check_backspace() then
-    return "<Tab>"
-  else
-    return fn["coc#refresh"]()
-  end
-end, { expr = true, silent = true })
+--map("i", "<Tab>", function()
+  --if coc_visible() then
+    --return fn
+  --elseif check_backspace() then
+    --return "<Tab>"
+  --else
+    --return fn["coc#refresh"]()
+  --end
+--end, { expr = true, silent = true })
 
-map("i", "<S-Tab>", function()
-  return coc_visible() and fn or "<C-h>"
-end, { expr = true, silent = true })
+--map("i", "<S-Tab>", function()
+  --return coc_visible() and fn or "<C-h>"
+--end, { expr = true, silent = true })
 
-map("i", "<CR>", function()
-  if coc_visible() then
-    return fn["coc#pum#confirm"]()
-  end
-  return "<C-g>u<CR><c-r>=coc#on_enter()<CR>"
-end, { expr = true, silent = true })
+--map("i", "<CR>", function()
+  --if coc_visible() then
+    --return fn["coc#pum#confirm"]()
+  --end
+  --return "<C-g>u<CR><c-r>=coc#on_enter()<CR>"
+--end, { expr = true, silent = true })
 
-map("i", "<C-Space>", [[coc#refresh()]], { expr = true, silent = true })
+--map("i", "<C-Space>", [[coc#refresh()]], { expr = true, silent = true })
 
 -- CoC LSP-style maps
-map("n", "<leader>ld", "<Plug>(coc-definition)", { silent = true })
-map("n", "<leader>ly", "<Plug>(coc-type-definition)", { silent = true })
-map("n", "<leader>li", "<Plug>(coc-implementation)", { silent = true })
-map("n", "<leader>lr", "<Plug>(coc-references)", { silent = true })
-map("n", "<leader>lR", "<Plug>(coc-rename)", { silent = true })
-map("n", "<leader>lf", "<Plug>(coc-format)", { silent = true })
-map({ "n", "x", "v" }, "<leader>lF", "<Plug>(coc-fix-current)", { silent = true })
-map({ "n", "x", "v" }, "<leader>la", "<Plug>(coc-codeaction-selected)", { silent = true })
-map("n", "<leader>ll", "<Plug>(coc-codelens-action)", { silent = true })
+--map("n", "<leader>ld", "<Plug>(coc-definition)", { silent = true })
+--map("n", "<leader>ly", "<Plug>(coc-type-definition)", { silent = true })
+--map("n", "<leader>li", "<Plug>(coc-implementation)", { silent = true })
+--map("n", "<leader>lr", "<Plug>(coc-references)", { silent = true })
+--map("n", "<leader>lR", "<Plug>(coc-rename)", { silent = true })
+--map("n", "<leader>lf", "<Plug>(coc-format)", { silent = true })
+--map({ "n", "x", "v" }, "<leader>lF", "<Plug>(coc-fix-current)", { silent = true })
+--map({ "n", "x", "v" }, "<leader>la", "<Plug>(coc-codeaction-selected)", { silent = true })
+--map("n", "<leader>ll", "<Plug>(coc-codelens-action)", { silent = true })
 
 -- Hover/doc
-local function show_doc()
-  if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
-    cmd("h " .. fn.expand("<cword>"))
-  else
-    fn.CocAction("doHover")
-  end
-end
-map("n", "<leader>lK", show_doc, { silent = true })
+--local function show_doc()
+  --if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
+    --cmd("h " .. fn.expand("<cword>"))
+  --else
+    --fn.CocAction("doHover")
+  --end
+--end
+--map("n", "<leader>lK", show_doc, { silent = true })
 
 -- Denite shortcuts (kept as-is; no guard)
 map("n", "<leader><CR>", ":Denite buffer tag file_mru file/rec help<CR>")

@@ -58,9 +58,9 @@ g["airline#extensions#hunks#enabled"] = 1
 --g["airline#extensions#nerdtree#enabled"] = 1
 g["airline#extensions#obsession#enabled"] = 1
 g["airline#extensions#fugitiveline#enabled"] = 1
-g["airline#extensions#denite#enabled"] = 1
+--g["airline#extensions#denite#enabled"] = 1
 g["airline#extensions#undotree#enabled"] = 1
-g["airline#extensions#coc#enabled"] = 1
+--g["airline#extensions#coc#enabled"] = 1
 g.bufferline_echo = 0
 
 -- Startify header
@@ -83,47 +83,47 @@ g.go_fmt_fail_silently = 1
 g.NERDCustomDelimiters = { tjp = { left = "#" }, tji = { left = "#" } }
 
 -- Denite settings (verbatim)
-vim.cmd([[
-try
-  call denite#custom#var('file/rec', 'command', ['rg', '-i', '--files', '--glob', '!.git', '--glob', '!node_modules', '--max-filesize', '50K'])
-  call denite#custom#var('grep', 'command', ['rg'])
-  call denite#custom#var('grep', 'default_opts', ['--hidden', '--vimgrep', '--heading', '-S'])
-  call denite#custom#var('grep', 'recursive_opts', [])
-  call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-  call denite#custom#var('grep', 'separator', ['--'])
-  call denite#custom#var('grep', 'final_opts', [])
-  call denite#custom#var('buffer', 'date_format', '')
+--vim.cmd([[
+--try
+  --call denite#custom#var('file/rec', 'command', ['rg', '-i', '--files', '--glob', '!.git', '--glob', '!node_modules', '--max-filesize', '50K'])
+  --call denite#custom#var('grep', 'command', ['rg'])
+  --call denite#custom#var('grep', 'default_opts', ['--hidden', '--vimgrep', '--heading', '-S'])
+  --call denite#custom#var('grep', 'recursive_opts', [])
+  --call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+  --call denite#custom#var('grep', 'separator', ['--'])
+  --call denite#custom#var('grep', 'final_opts', [])
+  --call denite#custom#var('buffer', 'date_format', '')
 
-  call denite#custom#source('file/rec', 'sorters', ['sorter/sublime'])
-  call denite#custom#source('grep', 'sorters', ['sorter/sublime'])
-  call denite#custom#source('tag', 'sorters', ['sorter/sublime'])
-  call denite#custom#source('buffer', 'sorters', ['sorter/sublime'])
-  call denite#custom#source('file_mru', 'sorters', ['sorter/sublime'])
-  call denite#custom#source('help', 'sorters', ['sorter/help'])
+  --call denite#custom#source('file/rec', 'sorters', ['sorter/sublime'])
+  --call denite#custom#source('grep', 'sorters', ['sorter/sublime'])
+  --call denite#custom#source('tag', 'sorters', ['sorter/sublime'])
+  --call denite#custom#source('buffer', 'sorters', ['sorter/sublime'])
+  --call denite#custom#source('file_mru', 'sorters', ['sorter/sublime'])
+  --call denite#custom#source('help', 'sorters', ['sorter/help'])
 
-  let s:denite_options = {'default' : {
-  \ 'split': 'floating',
-  \ 'start_filter': 1,
-  \ 'auto_resize': 1,
-  \ 'prompt': 'λ:',
-  \ 'statusline': 0,
-  \ 'winrow': 1,
-  \ 'highlight_matched_char': 'WildMenu',
-  \ 'highlight_matched_range': 'Visual',
-  \ 'highlight_prompt': 'StatusLine',
-  \ 'vertical_preview': 1
-  \ }}
+  --let s:denite_options = {'default' : {
+  --\ 'split': 'floating',
+  --\ 'start_filter': 1,
+  --\ 'auto_resize': 1,
+  --\ 'prompt': 'λ:',
+  --\ 'statusline': 0,
+  --\ 'winrow': 1,
+  --\ 'highlight_matched_char': 'WildMenu',
+  --\ 'highlight_matched_range': 'Visual',
+  --\ 'highlight_prompt': 'StatusLine',
+  --\ 'vertical_preview': 1
+  --\ }}
 
-  function! s:profile(opts) abort
-    for l:fname in keys(a:opts)
-      for l:dopt in keys(a:opts[l:fname])
-        call denite#custom#option(l:fname, l:dopt, a:opts[l:fname][l:dopt])
-      endfor
-    endfor
-  endfunction
+  --function! s:profile(opts) abort
+    --for l:fname in keys(a:opts)
+      --for l:dopt in keys(a:opts[l:fname])
+        --call denite#custom#option(l:fname, l:dopt, a:opts[l:fname][l:dopt])
+      --endfor
+    --endfor
+  --endfunction
 
-  call s:profile(s:denite_options)
-catch
-  echom 'Denite not installed, skipping configuration.'
-endtry
-]])
+  --call s:profile(s:denite_options)
+--catch
+  --echom 'Denite not installed, skipping configuration.'
+--endtry
+--]])
