@@ -45,8 +45,6 @@ return {
 				float = { border = "none", source = "if_many" },
 			})
 
-			vim.diagnostic.goto_next({ wrap = false })
-
 			-- Show diagnostic float on hover (normal & insert)
 			local diag_grp = vim.api.nvim_create_augroup("DiagFloat", { clear = true })
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {

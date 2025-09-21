@@ -7,8 +7,10 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "mason-org/mason.nvim" },
 		opts = {
-			-- everything you want installed
+			-- https://mason-registry.dev/registry/list
 			ensure_installed = {
+				-- Tree sitter
+				"tree-sitter-cli",
 				-- LSP servers
 				"lua-language-server",
 				"basedpyright",

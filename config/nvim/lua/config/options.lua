@@ -5,8 +5,7 @@ vim.opt.fileformats = { "unix", "dos", "mac" }
 vim.opt.hidden = true
 vim.opt.termguicolors = true
 vim.opt.lazyredraw = true
-vim.opt.updatetime = 250
-vim.opt.updatetime = 250
+vim.o.updatetime = 250
 vim.opt.mouse = "a"
 
 -- Swap/backup/undo dirs
@@ -33,19 +32,20 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.modeline = true
-vim.opt.modelines = 5
+vim.o.modelines = 5
 
 -- Numbers & rulers
 vim.opt.number = true
-vim.opt.colorcolumn = "80,125"
+vim.opt.colorcolumn = { 80, 125 }
 vim.opt.cursorline = true
 vim.opt.showmatch = true
-vim.opt.matchtime = 2
+vim.o.matchtime = 2
 vim.opt.scrolloff = 7
 vim.opt.showmode = false
-vim.opt.guifont = "Hack Nerd Font 9"
+vim.o.guifont = "Hack Nerd Font 9"
 
 -- Colorscheme
+vim.o.background = "dark"
 vim.cmd.colorscheme("galactic")
 
 -- Completion & wildmode
