@@ -4,6 +4,7 @@ return {
 		event = { "BufWritePre" },
 		opts = {
 			-- run formatters in sequence per filetype (first present wins unless you set "stop_after_first")
+			-- to get a list of these, see `:help conform-formatters`
 			formatters_by_ft = {
 				lua = { "stylua" },
 				python = { "ruff_format", "black" }, -- ruff fmt then black if you like; or just one of them
@@ -25,8 +26,8 @@ return {
 				html = { "prettierd", "prettier" },
 				vue = { "prettierd", "prettier" },
 				sql = { "sqlfluff" }, -- or "pg_format"
-				-- add more as you go…
 			},
+
 			-- format on save (fast; uses LSP if no external is set)
 			format_on_save = function(bufnr)
 				-- large files: skip

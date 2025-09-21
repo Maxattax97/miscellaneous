@@ -19,12 +19,6 @@ return {
 		end,
 	},
 
-	-- Manage LSP packages
-	{
-		"mason-org/mason.nvim",
-		opts = {},
-	},
-
 	-- Snippet engine
 	{
 		"L3MON4D3/LuaSnip",

@@ -13,9 +13,7 @@ map("n", "<C-z>", "<nop>")
 -- map("n", "<F3>", ":TagbarToggle<CR>")
 map("n", "<F3>", ":Vista!!<CR>")
 map("n", "<F5>", ":make<CR>")
-map("n", "<F4>", "<Plug>(ale_fix)", { silent = true })
 map("n", "<F6>", ":MundoToggle<CR>")
-map("n", "<F12>", ":ALEFix<CR>")
 
 -- CoC completion helpers (expr mappings)
 --local function coc_visible() return fn["coc#pum#visible"]() == 1 end
@@ -71,10 +69,6 @@ map("n", "<F12>", ":ALEFix<CR>")
 -- NERDCommenter toggles
 map("n", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })
 map("v", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })
-
--- Diagnostics jumping (ALE)
-map("n", "<leader>e", "<Plug>(ale_next_wrap)", { silent = true })
-map("n", "<leader>E", "<Plug>(ale_previous_wrap)", { silent = true })
 
 -- Paste from the 0 register
 map({ "x", "n", "v" }, "<leader>P", [["0p]])

@@ -8,6 +8,7 @@ o.hidden = true
 o.termguicolors = true
 o.lazyredraw = true
 o.updatetime = 250
+vim.o.updatetime = 250
 o.mouse = "a"
 
 -- Swap/backup/undo dirs
@@ -47,7 +48,8 @@ o.showmode = false
 vim.o.guifont = "Hack Nerd Font 9"
 
 -- Colorscheme
-vim.cmd.colorscheme("galactic")
+-- vim.cmd.colorscheme("galactic")
+vim.cmd.colorscheme("cyberdream")
 
 -- Completion & wildmode
 o.completeopt = { "menuone", "longest", "preview" }

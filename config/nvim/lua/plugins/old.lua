@@ -2,7 +2,7 @@
 -- Direct port of your existing plugin list to lazy.nvim specs (no modernization)
 -- You can delete/replace this file gradually as you move to Lua-native plugins.
 
-return {
+local old = {
 
 	-- ===== Modules =====
 	--{ "wsdjeg/dein-ui.vim" },
@@ -131,3 +131,5 @@ return {
 	-- { "mattn/emmet-vim" },
 	-- { "yuttie/comfortable-motion.vim" },
 }
+
+return {}
