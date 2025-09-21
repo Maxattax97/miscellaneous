@@ -20,29 +20,29 @@ map("n", "<F12>", ":ALEFix<CR>")
 -- CoC completion helpers (expr mappings)
 --local function coc_visible() return fn["coc#pum#visible"]() == 1 end
 --local function check_backspace()
-  --local col = fn.col(".") - 1
-  --return (col == 0) or fn.getline("."):sub(col, col):match("%s") ~= nil
+--local col = fn.col(".") - 1
+--return (col == 0) or fn.getline("."):sub(col, col):match("%s") ~= nil
 --end
 
 --map("i", "<Tab>", function()
-  --if coc_visible() then
-    --return fn
-  --elseif check_backspace() then
-    --return "<Tab>"
-  --else
-    --return fn["coc#refresh"]()
-  --end
+--if coc_visible() then
+--return fn
+--elseif check_backspace() then
+--return "<Tab>"
+--else
+--return fn["coc#refresh"]()
+--end
 --end, { expr = true, silent = true })
 
 --map("i", "<S-Tab>", function()
-  --return coc_visible() and fn or "<C-h>"
+--return coc_visible() and fn or "<C-h>"
 --end, { expr = true, silent = true })
 
 --map("i", "<CR>", function()
-  --if coc_visible() then
-    --return fn["coc#pum#confirm"]()
-  --end
-  --return "<C-g>u<CR><c-r>=coc#on_enter()<CR>"
+--if coc_visible() then
+--return fn["coc#pum#confirm"]()
+--end
+--return "<C-g>u<CR><c-r>=coc#on_enter()<CR>"
 --end, { expr = true, silent = true })
 
 --map("i", "<C-Space>", [[coc#refresh()]], { expr = true, silent = true })
@@ -60,11 +60,11 @@ map("n", "<F12>", ":ALEFix<CR>")
 
 -- Hover/doc
 --local function show_doc()
-  --if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
-    --cmd("h " .. fn.expand("<cword>"))
-  --else
-    --fn.CocAction("doHover")
-  --end
+--if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
+--cmd("h " .. fn.expand("<cword>"))
+--else
+--fn.CocAction("doHover")
+--end
 --end
 --map("n", "<leader>lK", show_doc, { silent = true })
 
@@ -90,7 +90,7 @@ map("n", "gdl", ":diffget //3<CR>", { silent = true })
 
 -- FixTabs user command
 vim.api.nvim_create_user_command("FixTabs", function()
-  cmd("set tabstop=4 shiftwidth=4 expandtab")
-  cmd("normal! gg=G")
-  cmd("retab")
+	cmd("set tabstop=4 shiftwidth=4 expandtab")
+	cmd("normal! gg=G")
+	cmd("retab")
 end, {})

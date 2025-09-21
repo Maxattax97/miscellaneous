@@ -11,29 +11,29 @@ o.updatetime = 250
 o.mouse = "a"
 
 -- Swap/backup/undo dirs
-o.directory  = fn.expand("~/.cache/nvim/swap/")
-o.backupdir  = fn.expand("~/.cache/nvim/backup/")
-o.undodir    = fn.expand("~/.cache/nvim/undo/")
-o.undofile   = true
+o.directory = fn.expand("~/.cache/nvim/swap/")
+o.backupdir = fn.expand("~/.cache/nvim/backup/")
+o.undodir = fn.expand("~/.cache/nvim/undo/")
+o.undofile = true
 for _, opt in ipairs({ o.backupdir, o.directory, o.undodir }) do
-  for _, d in ipairs(opt:get()) do
-    if fn.isdirectory(d) == 0 then
-      fn.mkdir(d, "p")
-    end
-  end
+	for _, d in ipairs(opt:get()) do
+		if fn.isdirectory(d) == 0 then
+			fn.mkdir(d, "p")
+		end
+	end
 end
 
 -- Title
 o.title = true
 
 -- File format / indentation defaults
-o.encoding    = "utf-8"
-o.shiftround  = true
+o.encoding = "utf-8"
+o.shiftround = true
 o.softtabstop = 4
-o.tabstop     = 4
-o.shiftwidth  = 4
-o.expandtab   = true
-o.modeline    = true
+o.tabstop = 4
+o.shiftwidth = 4
+o.expandtab = true
+o.modeline = true
 vim.o.modelines = 5
 
 -- Numbers & rulers
