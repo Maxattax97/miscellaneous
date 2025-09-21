@@ -68,11 +68,6 @@ map("n", "<F12>", ":ALEFix<CR>")
 --end
 --map("n", "<leader>lK", show_doc, { silent = true })
 
--- Denite shortcuts (kept as-is; no guard)
-map("n", "<leader><CR>", ":Denite buffer tag file_mru file/rec help<CR>")
-map("n", "<leader>\\g", ":Denite tag buffer grep:. file_mru file/rec<CR>")
-map("n", "<leader>\\h", ":Denite help<CR>")
-
 -- NERDCommenter toggles
 map("n", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })
 map("v", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })

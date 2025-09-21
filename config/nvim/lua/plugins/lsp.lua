@@ -51,6 +51,13 @@ return {
       "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
       "onsails/lspkind.nvim", -- shows icons in completion menu
+      -- TODO: Other completions to investigate:
+      -- https://github.com/hrsh7th/cmp-calc
+      -- https://github.com/uga-rosa/cmp-dictionary
+      -- https://github.com/f3fora/cmp-spell
+      -- https://github.com/hrsh7th/cmp-omni
+      -- https://github.com/hrsh7th/cmp-emoji
+      -- https://github.com/hrsh7th/cmp-copilot
     },
     config = function()
       local cmp = require("cmp")
@@ -126,4 +133,15 @@ return {
       })
     end,
   },
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "InsertEnter",
+    opts = {
+      bind = true,
+      hint_enable = false,
+      handler_opts = {
+        border = "none",
+      },
+    },
+  }
 }
