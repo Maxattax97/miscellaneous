@@ -54,7 +54,7 @@ call dein#add('godlygeek/tabular')
 "call dein#add('Shougo/neomru.vim')
 
 " Vim colortemplate generator.
-call dein#add('lifepillar/vim-colortemplate')
+call dein#add('lifepillar/vim-colortemplate', { 'rev': 'v2' })
 
 " Github Copilot integration.
 call dein#add('github/copilot.vim')
@@ -223,7 +223,7 @@ call dein#add('bling/vim-bufferline')
 call dein#add('mhinz/vim-startify')
 
 " Colorschemes / Themes
-call dein#add('maxattax97/vim-galactic')
+call dein#add('maxattax97/vim-galactic', { 'rev': 'master' })
 call dein#add('lifepillar/vim-solarized8')
 call dein#add('mhartington/oceanic-next')
 call dein#add('dikiaap/minimalist')

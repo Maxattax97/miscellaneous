@@ -314,4 +314,9 @@ let g:NERDSpaceDelims = 1
 
 " Preserve indentation when block commenting
 let g:NERDDefaultAlign = 'left'
+
+" Disable the colortemplate toolbar by default, since it doesn't work in
+" Neovim.
+" https://github.com/lifepillar/vim-colortemplate/issues/79
+let g:colortemplate_toolbar = 0
 " }}}
