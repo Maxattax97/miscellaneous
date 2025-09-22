@@ -472,6 +472,10 @@ case "$response" in
         ## https://github.com/cli/cli/issues/9569
         gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
 
+	# Veracrypt
+	gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
+
+
         if [ -s /bin/zsh ]; then
             if [[ ! "$SHELL" =~ "zsh" ]]; then
                 chsh -s /bin/zsh "${USER}"
