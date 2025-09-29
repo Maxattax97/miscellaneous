@@ -46,7 +46,7 @@ vim.o.guifont = "Hack Nerd Font 9"
 
 -- Colorscheme
 vim.o.background = "dark"
-vim.cmd.colorscheme("galactic")
+-- vim.cmd.colorscheme("galactic")
 
 -- Completion & wildmode
 vim.opt.completeopt = { "menuone", "longest", "preview" }

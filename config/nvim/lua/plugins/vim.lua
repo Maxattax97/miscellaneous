@@ -11,4 +11,8 @@ return {
 			},
 		},
 	},
+	-- Show current line number even when in relative mode.
+	{
+		"sitiom/nvim-numbertoggle",
+	},
 }

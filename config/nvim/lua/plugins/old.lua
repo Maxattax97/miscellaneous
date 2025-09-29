@@ -94,26 +94,10 @@ local old = {
 	{ "powerman/vim-plugin-AnsiEsc" },
 
 	-- ===== Aesthetics =====
-	{ "vim-airline/vim-airline" },
-	{ "vim-airline/vim-airline-themes", dependencies = { "vim-airline/vim-airline" } },
-
-	{ "bling/vim-bufferline" },
 	{ "mhinz/vim-startify" },
-
-	{ "maxattax97/vim-galactic" },
-	{ "lifepillar/vim-solarized8" },
-	{ "mhartington/oceanic-next" },
-	{ "dikiaap/minimalist" },
-	{ "flazz/vim-colorschemes" },
-	{ "srcery-colors/srcery-vim" },
-
-	{ "ryanoasis/vim-devicons" },
-	{ "nathanaelkane/vim-indent-guides" },
 
 	-- ===== Misc =====
 	{ "farmergreg/vim-lastplace" },
-	{ "ap/vim-css-color" },
-	{ "jeffkreeftmeijer/vim-numbertoggle" },
 	{ "simnalamburt/vim-mundo" },
 	{ "takac/vim-hardtime" },
 }

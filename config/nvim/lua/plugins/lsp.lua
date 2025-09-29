@@ -45,6 +45,7 @@ return {
 			"L3MON4D3/LuaSnip",
 			"saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
 			"onsails/lspkind.nvim", -- shows icons in completion menu
+			"brenoprata10/nvim-highlight-colors", -- integrates with color highlighting
 			-- TODO: Other completions to investigate:
 			-- https://github.com/hrsh7th/cmp-calc
 			-- https://github.com/uga-rosa/cmp-dictionary
@@ -99,7 +100,7 @@ return {
 
 				-- Settings for lspkind
 				formatting = {
-					format = lspkind.cmp_format({
+					--[[format = lspkind.cmp_format({
 						mode = "symbol_text",
 						maxwidth = {
 							menu = function()
@@ -109,7 +110,31 @@ return {
 						},
 						ellipsis_char = "…",
 						show_labelDetails = true,
-					}),
+					}), ]]
+					--
+					format = function(entry, item)
+						-- A little more complicated than usual due to the highlight colors...
+						-- https://github.com/brenoprata10/nvim-highlight-colors?tab=readme-ov-file#lspkind-integration
+						local color_item = require("nvim-highlight-colors").format(entry, { kind = item.kind })
+						item = require("lspkind").cmp_format({
+							mode = "symbol_text",
+							maxwidth = {
+								menu = function()
+									return math.floor(0.8 * vim.o.columns)
+								end,
+								abbr = 32,
+							},
+							ellipsis_char = "…",
+							show_labelDetails = true,
+						})(entry, item)
+
+						if color_item.abbr_hl_group then
+							item.kind_hl_group = color_item.abbr_hl_group
+							item.kind = color_item.abbr
+						end
+
+						return item
+					end,
 				},
 			})
 

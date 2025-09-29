@@ -3,6 +3,14 @@
     "branch": "master",
     "commit": "458560534a73f7f8d7a11a146c801db00b081df0"
   },
+  "base16-nvim": {
+    "branch": "master",
+    "commit": "a2907cc3cd661e0f89f7db1f4fc304782a676a7d"
+  },
+  "bufferline.nvim": {
+    "branch": "main",
+    "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
+  },
   "cmp-buffer": {
     "branch": "main",
     "commit": "b74fab3656eea9de20a9b8116afa3cfc4ec09657"
@@ -55,6 +63,10 @@
     "branch": "master",
     "commit": "3ddd1b4edefa425fda5a9f95a4f25578727c0bb3"
   },
+  "lualine.nvim": {
+    "branch": "master",
+    "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
+  },
   "mason-tool-installer.nvim": {
     "branch": "main",
     "commit": "517ef5994ef9d6b738322664d5fdd948f0fdeb46"
@@ -75,6 +87,10 @@
     "branch": "main",
     "commit": "b5311ab3ed9c846b585c0c15b7559be131ec4be9"
   },
+  "nvim-highlight-colors": {
+    "branch": "main",
+    "commit": "e0c4a58ec8c3ca7c92d3ee4eb3bc1dd0f7be317e"
+  },
   "nvim-lint": {
     "branch": "master",
     "commit": "335a6044be16d7701001059cba9baa36fbeef422"
@@ -82,6 +98,10 @@
   "nvim-lspconfig": {
     "branch": "master",
     "commit": "336b388c272555d2ae94627a50df4c2f89a5e257"
+  },
+  "nvim-numbertoggle": {
+    "branch": "main",
+    "commit": "1416256538f01c1cf364805952fe7d143dc7ec56"
   },
   "nvim-treesitter": {
     "branch": "master",
