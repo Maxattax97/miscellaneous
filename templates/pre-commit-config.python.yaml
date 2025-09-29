@@ -40,7 +40,7 @@ repos:
   - repo: https://github.com/ansible/ansible-lint
     # put latest release tag from
     # https://github.com/ansible-community/ansible-lint/releases/
-    rev: v24.6.1
+    rev: v25.9.0
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$

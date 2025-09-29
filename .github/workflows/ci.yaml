@@ -32,7 +32,7 @@ jobs:
           VALIDATE_JSCPD: false
           # Ignore files which are scratch notes, encrypted
           # https://regex101.com/r/b2rUJw/2
-          FILTER_REGEX_EXCLUDE: 
+          FILTER_REGEX_EXCLUDE:
             \.sample-secret\.md|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md
 
       - name: Check .zshrc source idempotency
