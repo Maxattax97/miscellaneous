@@ -37,5 +37,3 @@ api.nvim_create_autocmd("BufReadPre", {
 		end
 	end,
 })
-
--- Folds on larger fi

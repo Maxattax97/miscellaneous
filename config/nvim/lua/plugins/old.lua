@@ -22,7 +22,7 @@ local old = {
 	{ "liuchengxu/vista.vim" },
 
 	-- Git signs/integration
-	{ "mhinz/vim-signify" },
+	-- { "mhinz/vim-signify" },
 	-- { "airblade/vim-gitgutter" },
 
 	-- { "ervandew/supertab" },
@@ -112,24 +112,10 @@ local old = {
 
 	-- ===== Misc =====
 	{ "farmergreg/vim-lastplace" },
-	-- { "honza/vim-snippets" },
 	{ "ap/vim-css-color" },
 	{ "jeffkreeftmeijer/vim-numbertoggle" },
-	-- { "jiangmiao/auto-pairs" },
-	{ "junegunn/rainbow_parentheses.vim" },
 	{ "simnalamburt/vim-mundo" },
 	{ "takac/vim-hardtime" },
-
-	-- ===== Disabled (kept as comments for reference) =====
-	-- { "terryma/vim-multiple-cursors" },
-	-- { "editorconfig/editorconfig-vim" },
-	-- { "thinca/vim-quickrun" },
-	-- { "bronson/vim-trailing-whitespace" },
-	-- { "plugin/vim-paste-easy" },
-	-- { "godlygeek/csapprox" },
-	-- { "gregsexton/matchtag" },
-	-- { "mattn/emmet-vim" },
-	-- { "yuttie/comfortable-motion.vim" },
 }
 
 return {}

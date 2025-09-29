@@ -61,3 +61,8 @@ vim.opt.incsearch = true
 
 -- Clipboard
 vim.opt.clipboard:append("unnamedplus")
+
+-- Folds
+-- vim.o.foldnestmax = 3
+-- vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
