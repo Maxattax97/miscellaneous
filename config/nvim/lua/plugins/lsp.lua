@@ -8,9 +8,20 @@ return {
 				callback = function(ev)
 					local o = { buffer = ev.buf }
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, o)
-					vim.keymap.set("n", "gd", vim.lsp.buf.definition, o)
-					vim.keymap.set("n", "gr", vim.lsp.buf.references, o)
-					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, o)
+					vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, o)
+					vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, o)
+					vim.keymap.set("n", "<leader>lR", vim.lsp.buf.rename, o)
+					vim.keymap.set("n", "<leader>lf", function()
+						vim.lsp.buf.format({ async = true })
+					end, o)
+					vim.keymap.set("n", "<leader>ll", vim.lsp.codelens.run, o)
+					vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, o)
+					vim.keymap.set("n", "<leader>lF", function()
+						vim.lsp.buf.code_action({
+							context = { only = { "source.fixAll" } },
+							apply = true,
+						})
+					end, o)
 				end,
 			})
 

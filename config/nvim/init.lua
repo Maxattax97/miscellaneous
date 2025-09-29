@@ -4,8 +4,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-require("legacy.preload") -- replaces preload.vim
-
 require("config.lazy")
 
 -- Load legacy, ported vim scripts

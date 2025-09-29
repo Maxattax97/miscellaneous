@@ -1,4 +1,6 @@
 return {
+	-- Consider re-adding as fallback:
+	-- { "sheerun/vim-polyglot", enabled = false },
 	{
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
@@ -76,4 +78,10 @@ return {
 		-- I couldn't rebind to <leader>c<CR>
 		-- The standard bindings are normal: gcc, or visual: gc
 	},
+	-- { "pearofducks/ansible-vim" },
+	-- { "gurpreetatwal/vim-avro" },
+	-- { "urbit/hoon.vim" },
+	-- { "kalafut/vim-taskjuggler" },
+	-- { "momota/cisco.vim" },
+	-- { "powerman/vim-plugin-AnsiEsc" },
 }

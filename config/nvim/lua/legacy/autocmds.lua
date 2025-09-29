@@ -31,8 +31,8 @@ local cop = api.nvim_create_augroup("neovim_studio_copilot", { clear = true })
 api.nvim_create_autocmd("BufReadPre", {
 	group = cop,
 	callback = function(args)
-		local f = fn.getfsize(fn.expand(args.file))
-		if f > 500000 or f == -2 then
+		local file_size = fn.getfsize(fn.expand(args.file))
+		if file_size > 50 * 1024 or file_size == -2 then
 			vim.b.copilot_enabled = false
 		end
 	end,
