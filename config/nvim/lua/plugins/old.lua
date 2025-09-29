@@ -10,7 +10,6 @@ local old = {
 	-- Autocompletion (CoC-era)
 	--{ "neoclide/coc.nvim", branch = "release", enabled = false },
 	--{ "yaegassy/coc-ansible", dependencies = { "neoclide/coc.nvim" }, enabled = false },
-
 	-- Echo function signatures (for deoplete-era)
 	--{ "Shougo/echodoc.vim" },
 
@@ -28,18 +27,17 @@ local old = {
 	-- { "ervandew/supertab" },
 
 	-- Commenting / Align
-	{ "scrooloose/nerdcommenter" },
-	{ "godlygeek/tabular" },
+	-- { "godlygeek/tabular" },
 
 	-- Fuzzy finder (Denite era)
 	-- { "Shougo/denite.nvim" },
 	-- { "Shougo/neomru.vim" },
 
 	-- Colortemplate
-	{ "lifepillar/vim-colortemplate" },
+	-- { "lifepillar/vim-colortemplate" },
 
 	-- Copilot
-	{ "github/copilot.vim" },
+	-- { "github/copilot.vim" },
 
 	-- Test runner
 	{ "vim-test/vim-test" },
@@ -94,12 +92,6 @@ local old = {
 	{ "powerman/vim-plugin-AnsiEsc" },
 
 	-- ===== Aesthetics =====
-	{ "mhinz/vim-startify" },
-
-	-- ===== Misc =====
-	{ "farmergreg/vim-lastplace" },
-	{ "simnalamburt/vim-mundo" },
-	{ "takac/vim-hardtime" },
 }
 
 return {}

@@ -8,14 +8,8 @@ vim.keymap.set("n", "<S-Tab>", "<C-w><S-w>")
 vim.keymap.set("n", "<C-z>", "<nop>")
 
 -- Function keys / tools
--- vim.keymap.set("n", "<F3>", ":TagbarToggle<CR>")
-vim.keymap.set("n", "<F3>", ":Vista!!<CR>")
 vim.keymap.set("n", "<F5>", ":make<CR>")
 vim.keymap.set("n", "<F6>", ":MundoToggle<CR>")
-
--- NERDCommenter toggles
-vim.keymap.set("n", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })
-vim.keymap.set("v", "<leader>c<CR>", "<Plug>NERDCommenterToggle", { silent = true })
 
 -- Paste from the 0 register
 vim.keymap.set({ "x", "n", "v" }, "<leader>P", [["0p]])

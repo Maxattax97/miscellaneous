@@ -71,4 +71,9 @@ return {
 			module.turnOn()
 		end,
 	},
+	{
+		"numToStr/Comment.nvim",
+		-- I couldn't rebind to <leader>c<CR>
+		-- The standard bindings are normal: gcc, or visual: gc
+	},
 }

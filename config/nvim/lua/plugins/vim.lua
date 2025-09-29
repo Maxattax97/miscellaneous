@@ -12,7 +12,11 @@ return {
 		},
 	},
 	-- Show current line number even when in relative mode.
-	{
-		"sitiom/nvim-numbertoggle",
-	},
+	{ "sitiom/nvim-numbertoggle" },
+	-- Open to the the last place you were editing in a file
+	{ "farmergreg/vim-lastplace" },
+	-- Visualize undo history and tree
+	{ "simnalamburt/vim-mundo" },
+	-- Start screen
+	{ "mhinz/vim-startify" },
 }
