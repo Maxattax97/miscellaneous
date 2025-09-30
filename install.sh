@@ -144,6 +144,12 @@ link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/
 mkdir -p "${HOME}/.config/FreeCAD"
 link_source "config/FreeCAD/user.cfg" 1 ".config/FreeCAD/user.cfg"
 
+mkdir -p "${HOME}/.config/PrusaSlicer/"
+link_source "config/PrusaSlicer/filament/" 1 ".config/PrusaSlicer/filament"
+link_source "config/PrusaSlicer/printer/" 1 ".config/PrusaSlicer/printer"
+link_source "config/PrusaSlicer/print/" 1 ".config/PrusaSlicer/print"
+link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physical_printer"
+
 # awcli
 mkdir -p "${HOME}/.aws"
 link_source "config/aws/config" 0 ".aws/config"
@@ -472,9 +478,8 @@ case "$response" in
         ## https://github.com/cli/cli/issues/9569
         gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
 
-	# Veracrypt
-	gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
-
+        # Veracrypt
+        gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
 
         if [ -s /bin/zsh ]; then
             if [[ ! "$SHELL" =~ "zsh" ]]; then
