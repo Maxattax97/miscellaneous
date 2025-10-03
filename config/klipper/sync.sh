@@ -11,3 +11,4 @@ scp PRINT_END.cfg forge@mainsailos.local:/home/forge/printer_data/config/
 scp PRESENT_PRINT.cfg forge@mainsailos.local:/home/forge/printer_data/config/
 scp PURGE_LINE.cfg forge@mainsailos.local:/home/forge/printer_data/config/
 scp TEST_SPEED.cfg forge@mainsailos.local:/home/forge/printer_data/config/
+scp VERSION.cfg forge@mainsailos.local:/home/forge/printer_data/config/
