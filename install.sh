@@ -482,7 +482,7 @@ case "$response" in
         gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
 
         if [ -s /bin/zsh ]; then
-            if [[ ! "$SHELL" =~ "zsh" ]]; then
+            if [[ ! $SHELL =~ "zsh" ]]; then
                 chsh -s /bin/zsh "${USER}"
             fi
         fi
@@ -524,11 +524,11 @@ case "$response" in
             sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
             # Add repo for Brave
-            sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+            sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
             sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
             # Add repo for Docker
-            sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
 
             # Import PGP key for VeraCrypt.
             sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
@@ -543,10 +543,10 @@ case "$response" in
             # This is WAY out of date. Do not use!
 
             # Add Signal Desktop repo
-            sudo dnf config-manager --add-repo "https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
+            sudo dnf config-manager addrepo --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
             # Add Github CLI repo
-            sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
 
             # Update all the new repositories
             sudo dnf check-update --refresh
@@ -1009,7 +1009,7 @@ fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # Set fonts for Gnome.
-        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
@@ -1261,7 +1261,7 @@ case "$response" in
         echo "#!/bin/sh" > "${HOME}/.local/bin/winbox"
         echo "wine64 ${HOME}/.local/share/mikrotik/winbox" >> "${HOME}/.local/bin/winbox"
         chmod +x "${HOME}/.local/bin/winbox"
-        echo "Succesfully installed, use \`winbox\` to open"
+        echo 'Succesfully installed, use winbox command to open'
         ;;
     *)
         echo "Skipping WinBox setup"
@@ -1492,7 +1492,7 @@ case "$response" in
         ./scripts/font-install.sh
 
         # Set fonts for Gnome.
-        if [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
