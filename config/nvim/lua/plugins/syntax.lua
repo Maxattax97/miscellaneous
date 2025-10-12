@@ -78,6 +78,27 @@ return {
 		-- I couldn't rebind to <leader>c<CR>
 		-- The standard bindings are normal: gcc, or visual: gc
 	},
+	{
+		"stevearc/aerial.nvim",
+		opts = {},
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			"nvim-tree/nvim-web-devicons",
+		},
+		config = function()
+			require("aerial").setup({
+				backends = { "lsp", "treesitter", "markdown" },
+				show_guides = true,
+				filter_kind = false, -- show all kinds
+				keymaps = {
+					["{"] = "aerial_prev",
+					["}"] = "aerial_next",
+				},
+			})
+
+			vim.keymap.set("n", "<F3>", "<cmd>AerialToggle!<CR>")
+		end,
+	},
 	-- { "pearofducks/ansible-vim" },
 	-- { "gurpreetatwal/vim-avro" },
 	-- { "urbit/hoon.vim" },

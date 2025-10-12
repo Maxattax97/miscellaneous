@@ -16,6 +16,7 @@ return {
 	-- Open to the the last place you were editing in a file
 	{ "farmergreg/vim-lastplace" },
 	-- Visualize undo history and tree
+	-- TODO: Consider replacing with mbbill/undotree
 	{ "simnalamburt/vim-mundo" },
 	-- Start screen
 	{ "mhinz/vim-startify" },

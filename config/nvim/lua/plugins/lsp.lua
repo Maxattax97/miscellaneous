@@ -57,6 +57,7 @@ return {
 			"saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
 			"onsails/lspkind.nvim", -- shows icons in completion menu
 			"brenoprata10/nvim-highlight-colors", -- integrates with color highlighting
+			"zbirenbaum/copilot-cmp",
 			-- TODO: Other completions to investigate:
 			-- https://github.com/hrsh7th/cmp-calc
 			-- https://github.com/uga-rosa/cmp-dictionary
@@ -68,7 +69,15 @@ return {
 		config = function()
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
-			local lspkind = require("lspkind")
+
+			local has_words_before = function()
+				if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+					return false
+				end
+				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+				return col ~= 0
+					and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
+			end
 
 			cmp.setup({
 				snippet = {
@@ -83,17 +92,17 @@ return {
 					["<C-e>"] = cmp.mapping.abort(),
 					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Enter accepts first suggestion
 					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_next_item()
+						if cmp.visible() and has_words_before() then
+							cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 						elseif luasnip.expand_or_jumpable() then
 							luasnip.expand_or_jump()
 						else
 							fallback()
 						end
-					end, { "i", "s" }),
+					end, { "i", "s" }), -- when using cmp.mapping()
 					["<S-Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_prev_item()
+						if cmp.visible() and has_words_before() then
+							cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 						elseif luasnip.jumpable(-1) then
 							luasnip.jump(-1)
 						else
@@ -103,6 +112,7 @@ return {
 				}),
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
+					{ name = "copilot" },
 					{ name = "luasnip" },
 				}, {
 					{ name = "buffer" },
@@ -129,6 +139,9 @@ return {
 						local color_item = require("nvim-highlight-colors").format(entry, { kind = item.kind })
 						item = require("lspkind").cmp_format({
 							mode = "symbol_text",
+							symbol_map = {
+								Copilot = "",
+							},
 							maxwidth = {
 								menu = function()
 									return math.floor(0.8 * vim.o.columns)
@@ -148,6 +161,9 @@ return {
 					end,
 				},
 			})
+
+			-- Set highlight for Copilot icon in lspkind
+			vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#4493f8" }) -- "Github Blue"
 
 			-- Use buffer source for `/`
 			cmp.setup.cmdline("/", {
@@ -176,26 +192,103 @@ return {
 			},
 		},
 	},
-	{ "github/copilot.vim" },
+	-- { "github/copilot.vim" },
 	{
-		"stevearc/aerial.nvim",
-		opts = {},
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-tree/nvim-web-devicons",
-		},
+		"zbirenbaum/copilot.lua",
+		-- On first run, auth with :Copilot auth
+		dependencies = { "copilotlsp-nvim/copilot-lsp" }, -- optional for NES functionality
 		config = function()
-			require("aerial").setup({
-				backends = { "lsp", "treesitter", "markdown" },
-				show_guides = true,
-				filter_kind = false, -- show all kinds
-				keymaps = {
-					["{"] = "aerial_prev",
-					["}"] = "aerial_next",
+			require("copilot").setup({
+				-- if opting for copilot-cmp, then disable panel, suggestion, and NES.
+				panel = {
+					enabled = true,
+					auto_refresh = true,
+				},
+				suggestion = {
+					enabled = false,
+					auto_trigger = true,
+					-- NOTE: The default accept keymap is <M-l> which didn't work for me
+				},
+				nes = {
+					enabled = false,
+					auto_trigger = true,
+				},
+				workspace_folders = {
+					"~/src",
+					"~/aura",
+				},
+				filetypes = {
+					markdown = true,
+					gitcommit = true,
+					yaml = true,
 				},
 			})
-
-			vim.keymap.set("n", "<F3>", "<cmd>AerialToggle!<CR>")
 		end,
+	},
+	{
+		"zbirenbaum/copilot-cmp",
+		dependencies = { "zbirenbaum/copilot.lua" },
+		config = function()
+			require("copilot_cmp").setup()
+		end,
+	},
+	{
+		"folke/sidekick.nvim",
+		dependencies = { "zbirenbaum/copilot.lua" },
+		opt = {
+			cli = {
+				mux = {
+					backend = "tmux",
+					enabled = true,
+				},
+			},
+		},
+		keys = {
+			{
+				"<leader>a",
+				function()
+					require("sidekick.cli").toggle({ name = "copilot", focus = true })
+				end,
+				desc = "Sidekick Toggle CLI",
+			},
+			{
+				"<leader>ad",
+				function()
+					require("sidekick.cli").close()
+				end,
+				desc = "Detach a CLI Session",
+			},
+			{
+				"<leader>at",
+				function()
+					require("sidekick.cli").send({ msg = "{this}" })
+				end,
+				mode = { "x", "n" },
+				desc = "Send This",
+			},
+			{
+				"<leader>af",
+				function()
+					require("sidekick.cli").send({ msg = "{file}" })
+				end,
+				desc = "Send File",
+			},
+			{
+				"<leader>av",
+				function()
+					require("sidekick.cli").send({ msg = "{selection}" })
+				end,
+				mode = { "x" },
+				desc = "Send Visual Selection",
+			},
+			{
+				"<leader>ap",
+				function()
+					require("sidekick.cli").prompt()
+				end,
+				mode = { "n", "x" },
+				desc = "Sidekick Select Prompt",
+			},
+		},
 	},
 }
