@@ -2,15 +2,18 @@ return {
 	packages = {
 		"tree-sitter-cli",
 		"prettier",
+		"cspell",
 	},
 	parsers = {},
-	linters = {},
+	linters = {
+		["*"] = { "cspell" },
+	},
 	formatters = {
 		html = { "prettier" },
 		css = { "prettier" },
 		scss = { "prettier" },
 		-- vue = { "prettier" }, -- may conflict with JS/TS
-		jsonc = { "prettier" },
+		jsonc = { "prettier" }, -- regular jason has jq
 	},
 	language_servers = {},
 	config = nil,

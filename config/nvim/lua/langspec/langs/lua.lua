@@ -11,7 +11,7 @@ return {
 	},
 	linters = { lua = { "luacheck" } },
 	formatters = { lua = { "stylua" } },
-	language_servers = { "lua_ls" },
+	language_servers = { "lua_ls", "stylua" },
 	config = function()
 		-- Optional: better Neovim API typing for lua_ls
 		pcall(function()

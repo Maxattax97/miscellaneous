@@ -7,4 +7,5 @@ return {
 	formatters = {
 		markdown = { "markdownlint" }, -- or prettierd/prettier
 	},
+	language_servers = { "marksman" },
 }

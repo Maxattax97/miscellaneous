@@ -1,5 +1,5 @@
 return {
-	packages = { "typescript-language-server", "vtsls", "eslint_d", "eslint-lsp" },
+	packages = { "typescript-language-server", "vtsls", "eslint_d", "eslint-lsp", "deno", "vue-language-server" },
 	parsers = { "javascript", "typescript", "tsx", "vue" },
 	linters = {
 		javascript = { "eslint_d" },
@@ -19,5 +19,5 @@ return {
 		jsx = { "eslint_d" },
 		vue = { "eslint_d" },
 	},
-	language_servers = { "ts_ls", "eslint", "vtsls" },
+	language_servers = { "ts_ls", "eslint", "vtsls", "denols", "vue_ls" },
 }
