@@ -1,9 +1,5 @@
-local function has_go()
-	return vim.fn.executable("go") == 1
-end
-
 local packages = { "golangci-lint" }
-if has_go() then
+if vim.fn.executable("go") == 1 then
 	-- We can only install gopls if Go is already installed on this system.
 	table.insert(packages, "gopls")
 	table.insert(packages, "gofumpt")

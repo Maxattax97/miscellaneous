@@ -101,7 +101,7 @@
   },
   "neo-tree.nvim": {
     "branch": "v3.x",
-    "commit": "4c60a198e3f92098778a32a1c76d2bd7ba46a3b5"
+    "commit": "c4c168e459395275c552179a1baf9c3d885d6a74"
   },
   "neotest": {
     "branch": "master",
@@ -117,7 +117,7 @@
   },
   "neotest-python": {
     "branch": "master",
-    "commit": "7cab6e2ecc260bf61b97ca147574a470bd880cbd"
+    "commit": "b0d3a861bd85689d8ed73f0590c47963a7eb1bf9"
   },
   "nui.nvim": {
     "branch": "main",
@@ -145,7 +145,7 @@
   },
   "nvim-numbertoggle": {
     "branch": "main",
-    "commit": "1416256538f01c1cf364805952fe7d143dc7ec56"
+    "commit": "923f9709989605fe2bc4b9de8a3625fa808f5cd6"
   },
   "nvim-treesitter": {
     "branch": "master",
@@ -185,7 +185,7 @@
   },
   "sidekick.nvim": {
     "branch": "main",
-    "commit": "cebcd4415dc73e3713162e4ea317a6e91312f1a8"
+    "commit": "b7085d79df9efb9f8be5ca4a65d771b163d7d34c"
   },
   "telescope-fzf-native.nvim": {
     "branch": "main",

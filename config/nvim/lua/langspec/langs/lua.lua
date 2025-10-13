@@ -1,15 +1,23 @@
+local packages = {
+	"lua-language-server",
+	"stylua",
+}
+local lua_linters = {}
+
+if vim.fn.executable("luarocks") == 1 then
+	-- We can only install luacheck if luarocks is already installed on this system.
+	table.insert(packages, "luacheck")
+	table.insert(lua_linters, "luacheck")
+end
+
 return {
-	packages = {
-		"lua-language-server",
-		"luacheck",
-		"stylua",
-	},
+	packages = packages,
 	parsers = {
 		"lua",
 		"luadoc",
 		"luap",
 	},
-	linters = { lua = { "luacheck" } },
+	linters = { lua = lua_linters },
 	formatters = { lua = { "stylua" } },
 	language_servers = { "lua_ls", "stylua" },
 	config = function()
