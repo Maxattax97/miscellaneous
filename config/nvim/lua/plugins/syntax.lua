@@ -93,6 +93,36 @@ return {
 			vim.keymap.set("n", "<F3>", "<cmd>AerialToggle!<CR>")
 		end,
 	},
+	{
+		-- automatically pulls JSON and YAML schemas from schemastore.org
+		"b0o/schemastore.nvim",
+		dependencies = {
+			"neovim/nvim-lspconfig",
+		},
+		config = function()
+			vim.lsp.config("jsonls", {
+				settings = {
+					json = {
+						schemas = require("schemastore").json.schemas(),
+						validate = { enable = true },
+					},
+				},
+			})
+			vim.lsp.config("yamlls", {
+				settings = {
+					yaml = {
+						-- This plugin recommends disabling built-in support:
+						-- https://github.com/b0o/SchemaStore.nvim?tab=readme-ov-file#usage
+						schemaStore = {
+							enable = false,
+							url = "",
+						},
+						schemas = require("schemastore").yaml.schemas(),
+					},
+				},
+			})
+		end,
+	},
 	-- { "pearofducks/ansible-vim" },
 	-- { "gurpreetatwal/vim-avro" },
 	-- { "urbit/hoon.vim" },

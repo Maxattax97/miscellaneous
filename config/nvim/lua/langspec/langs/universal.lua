@@ -16,5 +16,4 @@ return {
 		jsonc = { "prettier" }, -- regular jason has jq
 	},
 	language_servers = {},
-	config = nil,
 }

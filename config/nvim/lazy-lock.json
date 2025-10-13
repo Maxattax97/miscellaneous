@@ -179,6 +179,10 @@
     "branch": "master",
     "commit": "12504405821c05874d2d1f6b5ec919f9808e2c99"
   },
+  "schemastore.nvim": {
+    "branch": "main",
+    "commit": "caad5439cc80809be7475b625a5e36d1bb06cc7e"
+  },
   "sidekick.nvim": {
     "branch": "main",
     "commit": "cebcd4415dc73e3713162e4ea317a6e91312f1a8"

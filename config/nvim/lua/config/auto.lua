@@ -13,15 +13,3 @@ vim.api.nvim_create_autocmd(
 	{ group = sp, pattern = { "gitcommit", "latex", "tex", "md", "markdown" }, command = "setlocal spell" }
 )
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { group = sp, pattern = "*.md", command = "setlocal spell" })
-
--- Copilot: disable on very large files
-local cop = vim.api.nvim_create_augroup("neovim_studio_copilot", { clear = true })
-vim.api.nvim_create_autocmd("BufReadPre", {
-	group = cop,
-	callback = function(args)
-		local file_size = vim.fn.getfsize(vim.fn.expand(args.file))
-		if file_size > 50 * 1024 or file_size == -2 then
-			vim.b.copilot_enabled = false
-		end
-	end,
-})

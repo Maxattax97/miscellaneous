@@ -25,8 +25,8 @@ return {
 				end,
 			})
 
-			-- Load your modular server configs + enable them
-			require("lsp").setup()
+			-- Sets up any loose ends for the language configurations
+			require("langspec").run_configs()
 		end,
 	},
 

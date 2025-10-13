@@ -5,13 +5,6 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 require("config.lazy")
-
--- Sets up any loose ends for the language configurations
-require("langspec").run_configs()
-
--- Load legacy, ported vim scripts
-require("legacy.autocmds") -- replaces autocommands.vim
-require("legacy.settings") -- replaces plugin_settings.vim
-
+require("config.auto")
 require("config.keymaps")
 require("config.options")
