@@ -6,60 +6,15 @@ return {
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "mason-org/mason.nvim" },
-		opts = {
-			-- https://mason-registry.dev/registry/list
-			ensure_installed = {
-				-- Tree sitter
-				"tree-sitter-cli",
-				-- LSP servers
-				"lua-language-server",
-				"basedpyright",
-				"clangd",
-				"rust-analyzer",
-				--"gopls",
-				--"bash-language-server",
-				--"yaml-language-server",
-				--"json-lsp",
-				--"html-lsp",
-				--"css-lsp",
-				--"marksman", -- markdown
-				--"taplo", -- TOML
-				--"texlab",
-				--"dockerfile-language-server",
-				--"eslint-lsp",
-				--"vim-language-server",
-				--"vtsls", -- modern TS/JS server
-
-				-- Linters
-				"ruff",
-				"shellcheck",
-				"hadolint",
-				"yamllint",
-				"markdownlint",
-				"jsonlint",
-				"golangci-lint",
-
-				-- Formatters
-				"stylua",
-				--"prettierd",
-				--"prettier",
-				"black",
-				--"jq",
-				--"shfmt",
-				--"sqlfluff",
-				--"gofumpt",
-				--"goimports",
-				--"golines",
-
-				-- DAPs (if you want debugging)
-				--"codelldb",
-				--"debugpy",
-			},
-
-			run_on_start = true,
-			aut_update = true,
-			start_delay = 3000, -- ms, wait for Mason to boot cleanly
-			debounce_hours = 168, -- update only once a week
-		},
+		config = function()
+			local langspec = require("langspec")
+			require("mason-tool-installer").setup({
+				ensure_installed = langspec.collect_packages(),
+				run_on_start = true,
+				auto_update = true,
+				start_delay = 3000, -- ms, wait for Mason to boot cleanly
+				debounce_hours = 0, -- 168, -- update only once a week
+			})
+		end,
 	},
 }

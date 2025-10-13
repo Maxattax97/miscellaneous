@@ -16,7 +16,7 @@ return {
 					require("neotest-python")({}),
 					require("neotest-jest")({}),
 					require("neotest-go")({}),
-					-- require('rustaceanvim.neotest'),
+					require("rustaceanvim.neotest"),
 				},
 			})
 		end,

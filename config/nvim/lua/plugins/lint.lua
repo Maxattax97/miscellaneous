@@ -4,23 +4,8 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			local lint = require("lint")
-			lint.linters_by_ft = {
-				python = { "ruff" }, -- super fast; replaces flake8/pycodestyle
-				go = { "golangci_lint" },
-				sh = { "shellcheck" },
-				bash = { "shellcheck" },
-				zsh = { "shellcheck" },
-				dockerfile = { "hadolint" },
-				yaml = { "yamllint" },
-				json = { "jsonlint" },
-				markdown = { "markdownlint" }, -- markdownlint-cli2 preferred; nvim-lint calls it "markdownlint"
-				sql = { "sqlfluff" },
-				javascript = { "eslint_d" }, -- or "eslint" if you don’t use eslint_d
-				typescript = { "eslint_d" },
-				javascriptreact = { "eslint_d" },
-				typescriptreact = { "eslint_d" },
-				vue = { "eslint_d" },
-			}
+			local langspec = require("langspec")
+			lint.linters_by_ft = langspec.collect_linters()
 
 			-- run automatically
 			local group = vim.api.nvim_create_augroup("NvimLint", { clear = true })
@@ -68,5 +53,17 @@ return {
 				vim.diagnostic.jump({ count = -1, wrap = true })
 			end, { desc = "Previous diagnostic" })
 		end,
+	},
+	{
+		"folke/trouble.nvim",
+		opts = {}, -- for default options, refer to the configuration section for custom setup.
+		cmd = "Trouble",
+		keys = {
+			{
+				"<F7>",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+		},
 	},
 }

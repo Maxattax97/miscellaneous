@@ -105,7 +105,7 @@
   },
   "neotest": {
     "branch": "master",
-    "commit": "2cf3544fb55cdd428a9a1b7154aea9c9823426e8"
+    "commit": "7166dc36af2760a76479e021e0521e23f62165f1"
   },
   "neotest-go": {
     "branch": "main",
@@ -175,9 +175,13 @@
     "branch": "master",
     "commit": "3277ad5f96eb03c9d618c88e24f683e4364e578c"
   },
+  "rustaceanvim": {
+    "branch": "master",
+    "commit": "12504405821c05874d2d1f6b5ec919f9808e2c99"
+  },
   "sidekick.nvim": {
     "branch": "main",
-    "commit": "c262b25be46de67b96ca38c005a97d7091025818"
+    "commit": "cebcd4415dc73e3713162e4ea317a6e91312f1a8"
   },
   "telescope-fzf-native.nvim": {
     "branch": "main",
@@ -190,6 +194,10 @@
   "tokyonight.nvim": {
     "branch": "main",
     "commit": "4d159616aee17796c2c94d2f5f87d2ee1a3f67c7"
+  },
+  "trouble.nvim": {
+    "branch": "main",
+    "commit": "c098362fe603d3922095e7db595961e020bdf2d0"
   },
   "vim-abolish": {
     "branch": "master",
