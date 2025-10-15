@@ -5,7 +5,8 @@ return {
 		config = function()
 			require("lualine").setup({
 				options = {
-					theme = "base16",
+					-- theme = "base16",
+					theme = "tokyonight",
 				},
 				-- Available components: https://github.com/nvim-lualine/lualine.nvim?tab=readme-ov-file#available-components
 				sections = {
