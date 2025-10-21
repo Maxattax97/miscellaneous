@@ -2054,6 +2054,9 @@ zshrc_set_environment_variables() {
     if [ -d "${HOME}/.pyenv" ]; then
         export PYENV_ROOT="${HOME}/.pyenv"
     fi
+
+    # Disable telemetry for GitHub Copilot
+    export GITHUB_COPILOT_TELEMETRY_DISABLE=1
 }
 
 zshrc_aura_shrc() {

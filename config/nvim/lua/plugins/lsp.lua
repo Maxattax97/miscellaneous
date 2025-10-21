@@ -84,12 +84,21 @@ return {
 						luasnip.lsp_expand(args.body)
 					end,
 				},
+
+				completion = {
+					-- never insert/auto-select
+					completeopt = "menu,menuone,noinsert,noselect",
+				},
+
+				-- don't preselect first item
+				preselect = cmp.PreselectMode.None,
+
 				mapping = cmp.mapping.preset.insert({
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-Space>"] = cmp.mapping.complete(),
 					["<C-e>"] = cmp.mapping.abort(),
-					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Enter accepts first suggestion
+					["<CR>"] = cmp.mapping.confirm({ select = false }), -- Enter DOES NOT accept first suggestion
 					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() and has_words_before() then
 							cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -109,6 +118,7 @@ return {
 						end
 					end, { "i", "s" }),
 				}),
+
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "copilot" },
@@ -239,6 +249,13 @@ return {
 					markdown = true,
 					gitcommit = true,
 					yaml = true,
+				},
+				server_opts_overrides = {
+					settings = {
+						telemetry = {
+							telemetryLevel = "off",
+						},
+					},
 				},
 			})
 		end,

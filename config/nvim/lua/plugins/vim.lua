@@ -32,4 +32,9 @@ return {
 			}
 		end,
 	},
+	{
+		-- This repo says it's not needed, but NeoTest says it's required to
+		-- separate the hold times
+		"antoinemadec/FixCursorHold.nvim",
+	},
 }

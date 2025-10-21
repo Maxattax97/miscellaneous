@@ -6,6 +6,7 @@ vim.opt.hidden = true
 vim.opt.termguicolors = true
 vim.opt.lazyredraw = true
 vim.o.updatetime = 250
+vim.g.cursorhold_updatetime = 1000 -- 1s for FixCursorHold's CursorHold/CursorHoldI
 vim.opt.mouse = "a"
 
 -- Swap/backup/undo dirs

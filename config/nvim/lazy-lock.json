@@ -89,7 +89,7 @@
   },
   "lualine.nvim": {
     "branch": "master",
-    "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
+    "commit": "e533fac71bc361768f90004af695cd1f1aa1900a"
   },
   "mason-tool-installer.nvim": {
     "branch": "main",
@@ -165,7 +165,7 @@
   },
   "oil.nvim": {
     "branch": "master",
-    "commit": "919e155fdf38e9148cdb5304faaaf53c20d703ea"
+    "commit": "200df01e4b92d0010a3bfbde92b91a4ef5a5c9db"
   },
   "plenary.nvim": {
     "branch": "master",
@@ -185,11 +185,11 @@
   },
   "sidekick.nvim": {
     "branch": "main",
-    "commit": "b7085d79df9efb9f8be5ca4a65d771b163d7d34c"
+    "commit": "cab3ec49b751ad8aa3e1c743380accfe8f0798e8"
   },
   "snacks.nvim": {
     "branch": "main",
-    "commit": "839022302b470fe166b8b8b04add49bd32bdc01b"
+    "commit": "454ba02d69347c0735044f159b95d2495fc79a73"
   },
   "telescope-fzf-native.nvim": {
     "branch": "main",
@@ -201,7 +201,7 @@
   },
   "tokyonight.nvim": {
     "branch": "main",
-    "commit": "4d159616aee17796c2c94d2f5f87d2ee1a3f67c7"
+    "commit": "d14614cbfc63b6037bfccd48bb982d2ad2003352"
   },
   "trouble.nvim": {
     "branch": "main",
