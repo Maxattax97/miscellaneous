@@ -1468,6 +1468,9 @@ if [[ "$(uname)" != "Darwin" ]]; then
 
                 sudo groupadd -r dialout
                 sudo usermod -a -G dialout "$USER"
+
+                sudo groupadd -r bluetooth
+                sudo usermod -a -G bluetooth "$USER"
             fi
             ;;
         *)
