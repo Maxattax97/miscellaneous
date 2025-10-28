@@ -1732,6 +1732,38 @@ zshrc_load_library() {
     public-ip() {
         curl -s https://ipinfo.io
     }
+
+    git-branch-prune() {
+        # Fetch and remove stale remote tracking branches
+        git fetch --prune
+
+        # Find local branches whose upstreams are gone
+        local gone_branches
+        gone_branches=$(git branch -vv | awk '/: gone]/{print $1}')
+
+        if [[ -z "$gone_branches" ]]; then
+            echo "No local branches have been removed from the remote"
+            return 0
+        fi
+
+        echo "The following local branches no longer exist on the remote:"
+        echo
+        printf '%s\n' "$gone_branches"
+        echo
+
+        printf 'Delete these branches locally? (y/N): '
+        read -r confirm || confirm=
+        case "$confirm" in
+            [yY][eE][sS]|[yY])
+                echo "$gone_branches" | xargs -r git branch -D
+                ;;
+            *)
+                echo "Aborting, no branches deleted"
+                ;;
+        esac
+    }
+
+    alias Gbp='git-branch-prune'
 }
 
 zshrc_set_aliases() {
@@ -2054,6 +2086,9 @@ zshrc_set_environment_variables() {
     if [ -d "${HOME}/.pyenv" ]; then
         export PYENV_ROOT="${HOME}/.pyenv"
     fi
+
+    # Disable telemetry for GitHub Copilot
+    export GITHUB_COPILOT_TELEMETRY_DISABLE=1
 }
 
 zshrc_aura_shrc() {

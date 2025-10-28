@@ -10,6 +10,7 @@ dl:~/Downloads
 fal:~/ansible_collections/aura/fos/roles
 fl:/opt/flotilla
 fos:~/aura/sc/fos-data-testsuite
+gr:~/aura/gc/gorilla
 gtp:~/aura/sc/ran-gtp-rust-library
 gvcf:~/aura/sc/gvcf-transcoder-service
 iac:~/aura/sc/core-on-prem-k8s-iac
