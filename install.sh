@@ -177,6 +177,7 @@ case "$response" in
         if [[ -x "$(command -v dnf)" ]]; then
             # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
+            # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
                 btop \
                 ctags \
@@ -199,6 +200,7 @@ case "$response" in
                 python3-devel \
                 python3-neovim \
                 python3-pip \
+                python3-virtualenv \
                 ripgrep \
                 ruby-devel \
                 rubygems \
@@ -235,6 +237,7 @@ case "$response" in
                 python \
                 ripgrep \
                 tmux \
+                virtualenv \
                 weechat \
                 xsel \
                 zsh
@@ -251,6 +254,7 @@ case "$response" in
                 dev-lang/ruby \
                 dev-python/pip \
                 dev-python/pipx \
+                dev-python/virtualenv \
                 dev-ruby/rubygems \
                 dev-util/ctags \
                 dev-vcs/git \
@@ -287,6 +291,7 @@ case "$response" in
                 python3 \
                 python3-pip \
                 python3-pynvim \
+                python3-virtualenv \
                 ripgrep \
                 ruby-rubygems \
                 tmux \
@@ -315,6 +320,7 @@ case "$response" in
                 python-pip \
                 python-pipx \
                 python-pynvim \
+                python-virtualenv \
                 ripgrep \
                 rubygems \
                 tmux \
@@ -347,9 +353,10 @@ case "$response" in
                 newsboat \
                 node \
                 npm \
-                py39-pip \
-                py39-pipx \
-                py39-pynvim \
+                py311-pip \
+                py311-pipx \
+                py311-pynvim \
+                py311-virtualenv \
                 python \
                 ripgrep \
                 ruby \
