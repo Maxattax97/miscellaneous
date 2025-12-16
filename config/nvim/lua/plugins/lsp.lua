@@ -26,7 +26,10 @@ return {
 			})
 
 			-- Sets up any loose ends for the language configurations
-			require("langspec").run_configs()
+			local langspec = require("langspec")
+			langspec.run_configs()
+			langspec.apply_lsp()
+			langspec.apply_linters()
 		end,
 	},
 
