@@ -1764,6 +1764,10 @@ zshrc_load_library() {
     }
 
     alias Gbp='git-branch-prune'
+
+    fix-google-earth() {
+        rm -v "${HOME}/.var/app/com.google.EarthPro/.googleearth/instance-running-lock"
+    }
 }
 
 zshrc_set_aliases() {
