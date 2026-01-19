@@ -1181,6 +1181,10 @@ zshrc_load_library() {
         sudo docker system prune --all
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
+
+        docker ps -a --format '{{ if eq (truncate .Names 19) "GITEA-ACTIONS-TASK-" }}{{ .ID }}{{ end }}' | xargs docker rm -f
+        docker volume ls --format '{{ if eq (truncate .Name 19) "GITEA-ACTIONS-TASK-" }}{{ .Name }}{{ end }}' | xargs docker volume rm -f
+        docker images --format '{{ if eq (truncate .Repository 19) "GITEA-ACTIONS-TASK-" }}{{ .ID }}{{ end }}' | xargs docker rmi -f
         echo "Docker cleaned."
     }
 
