@@ -9,11 +9,11 @@ return {
 		"c",
 		"cpp",
 	},
-	linters = { lua = { "cpplint" } },
+	linters = { c = { "cpplint" }, cpp = { "cpplint" } },
 	language_servers = { "clangd" },
-	config = function()
-		vim.lsp.config.clangd = {
-			-- cmd = { "clangd", "--background-index" },
-		}
-	end,
+	-- config = function()
+	-- 	vim.lsp.config.clangd = {
+	-- 		cmd = { "clangd", "--background-index" },
+	-- 	}
+	-- end,
 }
