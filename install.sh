@@ -1185,6 +1185,9 @@ case "$response" in
         # Use `main` as default branch... so Github stops complaining.
         git config --global init.defaultBranch main
 
+        # Enable use of Git LFS locks by default
+        git config --global lfs.locksverify true
+
         # When you setup a GPG subkey for this machine, you'll use these:
         # git config --global user.signingkey 5E745B2A9C8F64736FA2CA73F8362D782F70AEAB
         # git config --global commit.gpgsign true
