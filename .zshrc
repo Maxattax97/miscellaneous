@@ -1772,6 +1772,111 @@ zshrc_load_library() {
     fix-google-earth() {
         rm -v "${HOME}/.var/app/com.google.EarthPro/.googleearth/instance-running-lock"
     }
+
+    # This will convert LFS pointers to actual files for the next commit, but NOT rewrite history.
+    lfs-uninstall-proactive() {
+        git lfs uninstall --local
+        echo "" >.gitattributes
+        git add --renormalize .
+        git status
+    }
+
+    # This will rewrite all history to remove LFS pointers and replace them with the actual files.
+    retroactive-lfs-uninstall() {
+        echo "Not implemented"
+        # git lfs migrate export ?
+    }
+
+    openvpn3-connect() {
+        # Use the first argument if provided, otherwise use the environment variable
+        config_path="${1:-$MAX_VPN_CONFIG}"
+
+        if [ -z "$config_path" ]; then
+            echo "Error: No configuration path provided and MAX_VPN_CONFIG is not set."
+            return 1
+        fi
+
+        # Check for existing connected sessions
+        if openvpn3 sessions-list | grep -q 'Status: Connection, Client connected'; then
+            echo "An existing session is already connected and active."
+            return 0
+        fi
+
+        openvpn3 session-manage --cleanup
+
+        # Remove any existing configurations that match the provided config file
+        configs=$(openvpn3 configs-list --json)
+
+        # Use jq to extract configuration paths
+        echo "$configs" | jq -r 'keys[]' | while read -r old_config_path; do
+            echo "Removing existing configuration: $old_config_path"
+            openvpn3 config-remove --path "$old_config_path" --force
+        done
+
+        # Fetch the first existing session path
+        existing_session=$(openvpn3 sessions-list | grep -m 1 -oP '/net/openvpn/v3/sessions/\S+')
+
+        if [ -n "$existing_session" ]; then
+            # Remove the existing session
+            echo "An existing session was found, removing it: $existing_session"
+            openvpn3 session-manage --session-path "$existing_session" --disconnect
+        fi
+
+        # Import and start a new session
+        echo "Importing and starting new session with config: $config_path"
+        openvpn3 config-import --config "$config_path"
+        openvpn3 session-start --config "$config_path"
+    }
+
+    openvpn3-disconnect() {
+        # Check for existing connected sessions
+        if openvpn3 sessions-list | grep -q 'Status: Connection, Client connected'; then
+            echo "Disconnecting existing session ..."
+            openvpn3 session-manage --cleanup
+        else
+            echo "No active VPN session found."
+            return 0
+        fi
+
+        # Remove any existing configurations that match the provided config file
+        configs=$(openvpn3 configs-list --json)
+
+        # Use jq to extract configuration paths
+        echo "$configs" | jq -r 'keys[]' | while read -r old_config_path; do
+            echo "Removing existing configuration: $old_config_path"
+            openvpn3 config-remove --path "$old_config_path" --force
+        done
+
+        # Fetch the first existing session path
+        existing_session=$(openvpn3 sessions-list | grep -m 1 -oP '/net/openvpn/v3/sessions/\S+')
+
+        if [ -n "$existing_session" ]; then
+            # Remove the existing session
+            echo "An existing session was found, removing it: $existing_session"
+            openvpn3 session-manage --session-path "$existing_session" --disconnect
+        fi
+    }
+
+    aws-login() {
+        desired_account="${1:-$MAX_AWS_ACCOUNT_ID}"
+
+        if aws sts get-caller-identity | grep -q "$desired_account"; then
+            echo "Already logged in to AWS account $desired_account"
+        else
+            echo "Not logged in to AWS account $desired_account, switching now..."
+            case "$desired_account" in
+            "$MAX_AWS_ACCOUNT_ID")
+                aws sso login --profile max
+                export AWS_PROFILE=max
+                echo "max" >"${HOME}/.awsp"
+                ;;
+            *)
+                echo "Unknown account ID: $desired_account"
+                return 1
+                ;;
+            esac
+        fi
+    }
 }
 
 zshrc_set_aliases() {
@@ -2154,6 +2259,8 @@ zshrc_setup_repo() {
     FILE_FLAKE8="${templates}/flake8"
     FILE_YAMLLINT="${templates}/yamllint.yml"
     FILE_EDITORCONFIG="${templates}/editorconfig"
+    FILE_ACTIONLINT="${templates}/actionlint.yml"
+    FILE_BANDIT="${templates}/bandit"
 
     # Update .gitignore
     zshrc_update_or_append "$repo_dir/.gitignore" "$FILE_GITIGNORE"
@@ -2174,10 +2281,16 @@ zshrc_setup_repo() {
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
         zshrc_update_or_append "$repo_dir/pyproject.toml" "$FILE_PYPROJECT"
         zshrc_update_or_append "$repo_dir/.flake8" "$FILE_FLAKE8"
+        zshrc_update_or_append "$repo_dir/.bandit" "$FILE_BANDIT"
     elif [ -n "$(find "$repo_dir" -iname "chart*.y*ml")" ]; then
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
     else
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
+    fi
+
+    # If the repo has a .github directory, then update the actionlint.yml
+    if [ -d "$repo_dir/.github/" ]; then
+        zshrc_update_or_append "$repo_dir/.github/actionlint.yml" "$FILE_ACTIONLINT"
     fi
 
     # Install pre-commit hooks if .pre-commit-config.yaml exists and the hooks do not.

@@ -50,3 +50,11 @@ Host libreelec
 	User root
 	ForwardX11 yes
 	ForwardX11Trusted yes
+
+## AWS
+# Generic SSH over AWS SSM
+Host i-* mi-*
+	IdentityFile ~/.ssh/id_rsa
+	ProxyCommand ~/.ssh/aws-ssm-ec2-proxy-command.sh %h %r %p ~/.ssh/id_rsa.pub
+	StrictHostKeyChecking no
+	ForwardAgent yes
