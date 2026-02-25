@@ -173,6 +173,8 @@ echo "Environment installation complete"
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS] | [yY])
+	# TODO: install brew if we detect its a Mac
+	# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
             # shell-gpt needs python3-devel on Fedora.
@@ -225,6 +227,7 @@ case "$response" in
                 git-crypt \
                 git-lfs \
                 gnupg \
+                gsed \
                 keychain \
                 libtool \
                 make \

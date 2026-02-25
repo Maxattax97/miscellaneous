@@ -364,6 +364,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type asdf > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_asdf" ]; then
+            asdf completion zsh > "${HOME}/.zsh_completions/_asdf"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -801,23 +807,25 @@ zshrc_add_path() {
 zshrc_set_path() {
     # Used to debug the PATH variable.
     pretty_path() {
-        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
-        IFS=':'          # Set the delimiter to ':'
-        # shellcheck disable=SC2086
-        set -- $PATH     # Split PATH into positional parameters
-        IFS=$old_IFS     # Restore the original IFS
-
         echo "Precedence order of directories in PATH:"
         index=1
-        while [ $# -gt 0 ]; do
-            dir=$1
-            shift
+        remaining=$PATH
+        while [ -n "$remaining" ]; do
+            dir=${remaining%%:*}
+            if [ "$remaining" = "$dir" ]; then
+                remaining=''
+            else
+                remaining=${remaining#*:}
+            fi
             if [ -n "$dir" ]; then
                 echo "$index) $dir"
                 index=$((index + 1))
             fi
         done
     }
+
+    # NOTE: If you're having a bad time on macOS, beware of path_helper; on
+    # login shells, it will mangle your carefully organized PATH
 
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
@@ -918,6 +926,8 @@ zshrc_set_path() {
     if [ -n "${PYENV_ROOT}" ]; then
         zshrc_add_path "${PYENV_ROOT}/bin" before
     fi
+
+    zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
@@ -2214,6 +2224,14 @@ zshrc_aura_shrc() {
     fi
 }
 
+zshrc_entegrata_shrc() {
+    export ENTEGRATA_DEVELOPMENT_TOOLS_PATH="${HOME}/entegrata/entegrata-development-tools"
+
+    if [[ -s "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc ]]; then
+        source "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc
+    fi
+}
+
 zshrc_update_or_append() {
     file="$1"
     content="$(cat "$2")"
@@ -2360,6 +2378,7 @@ zshrc_init() {
     fi
 
     zshrc_aura_shrc
+    zshrc_entegrata_shrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug
