@@ -60,7 +60,7 @@ return {
 			"saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
 			"onsails/lspkind.nvim", -- shows icons in completion menu
 			"brenoprata10/nvim-highlight-colors", -- integrates with color highlighting
-			"zbirenbaum/copilot-cmp",
+			-- "zbirenbaum/copilot-cmp",
 			-- TODO: Other completions to investigate:
 			-- https://github.com/hrsh7th/cmp-calc
 			-- https://github.com/uga-rosa/cmp-dictionary
@@ -124,7 +124,7 @@ return {
 
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
-					{ name = "copilot" },
+					-- { name = "copilot" },
 					{ name = "luasnip" },
 				}, {
 					{ name = "buffer" },
@@ -134,7 +134,7 @@ return {
 				sorting = {
 					priority_weight = 2,
 					comparators = {
-						require("copilot_cmp.comparators").prioritize,
+						-- require("copilot_cmp.comparators").prioritize,
 
 						-- Below is the default comparitor list and order for nvim-cmp
 						cmp.config.compare.offset,
@@ -224,57 +224,58 @@ return {
 		},
 	},
 	-- { "github/copilot.vim" },
-	{
-		"zbirenbaum/copilot.lua",
-		-- On first run, auth with :Copilot auth
-		dependencies = { "copilotlsp-nvim/copilot-lsp" }, -- optional for NES functionality
-		config = function()
-			require("copilot").setup({
-				-- if opting for copilot-cmp, then disable panel, suggestion, and NES.
-				panel = {
-					enabled = true,
-					auto_refresh = true,
-				},
-				suggestion = {
-					enabled = false,
-					auto_trigger = true,
-					-- NOTE: The default accept keymap is <M-l> which didn't work for me
-				},
-				nes = {
-					enabled = false,
-					auto_trigger = true,
-				},
-				workspace_folders = {
-					"~/src",
-					"~/aura",
-				},
-				filetypes = {
-					markdown = true,
-					gitcommit = true,
-					yaml = true,
-				},
-				server_opts_overrides = {
-					settings = {
-						telemetry = {
-							telemetryLevel = "off",
-						},
-					},
-				},
-			})
-		end,
-	},
-	{
-		"zbirenbaum/copilot-cmp",
-		dependencies = { "zbirenbaum/copilot.lua" },
-		config = function()
-			require("copilot_cmp").setup()
-		end,
-	},
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	-- On first run, auth with :Copilot auth
+	-- 	dependencies = { "copilotlsp-nvim/copilot-lsp" }, -- optional for NES functionality
+	-- 	config = function()
+	-- 		require("copilot").setup({
+	-- 			-- if opting for copilot-cmp, then disable panel, suggestion, and NES.
+	-- 			panel = {
+	-- 				enabled = true,
+	-- 				auto_refresh = true,
+	-- 			},
+	-- 			suggestion = {
+	-- 				enabled = false,
+	-- 				auto_trigger = true,
+	-- 				-- NOTE: The default accept keymap is <M-l> which didn't work for me
+	-- 			},
+	-- 			nes = {
+	-- 				enabled = false,
+	-- 				auto_trigger = true,
+	-- 			},
+	-- 			workspace_folders = {
+	-- 				"~/src",
+	-- 				"~/aura",
+	-- 			},
+	-- 			filetypes = {
+	-- 				markdown = true,
+	-- 				gitcommit = true,
+	-- 				yaml = true,
+	-- 			},
+	-- 			server_opts_overrides = {
+	-- 				settings = {
+	-- 					telemetry = {
+	-- 						telemetryLevel = "off",
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
+	-- {
+	-- 	"zbirenbaum/copilot-cmp",
+	-- 	dependencies = { "zbirenbaum/copilot.lua" },
+	-- 	config = function()
+	-- 		require("copilot_cmp").setup()
+	-- 	end,
+	-- },
 	{
 		"folke/sidekick.nvim",
-		dependencies = { "zbirenbaum/copilot.lua" },
+		-- dependencies = { "zbirenbaum/copilot.lua" },
 		opt = {
 			cli = {
+				name = "claude",
 				mux = {
 					backend = "tmux",
 					enabled = true,
@@ -285,7 +286,8 @@ return {
 			{
 				"<leader>a",
 				function()
-					require("sidekick.cli").toggle({ name = "copilot", focus = true })
+					-- require("sidekick.cli").toggle({ name = "copilot", focus = true })
+					require("sidekick.cli").toggle({ name = "claude", focus = true })
 				end,
 				desc = "Sidekick Toggle CLI",
 			},

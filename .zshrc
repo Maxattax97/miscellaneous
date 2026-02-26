@@ -364,6 +364,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type asdf > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_asdf" ]; then
+            asdf completion zsh > "${HOME}/.zsh_completions/_asdf"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -801,23 +807,25 @@ zshrc_add_path() {
 zshrc_set_path() {
     # Used to debug the PATH variable.
     pretty_path() {
-        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
-        IFS=':'          # Set the delimiter to ':'
-        # shellcheck disable=SC2086
-        set -- $PATH     # Split PATH into positional parameters
-        IFS=$old_IFS     # Restore the original IFS
-
         echo "Precedence order of directories in PATH:"
         index=1
-        while [ $# -gt 0 ]; do
-            dir=$1
-            shift
+        remaining=$PATH
+        while [ -n "$remaining" ]; do
+            dir=${remaining%%:*}
+            if [ "$remaining" = "$dir" ]; then
+                remaining=''
+            else
+                remaining=${remaining#*:}
+            fi
             if [ -n "$dir" ]; then
                 echo "$index) $dir"
                 index=$((index + 1))
             fi
         done
     }
+
+    # NOTE: If you're having a bad time on macOS, beware of path_helper; on
+    # login shells, it will mangle your carefully organized PATH
 
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
@@ -918,6 +926,8 @@ zshrc_set_path() {
     if [ -n "${PYENV_ROOT}" ]; then
         zshrc_add_path "${PYENV_ROOT}/bin" before
     fi
+
+    zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
@@ -1181,6 +1191,10 @@ zshrc_load_library() {
         sudo docker system prune --all
         sudo docker rm $(sudo docker ps -a -q)
         sudo docker rmi $(docker images -q)
+
+        docker ps -a --format '{{ if eq (truncate .Names 19) "GITEA-ACTIONS-TASK-" }}{{ .ID }}{{ end }}' | xargs docker rm -f
+        docker volume ls --format '{{ if eq (truncate .Name 19) "GITEA-ACTIONS-TASK-" }}{{ .Name }}{{ end }}' | xargs docker volume rm -f
+        docker images --format '{{ if eq (truncate .Repository 19) "GITEA-ACTIONS-TASK-" }}{{ .ID }}{{ end }}' | xargs docker rmi -f
         echo "Docker cleaned."
     }
 
@@ -1777,6 +1791,115 @@ zshrc_load_library() {
     }
 
     alias Gbp='git-branch-prune'
+
+    fix-google-earth() {
+        rm -v "${HOME}/.var/app/com.google.EarthPro/.googleearth/instance-running-lock"
+    }
+
+    # This will convert LFS pointers to actual files for the next commit, but NOT rewrite history.
+    lfs-uninstall-proactive() {
+        git lfs uninstall --local
+        echo "" >.gitattributes
+        git add --renormalize .
+        git status
+    }
+
+    # This will rewrite all history to remove LFS pointers and replace them with the actual files.
+    retroactive-lfs-uninstall() {
+        echo "Not implemented"
+        # git lfs migrate export ?
+    }
+
+    openvpn3-connect() {
+        # Use the first argument if provided, otherwise use the environment variable
+        config_path="${1:-$MAX_VPN_CONFIG}"
+
+        if [ -z "$config_path" ]; then
+            echo "Error: No configuration path provided and MAX_VPN_CONFIG is not set."
+            return 1
+        fi
+
+        # Check for existing connected sessions
+        if openvpn3 sessions-list | grep -q 'Status: Connection, Client connected'; then
+            echo "An existing session is already connected and active."
+            return 0
+        fi
+
+        openvpn3 session-manage --cleanup
+
+        # Remove any existing configurations that match the provided config file
+        configs=$(openvpn3 configs-list --json)
+
+        # Use jq to extract configuration paths
+        echo "$configs" | jq -r 'keys[]' | while read -r old_config_path; do
+            echo "Removing existing configuration: $old_config_path"
+            openvpn3 config-remove --path "$old_config_path" --force
+        done
+
+        # Fetch the first existing session path
+        existing_session=$(openvpn3 sessions-list | grep -m 1 -oP '/net/openvpn/v3/sessions/\S+')
+
+        if [ -n "$existing_session" ]; then
+            # Remove the existing session
+            echo "An existing session was found, removing it: $existing_session"
+            openvpn3 session-manage --session-path "$existing_session" --disconnect
+        fi
+
+        # Import and start a new session
+        echo "Importing and starting new session with config: $config_path"
+        openvpn3 config-import --config "$config_path"
+        openvpn3 session-start --config "$config_path"
+    }
+
+    openvpn3-disconnect() {
+        # Check for existing connected sessions
+        if openvpn3 sessions-list | grep -q 'Status: Connection, Client connected'; then
+            echo "Disconnecting existing session ..."
+            openvpn3 session-manage --cleanup
+        else
+            echo "No active VPN session found."
+            return 0
+        fi
+
+        # Remove any existing configurations that match the provided config file
+        configs=$(openvpn3 configs-list --json)
+
+        # Use jq to extract configuration paths
+        echo "$configs" | jq -r 'keys[]' | while read -r old_config_path; do
+            echo "Removing existing configuration: $old_config_path"
+            openvpn3 config-remove --path "$old_config_path" --force
+        done
+
+        # Fetch the first existing session path
+        existing_session=$(openvpn3 sessions-list | grep -m 1 -oP '/net/openvpn/v3/sessions/\S+')
+
+        if [ -n "$existing_session" ]; then
+            # Remove the existing session
+            echo "An existing session was found, removing it: $existing_session"
+            openvpn3 session-manage --session-path "$existing_session" --disconnect
+        fi
+    }
+
+    aws-login() {
+        desired_account="${1:-$MAX_AWS_ACCOUNT_ID}"
+
+        if aws sts get-caller-identity | grep -q "$desired_account"; then
+            echo "Already logged in to AWS account $desired_account"
+        else
+            echo "Not logged in to AWS account $desired_account, switching now..."
+            case "$desired_account" in
+            "$MAX_AWS_ACCOUNT_ID")
+                aws sso login --profile max
+                export AWS_PROFILE=max
+                echo "max" >"${HOME}/.awsp"
+                ;;
+            *)
+                echo "Unknown account ID: $desired_account"
+                return 1
+                ;;
+            esac
+        fi
+    }
 }
 
 zshrc_set_aliases() {
@@ -2114,6 +2237,14 @@ zshrc_aura_shrc() {
     fi
 }
 
+zshrc_entegrata_shrc() {
+    export ENTEGRATA_DEVELOPMENT_TOOLS_PATH="${HOME}/entegrata/entegrata-development-tools"
+
+    if [[ -s "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc ]]; then
+        source "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc
+    fi
+}
+
 zshrc_update_or_append() {
     file="$1"
     content="$(cat "$2")"
@@ -2159,6 +2290,8 @@ zshrc_setup_repo() {
     FILE_FLAKE8="${templates}/flake8"
     FILE_YAMLLINT="${templates}/yamllint.yml"
     FILE_EDITORCONFIG="${templates}/editorconfig"
+    FILE_ACTIONLINT="${templates}/actionlint.yml"
+    FILE_BANDIT="${templates}/bandit"
 
     # Update .gitignore
     zshrc_update_or_append "$repo_dir/.gitignore" "$FILE_GITIGNORE"
@@ -2179,10 +2312,16 @@ zshrc_setup_repo() {
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
         zshrc_update_or_append "$repo_dir/pyproject.toml" "$FILE_PYPROJECT"
         zshrc_update_or_append "$repo_dir/.flake8" "$FILE_FLAKE8"
+        zshrc_update_or_append "$repo_dir/.bandit" "$FILE_BANDIT"
     elif [ -n "$(find "$repo_dir" -iname "chart*.y*ml")" ]; then
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
     else
         zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
+    fi
+
+    # If the repo has a .github directory, then update the actionlint.yml
+    if [ -d "$repo_dir/.github/" ]; then
+        zshrc_update_or_append "$repo_dir/.github/actionlint.yml" "$FILE_ACTIONLINT"
     fi
 
     # Install pre-commit hooks if .pre-commit-config.yaml exists and the hooks do not.
@@ -2252,6 +2391,7 @@ zshrc_init() {
     fi
 
     zshrc_aura_shrc
+    zshrc_entegrata_shrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug

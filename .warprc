@@ -7,6 +7,7 @@ asc:~/aura/sc
 ch:~/.local/share/chezmoi
 cp:~/aura/sc/ran-cu-cp-service
 dl:~/Downloads
+e:~/entegrata
 fal:~/ansible_collections/aura/fos/roles
 fl:/opt/flotilla
 fos:~/aura/sc/fos-data-testsuite
@@ -15,6 +16,6 @@ gtp:~/aura/sc/ran-gtp-rust-library
 gvcf:~/aura/sc/gvcf-transcoder-service
 iac:~/aura/sc/core-on-prem-k8s-iac
 m:~/src/miscellaneous
-sr:~/src
 s:~/src
+sr:~/src
 up:~/aura/sc/ran-cu-up-service
