@@ -1351,6 +1351,19 @@ zshrc_load_library() {
         done
     }
 
+    fmt-underscore() {
+        echo "$1" | awk '
+        {
+            n = $0
+            out = ""
+            while (length(n) > 3) {
+                out = "_" substr(n, length(n)-2) out
+                n = substr(n, 1, length(n)-3)
+            }
+            print n out
+        }'
+    }
+
     # Go to the root of the current git repository.
     groot() {
         cd "$(git rev-parse --show-toplevel)"
