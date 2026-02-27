@@ -2225,10 +2225,11 @@ zshrc_aura_shrc() {
 }
 
 zshrc_entegrata_shrc() {
-    export ENTEGRATA_DEVELOPMENT_TOOLS_PATH="${HOME}/entegrata/entegrata-development-tools"
+    ENTEGRATA_DEVELOPMENT_TOOLS_PATH="${HOME}/entegrata/dev-tools"
+    export ENTEGRATA_DEVELOPMENT_TOOLS_PATH
 
-    if [[ -s "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc ]]; then
-        source "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc
+    if [ -s "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc ]; then
+        . "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc
     fi
 }
 

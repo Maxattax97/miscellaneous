@@ -4,7 +4,7 @@ if vim.fn.executable("go") == 1 then
 	table.insert(packages, "gopls")
 	table.insert(packages, "gofumpt")
 	table.insert(packages, "goimports")
-	table.insert(packages, "golines")
+	-- table.insert(packages, "golines") -- Entegrata does not limit line length
 end
 
 return {
@@ -15,6 +15,6 @@ return {
 		"gosum",
 	},
 	linters = { go = { "golangcilint" } },
-	formatters = { go = { "gofumpt", "goimports", "golines", "golangci-lint" } },
+	formatters = { go = { "gofumpt", "goimports", "golangci-lint" } }, -- "golines", -- Entegrata does not limit line length
 	language_servers = { "gopls" },
 }
