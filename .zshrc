@@ -848,15 +848,19 @@ zshrc_set_path() {
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if type brew > /dev/null 2>&1; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/curl/bin" before
         fi
 
         if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/make/libexec/gnubin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/make/libexec/gnubin" before
+        fi
+
+        if [ -d "$(brew --prefix)/opt/findutils/libexec/gnubin" ]; then
+            zshrc_add_path "$(brew --prefix)/opt/findutils/libexec/gnubin" before
         fi
 
         if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/binutils/bin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/binutils/bin" before
             LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
             export LDFLAGS
             CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
@@ -967,51 +971,52 @@ zshrc_load_library() {
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
     # TODO: Add support for cpio, ar, iso
     # TODO: Add progress bar, remove verbose flag
+    # shellcheck disable=2329
     decompress() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
-            echo "Usage: inflate <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-            echo "       inflate <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+            echo "Usage: decompress <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+            echo "       decompress <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
             return 1
         else
-            for n in $@
-            do
-                if [ -f "$n" ] ; then
+            # shellcheck disable=2068
+            for n in $@; do
+                if [ -f "$n" ]; then
                     case "${n%,}" in
-                        *.tar.bz2|*.tar.gz|*.tar.zst|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tzst|*.tar)
-                            tar xvf "$n"
-                            ;;
-                        *.lzma)
-                            unlzma ./"$n"
-                            ;;
-                        *.bz2)
-                            bunzip2 ./"$n"
-                            ;;
-                        *.rar)
-                            unrar x -ad ./"$n"
-                            ;;
-                        *.gz)
-                            gunzip ./"$n"
-                            ;;
-                        *.zip)
-                            unzip ./"$n"
-                            ;;
-                        *.z)
-                            uncompress ./"$n"
-                            ;;
-                        *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                            7z x ./"$n"
-                            ;;
-                        *.xz)
-                            unxz ./"$n"
-                            ;;
-                        *.exe)
-                            cabextract ./"$n"
-                            ;;
-                        *)
-                            echo "inflate: '$n' - unknown archive method"
-                            return 1
-                            ;;
+                    *.tar.bz2 | *.tar.gz | *.tar.zst | *.tar.xz | *.tbz2 | *.tgz | *.txz | *.tzst | *.tar)
+                        tar xvf "$n"
+                        ;;
+                    *.lzma)
+                        unlzma ./"$n"
+                        ;;
+                    *.bz2)
+                        bunzip2 ./"$n"
+                        ;;
+                    *.rar)
+                        unrar x -ad ./"$n"
+                        ;;
+                    *.gz)
+                        gunzip ./"$n"
+                        ;;
+                    *.zip)
+                        unzip ./"$n"
+                        ;;
+                    *.z)
+                        uncompress ./"$n"
+                        ;;
+                    *.7z | *.arj | *.cab | *.chm | *.deb | *.dmg | *.iso | *.lzh | *.msi | *.rpm | *.udf | *.wim | *.xar)
+                        7z x ./"$n"
+                        ;;
+                    *.xz)
+                        unxz ./"$n"
+                        ;;
+                    *.exe)
+                        cabextract ./"$n"
+                        ;;
+                    *)
+                        echo "decompress: '$n' - unknown archive method"
+                        return 1
+                        ;;
                     esac
                 else
                     echo "'$n' - file does not exist"
@@ -1022,72 +1027,73 @@ zshrc_load_library() {
     }
     alias inflate='decompress'
 
+    # shellcheck disable=2329
     compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
             # display usage if no parameters given
-            echo "Usage: squeeze <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
+            echo "Usage: compress <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
             return 1
         else
             input=$1
             output=$2
             # Add support for single files (in addition to directories).
-            if [ -d "$input" ] || [ -f "$input" ] ; then
+            if [ -d "$input" ] || [ -f "$input" ]; then
                 case "${output}" in
-                    *.tar)
-                        tar cf "$output" "$input"
-                        ;;
-                    *.tar.gz|*.tgz)
-                        tar zcf "$output" "$input"
-                        ;;
-                    *.tar.bz2|*.tbz2)
-                        tar jcf "$output" "$input"
-                        ;;
-                    *.tar.xz|*.txz)
-                        tar Jcf "$output" "$input"
-                        ;;
-                    *.tar.lzma|*.tlzma)
-                        tar --lzma -cf "$output" "$input"
-                        ;;
-                    *.bz2)
-                        tar -cjf "$output" "$input"
-                        ;;
-                    *.rar)
-                        rar a "$output" "$input"
-                        ;;
-                    *.gz)
-                        tar -czf "$output" "$input"
-                        ;;
-                    *.zip)
-                        zip -r "$output" "$input"
-                        ;;
-                    *.Z)
-                        tar -cZf "$output" "$input"
-                        ;;
-                    *.7z)
-                        7z a "$output" "$input"
-                        ;;
-                    *.xz)
-                        tar -cJf "$output" "$input"
-                        ;;
-                    *.lzop)
-                        lzop -o "$output" "$input"
-                        ;;
-                    *.lz)
-                        lzip -o "$output" "$input"
-                        ;;
-                    *.lz4)
-                        lz4 -z "$input" "$output"
-                        ;;
-                    *.tar.zst|*.tzst)
-                        tar --zstd -cf "$output" "$input"
-                        ;;
-                    *.zst)
-                        zstd "$input" -o "$output"
-                        ;;
-                    *)
-                        echo "squeeze: '$output' - unknown archive method"
-                        return 1
-                        ;;
+                *.tar)
+                    tar cf "$output" "$input"
+                    ;;
+                *.tar.gz | *.tgz)
+                    tar zcf "$output" "$input"
+                    ;;
+                *.tar.bz2 | *.tbz2)
+                    tar jcf "$output" "$input"
+                    ;;
+                *.tar.xz | *.txz)
+                    tar Jcf "$output" "$input"
+                    ;;
+                *.tar.lzma | *.tlzma)
+                    tar --lzma -cf "$output" "$input"
+                    ;;
+                *.bz2)
+                    tar -cjf "$output" "$input"
+                    ;;
+                *.rar)
+                    rar a "$output" "$input"
+                    ;;
+                *.gz)
+                    tar -czf "$output" "$input"
+                    ;;
+                *.zip)
+                    zip -r "$output" "$input"
+                    ;;
+                *.Z)
+                    tar -cZf "$output" "$input"
+                    ;;
+                *.7z)
+                    7z a "$output" "$input"
+                    ;;
+                *.xz)
+                    tar -cJf "$output" "$input"
+                    ;;
+                *.lzop)
+                    lzop -o "$output" "$input"
+                    ;;
+                *.lz)
+                    lzip -o "$output" "$input"
+                    ;;
+                *.lz4)
+                    lz4 -z "$input" "$output"
+                    ;;
+                *.tar.zst | *.tzst)
+                    tar --zstd -cf "$output" "$input"
+                    ;;
+                *.zst)
+                    zstd "$input" -o "$output"
+                    ;;
+                *)
+                    echo "compress: '$output' - unknown archive method"
+                    return 1
+                    ;;
                 esac
             else
                 echo "'$input' - file or directory does not exist"
@@ -1098,6 +1104,7 @@ zshrc_load_library() {
     alias squeeze='compress'
 
     # Host the current directory via HTTP
+    # shellcheck disable=2329
     hostdir() {
         if type "npx" > /dev/null 2>&1; then
             npx http-server
@@ -1963,11 +1970,11 @@ zshrc_set_aliases() {
     alias Dcrm='docker compose rm -sf'
     alias Dcpl='docker compose pull --parallel'
     alias Dcup='docker compose up -d'
-    alias Dcl='docker compose logs -tf --tail="50" '
+    alias Dcl='docker compose logs -tf --tail="50"'
     alias Dce="docker compose exec"
 
     alias Dr="docker run --rm -it"
-    alias Dtail='docker logs -tf --tail="50" "$@"'
+    alias Dtail='docker logs -tf --tail="50"'
 
     # Clipboard
     alias clip='xsel --clipboard --trim -i'
