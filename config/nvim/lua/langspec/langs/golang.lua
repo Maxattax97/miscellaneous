@@ -4,6 +4,7 @@ if vim.fn.executable("go") == 1 then
 	table.insert(packages, "gopls")
 	table.insert(packages, "gofumpt")
 	table.insert(packages, "goimports")
+	table.insert(packages, "staticcheck")
 	-- table.insert(packages, "golines") -- Entegrata does not limit line length
 end
 
