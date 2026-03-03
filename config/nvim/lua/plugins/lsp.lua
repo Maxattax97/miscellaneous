@@ -125,11 +125,20 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					-- { name = "copilot" },
+					{ name = "minuet" },
 					{ name = "luasnip" },
 				}, {
 					{ name = "buffer" },
 					{ name = "path" },
 				}),
+
+				performance = {
+					-- It is recommended to increase the timeout duration due to
+					-- the typically slower response speed of LLMs compared to
+					-- other completion sources. This is not needed when you only
+					-- need manual completion.
+					fetching_timeout = 10000,
+				},
 
 				sorting = {
 					priority_weight = 2,
@@ -222,6 +231,56 @@ return {
 				border = "none",
 			},
 		},
+	},
+	-- AI code completion via Ollama (replaces Copilot)
+	{
+		"milanglacier/minuet-ai.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		config = function()
+			require("minuet").setup({
+				-- Use FIM (fill-in-the-middle) provider for Ollama
+				provider = "openai_fim_compatible",
+				-- Allow time for Ollama to load the model on the first request
+				request_timeout = 10,
+				-- Throttle requests slightly for a remote instance
+				throttle = 1000,
+				-- Reduce for resource savings on remote Ollama
+				n_completions = 1,
+				-- Context window sent to the model (chars before/after cursor).
+				-- Start small and increase if your Ollama box can handle it.
+				context_window = 512,
+				provider_options = {
+					openai_fim_compatible = {
+						-- Point at your Ollama instance's OpenAI-compatible endpoint
+						api_key = "TERM", -- env var name; set to any non-empty value
+						name = "Ollama",
+						end_point = "http://localhost:11434/v1/completions",
+						-- Pick a FIM-capable model you've pulled in Ollama:
+						-- Good options: qwen2.5-coder:7b, deepseek-coder-v2:latest
+						model = "qwen2.5-coder:7b",
+						-- Optional: tweak generation params
+						optional = {
+							max_tokens = 256,
+							top_p = 0.9,
+						},
+					},
+				},
+				-- Virtual text (ghost text) frontend — closest to Copilot's UX
+				-- virtualtext = {
+				-- 	auto_trigger_ft = { "*" }, -- auto-trigger for all filetypes
+				-- 	keymap = {
+				-- 		accept = "<A-A>", -- accept whole completion
+				-- 		accept_line = "<A-a>", -- accept one line
+				-- 		accept_n_lines = "<A-z>", -- accept n lines (prompts for count)
+				-- 		prev = "<A-[>", -- cycle to prev completion
+				-- 		next = "<A-]>", -- cycle to next completion
+				-- 		dismiss = "<A-e>", -- dismiss
+				-- 	},
+				-- },
+			})
+		end,
 	},
 	-- { "github/copilot.vim" },
 	-- {
