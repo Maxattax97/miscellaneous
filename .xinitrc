@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "${HOME}/.xprofile"
+. "${HOME}/.xprofile"
 
 if lspci | grep -iq nvidia; then
     echo "NVIDIA card detected"
@@ -16,14 +16,14 @@ case $session in
         export XDG_CURRENT_DESKTOP="bspwm"
         exec bspwm
         ;;
-    i3|i3wm)
+    i3 | i3wm)
         export XDG_CURRENT_DESKTOP="i3wm"
         exec i3
         ;;
     kde)
         exec startplasma-x11
         ;;
-    xfce|xfce4)
+    xfce | xfce4)
         # Do I need to export it for XFCE?
         exec startxfce4
         ;;
