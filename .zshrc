@@ -484,7 +484,7 @@ zshrc_set_options() {
     # man zshoptions
     setopt correct
     #setopt correctall
-    setopt clobber
+    unsetopt clobber
     setopt interactivecomments
     setopt nomatch
     setopt extendedglob
@@ -666,7 +666,12 @@ zshrc_raw_prompt() {
 
 zshrc_zplug() {
     if [[ ! -d "$HOME/.zplug" ]]; then
-        curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+        if [[ "${ZSHRC_ALLOW_PLUGIN_INSTALL:-0}" == "1" ]]; then
+            curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+        else
+            echo "zplug is not installed. Set ZSHRC_ALLOW_PLUGIN_INSTALL=1 to install automatically."
+            return
+        fi
     fi
 
     if [[ -d "$HOME/.zplug" ]]; then
@@ -744,7 +749,11 @@ zshrc_zplug() {
         zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
 
         if ! zplug check; then
-            zplug install
+            if [[ "${ZSHRC_ALLOW_PLUGIN_INSTALL:-0}" == "1" ]]; then
+                zplug install
+            else
+                echo "zplug plugins are missing. Set ZSHRC_ALLOW_PLUGIN_INSTALL=1 to install automatically."
+            fi
         fi
 
         zplug load
