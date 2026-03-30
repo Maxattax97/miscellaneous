@@ -33,12 +33,10 @@ return {
 		end,
 	},
 
-	-- Snippet engine
+	-- Snippet engine (waiting on next release for nvim 0.12 compat)
 	{
 		"L3MON4D3/LuaSnip",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
+		version = "*",
 		build = "make install_jsregexp",
 		dependencies = {
 			"rafamadriz/friendly-snippets",
@@ -57,7 +55,7 @@ return {
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
 			"L3MON4D3/LuaSnip",
-			"saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
+			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind.nvim", -- shows icons in completion menu
 			"brenoprata10/nvim-highlight-colors", -- integrates with color highlighting
 			-- "zbirenbaum/copilot-cmp",
