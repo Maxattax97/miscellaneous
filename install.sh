@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# TODO: Convert this script to shell so it can run on lighter systems.
-
 MISC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+AUTOMATED="${AUTOMATED:-}"
+
+ensure_chezmoi() {
+    if [[ -x "$(command -v chezmoi)" ]]; then
+        return
+    fi
+
+    previous_dir="$(pwd)"
+    cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
+    cd "$previous_dir" || exit
+}
+
+apply_dotfiles() {
+    chezmoi init --source="${MISC_DIR}"
+    chezmoi apply
+}
+
+dotfiles_applied=0
 
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
@@ -12,164 +28,13 @@ else
     AUTOMATED_PACMAN_FLAGS="--confirm"
 fi
 
-echo "Linking from ${MISC_DIR} ..."
-
-TEXT_RED='\033[0;91m'
-TEXT_RESET='\033[0m'
-TEXT_BLINK='\033[5m'
-
-link_skipped_files=""
-link_linked_files=""
-link_overwritten_files=""
-
-link_source() {
-    src="${MISC_DIR}/${1}"
-    overwrite="${2:-0}"
-    dest="${HOME}/${3:-$1}"
-
-    if [ -h "$dest" ]; then
-        #echo "Skipping $dest because it is already linked ..."
-        link_skipped_files+="$dest "
-    elif [ -f "$dest" ]; then
-        if [ "$overwrite" -eq 1 ]; then
-            rm -f "$dest"
-            #echo "Overwriting file and linking $src -> $dest ..."
-            link_overwritten_files+="$dest "
-            ln -sf "$src" "$dest"
-        else
-            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a file exists there!${TEXT_RESET}"
-        fi
-    elif [ -d "$dest" ]; then
-        if [ "$overwrite" -eq 1 ]; then
-            rm -rf "$dest"
-            #echo "Overwriting directory and linking $src -> $dest ..."
-            link_overwritten_files+="$dest "
-            ln -sf "$src" "$dest"
-        else
-            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a directory exists there!${TEXT_RESET}"
-        fi
-    else
-        #echo "Linking $src -> $dest ..."
-        link_linked_files+="$dest "
-        ln -sf "$src" "$dest"
-    fi
-}
-
-# Dot files
-link_source .ctags 1
-link_source .bashrc 1
-link_source .zshrc 1
-link_source .tmux.conf 1
-link_source .tmux.sh 1
-link_source .tmuxline.conf 1
-link_source .Xdefaults 1
-link_source .Xdefaults 1 .Xresources
-link_source .eslintrc.json 0
-link_source ".gtkrc-2.0" 0
-link_source .xinitrc 0
-link_source .xprofile 0
-link_source .warprc 0
-link_source .lcovrc 1
-link_source .lcovrc.gcov.css 1
-
-# Dot directories
-mkdir -p "${HOME}/.config/"
-
-mkdir -p "${HOME}/.ncmpcpp"
-link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
-
-mkdir -p "${HOME}/.gnupg"
-link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
-
-mkdir -p "${HOME}/.ssh"
-link_source "config/ssh/config" 0 ".ssh/config"
-link_source "config/ssh/aws-ssm-ec2-proxy-command.sh" 1 ".ssh/aws-ssm-ec2-proxy-command.sh"
-
-# Linked folders
-link_source "config/SpaceVim.d" 1 ".SpaceVim.d"
-link_source ".tmuxp" 1
-
-# Configure secured password (not included in this repo) with:
-# /secure passphrase a strong password here
-# /secure set freenode_password yourFreenodePasswordHere
-link_source "config/weechat/" 1 ".weechat"
-
-if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
-    git clone "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
+if [[ -x "$(command -v chezmoi)" ]]; then
+    echo "Applying dotfiles from ${MISC_DIR} with existing chezmoi ..."
+    apply_dotfiles
+    dotfiles_applied=1
+else
+    echo "Will apply dotfiles from ${MISC_DIR} with chezmoi after package installation ..."
 fi
-
-# ~/.config/
-link_source "config/i3/" 1 ".config/i3"
-link_source "config/mpd/" 1 ".config/mpd"
-link_source "config/polybar/" 1 ".config/polybar"
-link_source "config/psd/" 1 ".config/psd"
-link_source "config/compton/" 1 ".config/compton"
-link_source "config/awesome/" 1 ".config/awesome"
-link_source "config/gtk-3.0/" 0 ".config/gtk-3.0"
-link_source "config/ranger/" 1 ".config/ranger"
-link_source "config/rofi/" 1 ".config/rofi"
-link_source "config/nvim/" 1 ".config/nvim"
-link_source "config/newsboat/" 1 ".config/newsboat"
-link_source "config/zathura/" 1 ".config/zathura"
-link_source "config/bspwm/" 1 ".config/bspwm"
-link_source "config/sxhkd/" 1 ".config/sxhkd"
-link_source "config/dunst/" 1 ".config/dunst"
-link_source "config/fontconfig/" 0 ".config/fontconfig"
-link_source "config/pcmanfm/" 1 ".config/pcmanfm"
-link_source "config/xmrig.json" 1 ".config/xmrig.json"
-link_source "config/redrum.ini" 1 ".config/redrum.ini"
-link_source "config/btop/" 1 ".config/btop"
-link_source "config/Kvantum/" 1 ".config/Kvantum"
-
-mkdir -p "${HOME}/.local/share/applications/"
-link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
-link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
-
-mkdir -p "${HOME}/.config/variety"
-link_source "config/variety/variety.conf" 1 ".config/variety/variety.conf"
-
-mkdir -p "${HOME}/.config/copyq"
-link_source "config/copyq/copyq-commands.ini" 1 ".config/copyq/copyq-commands.ini"
-link_source "config/copyq/copyq.conf" 1 ".config/copyq/copyq.conf"
-link_source "config/copyq/copyq-filter.ini" 1 ".config/copyq/copyq-filter.ini"
-link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.ini"
-link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
-
-# We only want to copy the roles folder from sgpt; the .sgptrc file contains our OpenAI key
-mkdir -p "${HOME}/.config/shell_gpt/roles/"
-link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
-
-# We link for both the regular and Flatpak versions of FreeCAD.
-mkdir -p "${HOME}/.var/app/org.freecadweb.FreeCAD/config/FreeCAD"
-link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/FreeCAD/user.cfg"
-mkdir -p "${HOME}/.config/FreeCAD"
-link_source "config/FreeCAD/user.cfg" 1 ".config/FreeCAD/user.cfg"
-
-mkdir -p "${HOME}/.config/PrusaSlicer/"
-link_source "config/PrusaSlicer/filament/" 1 ".config/PrusaSlicer/filament"
-link_source "config/PrusaSlicer/printer/" 1 ".config/PrusaSlicer/printer"
-link_source "config/PrusaSlicer/print/" 1 ".config/PrusaSlicer/print"
-link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physical_printer"
-
-# awcli
-mkdir -p "${HOME}/.aws"
-link_source "config/aws/config" 0 ".aws/config"
-
-# Binaries / executables
-mkdir -p "${HOME}/bin/"
-
-link_source "bin/ctlpanel" 1
-link_source "bin/gspeak" 1
-link_source "bin/idle-mine" 1
-link_source "bin/reload-kde" 1
-link_source "bin/restart-kde" 1
-link_source "bin/logout-kde" 1
-
-echo "Overwritten files: ${link_overwritten_files}"
-echo "Linked files: ${link_linked_files}"
-echo "Skipped files: ${link_skipped_files}"
-
-echo "Environment installation complete"
 
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
@@ -183,6 +48,7 @@ case "$response" in
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
                 btop \
+                chezmoi \
                 ctags \
                 curl \
                 dnf-plugins-core \
@@ -254,6 +120,7 @@ case "$response" in
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
+                app-admin/chezmoi \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -283,6 +150,7 @@ case "$response" in
         elif [[ -x "$(command -v apt-get)" ]]; then
             sudo apt-get install -y \
                 btop \
+                chezmoi \
                 ctags \
                 curl \
                 gcc \
@@ -377,9 +245,7 @@ case "$response" in
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
-            previous_dir="$(pwd)"
-            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
-            cd "$previous_dir" || exit
+            ensure_chezmoi
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -504,6 +370,18 @@ case "$response" in
         echo "Skipping common utility installation"
         ;;
 esac
+
+if [[ "${dotfiles_applied}" -eq 0 ]]; then
+    echo "Applying dotfiles from ${MISC_DIR} with chezmoi ..."
+
+    if [[ ! -x "$(command -v chezmoi)" ]]; then
+        ensure_chezmoi
+    fi
+
+    apply_dotfiles
+fi
+
+echo "Environment installation complete"
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in

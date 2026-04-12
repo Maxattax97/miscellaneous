@@ -1,0 +1,14 @@
+README.md
+LICENSE
+TODO.md
+install.sh
+Dockerfile.*
+assets/**
+archiso/**
+config/**
+notes/**
+scripts/**
+services/**
+templates/**
+test/**
+pyproject.toml

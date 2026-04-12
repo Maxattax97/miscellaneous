@@ -1,0 +1,17 @@
+{{- $home := .chezmoi.homeDir }}
+{{- if stat (joinPath $home "Downloads") }}
+file://{{ $home }}/Downloads Downloads
+{{- end }}
+{{- if stat (joinPath $home "src") }}
+file://{{ $home }}/src src
+{{- end }}
+{{- if stat (joinPath $home "aura/sc") }}
+file://{{ $home }}/aura/sc aura-sc
+{{- end }}
+{{- if stat (joinPath $home "aura/sc/fos-data-testsuite/archives") }}
+file://{{ $home }}/aura/sc/fos-data-testsuite/archives Test Archives
+{{- end }}
+{{- if stat (joinPath $home "Nextcloud") }}
+file://{{ $home }}/Nextcloud Nextcloud
+{{- end }}
+nfs://maxocull.com/src/flamenco flamenco@maxocull.com

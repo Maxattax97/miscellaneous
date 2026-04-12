@@ -18,6 +18,15 @@
 
 ## Installation
 
+Directly with `chezmoi`:
+
+```bash
+chezmoi init --apply git@github.com:Maxattax97/miscellaneous.git
+```
+
+Or, if you prefer to clone the repo yourself first, the bootstrap script now just
+sets this checkout as your `chezmoi` source and applies it:
+
 ```bash
 ./install.sh
 ```
@@ -44,9 +53,18 @@ nvim
 
 ## Updating
 
-All of my configurations are linked to your home. Performing a `git pull` within
-this repository then automatically gives you the latest version of these
-files. Execute `./install.sh` after a pull to get any new packages or other updates.
+If you initialized from the remote repo, update with:
+
+```bash
+chezmoi update
+```
+
+If you are working from a local clone, pull your changes and re-apply them:
+
+```bash
+git pull
+chezmoi apply
+```
 
 ## Overview
 
