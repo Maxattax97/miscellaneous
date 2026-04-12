@@ -1,7 +1,7 @@
 1. Download and run Skyrim 1 time, make sure to download the AE content. `coc Riverwood` just to check it out.
 1. Install this, pointing it at Skyrim [modorganizer2-linux-installer](https://github.com/rockerbacon/modorganizer2-linux-installer)
   - I installed it inside the prefix under `C:\Modding\MO2` but I don't think this is the best
-1. 
+1.
 
 
 # Notes

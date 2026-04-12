@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 #watch -n 10 "sensors | grep 'edge' | awk '{ print $2 }' | ts"
-while true; do sensors | awk '/edge|fan1/ { print $2 }' | ts; sleep 10; done
+while true; do
+    sensors | awk '/edge|fan1/ { print $2 }' | ts
+    sleep 10
+done

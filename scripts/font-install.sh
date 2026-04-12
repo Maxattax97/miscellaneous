@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [ -d "_fonts/" ]; then
-	rm -rf _fonts/
+    rm -rf _fonts/
 fi
 
 mkdir _fonts
@@ -20,9 +20,9 @@ curl -Lo _fonts/FreeSerifItalic.otf 'https://github.com/Maxattax97/gnu-freefont/
 NERD_FONT_DOWNLOAD_ROOT='https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/'
 
 dl_unpack() {
-	curl -Lo "_fonts/${1}.tar.xz" "${NERD_FONT_DOWNLOAD_ROOT}/${1}.tar.xz"
-	tar -xvf _fonts/*.tar.xz -C _fonts/
-	rm -rf _fonts/*/ _fonts/*.md _fonts/*.tar.xz _fonts/LICENSE _fonts/README _fonts/*.txt
+    curl -Lo "_fonts/${1}.tar.xz" "${NERD_FONT_DOWNLOAD_ROOT}/${1}.tar.xz"
+    tar -xvf _fonts/*.tar.xz -C _fonts/
+    rm -rf _fonts/*/ _fonts/*.md _fonts/*.tar.xz _fonts/LICENSE _fonts/README _fonts/*.txt
 }
 
 dl_unpack Hack
@@ -59,16 +59,16 @@ unzip _fonts/Roboto.zip -d _fonts/
 rm -rf _fonts/Roboto.zip _fonts/LICENSE.txt
 
 if [ -d "/Library/Fonts/" ]; then
-	# This is for Mac.
-	sudo cp _fonts/* "/Library/Fonts/"
+    # This is for Mac.
+    sudo cp _fonts/* "/Library/Fonts/"
 else
-	# This folder should be universal to Linux / FreeBSD.
-	sudo mkdir -p /usr/local/share/fonts/pretty-fonts/
-	sudo cp _fonts/* /usr/local/share/fonts/pretty-fonts/
+    # This folder should be universal to Linux / FreeBSD.
+    sudo mkdir -p /usr/local/share/fonts/pretty-fonts/
+    sudo cp _fonts/* /usr/local/share/fonts/pretty-fonts/
 
-	# Do this for both root and the current user.
-	sudo fc-cache -rfv
-	fc-cache -rfv
+    # Do this for both root and the current user.
+    sudo fc-cache -rfv
+    fc-cache -rfv
 fi
 
 rm -rf _fonts/

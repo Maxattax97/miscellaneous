@@ -62,7 +62,7 @@ sudo apt-get clean
 
 # TODO
 # dropbox
-    # Elementary: https://github.com/zant95/elementary-dropbox
+# Elementary: https://github.com/zant95/elementary-dropbox
 
 # KVM
 # rescuetime

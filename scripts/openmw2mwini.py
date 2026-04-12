@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 
-
 cfg_file = None
 ini_string = "[Game Files]\nGameFile0=Morrowind.esm\nGameFile1=Tribunal.esm\nGameFile2=Bloodmoon.esm\n"
 
