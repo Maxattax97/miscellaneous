@@ -377,6 +377,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type mise > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_mise" ]; then
+            mise completion zsh > "${HOME}/.zsh_completions/_mise"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -949,6 +955,7 @@ zshrc_set_path() {
     fi
 
     zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
+    zshrc_add_path "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims" before
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before

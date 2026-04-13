@@ -155,6 +155,13 @@ link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physic
 mkdir -p "${HOME}/.aws"
 link_source "config/aws/config" 0 ".aws/config"
 
+# macOS-specific
+if [[ "$(uname)" == "Darwin" ]]; then
+    # iTerm2: tell it to load preferences from the dotfiles repo
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${MISC_DIR}/config/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
+
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
