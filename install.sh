@@ -247,6 +247,7 @@ case "$response" in
                 pkg-config \
                 python \
                 ripgrep \
+                rtk \
                 tmux \
                 virtualenv \
                 weechat \
@@ -389,6 +390,10 @@ case "$response" in
             cd "$previous_dir" || exit
         fi
 
+        if [[ ! -x "$(command -v rtk)" ]]; then
+            curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+        fi
+
         if [[ -x "$(command -v pip2)" ]]; then
             pip2 install --user \
                 neovim
@@ -511,6 +516,11 @@ case "$response" in
         echo "Skipping common utility installation"
         ;;
 esac
+
+# Add RTK hooks to compress context usage of common commands for LLMs.
+if [[ -x "$(command -v rtk)" ]]; then
+    rtk init --global
+fi
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in
