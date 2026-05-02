@@ -155,6 +155,13 @@ link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physic
 mkdir -p "${HOME}/.aws"
 link_source "config/aws/config" 0 ".aws/config"
 
+# macOS-specific
+if [[ "$(uname)" == "Darwin" ]]; then
+    # iTerm2: tell it to load preferences from the dotfiles repo
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${MISC_DIR}/config/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
+
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
@@ -242,6 +249,7 @@ case "$response" in
                 pkg-config \
                 python \
                 ripgrep \
+                rtk \
                 tmux \
                 virtualenv \
                 weechat \
@@ -388,6 +396,10 @@ case "$response" in
             cd "$previous_dir" || exit
         fi
 
+        if [[ ! -x "$(command -v rtk)" ]]; then
+            curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+        fi
+
         if [[ -x "$(command -v pip2)" ]]; then
             pip2 install --user \
                 neovim
@@ -510,6 +522,11 @@ case "$response" in
         echo "Skipping common utility installation"
         ;;
 esac
+
+# Add RTK hooks to compress context usage of common commands for LLMs.
+if [[ -x "$(command -v rtk)" ]]; then
+    rtk init --global
+fi
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in

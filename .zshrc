@@ -28,13 +28,20 @@ zshrc_probe() {
     case $TERM in
         *linux*)
             export zshrc_low_power=true
-            echo "Low power mode enabled."
             ;;
         *vt100*)
             export zshrc_low_power=true
-            echo "Low power mode enabled."
             ;;
     esac
+
+    if [ -n "$CLAUDECODE" ] || [ -n "$CLAUDE_CODE" ]; then
+        export zshrc_low_power=true
+        echo "Claude detected!"
+    fi
+
+    if [ "$zshrc_low_power" = true ]; then
+        echo "Low power mode enabled."
+    fi
 }
 
 zshrc_enter_tmux() {
@@ -370,6 +377,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type mise > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_mise" ]; then
+            mise completion zsh > "${HOME}/.zsh_completions/_mise"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -686,8 +699,9 @@ zshrc_zplug() {
             fpath+="${HOME}/.zplug/repos/mfaerevaag/wd/"
         fi
 
+        # This breaks some tools; I have replaced it with a cc alias
+        # zplug "arzzen/calc.plugin.zsh"
 
-        zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
         zplug "hlissner/zsh-autopair", defer:2
 
@@ -941,6 +955,7 @@ zshrc_set_path() {
     fi
 
     zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
+    zshrc_add_path "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims" before
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
@@ -1916,6 +1931,12 @@ zshrc_load_library() {
             esac
         fi
     }
+
+    # Replacement for zplug calc plugin
+    cc() {
+        python3 -c "from math import *; print($*);"
+    }
+    alias cc='noglob cc'
 }
 
 zshrc_set_aliases() {
@@ -1986,7 +2007,13 @@ zshrc_set_aliases() {
     alias Dtail='docker logs -tf --tail="50"'
 
     # Clipboard
-    alias clip='xsel --clipboard --trim -i'
+    if command -v pbcopy >/dev/null 2>&1; then
+        alias clip='pbcopy'
+    elif command -v xsel >/dev/null 2>&1; then
+        alias clip='xsel --clipboard --trim -i'
+    elif command -v xclip >/dev/null 2>&1; then
+        alias clip='xclip -selection clipboard'
+    fi
 
     # btop > htop > top
     if type htop > /dev/null 2>&1; then
