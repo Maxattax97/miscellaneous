@@ -182,6 +182,7 @@ case "$response" in
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
+                bat \
                 btop \
                 ctags \
                 curl \
@@ -216,6 +217,7 @@ case "$response" in
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
+                bat \
                 binutils \
                 btop \
                 chezmoi \
@@ -254,6 +256,7 @@ case "$response" in
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
+                app-misc/bat \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -282,6 +285,7 @@ case "$response" in
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
             sudo apt-get install -y \
+                bat \
                 btop \
                 ctags \
                 curl \
@@ -310,6 +314,7 @@ case "$response" in
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -346,6 +351,7 @@ case "$response" in
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
