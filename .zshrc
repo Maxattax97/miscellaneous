@@ -28,13 +28,20 @@ zshrc_probe() {
     case $TERM in
         *linux*)
             export zshrc_low_power=true
-            echo "Low power mode enabled."
             ;;
         *vt100*)
             export zshrc_low_power=true
-            echo "Low power mode enabled."
             ;;
     esac
+
+    if [ -n "$CLAUDECODE" ] || [ -n "$CLAUDE_CODE" ]; then
+        export zshrc_low_power=true
+        echo "Claude detected!"
+    fi
+
+    if [ "$zshrc_low_power" = true ]; then
+        echo "Low power mode enabled."
+    fi
 }
 
 zshrc_enter_tmux() {
@@ -364,6 +371,18 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type asdf > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_asdf" ]; then
+            asdf completion zsh > "${HOME}/.zsh_completions/_asdf"
+        fi
+    fi
+
+    if type mise > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_mise" ]; then
+            mise completion zsh > "${HOME}/.zsh_completions/_mise"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -471,7 +490,7 @@ zshrc_set_options() {
     # man zshoptions
     setopt correct
     #setopt correctall
-    setopt clobber
+    unsetopt clobber
     setopt interactivecomments
     setopt nomatch
     setopt extendedglob
@@ -653,7 +672,12 @@ zshrc_raw_prompt() {
 
 zshrc_zplug() {
     if [[ ! -d "$HOME/.zplug" ]]; then
-        curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+        if [[ "${ZSHRC_ALLOW_PLUGIN_INSTALL:-0}" == "1" ]]; then
+            curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+        else
+            echo "zplug is not installed. Set ZSHRC_ALLOW_PLUGIN_INSTALL=1 to install automatically."
+            return
+        fi
     fi
 
     if [[ -d "$HOME/.zplug" ]]; then
@@ -675,8 +699,9 @@ zshrc_zplug() {
             fpath+="${HOME}/.zplug/repos/mfaerevaag/wd/"
         fi
 
+        # This breaks some tools; I have replaced it with a cc alias
+        # zplug "arzzen/calc.plugin.zsh"
 
-        zplug "arzzen/calc.plugin.zsh"
         zplug "chrissicool/zsh-256color"
         zplug "hlissner/zsh-autopair", defer:2
 
@@ -730,7 +755,11 @@ zshrc_zplug() {
         zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
 
         if ! zplug check; then
-            zplug install
+            if [[ "${ZSHRC_ALLOW_PLUGIN_INSTALL:-0}" == "1" ]]; then
+                zplug install
+            else
+                echo "zplug plugins are missing. Set ZSHRC_ALLOW_PLUGIN_INSTALL=1 to install automatically."
+            fi
         fi
 
         zplug load
@@ -801,23 +830,25 @@ zshrc_add_path() {
 zshrc_set_path() {
     # Used to debug the PATH variable.
     pretty_path() {
-        old_IFS=$IFS     # Save the current IFS (Internal Field Separator)
-        IFS=':'          # Set the delimiter to ':'
-        # shellcheck disable=SC2086
-        set -- $PATH     # Split PATH into positional parameters
-        IFS=$old_IFS     # Restore the original IFS
-
         echo "Precedence order of directories in PATH:"
         index=1
-        while [ $# -gt 0 ]; do
-            dir=$1
-            shift
+        remaining=$PATH
+        while [ -n "$remaining" ]; do
+            dir=${remaining%%:*}
+            if [ "$remaining" = "$dir" ]; then
+                remaining=''
+            else
+                remaining=${remaining#*:}
+            fi
             if [ -n "$dir" ]; then
                 echo "$index) $dir"
                 index=$((index + 1))
             fi
         done
     }
+
+    # NOTE: If you're having a bad time on macOS, beware of path_helper; on
+    # login shells, it will mangle your carefully organized PATH
 
     if [ -s "${HOME}/.profile" ]; then
         echo "Your profile is not empty and is being sourced!"
@@ -840,15 +871,19 @@ zshrc_set_path() {
     # Override macOS's outdated curl version. This has to be prefixed so it overrides the /usr/bin/curl path.
     if type brew > /dev/null 2>&1; then
         if [ -s "$(brew --prefix)/opt/curl/bin/curl" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/curl/bin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/curl/bin" before
         fi
 
         if [ -d "$(brew --prefix)/opt/make/libexec/gnubin" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/make/libexec/gnubin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/make/libexec/gnubin" before
+        fi
+
+        if [ -d "$(brew --prefix)/opt/findutils/libexec/gnubin" ]; then
+            zshrc_add_path "$(brew --prefix)/opt/findutils/libexec/gnubin" before
         fi
 
         if [ -d "$(brew --prefix)/opt/binutils/bin" ]; then
-            zshrc_add_path "$(brew --prefix)/opt/binutils/bin:${PATH}" before
+            zshrc_add_path "$(brew --prefix)/opt/binutils/bin" before
             LDFLAGS="-L$(brew --prefix)/opt/binutils/lib"
             export LDFLAGS
             CPPFLAGS="-I$(brew --prefix)/opt/binutils/include"
@@ -919,6 +954,9 @@ zshrc_set_path() {
         zshrc_add_path "${PYENV_ROOT}/bin" before
     fi
 
+    zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
+    zshrc_add_path "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims" before
+
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
 }
@@ -957,51 +995,52 @@ zshrc_load_library() {
     # From https://github.com/xvoland/Extract/blob/master/extract.sh
     # TODO: Add support for cpio, ar, iso
     # TODO: Add progress bar, remove verbose flag
+    # shellcheck disable=2329
     decompress() {
         if [ -z "$1" ]; then
             # display usage if no parameters given
-            echo "Usage: inflate <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-            echo "       inflate <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+            echo "Usage: decompress <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+            echo "       decompress <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
             return 1
         else
-            for n in $@
-            do
-                if [ -f "$n" ] ; then
+            # shellcheck disable=2068
+            for n in $@; do
+                if [ -f "$n" ]; then
                     case "${n%,}" in
-                        *.tar.bz2|*.tar.gz|*.tar.zst|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tzst|*.tar)
-                            tar xvf "$n"
-                            ;;
-                        *.lzma)
-                            unlzma ./"$n"
-                            ;;
-                        *.bz2)
-                            bunzip2 ./"$n"
-                            ;;
-                        *.rar)
-                            unrar x -ad ./"$n"
-                            ;;
-                        *.gz)
-                            gunzip ./"$n"
-                            ;;
-                        *.zip)
-                            unzip ./"$n"
-                            ;;
-                        *.z)
-                            uncompress ./"$n"
-                            ;;
-                        *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                            7z x ./"$n"
-                            ;;
-                        *.xz)
-                            unxz ./"$n"
-                            ;;
-                        *.exe)
-                            cabextract ./"$n"
-                            ;;
-                        *)
-                            echo "inflate: '$n' - unknown archive method"
-                            return 1
-                            ;;
+                    *.tar.bz2 | *.tar.gz | *.tar.zst | *.tar.xz | *.tbz2 | *.tgz | *.txz | *.tzst | *.tar)
+                        tar xvf "$n"
+                        ;;
+                    *.lzma)
+                        unlzma ./"$n"
+                        ;;
+                    *.bz2)
+                        bunzip2 ./"$n"
+                        ;;
+                    *.rar)
+                        unrar x -ad ./"$n"
+                        ;;
+                    *.gz)
+                        gunzip ./"$n"
+                        ;;
+                    *.zip)
+                        unzip ./"$n"
+                        ;;
+                    *.z)
+                        uncompress ./"$n"
+                        ;;
+                    *.7z | *.arj | *.cab | *.chm | *.deb | *.dmg | *.iso | *.lzh | *.msi | *.rpm | *.udf | *.wim | *.xar)
+                        7z x ./"$n"
+                        ;;
+                    *.xz)
+                        unxz ./"$n"
+                        ;;
+                    *.exe)
+                        cabextract ./"$n"
+                        ;;
+                    *)
+                        echo "decompress: '$n' - unknown archive method"
+                        return 1
+                        ;;
                     esac
                 else
                     echo "'$n' - file does not exist"
@@ -1012,72 +1051,73 @@ zshrc_load_library() {
     }
     alias inflate='decompress'
 
+    # shellcheck disable=2329
     compress() {
         if [ -z "$1" ] || [ -z "$2" ]; then
             # display usage if no parameters given
-            echo "Usage: squeeze <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
+            echo "Usage: compress <path/to/input> <path/to/output>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|tar.bz2|tar.gz|tar.xz|lzop|lz|lz4>"
             return 1
         else
             input=$1
             output=$2
             # Add support for single files (in addition to directories).
-            if [ -d "$input" ] || [ -f "$input" ] ; then
+            if [ -d "$input" ] || [ -f "$input" ]; then
                 case "${output}" in
-                    *.tar)
-                        tar cf "$output" "$input"
-                        ;;
-                    *.tar.gz|*.tgz)
-                        tar zcf "$output" "$input"
-                        ;;
-                    *.tar.bz2|*.tbz2)
-                        tar jcf "$output" "$input"
-                        ;;
-                    *.tar.xz|*.txz)
-                        tar Jcf "$output" "$input"
-                        ;;
-                    *.tar.lzma|*.tlzma)
-                        tar --lzma -cf "$output" "$input"
-                        ;;
-                    *.bz2)
-                        tar -cjf "$output" "$input"
-                        ;;
-                    *.rar)
-                        rar a "$output" "$input"
-                        ;;
-                    *.gz)
-                        tar -czf "$output" "$input"
-                        ;;
-                    *.zip)
-                        zip -r "$output" "$input"
-                        ;;
-                    *.Z)
-                        tar -cZf "$output" "$input"
-                        ;;
-                    *.7z)
-                        7z a "$output" "$input"
-                        ;;
-                    *.xz)
-                        tar -cJf "$output" "$input"
-                        ;;
-                    *.lzop)
-                        lzop -o "$output" "$input"
-                        ;;
-                    *.lz)
-                        lzip -o "$output" "$input"
-                        ;;
-                    *.lz4)
-                        lz4 -z "$input" "$output"
-                        ;;
-                    *.tar.zst|*.tzst)
-                        tar --zstd -cf "$output" "$input"
-                        ;;
-                    *.zst)
-                        zstd "$input" -o "$output"
-                        ;;
-                    *)
-                        echo "squeeze: '$output' - unknown archive method"
-                        return 1
-                        ;;
+                *.tar)
+                    tar cf "$output" "$input"
+                    ;;
+                *.tar.gz | *.tgz)
+                    tar zcf "$output" "$input"
+                    ;;
+                *.tar.bz2 | *.tbz2)
+                    tar jcf "$output" "$input"
+                    ;;
+                *.tar.xz | *.txz)
+                    tar Jcf "$output" "$input"
+                    ;;
+                *.tar.lzma | *.tlzma)
+                    tar --lzma -cf "$output" "$input"
+                    ;;
+                *.bz2)
+                    tar -cjf "$output" "$input"
+                    ;;
+                *.rar)
+                    rar a "$output" "$input"
+                    ;;
+                *.gz)
+                    tar -czf "$output" "$input"
+                    ;;
+                *.zip)
+                    zip -r "$output" "$input"
+                    ;;
+                *.Z)
+                    tar -cZf "$output" "$input"
+                    ;;
+                *.7z)
+                    7z a "$output" "$input"
+                    ;;
+                *.xz)
+                    tar -cJf "$output" "$input"
+                    ;;
+                *.lzop)
+                    lzop -o "$output" "$input"
+                    ;;
+                *.lz)
+                    lzip -o "$output" "$input"
+                    ;;
+                *.lz4)
+                    lz4 -z "$input" "$output"
+                    ;;
+                *.tar.zst | *.tzst)
+                    tar --zstd -cf "$output" "$input"
+                    ;;
+                *.zst)
+                    zstd "$input" -o "$output"
+                    ;;
+                *)
+                    echo "compress: '$output' - unknown archive method"
+                    return 1
+                    ;;
                 esac
             else
                 echo "'$input' - file or directory does not exist"
@@ -1088,6 +1128,7 @@ zshrc_load_library() {
     alias squeeze='compress'
 
     # Host the current directory via HTTP
+    # shellcheck disable=2329
     hostdir() {
         if type "npx" > /dev/null 2>&1; then
             npx http-server
@@ -1353,6 +1394,19 @@ zshrc_load_library() {
                 /GB$/{    printpower($1, 10,  9)};
                 /TB$/{    printpower($1, 10, 12)}'
         done
+    }
+
+    fmt-underscore() {
+        echo "$1" | awk '
+        {
+            n = $0
+            out = ""
+            while (length(n) > 3) {
+                out = "_" substr(n, length(n)-2) out
+                n = substr(n, 1, length(n)-3)
+            }
+            print n out
+        }'
     }
 
     # Go to the root of the current git repository.
@@ -1877,6 +1931,12 @@ zshrc_load_library() {
             esac
         fi
     }
+
+    # Replacement for zplug calc plugin
+    cc() {
+        python3 -c "from math import *; print($*);"
+    }
+    alias cc='noglob cc'
 }
 
 zshrc_set_aliases() {
@@ -1940,14 +2000,20 @@ zshrc_set_aliases() {
     alias Dcrm='docker compose rm -sf'
     alias Dcpl='docker compose pull --parallel'
     alias Dcup='docker compose up -d'
-    alias Dcl='docker compose logs -tf --tail="50" '
+    alias Dcl='docker compose logs -tf --tail="50"'
     alias Dce="docker compose exec"
 
     alias Dr="docker run --rm -it"
-    alias Dtail='docker logs -tf --tail="50" "$@"'
+    alias Dtail='docker logs -tf --tail="50"'
 
     # Clipboard
-    alias clip='xsel --clipboard --trim -i'
+    if command -v pbcopy >/dev/null 2>&1; then
+        alias clip='pbcopy'
+    elif command -v xsel >/dev/null 2>&1; then
+        alias clip='xsel --clipboard --trim -i'
+    elif command -v xclip >/dev/null 2>&1; then
+        alias clip='xclip -selection clipboard'
+    fi
 
     # btop > htop > top
     if type htop > /dev/null 2>&1; then
@@ -2214,6 +2280,15 @@ zshrc_aura_shrc() {
     fi
 }
 
+zshrc_entegrata_shrc() {
+    ENTEGRATA_DEVELOPMENT_TOOLS_PATH="${HOME}/entegrata/dev-tools"
+    export ENTEGRATA_DEVELOPMENT_TOOLS_PATH
+
+    if [ -s "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc ]; then
+        . "$ENTEGRATA_DEVELOPMENT_TOOLS_PATH"/entegrata_shrc
+    fi
+}
+
 zshrc_update_or_append() {
     file="$1"
     content="$(cat "$2")"
@@ -2360,6 +2435,7 @@ zshrc_init() {
     fi
 
     zshrc_aura_shrc
+    zshrc_entegrata_shrc
 
     if ( ! $zshrc_dropping_mode ); then
         zshrc_zplug

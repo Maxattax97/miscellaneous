@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # TODO: Convert this script to shell so it can run on lighter systems.
 
@@ -154,6 +155,13 @@ link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physic
 mkdir -p "${HOME}/.aws"
 link_source "config/aws/config" 0 ".aws/config"
 
+# macOS-specific
+if [[ "$(uname)" == "Darwin" ]]; then
+    # iTerm2: tell it to load preferences from the dotfiles repo
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${MISC_DIR}/config/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
+
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
 
@@ -173,12 +181,15 @@ echo "Environment installation complete"
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS] | [yY])
+        # TODO: install brew if we detect its a Mac
+        # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
             # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
+                bat \
                 btop \
                 ctags \
                 curl \
@@ -213,37 +224,47 @@ case "$response" in
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
+                bat \
                 binutils \
                 btop \
                 chezmoi \
                 ctags \
                 curl \
                 fastfetch \
+                findutils \
                 gcc \
                 gh \
                 git \
                 git-crypt \
                 git-lfs \
                 gnupg \
+                gsed \
                 keychain \
                 libtool \
                 make \
                 neovim \
                 newsboat \
                 node \
-                pinentry-mac \
                 pipx \
                 pkg-config \
                 python \
                 ripgrep \
+                rtk \
                 tmux \
                 virtualenv \
                 weechat \
                 xsel \
                 zsh
+
+            if [ -z "${AUTOMATED}" ]; then
+                brew install \
+                    pinentry-mac
+            fi
+
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
+                app-misc/bat \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -272,6 +293,7 @@ case "$response" in
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
             sudo apt-get install -y \
+                bat \
                 btop \
                 ctags \
                 curl \
@@ -300,6 +322,7 @@ case "$response" in
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -336,6 +359,7 @@ case "$response" in
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -370,6 +394,10 @@ case "$response" in
             previous_dir="$(pwd)"
             cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
             cd "$previous_dir" || exit
+        fi
+
+        if [[ ! -x "$(command -v rtk)" ]]; then
+            curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -494,6 +522,11 @@ case "$response" in
         echo "Skipping common utility installation"
         ;;
 esac
+
+# Add RTK hooks to compress context usage of common commands for LLMs.
+if [[ -x "$(command -v rtk)" ]]; then
+    rtk init --global
+fi
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in
@@ -1169,6 +1202,10 @@ case "$response" in
                 printf "' --abbrev-commit\n"
             } > "${HOME}/.gitconfig"
         fi
+
+        # Setup Git LFS
+        git lfs install
+        git lfs install --system
 
         # Use Neovim's difftool
         git config --global diff.tool nvimdiff

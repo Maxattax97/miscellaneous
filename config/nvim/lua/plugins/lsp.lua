@@ -33,12 +33,10 @@ return {
 		end,
 	},
 
-	-- Snippet engine
+	-- Snippet engine (waiting on next release for nvim 0.12 compat)
 	{
 		"L3MON4D3/LuaSnip",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
+		version = "*",
 		build = "make install_jsregexp",
 		dependencies = {
 			"rafamadriz/friendly-snippets",
@@ -57,10 +55,10 @@ return {
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
 			"L3MON4D3/LuaSnip",
-			"saadparwaiz1/cmp_luasnip", -- the connector between nvim-cmp and LuaSnip
+			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind.nvim", -- shows icons in completion menu
 			"brenoprata10/nvim-highlight-colors", -- integrates with color highlighting
-			"zbirenbaum/copilot-cmp",
+			-- "zbirenbaum/copilot-cmp",
 			-- TODO: Other completions to investigate:
 			-- https://github.com/hrsh7th/cmp-calc
 			-- https://github.com/uga-rosa/cmp-dictionary
@@ -124,17 +122,26 @@ return {
 
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
-					{ name = "copilot" },
+					-- { name = "copilot" },
+					{ name = "minuet" },
 					{ name = "luasnip" },
 				}, {
 					{ name = "buffer" },
 					{ name = "path" },
 				}),
 
+				performance = {
+					-- It is recommended to increase the timeout duration due to
+					-- the typically slower response speed of LLMs compared to
+					-- other completion sources. This is not needed when you only
+					-- need manual completion.
+					fetching_timeout = 10000,
+				},
+
 				sorting = {
 					priority_weight = 2,
 					comparators = {
-						require("copilot_cmp.comparators").prioritize,
+						-- require("copilot_cmp.comparators").prioritize,
 
 						-- Below is the default comparitor list and order for nvim-cmp
 						cmp.config.compare.offset,
@@ -223,58 +230,109 @@ return {
 			},
 		},
 	},
-	-- { "github/copilot.vim" },
+	-- AI code completion via Ollama (replaces Copilot)
 	{
-		"zbirenbaum/copilot.lua",
-		-- On first run, auth with :Copilot auth
-		dependencies = { "copilotlsp-nvim/copilot-lsp" }, -- optional for NES functionality
+		"milanglacier/minuet-ai.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
 		config = function()
-			require("copilot").setup({
-				-- if opting for copilot-cmp, then disable panel, suggestion, and NES.
-				panel = {
-					enabled = true,
-					auto_refresh = true,
-				},
-				suggestion = {
-					enabled = false,
-					auto_trigger = true,
-					-- NOTE: The default accept keymap is <M-l> which didn't work for me
-				},
-				nes = {
-					enabled = false,
-					auto_trigger = true,
-				},
-				workspace_folders = {
-					"~/src",
-					"~/aura",
-				},
-				filetypes = {
-					markdown = true,
-					gitcommit = true,
-					yaml = true,
-				},
-				server_opts_overrides = {
-					settings = {
-						telemetry = {
-							telemetryLevel = "off",
+			require("minuet").setup({
+				-- Use FIM (fill-in-the-middle) provider for Ollama
+				provider = "openai_fim_compatible",
+				-- Allow time for Ollama to load the model on the first request
+				request_timeout = 10,
+				-- Throttle requests slightly for a remote instance
+				throttle = 1000,
+				-- Reduce for resource savings on remote Ollama
+				n_completions = 1,
+				-- Context window sent to the model (chars before/after cursor).
+				-- Start small and increase if your Ollama box can handle it.
+				context_window = 512,
+				provider_options = {
+					openai_fim_compatible = {
+						-- Point at your Ollama instance's OpenAI-compatible endpoint
+						api_key = "TERM", -- env var name; set to any non-empty value
+						name = "Ollama",
+						end_point = "http://localhost:11434/v1/completions",
+						-- Pick a FIM-capable model you've pulled in Ollama:
+						-- Good options: qwen2.5-coder:7b, deepseek-coder-v2:latest
+						model = "qwen2.5-coder:7b",
+						-- Optional: tweak generation params
+						optional = {
+							max_tokens = 256,
+							top_p = 0.9,
 						},
 					},
 				},
+				-- Virtual text (ghost text) frontend — closest to Copilot's UX
+				-- virtualtext = {
+				-- 	auto_trigger_ft = { "*" }, -- auto-trigger for all filetypes
+				-- 	keymap = {
+				-- 		accept = "<A-A>", -- accept whole completion
+				-- 		accept_line = "<A-a>", -- accept one line
+				-- 		accept_n_lines = "<A-z>", -- accept n lines (prompts for count)
+				-- 		prev = "<A-[>", -- cycle to prev completion
+				-- 		next = "<A-]>", -- cycle to next completion
+				-- 		dismiss = "<A-e>", -- dismiss
+				-- 	},
+				-- },
 			})
 		end,
 	},
-	{
-		"zbirenbaum/copilot-cmp",
-		dependencies = { "zbirenbaum/copilot.lua" },
-		config = function()
-			require("copilot_cmp").setup()
-		end,
-	},
+	-- { "github/copilot.vim" },
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	-- On first run, auth with :Copilot auth
+	-- 	dependencies = { "copilotlsp-nvim/copilot-lsp" }, -- optional for NES functionality
+	-- 	config = function()
+	-- 		require("copilot").setup({
+	-- 			-- if opting for copilot-cmp, then disable panel, suggestion, and NES.
+	-- 			panel = {
+	-- 				enabled = true,
+	-- 				auto_refresh = true,
+	-- 			},
+	-- 			suggestion = {
+	-- 				enabled = false,
+	-- 				auto_trigger = true,
+	-- 				-- NOTE: The default accept keymap is <M-l> which didn't work for me
+	-- 			},
+	-- 			nes = {
+	-- 				enabled = false,
+	-- 				auto_trigger = true,
+	-- 			},
+	-- 			workspace_folders = {
+	-- 				"~/src",
+	-- 				"~/aura",
+	-- 			},
+	-- 			filetypes = {
+	-- 				markdown = true,
+	-- 				gitcommit = true,
+	-- 				yaml = true,
+	-- 			},
+	-- 			server_opts_overrides = {
+	-- 				settings = {
+	-- 					telemetry = {
+	-- 						telemetryLevel = "off",
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
+	-- {
+	-- 	"zbirenbaum/copilot-cmp",
+	-- 	dependencies = { "zbirenbaum/copilot.lua" },
+	-- 	config = function()
+	-- 		require("copilot_cmp").setup()
+	-- 	end,
+	-- },
 	{
 		"folke/sidekick.nvim",
-		dependencies = { "zbirenbaum/copilot.lua" },
+		-- dependencies = { "zbirenbaum/copilot.lua" },
 		opt = {
 			cli = {
+				name = "claude",
 				mux = {
 					backend = "tmux",
 					enabled = true,
@@ -285,7 +343,8 @@ return {
 			{
 				"<leader>a",
 				function()
-					require("sidekick.cli").toggle({ name = "copilot", focus = true })
+					-- require("sidekick.cli").toggle({ name = "copilot", focus = true })
+					require("sidekick.cli").toggle({ name = "claude", focus = true })
 				end,
 				desc = "Sidekick Toggle CLI",
 			},

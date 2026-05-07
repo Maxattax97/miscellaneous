@@ -4,7 +4,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
-		branch = "master", -- the main branch will become the new default, but its unstable right now
+		branch = "main",
 		build = ":TSUpdate",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
@@ -16,24 +16,21 @@ return {
 		},
 		config = function()
 			local langspec = require("langspec")
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = langspec.collect_parsers(),
-				auto_install = true, -- fetch the paser if we don't have it
-				sync_install = false,
-				ignore_install = {},
-				highlight = {
-					-- Setting this to true will run `:h syntax` and tree-sitter at the same time. Set this to `true` if you depend on 'syntax' being enabled (like for indentation). Using this option may slow down your editor, and you may see some duplicate highlights. Instead of true it can also be a list of languages additional_vim_regex_highlighting = false, indent = {
-					enable = true,
 
-					-- disable slow treesitter highlight for large files
-					disable = function(_, buf)
-						local max_filesize = 50 * 1024 -- 50 KB
-						local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-						if ok and stats and stats.size > max_filesize then
-							return true
-						end
-					end,
-				},
+			-- Install parsers declared in langspec
+			require("nvim-treesitter").install(langspec.collect_parsers())
+
+			-- Enable treesitter highlighting and indentation per buffer,
+			-- skipping large files (>50 KB)
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					local max_filesize = 50 * 1024 -- 50 KB
+					local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+					if ok and stats and stats.size > max_filesize then
+						return
+					end
+					pcall(vim.treesitter.start, args.buf)
+				end,
 			})
 		end,
 	},
