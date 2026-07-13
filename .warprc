@@ -1,13 +1,16 @@
 adt:~/aura/ns/aura-development-tools
 agc:~/aura/gc
 ans:~/aura/ns
+appx:~/entegrata/appx
 ar:~/aura/r
 as3:~/aura/s3
 asc:~/aura/sc
 ch:~/.local/share/chezmoi
+ci:~/entegrata/ci-common
 cp:~/aura/sc/ran-cu-cp-service
 dl:~/Downloads
 e:~/entegrata
+ea:~/entegrata/external-admin
 edt:~/entegrata/dev-tools
 fal:~/ansible_collections/aura/fos/roles
 fl:/opt/flotilla
@@ -18,6 +21,8 @@ gvcf:~/aura/sc/gvcf-transcoder-service
 iac:~/aura/sc/core-on-prem-k8s-iac
 m:~/src/miscellaneous
 map:~/entegrata/mapping
+mason:~/entegrata/mason
 s:~/src
 sr:~/src
+ster:~/entegrata/sterling
 up:~/aura/sc/ran-cu-up-service
