@@ -296,7 +296,7 @@ case "$response" in
             sudo apt-get install -y \
                 bat \
                 btop \
-                ctags \
+                universal-ctags \
                 curl \
                 gcc \
                 git \
