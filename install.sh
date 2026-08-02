@@ -4,6 +4,7 @@ set -euo pipefail
 # TODO: Convert this script to shell so it can run on lighter systems.
 
 MISC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+AUTOMATED="${AUTOMATED:-}"
 
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
@@ -1045,7 +1046,7 @@ fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
@@ -1542,7 +1543,7 @@ case "$response" in
         ./scripts/font-install.sh
 
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
