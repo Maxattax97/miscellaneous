@@ -4,7 +4,6 @@ return {
 	{ "tpope/vim-afterimage" },
 	{ "tpope/vim-apathy" },
 	{ "tpope/vim-characterize" },
-	{ "tpope/vim-dadbod" },
 	{ "tpope/vim-dispatch" },
 	{ "tpope/vim-dotenv" },
 	{ "tpope/vim-eunuch" },

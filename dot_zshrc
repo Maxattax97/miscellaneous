@@ -381,6 +381,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type mise > /dev/null 2>&1; then
+        if [ ! -s "${HOME}/.zsh_completions/_mise" ]; then
+            mise completion zsh > "${HOME}/.zsh_completions/_mise"
+        fi
+    fi
+
     #if type pipx > /dev/null 2>&1; then
         #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
             #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
@@ -953,6 +959,7 @@ zshrc_set_path() {
     fi
 
     zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
+    zshrc_add_path "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims" before
 
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
@@ -1243,28 +1250,41 @@ zshrc_load_library() {
     }
 
     infect() {
-        local target_user="$1"
-        local target_host="$2"
-        local target_port="${3:-22}"
+        local target=""
+        local target_port="22"
 
-        local host_user_str=""
-        if [ -n "$target_user" ]; then
-            host_user_str="$target_user@"
+        if [ $# -eq 0 ]; then
+            echo "Usage: infect [user@]host [port]"
+            echo "       infect user host [port]"
+            return 1
+        elif [[ "$1" == *@* ]]; then
+            target="$1"
+            target_port="${2:-22}"
+        elif [ $# -eq 1 ]; then
+            target="${USER}@$1"
+        else
+            target="$1@$2"
+            target_port="${3:-22}"
         fi
 
-        mkdir -p /tmp/infect
-        cp ~/.zshrc /tmp/infect/
-        cp ~/.bashrc /tmp/infect/
-        cp ~/.tmux.conf /tmp/infect/
-        cp -r ~/.config/nvim/ /tmp/infect/
-        cp -r ~/.config/ranger/ /tmp/infect/
-        cp ~/src/miscellaneous/scripts/infect.sh /tmp/.infect.sh
-        echo "source ~/.config/nvim/init.vim" > /tmp/infect/.vimrc
+        local payload_dir="/tmp/infect"
+        local dotfiles_path="${DOTFILES_PATH:-${HOME}/src/miscellaneous}"
 
-        tar -C /tmp/infect -czf /tmp/.infect.tar.gz .
+        rm -rf "$payload_dir"
+        mkdir -p "$payload_dir/.config"
 
-        scp -P "${target_port}" /tmp/.infect.tar.gz /tmp/.infect.sh "${target_host}:~/"
-        ssh "${target_user}${target_host}" -p "${target_port}" "/home/${target_user:-${USER}}/.infect.sh"
+        cp "${dotfiles_path}/.zshrc" "$payload_dir/.zshrc"
+        [ -f ~/.bashrc ] && cp ~/.bashrc "$payload_dir/.bashrc"
+        [ -f ~/.tmux.conf ] && cp ~/.tmux.conf "$payload_dir/.tmux.conf"
+        [ -d ~/.config/nvim ] && cp -R ~/.config/nvim "$payload_dir/.config/"
+        [ -d ~/.config/ranger ] && cp -R ~/.config/ranger "$payload_dir/.config/"
+        cp "${dotfiles_path}/scripts/infect.sh" /tmp/.infect.sh
+        echo "source ~/.config/nvim/init.vim" > "$payload_dir/.vimrc"
+
+        tar -C "$payload_dir" -czf /tmp/.infect.tar.gz .
+
+        scp -P "$target_port" /tmp/.infect.tar.gz /tmp/.infect.sh "$target:~/"
+        ssh -p "$target_port" "$target" "sh ~/.infect.sh"
     }
 
     forever() {

@@ -35,6 +35,12 @@ else
     echo "Will apply dotfiles from ${MISC_DIR} with chezmoi after package installation ..."
 fi
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    # iTerm2 reads preferences from the repo rather than via chezmoi.
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${MISC_DIR}/config/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
+
 read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -46,6 +52,7 @@ case "$response" in
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -82,6 +89,7 @@ case "$response" in
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
             brew install \
+                bat \
                 binutils \
                 btop \
                 chezmoi \
@@ -106,6 +114,7 @@ case "$response" in
                 pkg-config \
                 python \
                 ripgrep \
+                rtk \
                 tmux \
                 virtualenv \
                 weechat \
@@ -121,6 +130,7 @@ case "$response" in
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
                 app-admin/chezmoi \
+                app-misc/bat \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -149,9 +159,10 @@ case "$response" in
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
             sudo apt-get install -y \
+                bat \
                 btop \
                 chezmoi \
-                ctags \
+                universal-ctags \
                 curl \
                 gcc \
                 git \
@@ -178,6 +189,7 @@ case "$response" in
                 zsh
         elif [[ -x "$(command -v pacman)" ]]; then
             sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -214,6 +226,7 @@ case "$response" in
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
+                bat \
                 btop \
                 chezmoi \
                 ctags \
@@ -246,6 +259,10 @@ case "$response" in
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
             ensure_chezmoi
+        fi
+
+        if [[ ! -x "$(command -v rtk)" ]]; then
+            curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then
@@ -386,6 +403,11 @@ if [[ "${dotfiles_applied}" -eq 0 ]]; then
 fi
 
 echo "Environment installation complete"
+
+# Add RTK hooks to compress context usage of common commands for LLMs.
+if [[ -x "$(command -v rtk)" ]]; then
+    rtk init --global
+fi
 
 read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
 case "$response" in
@@ -904,7 +926,7 @@ fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
@@ -1401,7 +1423,7 @@ case "$response" in
         ./scripts/font-install.sh
 
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
