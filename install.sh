@@ -296,8 +296,8 @@ case "$response" in
             sudo apt-get install -y \
                 bat \
                 btop \
-                universal-ctags \
                 curl \
+                fastfetch \
                 gcc \
                 git \
                 git-crypt \
@@ -305,7 +305,6 @@ case "$response" in
                 gpg \
                 keychain \
                 make \
-                neofetch \
                 neovim \
                 newsboat \
                 nodejs \
@@ -318,6 +317,7 @@ case "$response" in
                 ripgrep \
                 ruby-rubygems \
                 tmux \
+                universal-ctags \
                 weechat \
                 xsel \
                 zsh
