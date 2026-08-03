@@ -1,0 +1,11 @@
+.git/
+.github/
+.local/
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.swp
+*.swo
+tool-output/

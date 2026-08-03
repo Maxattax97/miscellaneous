@@ -15,8 +15,7 @@ ensure_chezmoi() {
 }
 
 apply_dotfiles() {
-    chezmoi init --source="${MISC_DIR}"
-    chezmoi apply
+    chezmoi -S "${MISC_DIR}" apply
 }
 
 dotfiles_applied=0
@@ -57,6 +56,7 @@ case "$response" in
                 git \
                 git-crypt \
                 git-lfs \
+                hostname \
                 gnupg2 \
                 keychain \
                 make \
@@ -266,7 +266,7 @@ case "$response" in
             pipx install huggingface_hub
             pipx install isort
             pipx install molecule
-            pipx install neovim
+            pipx install pynvim
             pipx install poetry
             pipx install pre-commit
             pipx install shell-gpt
@@ -294,8 +294,10 @@ case "$response" in
 
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
-            npm install -g neovim || sudo npm install -g neovim
-            npm install -g @bazel/bazelisk || sudo npm install -g @bazel/bazelisk
+            mkdir -p "${HOME}/.local/bin" "${HOME}/.local/lib"
+            npm config set prefix "${HOME}/.local"
+            npm install -g neovim
+            npm install -g @bazel/bazelisk
 
             # I set this up to use npx instead
             #npm install -g bash-language-server
@@ -305,62 +307,64 @@ case "$response" in
 
         if [[ -x "$(command -v gem)" ]]; then
             gem install \
-                neovim \
                 taskjuggler
         else
             echo "You need to install gem"
         fi
 
         # Forcibly fix permissions on the GnuPG directory
+        mkdir -p "${HOME}/.gnupg"
         chmod u+rwx,go-rwx "${HOME}/.gnupg"
 
-        # Pull GPG keys for max.ocull@protonmail.com
-        gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
+        if [ -z "${AUTOMATED}" ]; then
+            # Pull GPG keys for max.ocull@protonmail.com
+            gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
-        # Gentoo keys
-        gpg --keyserver hkps://keys.gentoo.org --receive-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
+            # Gentoo keys
+            gpg --keyserver hkps://keys.gentoo.org --receive-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
 
-        # FreeBSD team keys
-        curl -s https://docs.freebsd.org/pgpkeys/pgpkeys.txt | gpg --import
+            # FreeBSD team keys
+            curl -s https://docs.freebsd.org/pgpkeys/pgpkeys.txt | gpg --import
 
-        # Linux Kernel
-        # https://www.kernel.org/signature.html
-        ## Linus Torvalds
-        gpg --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
-        ## Greg Kroah-Hartman
-        gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
-        ## Sasha Levin
-        gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
-        ## Ben Hutchings
-        gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
-        ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
-        gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
+            # Linux Kernel
+            # https://www.kernel.org/signature.html
+            ## Linus Torvalds
+            gpg --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
+            ## Greg Kroah-Hartman
+            gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
+            ## Sasha Levin
+            gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
+            ## Ben Hutchings
+            gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
+            ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
+            gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
 
-        # Arch Linux Official Keys
-        # https://archlinux.org/master-keys/
-        ## Florian Pritz
-        gpg --receive-keys 91FFE0700E80619CEB73235CA88E23E377514E00
-        ## Levente Polyak
-        gpg --receive-keys D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C
-        ## David Runge
-        gpg --receive-keys 2AC0A42EFB0B5CBC7A0402ED4DC95B6D7BE9892E
-        ## Johannes Löthberg
-        gpg --receive-keys 69E6471E3AE065297529832E6BA0F5A2037F4F41
-        ## Leonidas Spyropoulos
-        gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
+            # Arch Linux Official Keys
+            # https://archlinux.org/master-keys/
+            ## Florian Pritz
+            gpg --receive-keys 91FFE0700E80619CEB73235CA88E23E377514E00
+            ## Levente Polyak
+            gpg --receive-keys D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C
+            ## David Runge
+            gpg --receive-keys 2AC0A42EFB0B5CBC7A0402ED4DC95B6D7BE9892E
+            ## Johannes Löthberg
+            gpg --receive-keys 69E6471E3AE065297529832E6BA0F5A2037F4F41
+            ## Leonidas Spyropoulos
+            gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
 
-        # AWS CLI Team
-        gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+            # AWS CLI Team
+            gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
-        # Github CLI: opensource+cli@github.com
-        ## You may need this:
-        ## https://github.com/cli/cli/issues/9569
-        gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
+            # Github CLI: opensource+cli@github.com
+            ## You may need this:
+            ## https://github.com/cli/cli/issues/9569
+            gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
 
-        # Veracrypt
-        gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
+            # Veracrypt
+            gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
+        fi
 
-        if [ -s /bin/zsh ]; then
+        if [ -z "${AUTOMATED}" ] && [ -s /bin/zsh ]; then
             if [[ ! $SHELL =~ "zsh" ]]; then
                 chsh -s /bin/zsh "${USER}"
             fi
