@@ -13,6 +13,7 @@ RUN dnf install -y \
 RUN useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 ENV USER=max
+ENV SHELL=/bin/zsh
 
 RUN mkdir -p /home/max/src/miscellaneous && \
 	chown -R max:max /home/max/src

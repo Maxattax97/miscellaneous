@@ -42,57 +42,64 @@ zshrc_probe() {
     if [ "$zshrc_low_power" = true ]; then
         echo "Low power mode enabled."
     fi
+
+}
+
+zshrc_enter_plain_tmux() {
+    local session_count=$(tmux ls 2>/dev/null | wc -l)
+    if [[ "$session_count" -eq "0" ]]; then
+        exec tmux -2 new-session -s "Main"
+    else
+        # Make sure we are not already in a tmux session
+        if [[ -z "$TMUX" ]]; then
+            # Session id is date and time to prevent conflict
+            # TODO: Make session number more... meaningful?
+            local session_id="$(date +%H%M%S)"
+
+            # Create a new session (without attaching it) and link to base session
+            # to share windows
+            tmux -2 new-session -d -t Main -s "$session_id"
+
+            # Attach to the new session & kill it once orphaned
+            exec tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+        else
+            zshrc_display_banner
+        fi
+    fi
 }
 
 zshrc_enter_tmux() {
+    if [[ "${ZSHRC_ENTER_TMUX:-1}" != "1" ]]; then
+        return
+    fi
+
     if [[ ! -t 0 || ! -t 1 ]]; then
         return
     fi
 
     if [[ -n "$(command -v tmux)" ]]; then
-        local session_count=$(tmux ls 2>/dev/null | wc -l)
-        if type tmuxp > /dev/null 2>&1; then
+        if type tmuxp > /dev/null 2>&1 && tmuxp --help > /dev/null 2>&1; then
             if [[ -z "$TMUX" ]]; then
                 # If we haven't entered tmux yet, then load the tmuxp
                 # configuration for the current host, and attach if it already
                 # exists.
                 local host_config="${HOME}/.tmuxp/$(hostname).yaml"
                 if [ -s "${host_config}" ]; then
-                    tmuxp load -y "${host_config}"
+                    exec tmuxp load -y "${host_config}"
                 else
-                    tmuxp load -y "${HOME}/.tmuxp/main.yaml"
+                    exec tmuxp load -y "${HOME}/.tmuxp/main.yaml"
                 fi
             elif [[ -n "$TMUX" ]]; then
                 # If we are already in a tmux session, just display the banner for this shell.
                 zshrc_display_banner
             fi
         else
-            local session_count=$(tmux ls 2>/dev/null | wc -l)
-            if [[ "$session_count" -eq "0" ]]; then
-                tmux -2 new-session -s "Main"
-            else
-                # Make sure we are not already in a tmux session
-                if [[ -z "$TMUX" ]]; then
-                    # Session id is date and time to prevent conflict
-                    # TODO: Make session number more... meaningful?
-                    local session_id="$(date +%H%M%S)"
-
-                    # Create a new session (without attaching it) and link to base session
-                    # to share windows
-                    tmux -2 new-session -d -t Main -s "$session_id"
-
-                    # Attach to the new session & kill it once orphaned
-                    tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
-                else
-                    zshrc_display_banner
-                fi
-            fi
+            zshrc_enter_plain_tmux
         fi
     else
         zshrc_display_banner
     fi
 }
-
 # Adapted from oh-my-zsh: https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/termsupport.zsh
 zshrc_auto_window_title() {
     if [ -z "$DISABLE_AUTO_TITLE" ]; then
@@ -345,9 +352,9 @@ zshrc_setup_completion() {
         fi
     fi
 
-    if type activate-global-python-argcomplete > /dev/null 2>&1; then
+    if [[ "${DOTFILES_CONTAINER:-0}" != "1" ]] && type activate-global-python-argcomplete > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_python-argcomplete" ]]; then
-            activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
+            activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/" > /dev/null 2>&1
         fi
     fi
 
@@ -778,7 +785,10 @@ zshrc_extensions() {
     fi
 
     if type keychain > /dev/null 2>&1; then
-        eval "$(keychain --eval -q)"
+        local keychain_eval
+        if keychain_eval="$(keychain --eval -q 2>/dev/null)"; then
+            eval "$keychain_eval"
+        fi
     fi
 
     #if [[ -z "${SSH_AGENT_PID}" ]]; then
@@ -2466,7 +2476,7 @@ zshrc_init() {
     zshrc_aura_shrc
     zshrc_entegrata_shrc
 
-    if ( ! $zshrc_dropping_mode ); then
+    if ( ! $zshrc_dropping_mode ) && [[ "${ZSHRC_LOAD_PLUGINS:-1}" == "1" ]]; then
         zshrc_zplug
         zshrc_extensions
     fi
