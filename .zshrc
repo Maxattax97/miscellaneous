@@ -2332,6 +2332,23 @@ zshrc_update_or_append() {
     (echo "$start_marker"; echo "$content"; echo "$end_marker")>> "$file"
 }
 
+zshrc_sync_template() {
+    local file="$1"
+    local template="$2"
+    local static_marker="# MOCULL STATIC"
+
+    # A static file is explicitly owned by the repository, not this helper.
+    if [ -s "$file" ] && grep -Fq "$static_marker" "$file"; then
+        return
+    fi
+
+    # Pre-commit configuration is a complete YAML document. Replacing it as a
+    # unit keeps repeated setup runs idempotent and avoids nested managed blocks.
+    if [ ! -e "$file" ] || ! cmp -s "$template" "$file"; then
+        cp "$template" "$file"
+    fi
+}
+
 zshrc_setup_repo() {
     local repo_dir="${PWD}"
 
@@ -2364,16 +2381,16 @@ zshrc_setup_repo() {
 
     # Update .pre-commit-config.yaml based on project type
     if [ -s "$repo_dir/Cargo.toml" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_RUST"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_RUST"
     elif [ -s "$repo_dir/requirements.txt" ] || [ -n "$(find . -name '*.py' -print -quit)" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
         zshrc_update_or_append "$repo_dir/pyproject.toml" "$FILE_PYPROJECT"
         zshrc_update_or_append "$repo_dir/.flake8" "$FILE_FLAKE8"
         zshrc_update_or_append "$repo_dir/.bandit" "$FILE_BANDIT"
     elif [ -n "$(find "$repo_dir" -iname "chart*.y*ml")" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
     else
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
     fi
 
     # If the repo has a .github directory, then update the actionlint.yml
