@@ -46,7 +46,7 @@ Host capax
 	User max
 
 Host libreelec
-	HostName 192.168.1.30
+	HostName 192.168.1.22
 	User root
 	ForwardX11 yes
 	ForwardX11Trusted yes
