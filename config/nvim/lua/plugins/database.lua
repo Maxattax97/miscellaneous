@@ -26,7 +26,6 @@ return {
 						sources = cmp.config.sources({
 							{ name = "vim-dadbod-completion" },
 							{ name = "nvim_lsp" },
-							{ name = "minuet" },
 							{ name = "luasnip" },
 						}, {
 							{ name = "buffer" },

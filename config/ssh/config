@@ -37,6 +37,13 @@ Host citadel
 	ForwardX11 yes
 	ForwardX11Trusted yes
 
+Host bastion
+	HostName 192.168.1.26
+	#ProxyJump maxocull.com
+	User bastion
+	ForwardX11 yes
+	ForwardX11Trusted yes
+
 Host rb3011
 	HostName 192.168.1.1
 	User max

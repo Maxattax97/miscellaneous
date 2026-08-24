@@ -4,6 +4,7 @@ set -euo pipefail
 # TODO: Convert this script to shell so it can run on lighter systems.
 
 MISC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+AUTOMATED="${AUTOMATED:-}"
 
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
@@ -197,6 +198,7 @@ case "$response" in
                 fastfetch \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gnupg2 \
@@ -235,6 +237,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gnupg \
@@ -279,6 +282,7 @@ case "$response" in
                 dev-ruby/rubygems \
                 dev-util/ctags \
                 dev-vcs/git \
+                dev-util/git-delta \
                 dev-vcs/git-crypt \
                 dev-vcs/git-lfs \
                 net-irc/weechat \
@@ -292,11 +296,12 @@ case "$response" in
                 sys-process/btop \
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
+            # git-delta is distributed as a release .deb, not through apt.
             sudo apt-get install -y \
                 bat \
                 btop \
-                ctags \
                 curl \
+                fastfetch \
                 gcc \
                 git \
                 git-crypt \
@@ -304,7 +309,6 @@ case "$response" in
                 gpg \
                 keychain \
                 make \
-                neofetch \
                 neovim \
                 newsboat \
                 nodejs \
@@ -317,6 +321,7 @@ case "$response" in
                 ripgrep \
                 ruby-rubygems \
                 tmux \
+                universal-ctags \
                 weechat \
                 xsel \
                 zsh
@@ -329,6 +334,7 @@ case "$response" in
                 curl \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 github-cli \
@@ -368,6 +374,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gmake \
@@ -1045,7 +1052,7 @@ fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'
@@ -1207,10 +1214,18 @@ case "$response" in
         git lfs install
         git lfs install --system
 
-        # Use Neovim's difftool
+        # Use delta to syntax-highlight normal Git output when it is installed.
+        if command -v delta > /dev/null 2>&1; then
+            git config --global core.pager delta
+            git config --global interactive.diffFilter 'delta --color-only'
+            git config --global delta.navigate true
+        fi
+
+        # Keep Neovim for the interactive two-file difftool and three-way merge tool.
         git config --global diff.tool nvimdiff
         git config --global diff.algorithm histogram
         git config --global merge.tool nvimdiff
+        git config --global merge.conflictStyle zdiff3
         git config --global --add difftool.prompt false
 
         # Automatically set up remotes if they don't exist when pushing.
@@ -1542,7 +1557,7 @@ case "$response" in
         ./scripts/font-install.sh
 
         # Set fonts for Gnome.
-        if [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
+        if [[ ${XDG_CURRENT_DESKTOP:-} == "GNOME" ]]; then
             gsettings set org.gnome.desktop.interface font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface document-font-name 'FreeSans 11'
             gsettings set org.gnome.desktop.interface monospace-font-name 'Hack Nerd Font Mono 11'

@@ -4,4 +4,4 @@
 
 #curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.cache/dein
 
-tar xcvf ./.infect.tar.gz -C ~/
+tar xzf "$HOME/.infect.tar.gz" -C "$HOME"

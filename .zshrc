@@ -1246,28 +1246,41 @@ zshrc_load_library() {
     }
 
     infect() {
-        local target_user="$1"
-        local target_host="$2"
-        local target_port="${3:-22}"
+        local target=""
+        local target_port="22"
 
-        local host_user_str=""
-        if [ -n "$target_user" ]; then
-            host_user_str="$target_user@"
+        if [ $# -eq 0 ]; then
+            echo "Usage: infect [user@]host [port]"
+            echo "       infect user host [port]"
+            return 1
+        elif [[ "$1" == *@* ]]; then
+            target="$1"
+            target_port="${2:-22}"
+        elif [ $# -eq 1 ]; then
+            target="${USER}@$1"
+        else
+            target="$1@$2"
+            target_port="${3:-22}"
         fi
 
-        mkdir -p /tmp/infect
-        cp ~/.zshrc /tmp/infect/
-        cp ~/.bashrc /tmp/infect/
-        cp ~/.tmux.conf /tmp/infect/
-        cp -r ~/.config/nvim/ /tmp/infect/
-        cp -r ~/.config/ranger/ /tmp/infect/
-        cp ~/src/miscellaneous/scripts/infect.sh /tmp/.infect.sh
-        echo "source ~/.config/nvim/init.vim" > /tmp/infect/.vimrc
+        local payload_dir="/tmp/infect"
+        local dotfiles_path="${DOTFILES_PATH:-${HOME}/src/miscellaneous}"
 
-        tar -C /tmp/infect -czf /tmp/.infect.tar.gz .
+        rm -rf "$payload_dir"
+        mkdir -p "$payload_dir/.config"
 
-        scp -P "${target_port}" /tmp/.infect.tar.gz /tmp/.infect.sh "${target_host}:~/"
-        ssh "${target_user}${target_host}" -p "${target_port}" "/home/${target_user:-${USER}}/.infect.sh"
+        cp "${dotfiles_path}/.zshrc" "$payload_dir/.zshrc"
+        [ -f ~/.bashrc ] && cp ~/.bashrc "$payload_dir/.bashrc"
+        [ -f ~/.tmux.conf ] && cp ~/.tmux.conf "$payload_dir/.tmux.conf"
+        [ -d ~/.config/nvim ] && cp -R ~/.config/nvim "$payload_dir/.config/"
+        [ -d ~/.config/ranger ] && cp -R ~/.config/ranger "$payload_dir/.config/"
+        cp "${dotfiles_path}/scripts/infect.sh" /tmp/.infect.sh
+        echo "source ~/.config/nvim/init.vim" > "$payload_dir/.vimrc"
+
+        tar -C "$payload_dir" -czf /tmp/.infect.tar.gz .
+
+        scp -P "$target_port" /tmp/.infect.tar.gz /tmp/.infect.sh "$target:~/"
+        ssh -p "$target_port" "$target" "sh ~/.infect.sh"
     }
 
     forever() {
@@ -2319,6 +2332,23 @@ zshrc_update_or_append() {
     (echo "$start_marker"; echo "$content"; echo "$end_marker")>> "$file"
 }
 
+zshrc_sync_template() {
+    local file="$1"
+    local template="$2"
+    local static_marker="# MOCULL STATIC"
+
+    # A static file is explicitly owned by the repository, not this helper.
+    if [ -s "$file" ] && grep -Fq "$static_marker" "$file"; then
+        return
+    fi
+
+    # Pre-commit configuration is a complete YAML document. Replacing it as a
+    # unit keeps repeated setup runs idempotent and avoids nested managed blocks.
+    if [ ! -e "$file" ] || ! cmp -s "$template" "$file"; then
+        cp "$template" "$file"
+    fi
+}
+
 zshrc_setup_repo() {
     local repo_dir="${PWD}"
 
@@ -2351,16 +2381,16 @@ zshrc_setup_repo() {
 
     # Update .pre-commit-config.yaml based on project type
     if [ -s "$repo_dir/Cargo.toml" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_RUST"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_RUST"
     elif [ -s "$repo_dir/requirements.txt" ] || [ -n "$(find . -name '*.py' -print -quit)" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_PYTHON"
         zshrc_update_or_append "$repo_dir/pyproject.toml" "$FILE_PYPROJECT"
         zshrc_update_or_append "$repo_dir/.flake8" "$FILE_FLAKE8"
         zshrc_update_or_append "$repo_dir/.bandit" "$FILE_BANDIT"
     elif [ -n "$(find "$repo_dir" -iname "chart*.y*ml")" ]; then
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_HELM"
     else
-        zshrc_update_or_append "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
+        zshrc_sync_template "$repo_dir/.pre-commit-config.yaml" "$FILE_PRE_COMMIT_CONFIG_GENERAL"
     fi
 
     # If the repo has a .github directory, then update the actionlint.yml
