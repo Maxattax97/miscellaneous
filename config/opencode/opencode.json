@@ -1,0 +1,44 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "playwright": {
+      "command": [
+        "npx",
+        "@playwright/mcp@latest"
+      ],
+      "enabled": true,
+      "type": "local"
+    }
+  },
+  "model": "venice/deepseek-v4-flash-0731",
+  "provider": {
+    "ollama-remote": {
+      "models": {
+        "qwen3-coder:30b": {
+          "name": "Qwen 3 Coder 30B"
+        },
+        "qwen3.5:9b": {
+          "name": "Qwen 3.5 9B"
+        }
+      },
+      "name": "Ollama Remote",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://192.168.1.11:11434/v1"
+      }
+    },
+    "venice": {
+      "models": {
+        "deepseek-v4-flash-0731": {
+          "name": "DeepSeek V4 Flash"
+        }
+      },
+      "name": "Venice AI",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "{env:VENICE_API_KEY}",
+        "baseURL": "https://api.venice.ai/api/v1"
+      }
+    }
+  }
+}

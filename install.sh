@@ -56,6 +56,40 @@ link_source() {
     fi
 }
 
+setup_zsh() {
+    if ! zsh_path="$(command -v zsh)"; then
+        echo "zsh is not installed; skipping zsh setup"
+        return
+    fi
+
+    if [ ! -d "${HOME}/.zplug" ]; then
+        echo "Installing zplug ..."
+        if type git > /dev/null 2>&1; then
+            git clone "https://github.com/zplug/zplug" "${HOME}/.zplug"
+        else
+            echo "git is not installed; skipping zplug installation"
+        fi
+    fi
+
+    if ! grep -qxF "$zsh_path" /etc/shells; then
+        echo "Adding $zsh_path to /etc/shells"
+        printf "%s\n" "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+    fi
+
+    current_user="${USER:-$(id -un)}"
+    current_shell="${SHELL:-}"
+    if passwd_entry="$(getent passwd "$current_user")"; then
+        current_shell="${passwd_entry##*:}"
+    fi
+
+    if [[ "${current_shell##*/}" != "zsh" ]]; then
+        chsh -s "$zsh_path" "$current_user"
+        echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
+    else
+        echo "Default shell is already zsh"
+    fi
+}
+
 # Dot files
 link_source .ctags 1
 link_source .bashrc 1
@@ -121,6 +155,9 @@ link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+
+mkdir -p "${HOME}/.config/opencode"
+link_source "config/opencode/opencode.json" 1 ".config/opencode/opencode.json"
 
 mkdir -p "${HOME}/.local/share/applications/"
 link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
@@ -513,16 +550,13 @@ case "$response" in
         # Veracrypt
         gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
 
-        if [ -s /bin/zsh ]; then
-            if [[ ! $SHELL =~ "zsh" ]]; then
-                chsh -s /bin/zsh "${USER}"
-            fi
-        fi
         ;;
     *)
         echo "Skipping common utility installation"
         ;;
 esac
+
+setup_zsh
 
 # Add RTK hooks to compress context usage of common commands for LLMs.
 if [[ -x "$(command -v rtk)" ]]; then

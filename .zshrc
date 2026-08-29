@@ -459,6 +459,8 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
+    zshrc_source_private_env_files
+
     # NOTE: This will append a path which points to a fzf binary which is
     # provided outside of the package manager. This is ideal behavior because
     # it offers preference to a distribution managed fzf binary.
@@ -479,6 +481,21 @@ zshrc_source() {
         eval "$(pyenv init -)"
         eval "$(pyenv virtualenv-init -)"
     fi
+}
+
+zshrc_source_private_env_files() {
+    local env_file
+    local env_files=(
+        "${HOME}/.config/private.env"
+    )
+
+    for env_file in "${env_files[@]}"; do
+        if [[ -r "${env_file}" ]]; then
+            set -a
+            source "${env_file}"
+            set +a
+        fi
+    done
 }
 
 zshrc_set_options() {
