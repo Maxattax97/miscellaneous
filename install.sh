@@ -235,6 +235,7 @@ case "$response" in
                 fastfetch \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gnupg2 \
@@ -273,6 +274,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gnupg \
@@ -317,6 +319,7 @@ case "$response" in
                 dev-ruby/rubygems \
                 dev-util/ctags \
                 dev-vcs/git \
+                dev-util/git-delta \
                 dev-vcs/git-crypt \
                 dev-vcs/git-lfs \
                 net-irc/weechat \
@@ -330,6 +333,7 @@ case "$response" in
                 sys-process/btop \
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
+            # git-delta is distributed as a release .deb, not through apt.
             sudo apt-get install -y \
                 bat \
                 btop \
@@ -367,6 +371,7 @@ case "$response" in
                 curl \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 github-cli \
@@ -406,6 +411,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gmake \
@@ -1242,10 +1248,18 @@ case "$response" in
         git lfs install
         git lfs install --system
 
-        # Use Neovim's difftool
+        # Use delta to syntax-highlight normal Git output when it is installed.
+        if command -v delta > /dev/null 2>&1; then
+            git config --global core.pager delta
+            git config --global interactive.diffFilter 'delta --color-only'
+            git config --global delta.navigate true
+        fi
+
+        # Keep Neovim for the interactive two-file difftool and three-way merge tool.
         git config --global diff.tool nvimdiff
         git config --global diff.algorithm histogram
         git config --global merge.tool nvimdiff
+        git config --global merge.conflictStyle zdiff3
         git config --global --add difftool.prompt false
 
         # Automatically set up remotes if they don't exist when pushing.
