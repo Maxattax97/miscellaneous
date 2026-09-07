@@ -159,6 +159,99 @@ link_source "config/Kvantum/" 1 ".config/Kvantum"
 mkdir -p "${HOME}/.config/opencode"
 link_source "config/opencode/opencode.json" 1 ".config/opencode/opencode.json"
 
+mkdir -p "${HOME}/.codex"
+link_source "config/codex/AGENTS.md" 1 ".codex/AGENTS.md"
+
+codex_config="${HOME}/.codex/config.toml"
+if [ ! -e "$codex_config" ]; then
+    cp "${MISC_DIR}/config/codex/config.toml" "$codex_config"
+fi
+
+# Codex stores machine-local project trust and generated state in this file, so
+# update only the model and TUI defaults managed by this repository.
+codex_config_tmp="$(mktemp "${codex_config}.XXXXXX")"
+awk '
+    function root_defaults() {
+        if (!model) print "model = \"gpt-5.6-sol\""
+        if (!effort) print "model_reasoning_effort = \"medium\""
+    }
+    function agent_defaults() {
+        if (!submodel) print "default_subagent_model = \"gpt-5.6-luna\""
+        if (!subeffort) print "default_subagent_reasoning_effort = \"high\""
+    }
+    function tui_defaults() {
+        if (!statusline) print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
+        if (!statuscolors) print "status_line_use_colors = true"
+    }
+    skip_statusline {
+        if ($0 ~ /]/) skip_statusline = 0
+        next
+    }
+    /^\[/ {
+        if (!left_root) {
+            root_defaults()
+            left_root = 1
+        }
+        if (section == "agents") agent_defaults()
+        if (section == "tui") tui_defaults()
+        if ($0 ~ /^\[agents\][[:space:]]*$/) section = "agents"
+        else if ($0 ~ /^\[tui\][[:space:]]*$/) section = "tui"
+        else section = "other"
+        if (section == "agents") agents = 1
+        if (section == "tui") tui = 1
+        print
+        next
+    }
+    section == "" && /^[[:space:]]*model[[:space:]]*=/ {
+        print "model = \"gpt-5.6-sol\""
+        model = 1
+        next
+    }
+    section == "" && /^[[:space:]]*model_reasoning_effort[[:space:]]*=/ {
+        print "model_reasoning_effort = \"medium\""
+        effort = 1
+        next
+    }
+    section == "agents" && /^[[:space:]]*default_subagent_model[[:space:]]*=/ {
+        print "default_subagent_model = \"gpt-5.6-luna\""
+        submodel = 1
+        next
+    }
+    section == "agents" && /^[[:space:]]*default_subagent_reasoning_effort[[:space:]]*=/ {
+        print "default_subagent_reasoning_effort = \"high\""
+        subeffort = 1
+        next
+    }
+    section == "tui" && /^[[:space:]]*status_line[[:space:]]*=/ {
+        print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
+        statusline = 1
+        if ($0 !~ /]/) skip_statusline = 1
+        next
+    }
+    section == "tui" && /^[[:space:]]*status_line_use_colors[[:space:]]*=/ {
+        print "status_line_use_colors = true"
+        statuscolors = 1
+        next
+    }
+    { print }
+    END {
+        if (!left_root) root_defaults()
+        if (section == "agents") agent_defaults()
+        if (section == "tui") tui_defaults()
+        if (!agents) {
+            print ""
+            print "[agents]"
+            agent_defaults()
+        }
+        if (!tui) {
+            print ""
+            print "[tui]"
+            tui_defaults()
+        }
+    }
+' "$codex_config" > "$codex_config_tmp"
+mv "$codex_config_tmp" "$codex_config"
+
 mkdir -p "${HOME}/.local/share/applications/"
 link_source "config/mimeapps.list" 1 ".config/mimeapps.list"
 link_source "config/mimeapps.list" 1 ".local/share/applications/mimeapps.list"
@@ -487,6 +580,20 @@ case "$response" in
         else
             echo "You need to install pipx / pip3"
         fi
+
+        # Official standalone Codex installer (no npm dependency).
+        case "$(uname)" in
+            Linux | Darwin)
+                if [ -n "${AUTOMATED}" ]; then
+                    curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+                else
+                    curl -fsSL https://chatgpt.com/codex/install.sh | sh
+                fi
+                ;;
+            *)
+                echo "Skipping Codex binary installation on this OS"
+                ;;
+        esac
 
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then

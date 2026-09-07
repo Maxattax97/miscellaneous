@@ -1,0 +1,18 @@
+# Template for new installs; install.sh only updates the four model defaults.
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+
+[agents]
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "high"
+
+[tui]
+status_line = [
+  "model-with-reasoning",
+  "context-remaining",
+  "current-dir",
+  "five-hour-limit",
+  "weekly-limit",
+  "used-tokens",
+]
+status_line_use_colors = true

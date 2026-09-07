@@ -2106,6 +2106,7 @@ zshrc_set_aliases() {
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
     alias Eclean='sudo emerge --ask --depclean'
     alias Esearch='emerge --search'
+    alias Eremove='sudo emerge --ask --verbose --unmerge'
 
     alias pytest='pytest --capture=tee-sys -vv'
 
