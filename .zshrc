@@ -954,6 +954,7 @@ zshrc_set_path() {
 
     # Miscellaneous paths
     zshrc_add_path "${HOME}/.SpaceVim/bin" before
+    zshrc_add_path "${HOME}/.opencode/bin" before
 
     zshrc_add_path "${HOME}/.anaconda2/bin" before
     zshrc_add_path "${HOME}/anaconda2/bin" before

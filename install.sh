@@ -158,9 +158,22 @@ link_source "config/Kvantum/" 1 ".config/Kvantum"
 
 mkdir -p "${HOME}/.config/opencode"
 link_source "config/opencode/opencode.json" 1 ".config/opencode/opencode.json"
+link_source "config/opencode/AGENTS.md" 1 ".config/opencode/AGENTS.md"
+
+mkdir -p "${HOME}/.config/opencode/agents"
+link_source "config/opencode/agents/worker.md" 1 ".config/opencode/agents/worker.md"
+link_source "config/opencode/agents/review.md" 1 ".config/opencode/agents/review.md"
+link_source "config/opencode/agents/principal.md" 1 ".config/opencode/agents/principal.md"
 
 mkdir -p "${HOME}/.codex"
 link_source "config/codex/AGENTS.md" 1 ".codex/AGENTS.md"
+link_source "config/codex/hooks.json" 1 ".codex/hooks.json"
+
+mkdir -p "${HOME}/.codex/rules"
+link_source "config/codex/rules/safety.rules" 1 ".codex/rules/safety.rules"
+
+mkdir -p "${HOME}/.codex/hooks"
+link_source "config/codex/hooks/pre_tool_use_safety.py" 1 ".codex/hooks/pre_tool_use_safety.py"
 
 codex_config="${HOME}/.codex/config.toml"
 if [ ! -e "$codex_config" ]; then
@@ -168,12 +181,13 @@ if [ ! -e "$codex_config" ]; then
 fi
 
 # Codex stores machine-local project trust and generated state in this file, so
-# update only the model and TUI defaults managed by this repository.
+# update only the defaults managed by this repository.
 codex_config_tmp="$(mktemp "${codex_config}.XXXXXX")"
 awk '
     function root_defaults() {
         if (!model) print "model = \"gpt-5.6-sol\""
         if (!effort) print "model_reasoning_effort = \"medium\""
+        if (!approvals) print "approvals_reviewer = \"auto_review\""
     }
     function agent_defaults() {
         if (!submodel) print "default_subagent_model = \"gpt-5.6-luna\""
@@ -210,6 +224,11 @@ awk '
     section == "" && /^[[:space:]]*model_reasoning_effort[[:space:]]*=/ {
         print "model_reasoning_effort = \"medium\""
         effort = 1
+        next
+    }
+    section == "" && /^[[:space:]]*approvals_reviewer[[:space:]]*=/ {
+        print "approvals_reviewer = \"auto_review\""
+        approvals = 1
         next
     }
     section == "agents" && /^[[:space:]]*default_subagent_model[[:space:]]*=/ {

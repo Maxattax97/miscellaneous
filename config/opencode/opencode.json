@@ -1,5 +1,40 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "build": {
+      "model": "venice/z-ai-glm-5-3-flash",
+      "variant": "high"
+    },
+    "explore": {
+      "model": "venice/deepseek-v4-flash-0731"
+    },
+    "plan": {
+      "model": "venice/z-ai-glm-5-3-flash",
+      "variant": "high"
+    },
+    "scout": {
+      "description": "Read-only agent for external documentation, dependency research, and upstream source investigation",
+      "mode": "subagent",
+      "model": "venice/deepseek-v4-flash-0731",
+      "permission": {
+        "*": "deny",
+        "bash": {
+          "*": "allow",
+          "git commit": "deny",
+          "git commit *": "deny"
+        },
+        "external_directory": "ask",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "read": "allow",
+        "webfetch": "allow",
+        "websearch": "allow"
+      },
+      "prompt": "Research external documentation, dependencies, and upstream source without modifying the user's workspace. Prefer primary sources, cross-reference findings against local code when relevant, and report precise evidence. Do not create or edit project files and do not delegate further."
+    }
+  },
+  "default_agent": "build",
   "mcp": {
     "playwright": {
       "command": [
@@ -10,7 +45,14 @@
       "type": "local"
     }
   },
-  "model": "venice/deepseek-v4-flash-0731",
+  "model": "venice/z-ai-glm-5-3-flash",
+  "permission": {
+    "bash": {
+      "*": "allow",
+      "git commit": "deny",
+      "git commit *": "deny"
+    }
+  },
   "provider": {
     "ollama-remote": {
       "models": {
@@ -27,6 +69,60 @@
         "baseURL": "http://192.168.1.11:11434/v1"
       }
     },
+    "openrouter": {
+      "models": {
+        "deepseek/deepseek-v4-flash-0731": {
+          "options": {
+            "provider": {
+              "allow_fallbacks": true,
+              "data_collection": "deny",
+              "zdr": true
+            }
+          }
+        },
+        "moonshotai/kimi-k3": {
+          "options": {
+            "provider": {
+              "allow_fallbacks": true,
+              "data_collection": "deny",
+              "zdr": true
+            }
+          },
+          "variants": {
+            "max": {
+              "reasoning": {
+                "effort": "max"
+              }
+            }
+          }
+        },
+        "z-ai/glm-5.3": {
+          "options": {
+            "provider": {
+              "allow_fallbacks": true,
+              "data_collection": "deny",
+              "zdr": true
+            }
+          },
+          "variants": {
+            "max": {
+              "reasoning": {
+                "effort": "max"
+              }
+            }
+          }
+        },
+        "z-ai/glm-5.3-flash": {
+          "options": {
+            "provider": {
+              "allow_fallbacks": true,
+              "data_collection": "deny",
+              "zdr": true
+            }
+          }
+        }
+      }
+    },
     "venice": {
       "models": {
         "deepseek-v4-flash-0731": {
@@ -40,5 +136,6 @@
         "baseURL": "https://api.venice.ai/api/v1"
       }
     }
-  }
+  },
+  "subagent_depth": 1
 }

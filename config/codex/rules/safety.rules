@@ -1,0 +1,17 @@
+# Repository-managed hard stops. Keep these separate from default.rules, which
+# Codex updates when the user approves command prefixes interactively.
+
+prefix_rule(
+    pattern = ["git", "commit"],
+    decision = "forbidden",
+    justification = "Agents must leave commits to the user; inspect or stage changes instead.",
+    match = [
+        "git commit",
+        "git commit -m message",
+        "git commit --amend",
+    ],
+    not_match = [
+        "git status",
+        "git diff --cached",
+    ],
+)

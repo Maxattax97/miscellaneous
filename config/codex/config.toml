@@ -1,6 +1,8 @@
-# Template for new installs; install.sh only updates the four model defaults.
+# Template for new installs; install.sh updates these defaults while preserving
+# machine-local project trust and generated state.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
+approvals_reviewer = "auto_review"
 
 [agents]
 default_subagent_model = "gpt-5.6-luna"

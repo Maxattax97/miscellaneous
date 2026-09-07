@@ -15,6 +15,11 @@ Optimize total engineering throughput and correctness, in this priority order:
 Do not maximize capability, reasoning effort, agent count, or parallelism for
 their own sake.
 
+## Hard safety boundaries
+
+Never run `git commit`; leave commits to the user. This boundary is also enforced
+by Codex command rules and a pre-tool hook; it is not merely advisory.
+
 ## Default execution and routing
 
 The normal root owner is GPT-5.6 Sol (`gpt-5.6-sol`) at `medium` reasoning.
