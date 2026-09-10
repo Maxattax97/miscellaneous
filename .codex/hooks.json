@@ -1,0 +1,36 @@
+{
+  "description": "Portable, privacy-preserving agent hygiene",
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "if [ -f .agents/hooks/codex_adapter.py ]; then exec python3 .agents/hooks/codex_adapter.py; else exec python3 \"$HOME/.agents/hooks/codex_adapter.py\"; fi",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "if [ -f .agents/hooks/codex_adapter.py ]; then exec python3 .agents/hooks/codex_adapter.py; else exec python3 \"$HOME/.agents/hooks/codex_adapter.py\"; fi",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read|Bash|Glob|Grep"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "if [ -f .agents/hooks/codex_adapter.py ]; then exec python3 .agents/hooks/codex_adapter.py; else exec python3 \"$HOME/.agents/hooks/codex_adapter.py\"; fi",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

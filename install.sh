@@ -6,6 +6,30 @@ set -euo pipefail
 MISC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 AUTOMATED="${AUTOMATED:-}"
 
+# Ask an interactive yes/no question.  Automation is deliberately fail-closed:
+# optional installs must never block on stdin or run without explicit consent.
+confirm() {
+    local prompt="$1" default="${2:-n}"
+    if [ -n "${AUTOMATED}" ]; then
+        response="$default"
+        [ "$response" = y ]
+        return
+    fi
+    if ! read -r -p "$prompt" response; then
+        response="$default"
+    fi
+    case "${response:-$default}" in
+        [yY] | [yY][eE][sS])
+            response='y'
+            return 0
+            ;;
+        *)
+            response='n'
+            return 1
+            ;;
+    esac
+}
+
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
 else
@@ -32,23 +56,11 @@ link_source() {
         #echo "Skipping $dest because it is already linked ..."
         link_skipped_files+="$dest "
     elif [ -f "$dest" ]; then
-        if [ "$overwrite" -eq 1 ]; then
-            rm -f "$dest"
-            #echo "Overwriting file and linking $src -> $dest ..."
-            link_overwritten_files+="$dest "
-            ln -sf "$src" "$dest"
-        else
-            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a file exists there!${TEXT_RESET}"
-        fi
+        echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting unmanaged file $dest.${TEXT_RESET}"
+        link_skipped_files+="$dest "
     elif [ -d "$dest" ]; then
-        if [ "$overwrite" -eq 1 ]; then
-            rm -rf "$dest"
-            #echo "Overwriting directory and linking $src -> $dest ..."
-            link_overwritten_files+="$dest "
-            ln -sf "$src" "$dest"
-        else
-            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting $dest because a directory exists there!${TEXT_RESET}"
-        fi
+        echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting unmanaged directory $dest.${TEXT_RESET}"
+        link_skipped_files+="$dest "
     else
         #echo "Linking $src -> $dest ..."
         link_linked_files+="$dest "
@@ -82,7 +94,7 @@ setup_zsh() {
         current_shell="${passwd_entry##*:}"
     fi
 
-    if [[ "${current_shell##*/}" != "zsh" ]]; then
+    if [[ ${current_shell##*/} != "zsh" ]]; then
         chsh -s "$zsh_path" "$current_user"
         echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
     else
@@ -328,7 +340,7 @@ echo "Skipped files: ${link_skipped_files}"
 
 echo "Environment installation complete"
 
-read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
+confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         # TODO: install brew if we detect its a Mac
@@ -690,12 +702,73 @@ esac
 
 setup_zsh
 
-# Add RTK hooks to compress context usage of common commands for LLMs.
-if [[ -x "$(command -v rtk)" ]]; then
+# Optional global agent toolkit (skills and shared guidance).
+if confirm "Would you like to install the global agent toolkit? [y/N] " n; then
+    mkdir -p "${HOME}/.agents"
+    if [ ! -e "${HOME}/.agents/skills" ]; then
+        ln -s "${MISC_DIR}/.agents/skills" "${HOME}/.agents/skills"
+    fi
+    if [ ! -e "${HOME}/.agents/hooks" ]; then
+        ln -s "${MISC_DIR}/.agents/hooks" "${HOME}/.agents/hooks"
+    fi
+    add_managed_block() {
+        local file="$1" block="$2" marker="miscellaneous-agent-toolkit"
+        mkdir -p "$(dirname "$file")"
+        touch "$file"
+        if ! grep -q "BEGIN ${marker}" "$file"; then
+            {
+                printf '\n# BEGIN %s\n' "$marker"
+                printf '%s\n' "$block"
+                printf '# END %s\n' "$marker"
+            } >> "$file"
+        fi
+    }
+    add_managed_block "${HOME}/.codex/AGENTS.md" 'Use the skills linked from ~/.agents/skills when relevant; preserve user changes.'
+    add_managed_block "${HOME}/.config/opencode/AGENTS.md" 'Use the skills linked from ~/.agents/skills when relevant; preserve user changes.'
+    mkdir -p "${HOME}/.codex" "${HOME}/.config/opencode/plugins"
+    if [ ! -e "${HOME}/.codex/hooks.json" ]; then
+        ln -s "${MISC_DIR}/.codex/hooks.json" "${HOME}/.codex/hooks.json"
+    else
+        echo "Preserving unmanaged ${HOME}/.codex/hooks.json; project hooks remain available."
+    fi
+    if [ ! -e "${HOME}/.config/opencode/plugins/agent-hygiene.js" ]; then
+        ln -s "${MISC_DIR}/.opencode/plugins/agent-hygiene.js" "${HOME}/.config/opencode/plugins/agent-hygiene.js"
+    else
+        echo "Preserving existing OpenCode agent-hygiene plugin."
+    fi
+    echo "Agent toolkit installed (managed symlink/config blocks)."
+fi
+
+headroom_active=0
+if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
+    if command -v pipx > /dev/null 2>&1; then
+        pipx install 'headroom-ai[all]' || pipx upgrade 'headroom-ai[all]'
+        if command -v headroom > /dev/null 2>&1; then
+            if headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
+                && curl -fsS http://127.0.0.1:8787/readyz > /dev/null \
+                && headroom wrap codex -- --version > /dev/null \
+                && headroom wrap opencode -- --version > /dev/null; then
+                headroom_active=1
+                echo "Headroom is ready. Lifecycle: headroom install status|start|stop|restart|remove --profile coding"
+            else
+                echo "Headroom setup failed; rolling back the coding deployment." >&2
+                headroom install remove --profile coding || true
+            fi
+        else
+            echo "Headroom executable was not available after pipx installation." >&2
+        fi
+    else
+        echo "Skipping Headroom: pipx is not installed."
+    fi
+fi
+
+# Preserve the existing RTK integration when Headroom is declined. Headroom's
+# provider adapters supersede the managed RTK wrapper but never remove RTK.
+if [ "$headroom_active" -eq 0 ] && [[ -x "$(command -v rtk)" ]]; then
     rtk init --global
 fi
 
-read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
+confirm "Would you like to install AWS CLI (v2)? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -719,7 +792,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to add unofficial package repositories? [y/N] " response
+confirm "Would you like to add unofficial package repositories? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -757,7 +830,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Brave? [y/N] " response
+                confirm "Would you like to install Brave? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -771,7 +844,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Docker? [y/N] " response
+                confirm "Would you like to install Docker? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -784,7 +857,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            confirm "Would you like to install AWS Session Manager Plugin? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
@@ -794,7 +867,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Github CLI? [y/N] " response
+            confirm "Would you like to install Github CLI? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo dnf install -y gh
@@ -807,7 +880,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Signal Desktop? [y/N] " response
+                confirm "Would you like to install Signal Desktop? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -841,7 +914,7 @@ case "$response" in
 
             sudo apt-get update
 
-            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            confirm "Would you like to install AWS Session Manager Plugin? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
@@ -853,7 +926,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Kubernetes? [y/N] " response
+            confirm "Would you like to install Kubernetes? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y kubectl
@@ -863,7 +936,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Helm? [y/N] " response
+            confirm "Would you like to install Helm? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y helm
@@ -873,7 +946,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Github CLI? [y/N] " response
+            confirm "Would you like to install Github CLI? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y gh
@@ -895,7 +968,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+    confirm "Would you like to attempt an install of bspwm? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1037,7 +1110,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+    confirm "Would you like to attempt an install of workstation utilities? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1180,7 +1253,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+                confirm "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -1207,7 +1280,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to setup Gnome? [y/N] " response
+    confirm "Would you like to setup Gnome? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1270,7 +1343,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+    confirm "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1306,7 +1379,7 @@ if [[ -x "$(command -v pacman)" ]]; then
     if [ -n "${AUTOMATED}" ]; then
         response='n'
     else
-        read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
+        confirm "Would you like to attempt an install of XMRig suite? [y/N] " n || true
     fi
     case "$response" in
         [yY][eE][sS] | [yY])
@@ -1358,7 +1431,7 @@ EOF
     esac
 fi
 
-read -r -p "Would you like to setup Git? [y/N] " response
+confirm "Would you like to setup Git? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
@@ -1420,7 +1493,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Rust? [y/N] " response
+confirm "Would you like to setup Rust? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -1433,7 +1506,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Krew? [y/N] " response
+confirm "Would you like to setup Krew? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         (
@@ -1452,7 +1525,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Protobuf libraries? [y/N] " response
+confirm "Would you like to setup Protobuf libraries? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         (
@@ -1468,7 +1541,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Mikrotik's WinBox? [y/N] " response
+confirm "Would you like to setup Mikrotik's WinBox? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         mkdir -p "${HOME}/.local/share/mikrotik/"
@@ -1486,7 +1559,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Activity Watch? [y/N] " response
+confirm "Would you like to setup Activity Watch? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         mkdir -p "${HOME}/.local/opt/activitywatch/"
@@ -1513,7 +1586,7 @@ esac
 # https://github.com/LuaLS/lua-language-server
 # https://repology.org/project/lua-language-server/versions
 
-read -r -p "Would you like to setup WiFi? [y/N] " response
+confirm "Would you like to setup WiFi? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -1579,7 +1652,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to install /etc/ configurations with root? [y/N] " response
+confirm "Would you like to install /etc/ configurations with root? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         sudo rm -f "/etc/chrony.conf"
@@ -1616,7 +1689,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to remotely share the clipboard over SSH on this system? [y/N] " response
+    confirm "Would you like to remotely share the clipboard over SSH on this system? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1662,7 +1735,7 @@ case "$response" in
 esac
 
 if [[ "$(uname)" != "Darwin" ]]; then
-    read -r -p "Would you like to setup system permissions? [y/N] " response
+    confirm "Would you like to setup system permissions? [y/N] " n || true
     case "$response" in
         [yY][eE][sS] | [yY])
 
@@ -1704,7 +1777,7 @@ fi
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to install fonts? [y/N] " response
+    confirm "Would you like to install fonts? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])

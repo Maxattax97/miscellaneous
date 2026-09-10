@@ -1640,6 +1640,75 @@ zshrc_load_library() {
         esac
     }
 
+    # Render Markdown (mermaid diagrams included) to a standalone HTML file and open it.
+    mdview() {
+        local src=${1:?usage: mdview <file.md>}
+        local out=${TMPDIR:-/tmp}/mdview-${src:t:r}.html
+        local header=${TMPDIR:-/tmp}/mdview-header.$$.html
+
+        cat >"$header" <<'MDVIEW_HEADER'
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: dark ? 'dark' : 'neutral',
+        suppressErrorRendering: true,  // else a bad diagram dumps a bomb graphic into <body>
+    });
+
+    // Pandoc emits <pre class="mermaid"><code>…</code></pre>, so mermaid gets the decoded
+    // text rather than the element. Rendering one at a time is deliberate: mermaid.run()
+    // aborts on the first syntax error and silently blanks every diagram after it.
+    let n = 0;
+    for (const pre of document.querySelectorAll('pre.mermaid')) {
+        const source = pre.textContent;
+        const fig = document.createElement('figure');
+        fig.className = 'mermaid';
+        try {
+            const { svg, bindFunctions } = await mermaid.render(`mermaid-${n++}`, source);
+            fig.innerHTML = svg;
+            bindFunctions?.(fig);
+        } catch (err) {
+            fig.classList.add('mermaid-error');
+            fig.textContent = `mermaid: ${err?.message ?? err}`;
+            fig.appendChild(Object.assign(document.createElement('pre'), { textContent: source }));
+        }
+        pre.replaceWith(fig);
+    }
+</script>
+<style>
+    html { color-scheme: light dark; }
+    body { max-width: 46rem; margin: 2rem auto; padding: 0 1rem;
+           font: 16px/1.6 -apple-system, system-ui, sans-serif; }
+    pre { background: #8881; padding: .75rem; overflow-x: auto; border-radius: 4px; }
+    code { font-size: .9em; }
+    /* Diagrams break out of the text column; a wide flowchart squeezed into 46rem is unreadable. */
+    figure.mermaid { width: 92vw; margin: 1.5rem 50%; transform: translateX(-50%);
+                     text-align: center; }
+    figure.mermaid.mermaid-error { width: auto; margin: 1.5rem 0; transform: none;
+                                   text-align: left; color: #c92a2a; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #8886; padding: .3rem .6rem; }
+    blockquote { border-left: 3px solid #8886; margin-left: 0; padding-left: 1rem; }
+    img { max-width: 100%; }
+</style>
+MDVIEW_HEADER
+
+        pandoc "$src" -t html5 --standalone --toc --embed-resources \
+            --metadata title="${src:t}" -H "$header" -o "$out"
+        local rc=$?  # zsh reserves $status, so do not name this one that
+        rm -f "$header"
+        [[ $rc -ne 0 ]] && return $rc
+
+        case "$OSTYPE" in
+            darwin*)  open "$out" ;;  # MacOS
+            linux*)   xdg-open "$out" ;;  # Linux
+            cygwin* | msys* | mingw*) start "$out" ;;  # Windows
+            *)        echo "Unsupported OS: $OSTYPE; wrote $out" ;;
+        esac
+    }
+
     troubleshoot() {
         dir=${1:-.}
         search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}

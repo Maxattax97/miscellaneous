@@ -1,4 +1,6 @@
 FROM debian:sid-slim
+ARG REPO_URL
+ARG COMMIT_SHA
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3008
@@ -21,10 +23,8 @@ ENV USER=max
 #COPY --chown=max . /home/max/src/miscellaneous/
 
 RUN mkdir -p /home/max/src && \
-	git clone https://github.com/Maxattax97/miscellaneous.git /home/max/src/miscellaneous
-
-# Overwrite the install script with the latest one in the repository.
-COPY --chown=max install.sh /home/max/src/miscellaneous/install.sh
+	git clone "$REPO_URL" /home/max/src/miscellaneous && \
+	cd /home/max/src/miscellaneous && git checkout --detach "$COMMIT_SHA"
 
 WORKDIR /home/max/src/miscellaneous
 RUN /bin/sh -o pipefail -c "yes | \
