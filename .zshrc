@@ -974,6 +974,8 @@ zshrc_set_path() {
     zshrc_add_path "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" before
     zshrc_add_path "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims" before
 
+    zshrc_add_path "${HOME}/.opencode/bin" before
+
     # Always wins, these are mine.
     zshrc_add_path "${HOME}/bin" before
 }

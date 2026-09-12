@@ -82,7 +82,7 @@ setup_zsh() {
         current_shell="${passwd_entry##*:}"
     fi
 
-    if [[ "${current_shell##*/}" != "zsh" ]]; then
+    if [[ ${current_shell##*/} != "zsh" ]]; then
         chsh -s "$zsh_path" "$current_user"
         echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
     else
@@ -921,7 +921,8 @@ case "$response" in
                 dex-autostart \
                 firefox \
                 flameshot \
-                google-noto-emoji-color-fonts \
+                fontawesome-fonts-all \
+                google-noto-color-emoji-fonts \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -947,6 +948,8 @@ case "$response" in
                 brave-browser \
                 docker \
                 flameshot \
+                font-fontawesome \
+                font-noto-color-emoji \
                 inkscape \
                 iterm2 \
                 joplin \
@@ -965,6 +968,7 @@ case "$response" in
                 app-office/libreoffice \
                 app-text/zathura \
                 app-text/zathura-pdf-mupdf \
+                media-fonts/fontawesome \
                 media-fonts/noto-emoji \
                 media-gfx/flameshot \
                 media-gfx/inkscape \
@@ -978,6 +982,7 @@ case "$response" in
             sudo apt-get install \
                 dex \
                 flameshot \
+                fonts-font-awesome \
                 fonts-noto-color-emoji \
                 gparted \
                 inkscape \
@@ -1004,6 +1009,7 @@ case "$response" in
                 mpv \
                 nextcloud-client \
                 noto-fonts-emoji \
+                otf-font-awesome \
                 p7zip \
                 qalculate-gtk \
                 touchegg \
@@ -1021,6 +1027,7 @@ case "$response" in
             # FreeBSD does not have dex
             sudo pkg install \
                 flameshot \
+                font-awesome \
                 girara \
                 gnome-keyring \
                 inkscape \
