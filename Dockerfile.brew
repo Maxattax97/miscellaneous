@@ -23,8 +23,7 @@ RUN mkdir -p /home/linuxbrew/src && \
 COPY install.sh /home/linuxbrew/src/miscellaneous/install.sh
 
 WORKDIR /home/linuxbrew/src/miscellaneous
-RUN /bin/sh -c "yes | \
-	AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
+RUN /bin/sh -c "yes n | AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
 	brew cleanup"
 
 WORKDIR /home/linuxbrew

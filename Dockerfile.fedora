@@ -25,8 +25,7 @@ RUN mkdir -p /home/max/src && \
 COPY --chown=max install.sh /home/max/src/miscellaneous/install.sh
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -o pipefail -c "yes | \
-	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+RUN /bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
 	dnf clean all"
 
 WORKDIR /home/max
