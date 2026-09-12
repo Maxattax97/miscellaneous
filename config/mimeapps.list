@@ -299,3 +299,4 @@ x-scheme-handler/https=brave-browser.desktop
 x-scheme-handler/msteams=teams.desktop
 x-scheme-handler/unknown=brave-browser.desktop
 x-scheme-handler/nxm=modorganizer2-nxm-handler.desktop
+x-scheme-handler/codex=chatgpt.desktop

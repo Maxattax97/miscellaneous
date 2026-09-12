@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${HOME}/.codex/hooks/pre_tool_use_safety.py\"",
+            "statusMessage": "Checking command safety policy",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "^Bash$"
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+# Template for new installs; install.sh updates these defaults while preserving
+# machine-local project trust and generated state.
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+approvals_reviewer = "auto_review"
+
+[agents]
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "high"
+
+[tui]
+status_line = [
+  "model-with-reasoning",
+  "context-remaining",
+  "current-dir",
+  "five-hour-limit",
+  "weekly-limit",
+  "used-tokens",
+]
+status_line_use_colors = true
