@@ -3,6 +3,8 @@
 # checkov:skip=CKV_DOCKER_3: The homebrew/brew image already runs as the linuxbrew user
 # hadolint ignore=DL3007
 FROM homebrew/brew:latest
+ARG REPO_URL
+ARG COMMIT_SHA
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3041
@@ -16,14 +18,13 @@ RUN brew install \
 #RUN mkdir -p /home/linuxbrew/src/miscellaneous
 #COPY . /home/linuxbrew/src/miscellaneous/
 
-RUN mkdir -p /home/linuxbrew/src && \
-	git clone https://github.com/Maxattax97/miscellaneous.git /home/linuxbrew/src/miscellaneous
-
-# Overwrite the install script with the latest one in the repository.
-COPY install.sh /home/linuxbrew/src/miscellaneous/install.sh
+RUN mkdir -p /home/linuxbrew/src
+WORKDIR /home/linuxbrew/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/linuxbrew/src/miscellaneous
-RUN /bin/sh -c "yes n | AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
 	brew cleanup"
 
 WORKDIR /home/linuxbrew

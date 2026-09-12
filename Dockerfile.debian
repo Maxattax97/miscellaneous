@@ -1,4 +1,6 @@
 FROM debian:sid-slim
+ARG REPO_URL
+ARG COMMIT_SHA
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3008
@@ -9,9 +11,8 @@ RUN apt-get update && \
 		sudo \
 		coreutils && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m max && \
+	rm -rf /var/lib/apt/lists/* && \
+	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER max
 ENV USER=max
@@ -20,14 +21,13 @@ ENV USER=max
 #RUN mkdir -p /home/max/src/miscellaneous
 #COPY --chown=max . /home/max/src/miscellaneous/
 
-RUN mkdir -p /home/max/src && \
-	git clone https://github.com/Maxattax97/miscellaneous.git /home/max/src/miscellaneous
-
-# Overwrite the install script with the latest one in the repository.
-COPY --chown=max install.sh /home/max/src/miscellaneous/install.sh
+RUN mkdir -p /home/max/src
+WORKDIR /home/max/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
 	apt-get clean"
 
 WORKDIR /home/max
