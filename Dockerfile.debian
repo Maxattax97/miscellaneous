@@ -11,9 +11,8 @@ RUN apt-get update && \
 		sudo \
 		coreutils && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m max && \
+	rm -rf /var/lib/apt/lists/* && \
+	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER max
 ENV USER=max
@@ -22,13 +21,13 @@ ENV USER=max
 #RUN mkdir -p /home/max/src/miscellaneous
 #COPY --chown=max . /home/max/src/miscellaneous/
 
-RUN mkdir -p /home/max/src && \
-	git clone "$REPO_URL" /home/max/src/miscellaneous && \
-	cd /home/max/src/miscellaneous && git checkout --detach "$COMMIT_SHA"
+RUN mkdir -p /home/max/src
+WORKDIR /home/max/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -o pipefail -c "yes | \
-	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
 	apt-get clean"
 
 WORKDIR /home/max

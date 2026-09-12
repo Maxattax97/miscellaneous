@@ -49,7 +49,6 @@ link_overwritten_files=""
 
 link_source() {
     src="${MISC_DIR}/${1}"
-    overwrite="${2:-0}"
     dest="${HOME}/${3:-$1}"
 
     if [ -h "$dest" ]; then
@@ -94,8 +93,12 @@ setup_zsh() {
         current_shell="${passwd_entry##*:}"
     fi
 
-    if [[ ${current_shell##*/} != "zsh" ]]; then
-        chsh -s "$zsh_path" "$current_user"
+    if [[ "${current_shell##*/}" != "zsh" ]]; then
+        if [ -n "${AUTOMATED}" ]; then
+            sudo chsh -s "$zsh_path" "$current_user"
+        else
+            chsh -s "$zsh_path" "$current_user"
+        fi
         echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
     else
         echo "Default shell is already zsh"
@@ -340,19 +343,23 @@ echo "Skipped files: ${link_skipped_files}"
 
 echo "Environment installation complete"
 
-confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
+if [ -n "${AUTOMATED}" ]; then
+    response='y'
+else
+    confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
+fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # TODO: install brew if we detect its a Mac
         # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
                 bat \
                 btop \
+                cargo \
                 ctags \
                 curl \
                 dnf-plugins-core \
@@ -371,7 +378,6 @@ case "$response" in
                 nodejs-npm \
                 pipx \
                 python3 \
-                python3-devel \
                 python3-neovim \
                 python3-pip \
                 python3-virtualenv \
@@ -586,10 +592,8 @@ case "$response" in
             pipx install huggingface_hub
             pipx install isort
             pipx install molecule
-            pipx install neovim
             pipx install poetry
             pipx install pre-commit
-            pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
@@ -605,7 +609,6 @@ case "$response" in
                 isort \
                 neovim \
                 poetry \
-                shell-gpt \
                 thefuck \
                 tmuxp
         else
@@ -638,9 +641,10 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
-            gem install \
-                neovim \
-                taskjuggler
+            if ! gem install neovim; then
+                echo "Unable to install the optional Neovim Ruby provider; continuing"
+            fi
+            gem install taskjuggler
         else
             echo "You need to install gem"
         fi
@@ -785,7 +789,7 @@ case "$response" in
 
         rm -rf awscliv2.zip awscliv2.sig aws
 
-        aws --version
+        AWS_CONFIG_FILE=/dev/null "${HOME}/.local/bin/aws" --version
         ;;
     *)
         echo "Skipping AWS CLI installation"
