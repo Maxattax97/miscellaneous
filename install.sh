@@ -20,6 +20,29 @@ apply_dotfiles() {
 
 dotfiles_applied=0
 
+# Ask an interactive yes/no question.  Automation is deliberately fail-closed:
+# optional installs must never block on stdin or run without explicit consent.
+confirm() {
+    local prompt="$1" default="${2:-n}"
+    if [ -n "${AUTOMATED}" ]; then
+        response="$default"
+        [ "$response" = y ]
+        return
+    fi
+    if ! read -r -p "$prompt" response; then
+        response="$default"
+    fi
+    case "${response:-$default}" in
+        [yY] | [yY][eE][sS])
+            response='y'
+            return 0
+            ;;
+        *)
+            response='n'
+            return 1
+            ;;
+    esac
+}
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
 else
@@ -34,6 +57,43 @@ if [[ -x "$(command -v chezmoi)" ]]; then
 else
     echo "Will apply dotfiles from ${MISC_DIR} with chezmoi after package installation ..."
 fi
+setup_zsh() {
+    if ! zsh_path="$(command -v zsh)"; then
+        echo "zsh is not installed; skipping zsh setup"
+        return
+    fi
+
+    if [ ! -d "${HOME}/.zplug" ]; then
+        echo "Installing zplug ..."
+        if type git > /dev/null 2>&1; then
+            git clone "https://github.com/zplug/zplug" "${HOME}/.zplug"
+        else
+            echo "git is not installed; skipping zplug installation"
+        fi
+    fi
+
+    if ! grep -qxF "$zsh_path" /etc/shells; then
+        echo "Adding $zsh_path to /etc/shells"
+        printf "%s\n" "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+    fi
+
+    current_user="${USER:-$(id -un)}"
+    current_shell="${SHELL:-}"
+    if passwd_entry="$(getent passwd "$current_user")"; then
+        current_shell="${passwd_entry##*:}"
+    fi
+
+    if [[ "${current_shell##*/}" != "zsh" ]]; then
+        if [ -n "${AUTOMATED}" ]; then
+            sudo chsh -s "$zsh_path" "$current_user"
+        else
+            chsh -s "$zsh_path" "$current_user"
+        fi
+        echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
+    else
+        echo "Default shell is already zsh"
+    fi
+}
 
 if [[ "$(uname)" == "Darwin" ]]; then
     # iTerm2 reads preferences from the repo rather than via chezmoi.
@@ -41,26 +101,31 @@ if [[ "$(uname)" == "Darwin" ]]; then
     defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
 fi
 
-read -r -p "Would you like to attempt an install of common utilities? [y/N] " response
+if [ -n "${AUTOMATED}" ]; then
+    response='y'
+else
+    confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
+fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # TODO: install brew if we detect its a Mac
         # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
                 bat \
                 btop \
                 chezmoi \
+                cargo \
                 ctags \
                 curl \
                 dnf-plugins-core \
                 fastfetch \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 hostname \
@@ -73,7 +138,6 @@ case "$response" in
                 nodejs-npm \
                 pipx \
                 python3 \
-                python3-devel \
                 python3-neovim \
                 python3-pip \
                 python3-virtualenv \
@@ -100,6 +164,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gnupg \
@@ -145,6 +210,7 @@ case "$response" in
                 dev-ruby/rubygems \
                 dev-util/ctags \
                 dev-vcs/git \
+                dev-util/git-delta \
                 dev-vcs/git-crypt \
                 dev-vcs/git-lfs \
                 net-irc/weechat \
@@ -158,12 +224,14 @@ case "$response" in
                 sys-process/btop \
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
+            # git-delta is distributed as a release .deb, not through apt.
             sudo apt-get install -y \
                 bat \
                 btop \
                 chezmoi \
                 universal-ctags \
                 curl \
+                fastfetch \
                 gcc \
                 git \
                 git-crypt \
@@ -171,7 +239,6 @@ case "$response" in
                 gpg \
                 keychain \
                 make \
-                neofetch \
                 neovim \
                 newsboat \
                 nodejs \
@@ -196,6 +263,7 @@ case "$response" in
                 curl \
                 gcc \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 github-cli \
@@ -235,6 +303,7 @@ case "$response" in
                 gcc \
                 gh \
                 git \
+                git-delta \
                 git-crypt \
                 git-lfs \
                 gmake \
@@ -286,7 +355,6 @@ case "$response" in
             pipx install pynvim
             pipx install poetry
             pipx install pre-commit
-            pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
@@ -302,12 +370,25 @@ case "$response" in
                 isort \
                 neovim \
                 poetry \
-                shell-gpt \
                 thefuck \
                 tmuxp
         else
             echo "You need to install pipx / pip3"
         fi
+
+        # Official standalone Codex installer (no npm dependency).
+        case "$(uname)" in
+            Linux | Darwin)
+                if [ -n "${AUTOMATED}" ]; then
+                    curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+                else
+                    curl -fsSL https://chatgpt.com/codex/install.sh | sh
+                fi
+                ;;
+            *)
+                echo "Skipping Codex binary installation on this OS"
+                ;;
+        esac
 
         # TODO: install LTS node via NVM which is installed via ZSH.
         if [[ -x "$(command -v npm)" ]]; then
@@ -323,8 +404,10 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
-            gem install \
-                taskjuggler
+            if ! gem install neovim; then
+                echo "Unable to install the optional Neovim Ruby provider; continuing"
+            fi
+            gem install taskjuggler
         else
             echo "You need to install gem"
         fi
@@ -381,11 +464,6 @@ case "$response" in
             gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
         fi
 
-        if [ -z "${AUTOMATED}" ] && [ -s /bin/zsh ]; then
-            if [[ ! $SHELL =~ "zsh" ]]; then
-                chsh -s /bin/zsh "${USER}"
-            fi
-        fi
         ;;
     *)
         echo "Skipping common utility installation"
@@ -404,12 +482,38 @@ fi
 
 echo "Environment installation complete"
 
-# Add RTK hooks to compress context usage of common commands for LLMs.
-if [[ -x "$(command -v rtk)" ]]; then
+setup_zsh
+
+headroom_active=0
+if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
+    if command -v pipx > /dev/null 2>&1; then
+        pipx install 'headroom-ai[all]' || pipx upgrade 'headroom-ai[all]'
+        if command -v headroom > /dev/null 2>&1; then
+            if headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
+                && curl -fsS http://127.0.0.1:8787/readyz > /dev/null \
+                && headroom wrap codex -- --version > /dev/null \
+                && headroom wrap opencode -- --version > /dev/null; then
+                headroom_active=1
+                echo "Headroom is ready. Lifecycle: headroom install status|start|stop|restart|remove --profile coding"
+            else
+                echo "Headroom setup failed; rolling back the coding deployment." >&2
+                headroom install remove --profile coding || true
+            fi
+        else
+            echo "Headroom executable was not available after pipx installation." >&2
+        fi
+    else
+        echo "Skipping Headroom: pipx is not installed."
+    fi
+fi
+
+# Preserve the existing RTK integration when Headroom is declined. Headroom's
+# provider adapters supersede the managed RTK wrapper but never remove RTK.
+if [ "$headroom_active" -eq 0 ] && [[ -x "$(command -v rtk)" ]]; then
     rtk init --global
 fi
 
-read -r -p "Would you like to install AWS CLI (v2)? [y/N] " response
+confirm "Would you like to install AWS CLI (v2)? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -426,14 +530,14 @@ case "$response" in
 
         rm -rf awscliv2.zip awscliv2.sig aws
 
-        aws --version
+        AWS_CONFIG_FILE=/dev/null "${HOME}/.local/bin/aws" --version
         ;;
     *)
         echo "Skipping AWS CLI installation"
         ;;
 esac
 
-read -r -p "Would you like to add unofficial package repositories? [y/N] " response
+confirm "Would you like to add unofficial package repositories? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -471,7 +575,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Brave? [y/N] " response
+                confirm "Would you like to install Brave? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -485,7 +589,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Docker? [y/N] " response
+                confirm "Would you like to install Docker? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -498,7 +602,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            confirm "Would you like to install AWS Session Manager Plugin? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
@@ -508,7 +612,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Github CLI? [y/N] " response
+            confirm "Would you like to install Github CLI? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo dnf install -y gh
@@ -521,7 +625,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "Would you like to install Signal Desktop? [y/N] " response
+                confirm "Would you like to install Signal Desktop? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -555,7 +659,7 @@ case "$response" in
 
             sudo apt-get update
 
-            read -r -p "Would you like to install AWS Session Manager Plugin? [y/N] " response
+            confirm "Would you like to install AWS Session Manager Plugin? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
@@ -567,7 +671,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Kubernetes? [y/N] " response
+            confirm "Would you like to install Kubernetes? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y kubectl
@@ -577,7 +681,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Helm? [y/N] " response
+            confirm "Would you like to install Helm? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y helm
@@ -587,7 +691,7 @@ case "$response" in
                     ;;
             esac
 
-            read -r -p "Would you like to install Github CLI? [y/N] " response
+            confirm "Would you like to install Github CLI? [y/N] " n || true
             case "$response" in
                 [yY][eE][sS] | [yY])
                     sudo apt-get install -y gh
@@ -609,7 +713,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of bspwm? [y/N] " response
+    confirm "Would you like to attempt an install of bspwm? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -751,7 +855,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of workstation utilities? [y/N] " response
+    confirm "Would you like to attempt an install of workstation utilities? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -761,7 +865,8 @@ case "$response" in
                 dex-autostart \
                 firefox \
                 flameshot \
-                google-noto-emoji-color-fonts \
+                fontawesome-fonts-all \
+                google-noto-color-emoji-fonts \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -787,6 +892,8 @@ case "$response" in
                 brave-browser \
                 docker \
                 flameshot \
+                font-fontawesome \
+                font-noto-color-emoji \
                 inkscape \
                 iterm2 \
                 joplin \
@@ -805,6 +912,7 @@ case "$response" in
                 app-office/libreoffice \
                 app-text/zathura \
                 app-text/zathura-pdf-mupdf \
+                media-fonts/fontawesome \
                 media-fonts/noto-emoji \
                 media-gfx/flameshot \
                 media-gfx/inkscape \
@@ -818,6 +926,7 @@ case "$response" in
             sudo apt-get install \
                 dex \
                 flameshot \
+                fonts-font-awesome \
                 fonts-noto-color-emoji \
                 gparted \
                 inkscape \
@@ -844,6 +953,7 @@ case "$response" in
                 mpv \
                 nextcloud-client \
                 noto-fonts-emoji \
+                otf-font-awesome \
                 p7zip \
                 qalculate-gtk \
                 touchegg \
@@ -861,6 +971,7 @@ case "$response" in
             # FreeBSD does not have dex
             sudo pkg install \
                 flameshot \
+                font-awesome \
                 girara \
                 gnome-keyring \
                 inkscape \
@@ -894,7 +1005,7 @@ case "$response" in
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
-                read -r -p "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " response
+                confirm "You must manually download and install VeraCrypt. Would you like to go there now? [y/N] " n || true
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
@@ -921,7 +1032,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to setup Gnome? [y/N] " response
+    confirm "Would you like to setup Gnome? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -984,7 +1095,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " response
+    confirm "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1008,7 +1119,7 @@ case "$response" in
             fi
             (cd "${MISC_DIR}/../lukesmithxyz-st" && make && sudo make install)
             sudo install -Dm644 "${MISC_DIR}/scripts/st.desktop" /usr/share/applications/st.desktop
-            xrdb "${MISC_DIR}/.Xdefaults"
+            xrdb "${HOME}/.Xdefaults"
         fi
         ;;
     *)
@@ -1020,7 +1131,7 @@ if [[ -x "$(command -v pacman)" ]]; then
     if [ -n "${AUTOMATED}" ]; then
         response='n'
     else
-        read -r -p "Would you like to attempt an install of XMRig suite? [y/N] " response
+        confirm "Would you like to attempt an install of XMRig suite? [y/N] " n || true
     fi
     case "$response" in
         [yY][eE][sS] | [yY])
@@ -1072,7 +1183,7 @@ EOF
     esac
 fi
 
-read -r -p "Would you like to setup Git? [y/N] " response
+confirm "Would you like to setup Git? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ ! -s "${HOME}/.gitconfig" ]]; then
@@ -1088,10 +1199,18 @@ case "$response" in
         git lfs install
         git lfs install --system
 
-        # Use Neovim's difftool
+        # Use delta to syntax-highlight normal Git output when it is installed.
+        if command -v delta > /dev/null 2>&1; then
+            git config --global core.pager delta
+            git config --global interactive.diffFilter 'delta --color-only'
+            git config --global delta.navigate true
+        fi
+
+        # Keep Neovim for the interactive two-file difftool and three-way merge tool.
         git config --global diff.tool nvimdiff
         git config --global diff.algorithm histogram
         git config --global merge.tool nvimdiff
+        git config --global merge.conflictStyle zdiff3
         git config --global --add difftool.prompt false
 
         # Automatically set up remotes if they don't exist when pushing.
@@ -1126,7 +1245,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Rust? [y/N] " response
+confirm "Would you like to setup Rust? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -1139,7 +1258,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Krew? [y/N] " response
+confirm "Would you like to setup Krew? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         (
@@ -1158,7 +1277,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Protobuf libraries? [y/N] " response
+confirm "Would you like to setup Protobuf libraries? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         (
@@ -1174,7 +1293,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Mikrotik's WinBox? [y/N] " response
+confirm "Would you like to setup Mikrotik's WinBox? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         mkdir -p "${HOME}/.local/share/mikrotik/"
@@ -1192,7 +1311,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to setup Activity Watch? [y/N] " response
+confirm "Would you like to setup Activity Watch? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         mkdir -p "${HOME}/.local/opt/activitywatch/"
@@ -1219,7 +1338,7 @@ esac
 # https://github.com/LuaLS/lua-language-server
 # https://repology.org/project/lua-language-server/versions
 
-read -r -p "Would you like to setup WiFi? [y/N] " response
+confirm "Would you like to setup WiFi? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -1285,7 +1404,7 @@ case "$response" in
         ;;
 esac
 
-read -r -p "Would you like to install /etc/ configurations with root? [y/N] " response
+confirm "Would you like to install /etc/ configurations with root? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
         sudo rm -f "/etc/chrony.conf"
@@ -1322,7 +1441,7 @@ esac
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to remotely share the clipboard over SSH on this system? [y/N] " response
+    confirm "Would you like to remotely share the clipboard over SSH on this system? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])
@@ -1368,7 +1487,7 @@ case "$response" in
 esac
 
 if [[ "$(uname)" != "Darwin" ]]; then
-    read -r -p "Would you like to setup system permissions? [y/N] " response
+    confirm "Would you like to setup system permissions? [y/N] " n || true
     case "$response" in
         [yY][eE][sS] | [yY])
 
@@ -1410,7 +1529,7 @@ fi
 if [ -n "${AUTOMATED}" ]; then
     response='n'
 else
-    read -r -p "Would you like to install fonts? [y/N] " response
+    confirm "Would you like to install fonts? [y/N] " n || true
 fi
 case "$response" in
     [yY][eE][sS] | [yY])

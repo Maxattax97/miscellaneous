@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
 
+# Prevent aliases created by an earlier source from rewriting function bodies
+# while this file is parsed again. Aliases remain defined and are re-enabled at
+# the end of initialization.
+setopt no_aliases
+
 DOTFILES_PATH="${HOME}/src/miscellaneous"
 
 config_help=false
@@ -448,9 +453,11 @@ zshrc_autoload() {
         fpath+="/usr/share/zsh/vendor-completions"
     fi
 
-    autoload -Uz compinit && compinit
-    autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
-    autoload -Uz promptinit && promptinit
+    if [[ "${ZSHRC_LOAD_COMPLETIONS:-1}" == "1" ]]; then
+        autoload -Uz compinit && compinit
+        autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
+        autoload -Uz promptinit && promptinit
+    fi
     autoload -Uz add-zsh-hook
 
     autoload -Uz edit-command-line
@@ -470,6 +477,8 @@ zshrc_autoload() {
 }
 
 zshrc_source() {
+    zshrc_source_private_env_files
+
     # NOTE: This will append a path which points to a fzf binary which is
     # provided outside of the package manager. This is ideal behavior because
     # it offers preference to a distribution managed fzf binary.
@@ -490,6 +499,21 @@ zshrc_source() {
         eval "$(pyenv init -)"
         eval "$(pyenv virtualenv-init -)"
     fi
+}
+
+zshrc_source_private_env_files() {
+    local env_file
+    local env_files=(
+        "${HOME}/.config/private.env"
+    )
+
+    for env_file in "${env_files[@]}"; do
+        if [[ -r "${env_file}" ]]; then
+            set -a
+            source "${env_file}"
+            set +a
+        fi
+    done
 }
 
 zshrc_set_options() {
@@ -951,6 +975,7 @@ zshrc_set_path() {
 
     # Miscellaneous paths
     zshrc_add_path "${HOME}/.SpaceVim/bin" before
+    zshrc_add_path "${HOME}/.opencode/bin" before
 
     zshrc_add_path "${HOME}/.anaconda2/bin" before
     zshrc_add_path "${HOME}/anaconda2/bin" before
@@ -1283,7 +1308,7 @@ zshrc_load_library() {
         rm -rf "$payload_dir"
         mkdir -p "$payload_dir/.config"
 
-        cp "${dotfiles_path}/.zshrc" "$payload_dir/.zshrc"
+        cp "${dotfiles_path}/dot_zshrc" "$payload_dir/.zshrc"
         [ -f ~/.bashrc ] && cp ~/.bashrc "$payload_dir/.bashrc"
         [ -f ~/.tmux.conf ] && cp ~/.tmux.conf "$payload_dir/.tmux.conf"
         [ -d ~/.config/nvim ] && cp -R ~/.config/nvim "$payload_dir/.config/"
@@ -1636,6 +1661,75 @@ zshrc_load_library() {
         esac
     }
 
+    # Render Markdown (mermaid diagrams included) to a standalone HTML file and open it.
+    mdview() {
+        local src=${1:?usage: mdview <file.md>}
+        local out=${TMPDIR:-/tmp}/mdview-${src:t:r}.html
+        local header=${TMPDIR:-/tmp}/mdview-header.$$.html
+
+        cat >"$header" <<'MDVIEW_HEADER'
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: dark ? 'dark' : 'neutral',
+        suppressErrorRendering: true,  // else a bad diagram dumps a bomb graphic into <body>
+    });
+
+    // Pandoc emits <pre class="mermaid"><code>…</code></pre>, so mermaid gets the decoded
+    // text rather than the element. Rendering one at a time is deliberate: mermaid.run()
+    // aborts on the first syntax error and silently blanks every diagram after it.
+    let n = 0;
+    for (const pre of document.querySelectorAll('pre.mermaid')) {
+        const source = pre.textContent;
+        const fig = document.createElement('figure');
+        fig.className = 'mermaid';
+        try {
+            const { svg, bindFunctions } = await mermaid.render(`mermaid-${n++}`, source);
+            fig.innerHTML = svg;
+            bindFunctions?.(fig);
+        } catch (err) {
+            fig.classList.add('mermaid-error');
+            fig.textContent = `mermaid: ${err?.message ?? err}`;
+            fig.appendChild(Object.assign(document.createElement('pre'), { textContent: source }));
+        }
+        pre.replaceWith(fig);
+    }
+</script>
+<style>
+    html { color-scheme: light dark; }
+    body { max-width: 46rem; margin: 2rem auto; padding: 0 1rem;
+           font: 16px/1.6 -apple-system, system-ui, sans-serif; }
+    pre { background: #8881; padding: .75rem; overflow-x: auto; border-radius: 4px; }
+    code { font-size: .9em; }
+    /* Diagrams break out of the text column; a wide flowchart squeezed into 46rem is unreadable. */
+    figure.mermaid { width: 92vw; margin: 1.5rem 50%; transform: translateX(-50%);
+                     text-align: center; }
+    figure.mermaid.mermaid-error { width: auto; margin: 1.5rem 0; transform: none;
+                                   text-align: left; color: #c92a2a; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #8886; padding: .3rem .6rem; }
+    blockquote { border-left: 3px solid #8886; margin-left: 0; padding-left: 1rem; }
+    img { max-width: 100%; }
+</style>
+MDVIEW_HEADER
+
+        pandoc "$src" -t html5 --standalone --toc --embed-resources \
+            --metadata title="${src:t}" -H "$header" -o "$out"
+        local rc=$?  # zsh reserves $status, so do not name this one that
+        rm -f "$header"
+        [[ $rc -ne 0 ]] && return $rc
+
+        case "$OSTYPE" in
+            darwin*)  open "$out" ;;  # MacOS
+            linux*)   xdg-open "$out" ;;  # Linux
+            cygwin* | msys* | mingw*) start "$out" ;;  # Windows
+            *)        echo "Unsupported OS: $OSTYPE; wrote $out" ;;
+        esac
+    }
+
     troubleshoot() {
         dir=${1:-.}
         search=${2:-"warn|err|fatal|crit|panic|fail|segfault|exception"}
@@ -1665,11 +1759,11 @@ zshrc_load_library() {
 
     zshrc_source_idempotency() {
         # Path to your shell configuration file
-        CONFIG_FILE="$HOME/.zshrc"
+        local config_file="${1:-$HOME/.zshrc}"
 
         # Function to capture the current state of environment variables and functions
         zshrc_capture_state() {
-            env > "$1"
+            env >| "$1"
             declare -f >> "$1"
             alias >> "$1"
         }
@@ -1679,7 +1773,7 @@ zshrc_load_library() {
         zshrc_capture_state "$pre_state_file"
 
         # Source the configuration file
-        source "$CONFIG_FILE"
+        source "$config_file"
 
         # Capture the state after sourcing
         local post_state_file="$(mktemp)"
@@ -2103,6 +2197,7 @@ zshrc_set_aliases() {
     alias Einstall='sudo emerge --ask --verbose --tree --noreplace'
     alias Eclean='sudo emerge --ask --depclean'
     alias Esearch='emerge --search'
+    alias Eremove='sudo emerge --ask --verbose --unmerge'
 
     alias pytest='pytest --capture=tee-sys -vv'
 
@@ -2237,7 +2332,9 @@ zshrc_set_environment_variables() {
 
     # Gentoo users say number of threads + 1 -- this fills out the maximal amount of CPU usage.
     # Number of cores alone leaves enough CPU to process other things... like a desktop environment.
-    export MAKEFLAGS="${MAKEFLAGS} -j${CPU_THREADS}"
+    if [[ " ${MAKEFLAGS:-} " != *" -j${CPU_THREADS} "* ]]; then
+        export MAKEFLAGS="${MAKEFLAGS:-} -j${CPU_THREADS}"
+    fi
     export NUMCPU="${CPU_THREADS}"
 
     # Get the physical form factor of the machine.
@@ -2347,15 +2444,20 @@ zshrc_update_or_append() {
 }
 
 zshrc_sync_template() {
-    file="$1"
-    template="$2"
-    static_marker="# MOCULL STATIC"
+    local file="$1"
+    local template="$2"
+    local static_marker="# MOCULL STATIC"
 
-    if [ -s "$file" ] && grep -q "$static_marker" "$file"; then
+    # A static file is explicitly owned by the repository, not this helper.
+    if [ -s "$file" ] && grep -Fq "$static_marker" "$file"; then
         return
     fi
 
-    cp "$template" "$file"
+    # Pre-commit configuration is a complete YAML document. Replacing it as a
+    # unit keeps repeated setup runs idempotent and avoids nested managed blocks.
+    if [ ! -e "$file" ] || ! cmp -s "$template" "$file"; then
+        cp "$template" "$file"
+    fi
 }
 
 zshrc_setup_repo() {
@@ -2482,7 +2584,9 @@ zshrc_init() {
     fi
 
     # Load this after plugins so that we can get completions too.
-    zshrc_setup_completion
+    if [[ "${ZSHRC_LOAD_COMPLETIONS:-1}" == "1" ]]; then
+        zshrc_setup_completion
+    fi
 
     if ( $zshrc_dropping_mode ); then
         zshrc_dropping_mode=false
@@ -2495,3 +2599,4 @@ zshrc_init() {
 }
 
 zshrc_init
+setopt aliases

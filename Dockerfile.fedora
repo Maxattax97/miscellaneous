@@ -1,4 +1,6 @@
 FROM fedora:rawhide
+ARG REPO_URL
+ARG COMMIT_SHA
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3041
@@ -8,22 +10,25 @@ RUN dnf install -y \
 	sudo \
 	coreutils \
 	util-linux && \
-	dnf clean all
-
-RUN useradd -m max && \
+	dnf clean all && \
+	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER max
 ENV USER=max
 ENV SHELL=/bin/zsh
 
-RUN mkdir -p /home/max/src/miscellaneous && \
-	chown -R max:max /home/max/src
-COPY --chown=max . /home/max/src/miscellaneous/
+# NOTE: This is dangerous because it will include decrypted secrets in the image!
+#RUN mkdir -p /home/max/src/miscellaneous
+#COPY --chown=max . /home/max/src/miscellaneous/
+
+RUN mkdir -p /home/max/src
+WORKDIR /home/max/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/bash -o pipefail -c "awk 'BEGIN { print \"y\"; for (i = 0; i < 200; i++) print \"n\" }' | runuser -u max -- env AUTOMATED=1 /home/max/src/miscellaneous/install.sh" && \
-	dnf clean all
-
-USER max
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+	dnf clean all"
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]
 HEALTHCHECK NONE

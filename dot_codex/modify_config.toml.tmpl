@@ -1,0 +1,88 @@
+#!/bin/sh
+# Preserve machine-local Codex state while enforcing repository-managed defaults.
+exec awk '
+    function root_defaults() {
+        if (!model) print "model = \"gpt-5.6-sol\""
+        if (!effort) print "model_reasoning_effort = \"medium\""
+        if (!approvals) print "approvals_reviewer = \"auto_review\""
+    }
+    function agent_defaults() {
+        if (!submodel) print "default_subagent_model = \"gpt-5.6-luna\""
+        if (!subeffort) print "default_subagent_reasoning_effort = \"high\""
+    }
+    function tui_defaults() {
+        if (!statusline) print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
+        if (!statuscolors) print "status_line_use_colors = true"
+    }
+    skip_statusline {
+        if ($0 ~ /]/) skip_statusline = 0
+        next
+    }
+    /^\[/ {
+        if (!left_root) {
+            root_defaults()
+            left_root = 1
+        }
+        if (section == "agents") agent_defaults()
+        if (section == "tui") tui_defaults()
+        if ($0 ~ /^\[agents\][[:space:]]*$/) section = "agents"
+        else if ($0 ~ /^\[tui\][[:space:]]*$/) section = "tui"
+        else section = "other"
+        if (section == "agents") agents = 1
+        if (section == "tui") tui = 1
+        print
+        next
+    }
+    section == "" && /^[[:space:]]*model[[:space:]]*=/ {
+        print "model = \"gpt-5.6-sol\""
+        model = 1
+        next
+    }
+    section == "" && /^[[:space:]]*model_reasoning_effort[[:space:]]*=/ {
+        print "model_reasoning_effort = \"medium\""
+        effort = 1
+        next
+    }
+    section == "" && /^[[:space:]]*approvals_reviewer[[:space:]]*=/ {
+        print "approvals_reviewer = \"auto_review\""
+        approvals = 1
+        next
+    }
+    section == "agents" && /^[[:space:]]*default_subagent_model[[:space:]]*=/ {
+        print "default_subagent_model = \"gpt-5.6-luna\""
+        submodel = 1
+        next
+    }
+    section == "agents" && /^[[:space:]]*default_subagent_reasoning_effort[[:space:]]*=/ {
+        print "default_subagent_reasoning_effort = \"high\""
+        subeffort = 1
+        next
+    }
+    section == "tui" && /^[[:space:]]*status_line[[:space:]]*=/ {
+        print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
+        statusline = 1
+        if ($0 !~ /]/) skip_statusline = 1
+        next
+    }
+    section == "tui" && /^[[:space:]]*status_line_use_colors[[:space:]]*=/ {
+        print "status_line_use_colors = true"
+        statuscolors = 1
+        next
+    }
+    { print }
+    END {
+        if (!left_root) root_defaults()
+        if (section == "agents") agent_defaults()
+        if (section == "tui") tui_defaults()
+        if (!agents) {
+            print ""
+            print "[agents]"
+            agent_defaults()
+        }
+        if (!tui) {
+            print ""
+            print "[tui]"
+            tui_defaults()
+        }
+    }
+'

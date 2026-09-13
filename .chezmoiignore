@@ -1,6 +1,7 @@
 README.md
 LICENSE
 TODO.md
+AGENTS.md
 install.sh
 Dockerfile.*
 assets/**
