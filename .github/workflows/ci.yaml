@@ -28,6 +28,8 @@ jobs:
           VALIDATE_SHELL_SHFMT: false
           FILTER_REGEX_EXCLUDE: >-
             \.sample-secret\.md|\.lcovrc\.gcov\.css|\/archiso\/.*\.sh|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md|\/test\/source_idempotency\.zsh
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install --yes zsh
       - name: Check .zshrc source idempotency
         run: ./test/source_idempotency.zsh
 
@@ -39,6 +41,8 @@ jobs:
       matrix:
         distro: [archlinux, fedora, gentoo, debian, brew]
     steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
       - name: Build exact triggering revision
         uses: docker/build-push-action@v7
         with:
@@ -84,6 +88,8 @@ jobs:
         with:
           images: dotfiles
           tags: ${{ matrix.tags }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
       - name: Build and push exact validated revision
         uses: docker/build-push-action@v7
         with:
