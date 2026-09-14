@@ -46,7 +46,7 @@ zshrc_probe() {
 
 zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
-        local session_count=$(tmux ls 2>/dev/null | wc -l)
+        local session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
         if type tmuxp > /dev/null 2>&1; then
             if [[ -z "$TMUX" ]]; then
                 # If we haven't entered tmux yet, then load the tmuxp
@@ -63,9 +63,9 @@ zshrc_enter_tmux() {
                 zshrc_display_banner
             fi
         else
-            local session_count=$(tmux ls 2>/dev/null | wc -l)
+            local session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
             if [[ "$session_count" -eq "0" ]]; then
-                tmux -2 new-session -s "Main"
+                "${commands[tmux]}" -2 new-session -s "Main"
             else
                 # Make sure we are not already in a tmux session
                 if [[ -z "$TMUX" ]]; then
@@ -75,10 +75,10 @@ zshrc_enter_tmux() {
 
                     # Create a new session (without attaching it) and link to base session
                     # to share windows
-                    tmux -2 new-session -d -t Main -s "$session_id"
+                    "${commands[tmux]}" -2 new-session -d -t Main -s "$session_id"
 
                     # Attach to the new session & kill it once orphaned
-                    tmux -2 attach-session -t "$session_id" \; set-option destroy-unattached
+                    "${commands[tmux]}" -2 attach-session -t "$session_id" \; set-option destroy-unattached
                 else
                     zshrc_display_banner
                 fi
@@ -806,12 +806,12 @@ zshrc_extensions() {
 
 zshrc_display_banner() {
     if ( ! "$zshrc_low_power" ); then
-        if type fastfetch > /dev/null 2>&1; then
-            fastfetch
-        elif type neofetch > /dev/null 2>&1; then
-            neofetch --disable "packages"
-        elif type screenfetch > /dev/null 2>&1; then
-            screenfetch -d '-pkgs,wm,de,res,gtk;+disk' -E
+        if (( $+commands[fastfetch] )); then
+            "${commands[fastfetch]}"
+        elif (( $+commands[neofetch] )); then
+            "${commands[neofetch]}" --disable "packages"
+        elif (( $+commands[screenfetch] )); then
+            "${commands[screenfetch]}" -d '-pkgs,wm,de,res,gtk;+disk' -E
             echo
         fi
 
@@ -2035,6 +2035,7 @@ MDVIEW_HEADER
     }
 
     # Replacement for zplug calc plugin
+    unalias cc 2>/dev/null
     cc() {
         python3 -c "from math import *; print($*);"
     }

@@ -656,49 +656,14 @@ case "$response" in
         # Pull GPG keys for max.ocull@protonmail.com
         gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
-        # Gentoo keys
-        gpg --keyserver hkps://keys.gentoo.org --receive-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
-
-        # FreeBSD team keys
-        curl -s https://docs.freebsd.org/pgpkeys/pgpkeys.txt | gpg --import
-
-        # Linux Kernel
-        # https://www.kernel.org/signature.html
-        ## Linus Torvalds
-        # Use kernel.org's WKD so the key includes its verified kernel.org UID.
-        gpg --auto-key-locate clear,wkd --locate-keys torvalds@kernel.org
-        ## Greg Kroah-Hartman
-        gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
-        ## Sasha Levin
-        gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
-        ## Ben Hutchings
-        gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
-        ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
-        gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
-
-        # Arch Linux Official Keys
-        # https://archlinux.org/master-keys/
-        ## Florian Pritz
-        gpg --receive-keys 91FFE0700E80619CEB73235CA88E23E377514E00
-        ## Levente Polyak
-        gpg --receive-keys D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C
-        ## David Runge
-        gpg --receive-keys 2AC0A42EFB0B5CBC7A0402ED4DC95B6D7BE9892E
-        ## Johannes Löthberg
-        gpg --receive-keys 69E6471E3AE065297529832E6BA0F5A2037F4F41
-        ## Leonidas Spyropoulos
-        gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
-
-        # AWS CLI Team
+        # AWS CLI Team. This key is required by the optional AWS CLI signature
+        # verification below; keep it in the installer keyring.
         gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
-        # Github CLI: opensource+cli@github.com
-        ## You may need this:
-        ## https://github.com/cli/cli/issues/9569
-        gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
-
-        # Veracrypt
-        gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
+        # Do not bulk-import unrelated Gentoo, FreeBSD, kernel, Arch, GitHub
+        # CLI, or VeraCrypt keys here. None are used by this installer, and
+        # some keyservers publish keys without user IDs (which makes GnuPG
+        # fail with status 2 under `set -e`, as happened for Greg Kroah-Hartman).
 
         ;;
     *)

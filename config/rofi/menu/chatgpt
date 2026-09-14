@@ -6,7 +6,7 @@ fi
 
 notify-send -a "ChatGPT" "Awaiting response from OpenAI servers ..." -i "$HOME/.config/rofi/openai.svg"
 
-ANSWER=$($HOME/.local/bin/sgpt "$INPUT")
+ANSWER=$("$HOME/.local/bin/sgpt" "$INPUT")
 yad --info --text="$ANSWER"
 
 #($TERMINAL $PAGER $file) &

@@ -7,14 +7,14 @@ export HOSTNAME
 
 bspc monitor -d I II III IV V VI VII VIII IX X
 
-bspc config border_width            1
-bspc config window_gap              6
-bspc config top_padding             20
+bspc config border_width 1
+bspc config window_gap 6
+bspc config top_padding 20
 
-bspc config split_ratio             0.50
-bspc config borderless_monocle      true
-bspc config gapless_monocle         true
-bspc config automatic_scheme  alternate
+bspc config split_ratio 0.50
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config automatic_scheme alternate
 
 # Use `xprop` to find these, use 2nd entry of WM_CLASS.
 bspc rule -a Gimp desktop='^8' state=floating follow=on
@@ -41,26 +41,23 @@ function runOnce() {
     logfile="${3}"
     args="${*:4}"
 
-    existing_pid="$(pidof "$cmd")"
-    existing_pid_code=$?
-
-    if [ $existing_pid_code -eq 0 ]; then
+    if pidof "$cmd" > /dev/null; then
         echo "$cmd is already running, skipping ..."
         return
     fi
 
     exec_str="${cmd} ${args}"
 
-    if [ -n $logfile ]; then
-        if [ ! -d $bspwm_log_root ]; then
-            mkdir -p $bspwm_log_root
+    if [ -n "$logfile" ]; then
+        if [ ! -d "$bspwm_log_root" ]; then
+            mkdir -p "$bspwm_log_root"
         fi
 
-        echo "=== BSPWM LOG BEGIN @ $(date -Iseconds) ===" > ${bspwm_log_root}/${logfile}
+        echo "=== BSPWM LOG BEGIN @ $(date -Iseconds) ===" > "${bspwm_log_root}/${logfile}"
         exec_str="${exec_str} >>${bspwm_log_root}/${logfile} 2>&1"
     fi
 
-    if [ $fork = true ]; then
+    if [ "$fork" = true ]; then
         exec_str="${exec_str} &"
     fi
 
@@ -69,7 +66,7 @@ function runOnce() {
     #forked_pid=$!
 
     #if [ $fork = true ];
-        #return forked_pid
+    #return forked_pid
     #fi
 }
 
@@ -99,13 +96,13 @@ runOnce st true st.log
 runOnce dunst true dunst.log
 runOnce copyq true copyq.log
 
-if [[ "$HOSTNAME" == "Maxattax-Arch" ]]; then
+if [[ $HOSTNAME == "Maxattax-Arch" ]]; then
     runOnce brave true brave.log --profile-directory="Default" # Personal
 
     if [[ -x "$(command -v nextcloud)" ]]; then
         runOnce nextcloud true nextcloud.log --background
     fi
-elif [[ "$HOSTNAME" == "mocull-endeavor" ]]; then
+elif [[ $HOSTNAME == "mocull-endeavor" ]]; then
     runOnce brave true brave.log --profile-directory="Profile 2" # Work
     runOnce brave true brave.log --profile-directory="Profile 3" # Personal
 
@@ -113,7 +110,7 @@ elif [[ "$HOSTNAME" == "mocull-endeavor" ]]; then
     #systemctl --user restart blueman-manager.service pipewire-pulse.service pipewire.service
 
     if [[ -x "$(command -v blueman-tray)" ]]; then
-            # Sometimes I have to run `blueman-manager` once to get the services to kick in... odd.
+        # Sometimes I have to run `blueman-manager` once to get the services to kick in... odd.
         runOnce blueman-tray true blueman_tray.log
     fi
 else
@@ -146,8 +143,7 @@ if (xrandr --prop | grep -q '031e0104b55021783b64f5ad5049a322'); then
 fi
 
 while true; do
-    pidof picom >> /dev/null 2>&1
-    if [ $? -ne 0 ]; then
+    if ! pidof picom >> /dev/null 2>&1; then
         if [ ! -s "${HOME}/.cache/max_enable_picom" ]; then
             echo "1" > "${HOME}/.cache/max_enable_picom"
         fi

@@ -2,11 +2,22 @@
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
+extend-exclude = '''
+/(config/weechat/python)/
+'''
 
 [tool.isort]
 profile = "black"
 filter_files = true
 line_length = 88
+skip_glob = ["config/weechat/python/*.py", "config/weechat/python/autoload/*.py"]
+
+[tool.ruff]
+line-length = 88
+extend-exclude = ["config/weechat/python"]
+
+[tool.pylint.main]
+ignore-paths = ["config/weechat/python/.*\\.py$"]
 
 [tool.mypy]
 ignore_missing_imports = false

@@ -120,18 +120,23 @@ def _evaluate_unlocked(event: dict) -> dict:
             if exists and not ranged and fingerprint in seen:
                 result = {
                     "decision": "deny",
-                    "message": "This unchanged file was already read in full; use a ranged read or inspect its diff.",
+                    "message": (
+                        "This unchanged file was already read in full; use a "
+                        "ranged read or inspect its diff."
+                    ),
                 }
             elif exists and not ranged:
                 seen[fingerprint] = True
         if result["decision"] == "allow" and state["broad_reads"] in {4, 8}:
             result["context"] = (
-                "Several broad reads/searches have occurred. Narrow the search or delegate an independent investigation when available."
+                "Several broad reads/searches have occurred. Narrow the search "
+                "or delegate an independent investigation when available."
             )
     elif kind in {"pre_compact", "session_end"} and not disabled("summary"):
         result["context"] = (
             f"Session hygiene: {sum(counts.values())} stable events, "
-            f"{state.get('delegations', 0)} delegations, {counts.get('pre_compact', 0)} compactions."
+            f"{state.get('delegations', 0)} delegations, "
+            f"{counts.get('pre_compact', 0)} compactions."
         )
     save(path, state)
     return result

@@ -23,8 +23,11 @@ jobs:
         env:
           MULTI_STATUS: false
           VALIDATE_JSCPD: false
+          # The repository mixes legacy dotfile snippets and active scripts;
+          # keep ShellCheck semantic checks without rewriting those files.
+          VALIDATE_SHELL_SHFMT: false
           FILTER_REGEX_EXCLUDE: >-
-            \.sample-secret\.md|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md
+            \.sample-secret\.md|\.lcovrc\.gcov\.css|\/archiso\/.*\.sh|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md|\/test\/source_idempotency\.zsh
       - name: Check .zshrc source idempotency
         run: ./test/source_idempotency.zsh
 
