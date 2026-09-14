@@ -47,6 +47,8 @@ jobs:
           build-args: |
             REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
             COMMIT_SHA=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: false
 
   publish-images:
@@ -90,6 +92,8 @@ jobs:
           build-args: |
             REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
             COMMIT_SHA=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

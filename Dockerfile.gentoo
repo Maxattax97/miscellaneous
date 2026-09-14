@@ -2,15 +2,27 @@ FROM gentoo/stage3:amd64-openrc
 ARG REPO_URL
 ARG COMMIT_SHA
 
-# Copy our configurations in so it builds faster.
+# Bootstrap Portage with the normal source-build configuration. The CI-only
+# configuration enabling portable flags and signed binpkgs is copied below.
 COPY --chown=root:root config/portage/make.conf /etc/portage/make.conf
 COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
 
-# Update the release key, update the system, select a profile, and install packages.
+# Update the release key and install the binpkg trust bootstrap before enabling
+# the CI binhost. This also works if a future stage3 image omits getuto.
 # This is a rolling image, so package versions are intentionally unlocked.
 # hadolint ignore=DL3041
 RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo.org/output/service-keys.gpg && \
 	emerge --sync && \
+	emerge --tree --noreplace app-portage/getuto && \
+	getuto
+
+COPY --chown=root:root config/portage/ci/make.conf /etc/portage/make.conf
+COPY --chown=root:root config/portage/ci/binrepos.conf/ /etc/portage/binrepos.conf/
+
+# Update the system and install the packages under test, preferring signed
+# official binpkgs and compiling from source only when no compatible binpkg exists.
+# hadolint ignore=DL3041
+RUN \
 	eselect profile set default/linux/amd64/23.0 && \
 	emerge --tree --update --deep --newuse @world && \
 	emerge --depclean && \

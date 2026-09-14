@@ -360,6 +360,7 @@ case "$response" in
                 bat \
                 btop \
                 cargo \
+                chezmoi \
                 ctags \
                 curl \
                 dnf-plugins-core \
@@ -566,9 +567,21 @@ case "$response" in
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
-            previous_dir="$(pwd)"
-            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
-            cd "$previous_dir" || exit
+            (
+                cd "${HOME}"
+                chezmoi_installer="$(mktemp)"
+                trap 'rm -f "${chezmoi_installer}"' EXIT
+                curl \
+                    --connect-timeout 15 \
+                    --max-time 120 \
+                    --retry 4 \
+                    --retry-delay 2 \
+                    --retry-max-time 180 \
+                    -fsSL \
+                    https://get.chezmoi.io \
+                    -o "${chezmoi_installer}"
+                sh "${chezmoi_installer}"
+            )
         fi
 
         if [[ ! -x "$(command -v rtk)" ]]; then
