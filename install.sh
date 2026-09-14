@@ -464,6 +464,7 @@ case "$response" in
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
             # git-delta is distributed as a release .deb, not through apt.
+            sudo apt-get update
             sudo apt-get install -y \
                 bat \
                 btop \
@@ -664,8 +665,8 @@ case "$response" in
         # Linux Kernel
         # https://www.kernel.org/signature.html
         ## Linus Torvalds
-        # keys.openpgp.org strips unverified user IDs, causing GnuPG to return 2.
-        gpg --keyserver keyserver.ubuntu.com --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
+        # Use kernel.org's WKD so the key includes its verified kernel.org UID.
+        gpg --auto-key-locate clear,wkd --locate-keys torvalds@kernel.org
         ## Greg Kroah-Hartman
         gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
         ## Sasha Levin
