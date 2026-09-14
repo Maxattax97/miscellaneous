@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
+# ShellCheck has no zsh parser. These diagnostics are false positives for zsh
+# special parameters, values consumed by plugins, and dynamic startup files.
+# shellcheck disable=SC1090,SC1091,SC2016,SC2029,SC2034,SC2139,SC2154
 
 DOTFILES_PATH="${HOME}/src/miscellaneous"
 
@@ -46,13 +49,15 @@ zshrc_probe() {
 
 zshrc_enter_tmux() {
     if [[ -n "$(command -v tmux)" ]]; then
-        local session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
+        local session_count
+        session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
         if type tmuxp > /dev/null 2>&1; then
             if [[ -z "$TMUX" ]]; then
                 # If we haven't entered tmux yet, then load the tmuxp
                 # configuration for the current host, and attach if it already
                 # exists.
-                local host_config="${HOME}/.tmuxp/$(hostname).yaml"
+                local host_config
+                host_config="${HOME}/.tmuxp/$(hostname).yaml"
                 if [ -s "${host_config}" ]; then
                     tmuxp load -y "${host_config}"
                 else
@@ -63,7 +68,7 @@ zshrc_enter_tmux() {
                 zshrc_display_banner
             fi
         else
-            local session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
+            session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
             if [[ "$session_count" -eq "0" ]]; then
                 "${commands[tmux]}" -2 new-session -s "Main"
             else
@@ -71,7 +76,8 @@ zshrc_enter_tmux() {
                 if [[ -z "$TMUX" ]]; then
                     # Session id is date and time to prevent conflict
                     # TODO: Make session number more... meaningful?
-                    local session_id="$(date +%H%M%S)"
+                    local session_id
+                    session_id="$(date +%H%M%S)"
 
                     # Create a new session (without attaching it) and link to base session
                     # to share windows
@@ -103,7 +109,7 @@ zshrc_auto_window_title() {
 
         # if $2 is unset use $1 as default
         # if it is set and empty, leave it as is
-        : ${2=$1}
+        : "${2=$1}"
 
         case "$TERM" in
             cygwin|xterm*|putty*|rxvt*|ansi)
@@ -132,7 +138,7 @@ zshrc_auto_window_title() {
                 else
                     # Try to use terminfo to set the title
                     # If the feature is available set title
-                    if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
+                    if [[ -n "${terminfo[fsl]}" ]] && [[ -n "${terminfo[tsl]}" ]]; then
                         echoti tsl
                         print -Pn "$1"
                         echoti fsl
@@ -157,7 +163,7 @@ zshrc_auto_window_title() {
             return
         fi
 
-        title $ZSH_THEME_TERM_TAB_TITLE_IDLE $ZSH_THEME_TERM_TITLE_IDLE
+        title "$ZSH_THEME_TERM_TAB_TITLE_IDLE" "$ZSH_THEME_TERM_TITLE_IDLE"
     }
 
     # Runs before executing the command
@@ -192,8 +198,10 @@ zshrc_auto_window_title() {
             emulate -L zsh
 
             # Percent-encode the pathname.
-            local URL_PATH="$(omz_urlencode -P $PWD)"
-            [[ $? != 0 ]] && return 1
+            local URL_PATH
+            if ! URL_PATH="$(omz_urlencode -P "$PWD")"; then
+                return 1
+            fi
 
             # Undocumented Terminal.app-specific control sequence
             printf '\e]7;%s\a' "file://$HOST$URL_PATH"
@@ -216,7 +224,7 @@ zshrc_setup_completion() {
     # zstyle ':completion:*' format '> Completing %d ...'
     # zstyle ':completion:*' insert-unambiguous true
     # shellcheck disable=SC2296
-    zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
+    zstyle ":completion:*:default" list-colors "${(s.:.)LS_COLORS}"
     # zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
     # zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'l:|=* r:|=*'
     # zstyle ':completion:*' max-errors 4
@@ -282,7 +290,7 @@ zshrc_setup_completion() {
 
     # Use caching so that commands like apt and dpkg complete are useable
     zstyle ':completion::complete:*' use-cache 1
-    zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
+    zstyle ':completion::complete:*' cache-path "$ZSH_CACHE_DIR"
 
     # Don't complete uninteresting users
     zstyle ':completion:*:*:*:users' ignored-patterns \
@@ -304,9 +312,9 @@ zshrc_setup_completion() {
     # if [[ $COMPLETION_WAITING_DOTS = true ]]; then
     expand-or-complete-with-dots() {
         # toggle line-wrapping off and back on again
-        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
+        [[ -n "${terminfo[rmam]}" && -n "${terminfo[smam]}" ]] && echoti rmam
         print -Pn "%{%F{red}......%f%}"
-        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
+        [[ -n "${terminfo[rmam]}" && -n "${terminfo[smam]}" ]] && echoti smam
 
         zle expand-or-complete
         zle redisplay
@@ -316,7 +324,7 @@ zshrc_setup_completion() {
     bindkey "^I" expand-or-complete-with-dots
     # fi
 
-    zstyle :compinstall filename '~/.zshrc'
+    zstyle :compinstall filename "$HOME/.zshrc"
 
     if type rustup > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_rustup" ]]; then
@@ -330,8 +338,9 @@ zshrc_setup_completion() {
 
     # Load `awscli`'s completions if available.
     # NOTE: These are bash completions!
-    local aws_completer_path="$(command -v aws_completer)"
-    if [ -x $aws_completer_path ]; then
+    local aws_completer_path
+    aws_completer_path="$(command -v aws_completer)"
+    if [ -x "$aws_completer_path" ]; then
         complete -C "$aws_completer_path" aws
     fi
 
@@ -709,7 +718,7 @@ zshrc_zplug() {
         zplug "mfaerevaag/wd", as:command, use:"wd.sh", hook-load:"wd() { . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh }"
         # For some reason, the hook doesn't always work...
         wd() {
-            . $ZPLUG_REPOS/mfaerevaag/wd/wd.sh
+            . "$ZPLUG_REPOS/mfaerevaag/wd/wd.sh"
         }
         # Add zsh completion for this plugin.
         if [[ -d "${HOME}/.zplug/repos/mfaerevaag/wd/" ]]; then
@@ -938,13 +947,13 @@ zshrc_set_path() {
     # Dynamically add the ruby gem paths.
     if type gem > /dev/null 2>&1; then
         # Sometimes this path doesn't exist.
-        local user_gem_path=$(gem env user_gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
+        local user_gem_path
+        if user_gem_path=$(gem env user_gemdir 2>/dev/null); then
             zshrc_add_path "${user_gem_path}/bin" before
         fi
 
-        local gem_path=$(gem env gemdir 2>/dev/null)
-        if [ $? -eq 0 ]; then
+        local gem_path
+        if gem_path=$(gem env gemdir 2>/dev/null); then
             zshrc_add_path "${gem_path}/bin" before
         fi
     fi
@@ -988,7 +997,7 @@ zshrc_load_library() {
     }
 
     mirrorweb() {
-        wget --mirror --page-requisites --no-parent --adjust-extension --convert-links --recursive --level=inf --continue --no-clobber $@
+        wget --mirror --page-requisites --no-parent --adjust-extension --convert-links --recursive --level=inf --continue --no-clobber "$@"
     }
 
     # Download and run a curl based Party Parrot animation.
@@ -1187,14 +1196,15 @@ zshrc_load_library() {
     }
 
     bomb() {
+        # shellcheck disable=SC2264 # This intentionally defines a fork bomb.
         bomb | bomb &
     }
 
     tone() {
-        (speaker-test --frequency $1 --test sine > /dev/null 2>&1) &
+        (speaker-test --frequency "$1" --test sine > /dev/null 2>&1) &
         pid=$!
-        sleep 0.${2}s
-        kill -13 $pid
+        sleep "0.${2}s"
+        kill -13 "$pid"
     }
 
     waitonline() {
@@ -1240,7 +1250,9 @@ zshrc_load_library() {
     dockerclean() {
         echo "Cleaning Docker images and containers ..."
         sudo docker system prune --all
+        # shellcheck disable=SC2046 # Each output line is intentionally a separate argument.
         sudo docker rm $(sudo docker ps -a -q)
+        # shellcheck disable=SC2046 # Each output line is intentionally a separate argument.
         sudo docker rmi $(docker images -q)
 
         docker ps -a --format '{{ if eq (truncate .Names 19) "GITEA-ACTIONS-TASK-" }}{{ .ID }}{{ end }}' | xargs docker rm -f
@@ -1304,11 +1316,10 @@ zshrc_load_library() {
     }
 
     forever() {
-        cmd_base="$1"
-        cmd_args=$@
+        local -a cmd_args=("$@")
 
         while true; do
-            $cmd_args
+            "${cmd_args[@]}"
             exit_code=$?
             if [ "$exit_code" != 0 ]; then
                 echo "$1 has crashed, restarting ..."
@@ -1327,12 +1338,12 @@ zshrc_load_library() {
             *) echo good ;;
         esac
         shift
-        cmd_with_args=$@
+        local -a cmd_with_args=("$@")
 
         while true; do
             clear
-            $cmd_with_args
-            sleep $delay
+            "${cmd_with_args[@]}"
+            sleep "$delay"
         done
     }
 
@@ -1397,7 +1408,7 @@ zshrc_load_library() {
             if [[ "${hex:0:2}" != "0x" ]]; then
                 B="$(h2d "${B}")"
             fi
-            [ $B -lt 1024 ] && echo ${B} B && break
+            [ "$B" -lt 1024 ] && echo "${B}" B && break
             KB=$(((B+512)/1024))
             [ $KB -lt 1024 ] && echo ${KB} KiB && break
             MB=$(((KB+512)/1024))
@@ -1414,7 +1425,7 @@ zshrc_load_library() {
 
     dehumanize() {
         for v in "${@:-$(</dev/stdin)}"; do
-            echo $v | awk \
+            echo "$v" | awk \
             'BEGIN{IGNORECASE = 1}
                 function printpower(n,b,p) {printf "%u\n", n*b^p; next}
                 /[0-9]$/{print $1;next};
@@ -1444,7 +1455,7 @@ zshrc_load_library() {
 
     # Go to the root of the current git repository.
     groot() {
-        cd "$(git rev-parse --show-toplevel)"
+        cd "$(git rev-parse --show-toplevel)" || return
     }
 
     power-sleep() {
@@ -1453,7 +1464,8 @@ zshrc_load_library() {
 
     power-hibernate() {
         # TODO: This wont work with a swap *file*.
-        local device="$(lsblk -b | grep -i 'swap' | awk '{ printf $4 " " $2 "\n" }' | sort -n -r | awk '{ printf $2 "\n" }' | head -n 1)"
+        local device
+        device="$(lsblk -b | grep -i 'swap' | awk '{ printf $4 " " $2 "\n" }' | sort -n -r | awk '{ printf $2 "\n" }' | head -n 1)"
         if [ -n "$device" ]; then
             sudo sh -c "echo $device > /sys/power/resume"
             sudo sh -c 'echo "disk" > /sys/power/state'
@@ -1463,7 +1475,7 @@ zshrc_load_library() {
     }
 
     image-boost() {
-        mogrify -auto-gamma -auto-level -normalize $@
+        mogrify -auto-gamma -auto-level -normalize "$@"
     }
 
     image-optimize() {
@@ -1478,23 +1490,23 @@ zshrc_load_library() {
 
     image-shrink() {
         # Golden ratio
-        mogrify -resize 61.8% $@
+        mogrify -resize 61.8% "$@"
     }
 
     image-enhance() {
-        image-shrink $@
-        image-boost $@
-        image-optimize $@
+        image-shrink "$@"
+        image-boost "$@"
+        image-optimize "$@"
     }
 
     image-scale() {
         scale=$1
         shift
-        mogrify -scale $scale $@
+        mogrify -scale "$scale" "$@"
     }
 
     pdf-optimize() {
-        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/ebook -dNOPAUSE -dBATCH -dQUIET -sOutputFile=$1 $1
+        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/ebook -dNOPAUSE -dBATCH -dQUIET -sOutputFile="$1" "$1"
     }
 
     audio-normalize() {
@@ -1536,8 +1548,8 @@ zshrc_load_library() {
     }
 
     audio-enhance() {
-        audio-normalize $@
-        audio-optimize $@
+        audio-normalize "$@"
+        audio-optimize "$@"
     }
 
     audio-remote-play() {
@@ -1548,8 +1560,7 @@ zshrc_load_library() {
         for file in "$@"; do
             duration=$(ffprobe -v error -show_entries format=duration "$file"  | awk -F'[= ]+' '/duration/{print $2}')
 
-            fade_in_start=0
-            fade_out_start="$(( duration - 1.0 ))"
+            fade_out_start="$(awk -v duration="$duration" 'BEGIN { print duration - 1.0 }')"
 
             ffmpeg -i "$file" -af "afade=st=0:d=1:t=in,afade=st=${fade_out_start}:d=1:t=out" "faded_$file"
             mv "faded_$file" "$file"
@@ -1618,7 +1629,8 @@ zshrc_load_library() {
     }
 
     web_repo() {
-        local repo_url="$(git config --get remote.origin.url)"
+        local repo_url
+        repo_url="$(git config --get remote.origin.url)"
 
         if [[ -z "$repo_url" ]]; then
             echo "Not a git repository or no remote.origin.url found"
@@ -1631,7 +1643,7 @@ zshrc_load_library() {
         fi
 
         # Used for both SSH and HTTPS URLs
-        repo_url=$(echo "$repo_url" | sed -e 's|\.git$||')
+        repo_url="${repo_url%.git}"
 
         echo "Navigating to: $repo_url ..."
         case "$OSTYPE" in
@@ -1750,14 +1762,16 @@ MDVIEW_HEADER
         }
 
         # Capture the initial state
-        local pre_state_file="$(mktemp)"
+        local pre_state_file
+        pre_state_file="$(mktemp)"
         zshrc_capture_state "$pre_state_file"
 
         # Source the configuration file
         source "$CONFIG_FILE"
 
         # Capture the state after sourcing
-        local post_state_file="$(mktemp)"
+        local post_state_file
+        post_state_file="$(mktemp)"
         zshrc_capture_state "$post_state_file"
 
         # Compare the environment variables and functions before and after sourcing
@@ -1778,7 +1792,8 @@ MDVIEW_HEADER
     }
 
     wait_release() {
-        local latest_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+        local latest_release_tag
+        latest_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
 
         echo "Current latest release: $latest_release_tag"
 
@@ -1786,7 +1801,8 @@ MDVIEW_HEADER
             sleep 10
 
             # Fetch the latest release tag again
-            local new_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
+            local new_release_tag
+            new_release_tag="$(gh release list --json tagName --jq '.[0].tagName')"
 
             if [ "$new_release_tag" != "$latest_release_tag" ]; then
                 echo "" # Insert a newline before the next print
@@ -1807,7 +1823,7 @@ MDVIEW_HEADER
         fi
 
         if [ -x "$(command -v xclip)" ]; then
-            echo "\nxclip:"
+            printf '\nxclip:\n'
             echo "Primary: \"$(xclip -out -selection primary)\""
             echo "Secondary: \"$(xclip -out -selection secondary)\""
             echo "Clipboard: \"$(xclip -out -selection clipboard)\""
@@ -1816,14 +1832,15 @@ MDVIEW_HEADER
     }
 
     tstamp() {
+        local -a cmd
         if date --version 2>&1 | grep -q 'GNU coreutils'; then
-            cmd='date -u --iso-8601=ns'
+            cmd=(date -u --iso-8601=ns)
         else
             # *BSD
-            cmd='date -u +"%Y-%m-%dT%H:%M:%S%:z"'
+            cmd=(date -u +"%Y-%m-%dT%H:%M:%S%:z")
         fi
         while IFS= read -r line; do
-            printf "[\033[0;34m%s\033[0m] %s\n" "$($cmd)" "$line";
+            printf "[\033[0;34m%s\033[0m] %s\n" "$("${cmd[@]}")" "$line"
         done
     }
 
@@ -1846,7 +1863,7 @@ MDVIEW_HEADER
 
         # Reset to default
         echo -e "\033[0mDefault Text"
-        echo "Example: \\\\033[1;34mBold Blue Text\\\\033[0m (Reset)"
+        printf '%s\n' 'Example: \\033[1;34mBold Blue Text\\033[0m (Reset)'
         echo "To type an ANSI color code in Vim, use \`Ctrl+v Esc\`, then enter the digits"
         # :help i_CTRL-V_digit
     }
@@ -1858,8 +1875,10 @@ MDVIEW_HEADER
 
     ssh-copy-id-mikrotik() {
         local userAtHost="$1"
-        local user=$(echo "$userAtHost" | cut -d "@" -f 1)
-        local key_filename="key_$(random_string 5).txt"
+        local user
+        user=$(echo "$userAtHost" | cut -d "@" -f 1)
+        local key_filename
+        key_filename="key_$(random_string 5).txt"
 
         ssh "$userAtHost" "/file add name=${key_filename} contents=\"$(cat ~/.ssh/id_rsa.pub)\"; /user ssh-keys import user=${user} public-key-file=${key_filename}; /file remove ${key_filename};"
     }
@@ -1867,7 +1886,8 @@ MDVIEW_HEADER
     mtik-exec() {
         local mtik_host="${1:-rb3011}"
         local script_path="${2}"
-        local script_name="$(basename "$script_path")"
+        local script_name
+        script_name="$(basename "$script_path")"
 
         # Create a temporary file to store our scripts.
         ssh "$mtik_host" "/file/add type=directory name=scripts" > /dev/null
@@ -1884,8 +1904,10 @@ MDVIEW_HEADER
     }
 
     screen-rescale() {
-        local factor="$(zcalc -f -e "1 / ${1:-1}")"
-        local monitor="$(xrandr --listmonitors | awk '{ print $4}' | tail -n 1)"
+        local factor
+        factor="$(zcalc -f -e "1 / ${1:-1}")"
+        local monitor
+        monitor="$(xrandr --listmonitors | awk '{ print $4}' | tail -n 1)"
         xrandr --output "${monitor}" --scale "${factor}x${factor}"
     }
 
@@ -2050,7 +2072,11 @@ zshrc_set_aliases() {
     # Enable color support of ls and also add handy aliases.
     export CLICOLOR=1 # For macOS VM's ... Dumb it's not enabled by default.
     if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        if test -r ~/.dircolors; then
+            eval "$(dircolors -b ~/.dircolors)"
+        else
+            eval "$(dircolors -b)"
+        fi
         alias ls='ls --color=auto'
         alias sl="sudo ls --color=auto"
         #alias dir='dir --color=auto'
@@ -2208,18 +2234,22 @@ zshrc_set_aliases() {
 zshrc_set_default_programs() {
     # For heavyweight purposes.
     if type nvim > /dev/null 2>&1; then
-        export VISUAL="$(which nvim)"
+        export VISUAL
+        VISUAL="$(command -v nvim)"
         if [[ -d "${HOME}/.SpaceVim" ]]; then
             alias vim="nvim"
         fi
     elif type vim > /dev/null 2>&1; then
-        export VISUAL="$(which vim)"
+        export VISUAL
+        VISUAL="$(command -v vim)"
         alias nvim="vim"
     elif type vi > /dev/null 2>&1; then
-        export VISUAL="$(which vi)"
+        export VISUAL
+        VISUAL="$(command -v vi)"
         alias nvim="vi"
     elif type nano > /dev/null 2>&1; then
-        export VISUAL="$(which nano)"
+        export VISUAL
+        VISUAL="$(command -v nano)"
     fi
 
     # For lightweight purposes.
@@ -2229,26 +2259,34 @@ zshrc_set_default_programs() {
     export MANPAGER="less"
 
     if type brave > /dev/null 2>&1; then
-        export BROWSER="$(which brave)"
+        export BROWSER
+        BROWSER="$(command -v brave)"
     elif type brave-browser > /dev/null 2>&1; then
-        export BROWSER="$(which brave-browser)"
+        export BROWSER
+        BROWSER="$(command -v brave-browser)"
     elif type firefox > /dev/null 2>&1; then
-        export BROWSER="$(which firefox)"
+        export BROWSER
+        BROWSER="$(command -v firefox)"
     elif type chromium > /dev/null 2>&1; then
-        export BROWSER="$(which chromium)"
+        export BROWSER
+        BROWSER="$(command -v chromium)"
     elif type google-chrome-stable > /dev/null 2>&1; then
-        export BROWSER="$(which google-chrome-stable)"
+        export BROWSER
+        BROWSER="$(command -v google-chrome-stable)"
     fi
 
     if type st > /dev/null 2>&1; then
-        export TERMINAL="$(which st)"
+        export TERMINAL
+        TERMINAL="$(command -v st)"
     elif type urxvt-256color > /dev/null 2>&1; then
-        export TERMINAL="$(which urxvt-256color)"
+        export TERMINAL
+        TERMINAL="$(command -v urxvt-256color)"
     elif type konsole > /dev/null 2>&1; then
-        export TERMINAL="$(which konsole)"
+        export TERMINAL
+        TERMINAL="$(command -v konsole)"
     fi
 
-    export P4IGNORE="~/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
+    export P4IGNORE="$HOME/Perforce/mocull/Engineering/Software/Linux/Code/.p4ignore"
 
     if type fastfetch > /dev/null 2>&1; then
         alias neofetch="fastfetch"
@@ -2286,7 +2324,8 @@ zshrc_set_environment_variables() {
 
     if [[ "$(uname)" =~ .*BSD.* ]] || [[ "$(uname)" == "Darwin" ]]; then
         CPU_CORES="$(sysctl -n hw.ncpu)"
-        local threads_per_core="$(sysctl -n hw.smt_threads 2>/dev/null || echo 1)"
+        local threads_per_core
+        threads_per_core="$(sysctl -n hw.smt_threads 2>/dev/null || echo 1)"
         CPU_THREADS=$((threads_per_core * CPU_CORES))
     fi
 
@@ -2320,7 +2359,8 @@ zshrc_set_environment_variables() {
     # Get the physical form factor of the machine.
     if [[ "$(uname)" != "Darwin" ]]; then
         if [[ -f "/sys/class/dmi/id/chassis_type" ]] ; then
-            local chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
+            local chassis_type
+            chassis_type="$(cat /sys/class/dmi/id/chassis_type)"
             local chassis_name=""
         fi
 
