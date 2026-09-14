@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 local packages = {
 	"lua-language-server",
 	"stylua",

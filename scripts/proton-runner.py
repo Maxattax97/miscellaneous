@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Run the configured game executable through a local Proton installation."""
 
+# pylint: disable=invalid-name
+
 import os
 import subprocess
 import sys

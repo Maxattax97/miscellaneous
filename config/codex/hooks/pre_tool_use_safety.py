@@ -12,6 +12,7 @@ GIT_COMMIT = re.compile(
 
 
 def deny(reason: str) -> None:
+    """Write a Codex hook response denying the pending tool call."""
     json.dump(
         {
             "hookSpecificOutput": {
@@ -26,6 +27,7 @@ def deny(reason: str) -> None:
 
 
 def main() -> int:
+    """Inspect one hook event and deny agent-created git commits."""
     try:
         event = json.load(sys.stdin)
     except (json.JSONDecodeError, UnicodeDecodeError):

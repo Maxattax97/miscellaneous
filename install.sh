@@ -736,6 +736,9 @@ fi
 # Preserve the existing RTK integration when Headroom is declined. Headroom's
 # provider adapters supersede the managed RTK wrapper but never remove RTK.
 if [ "$headroom_active" -eq 0 ] && [[ -x "$(command -v rtk)" ]]; then
+    # RTK writes its managed instructions under ~/.claude.  The Brew image
+    # does not create that directory before running the installer.
+    mkdir -p "${HOME}/.claude"
     rtk init --global
 fi
 

@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	-- Better Lua LSP support for Neovim
 	{

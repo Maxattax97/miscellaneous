@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	language_servers = { "basedpyright", "ruff", "black", "debugpy" },
 	parsers = { "python" },

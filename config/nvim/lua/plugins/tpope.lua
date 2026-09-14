@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	-- { "tpope/vim-endwise" },
 	{ "tpope/vim-abolish" },

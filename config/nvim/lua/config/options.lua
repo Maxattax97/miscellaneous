@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 -- General
 vim.opt.backspace = { "eol", "start", "indent" }
 vim.opt.whichwrap:append("<,>,h,l,[,]")

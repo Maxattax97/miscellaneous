@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 local packages = { "golangci-lint" }
 if vim.fn.executable("go") == 1 then
 	-- We can only install gopls if Go is already installed on this system.

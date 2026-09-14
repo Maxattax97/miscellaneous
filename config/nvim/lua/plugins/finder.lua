@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	{
 		"nvim-telescope/telescope.nvim",

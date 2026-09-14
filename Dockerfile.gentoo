@@ -11,8 +11,6 @@ COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
 # hadolint ignore=DL3041
 RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo.org/output/service-keys.gpg && \
 	emerge --sync && \
-	emerge --tree --update --deep --newuse @world && \
-	emerge --depclean && \
 	eselect profile set default/linux/amd64/23.0 && \
 	emerge --tree --update --deep --newuse @world && \
 	emerge --depclean && \
