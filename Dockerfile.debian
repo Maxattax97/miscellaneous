@@ -6,6 +6,7 @@ ARG COMMIT_SHA
 # hadolint ignore=DL3008
 RUN apt-get update && \
 	apt-get install --no-install-recommends -y \
+		ca-certificates \
 		curl \
 		git \
 		sudo \
@@ -14,6 +15,8 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/* && \
 	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 ENV USER=max
 
@@ -28,7 +31,7 @@ RUN git clone "$REPO_URL" miscellaneous
 WORKDIR /home/max/src/miscellaneous
 RUN git checkout --detach "$COMMIT_SHA" && \
 	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
-	apt-get clean"
+	sudo apt-get clean"
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]

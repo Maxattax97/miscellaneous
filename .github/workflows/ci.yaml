@@ -21,6 +21,7 @@ jobs:
       - name: Super-linter
         uses: super-linter/super-linter@4758be622215d0954c8353ee4877ffd60111cf8e # v6.4.1
         env:
+          MULTI_STATUS: false
           VALIDATE_JSCPD: false
           FILTER_REGEX_EXCLUDE: >-
             \.sample-secret\.md|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md

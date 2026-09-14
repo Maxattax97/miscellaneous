@@ -93,7 +93,7 @@ setup_zsh() {
         current_shell="${passwd_entry##*:}"
     fi
 
-    if [[ "${current_shell##*/}" != "zsh" ]]; then
+    if [[ ${current_shell##*/} != "zsh" ]]; then
         if [ -n "${AUTOMATED}" ]; then
             sudo chsh -s "$zsh_path" "$current_user"
         else
@@ -434,7 +434,6 @@ case "$response" in
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
-                app-misc/bat \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -457,6 +456,7 @@ case "$response" in
                 net-misc/curl \
                 net-misc/keychain \
                 net-news/newsboat \
+                sys-apps/bat \
                 sys-apps/ripgrep \
                 sys-apps/util-linux \
                 sys-devel/gcc \
@@ -664,7 +664,8 @@ case "$response" in
         # Linux Kernel
         # https://www.kernel.org/signature.html
         ## Linus Torvalds
-        gpg --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
+        # keys.openpgp.org strips unverified user IDs, causing GnuPG to return 2.
+        gpg --keyserver keyserver.ubuntu.com --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
         ## Greg Kroah-Hartman
         gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
         ## Sasha Levin

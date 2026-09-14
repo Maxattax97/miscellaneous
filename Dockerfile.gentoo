@@ -24,6 +24,8 @@ RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo
 	emerge --depclean && \
 	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 ENV USER=max
 
@@ -38,7 +40,7 @@ RUN git clone "$REPO_URL" miscellaneous
 WORKDIR /home/max/src/miscellaneous
 RUN git checkout --detach "$COMMIT_SHA" && \
 	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
-	emerge --verbose --depclean"
+	sudo emerge --verbose --depclean"
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]
