@@ -2,8 +2,7 @@ FROM gentoo/stage3:amd64-openrc
 ARG REPO_URL
 ARG COMMIT_SHA
 
-# Bootstrap Portage with the normal source-build configuration. The CI-only
-# configuration enabling portable flags and signed binpkgs is copied below.
+# Bootstrap Portage before enabling the binary-package configuration below.
 COPY --chown=root:root config/portage/make.conf /etc/portage/make.conf
 COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
 
@@ -13,6 +12,11 @@ COPY --chown=root:root config/portage/repos.conf/ /etc/portage/repos.conf/
 # hadolint ignore=DL3041
 RUN curl -o /usr/share/openpgp-keys/gentoo-release.asc https://qa-reports.gentoo.org/output/service-keys.gpg && \
 	emerge --sync && \
+	CFLAGS="-O2 -pipe" \
+	CXXFLAGS="-O2 -pipe" \
+	FCFLAGS="-O2 -pipe" \
+	FFLAGS="-O2 -pipe" \
+	FEATURES="-ccache -ipc-sandbox -mount-sandbox -network-sandbox -pid-sandbox" \
 	emerge --tree --noreplace app-portage/getuto && \
 	getuto
 

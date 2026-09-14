@@ -6,7 +6,6 @@ return {
 		---@type snacks.Config
 		opts = {
 			animate = { enabled = false },
-			scroll = { enabled = false },
 			dim = { enabled = false },
 			explorer = { enabled = false }, -- I have NeoTree already
 			scroll = { enabled = false }, -- I think this is for touchpad scrolling?

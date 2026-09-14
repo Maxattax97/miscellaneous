@@ -17,6 +17,7 @@ return {
 		"gosum",
 	},
 	linters = { go = { "golangcilint" } },
-	formatters = { go = { "gofumpt", "goimports", "golangci-lint" } }, -- "golines", -- Entegrata does not limit line length
+	-- "golines" is omitted because Entegrata does not limit line length.
+	formatters = { go = { "gofumpt", "goimports", "golangci-lint" } },
 	language_servers = { "gopls" },
 }

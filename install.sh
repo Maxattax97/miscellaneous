@@ -444,7 +444,7 @@ case "$response" in
                 dev-lang/python \
                 dev-lang/ruby \
                 dev-python/pip \
-                dev-python/pipx \
+                dev-python/uv \
                 dev-python/virtualenv \
                 dev-ruby/rubygems \
                 dev-util/ctags \
@@ -610,6 +610,21 @@ case "$response" in
             pipx install pre-commit
             pipx install thefuck
             pipx install tmuxp
+        elif [[ -x "$(command -v uv)" ]]; then
+            uv tool install --with-executables-from ansible-core,ansible-lint ansible
+            uv tool install ansible-navigator
+            uv tool install argcomplete
+            uv tool install bandit
+            uv tool install black
+            uv tool install flake8
+            uv tool install flake8-pyproject
+            uv tool install huggingface_hub
+            uv tool install isort
+            uv tool install molecule
+            uv tool install poetry
+            uv tool install pre-commit
+            uv tool install thefuck
+            uv tool install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 ansible \
@@ -626,7 +641,7 @@ case "$response" in
                 thefuck \
                 tmuxp
         else
-            echo "You need to install pipx / pip3"
+            echo "You need to install pipx / uv / pip3"
         fi
 
         # Official standalone Codex installer (no npm dependency).
