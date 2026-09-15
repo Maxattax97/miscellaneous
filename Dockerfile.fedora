@@ -11,7 +11,10 @@ RUN dnf install -y \
 	coreutils && \
 	dnf clean all && \
 	useradd -m max && \
+	chmod 0400 /etc/shadow && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 ENV USER=max
 
@@ -19,7 +22,10 @@ ENV USER=max
 #RUN mkdir -p /home/max/src/miscellaneous
 #COPY --chown=max . /home/max/src/miscellaneous/
 
-RUN mkdir -p /home/max/src
+# Verify the intentional passwordless sudo setup before running the installer.
+# hadolint ignore=DL3004
+RUN sudo -n true && \
+	mkdir -p /home/max/src
 WORKDIR /home/max/src
 RUN git clone "$REPO_URL" miscellaneous
 

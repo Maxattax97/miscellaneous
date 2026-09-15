@@ -670,10 +670,12 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
-            if ! gem install neovim; then
+            if ! gem install --no-document neovim; then
                 echo "Unable to install the optional Neovim Ruby provider; continuing"
             fi
-            gem install taskjuggler
+            if ! gem install --no-document taskjuggler; then
+                echo "Unable to install the optional TaskJuggler tooling; continuing"
+            fi
         else
             echo "You need to install gem"
         fi
