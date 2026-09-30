@@ -14,15 +14,18 @@ from pathlib import Path
 
 
 def disabled(name: str) -> bool:
+    """Return whether the named hygiene check is disabled by the environment."""
     values = ("AGENT_HYGIENE_DISABLED", f"AGENT_HYGIENE_{name.upper()}_DISABLED")
     return any(os.getenv(key, "").lower() in {"1", "true", "yes"} for key in values)
 
 
 def cache_root() -> Path:
+    """Return the directory used for persistent hook state."""
     return Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache")) / "agent-hygiene"
 
 
 def state_path(event: dict) -> Path:
+    """Build a stable state path for the event's host and session."""
     host = str(event.get("host") or "unknown")
     session = str(event.get("session_id") or "unknown")
     key = hashlib.sha256(f"{host}\0{session}".encode()).hexdigest()
@@ -30,6 +33,7 @@ def state_path(event: dict) -> Path:
 
 
 def load(path: Path) -> dict:
+    """Load saved hook state, returning an empty mapping when unavailable."""
     try:
         value = json.loads(path.read_text())
         return value if isinstance(value, dict) else {}
@@ -38,6 +42,7 @@ def load(path: Path) -> dict:
 
 
 def save(path: Path, state: dict) -> None:
+    """Atomically persist hook state at the requested path."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix=path.name, dir=path.parent)
     try:
@@ -54,6 +59,7 @@ def save(path: Path, state: dict) -> None:
 
 
 def normalize(raw: object) -> dict:
+    """Normalize an untrusted hook event into the fields used by this hook."""
     if not isinstance(raw, dict):
         return {}
     return {
@@ -71,6 +77,7 @@ def normalize(raw: object) -> dict:
 
 
 def file_fingerprint(event: dict) -> tuple[str, bool, bool] | None:
+    """Describe a file read so repeated full-file reads can be detected."""
     data = event["tool_input"]
     path_value = data.get("path") or data.get("file_path")
     if not path_value and isinstance(data.get("command"), str):
@@ -120,24 +127,30 @@ def _evaluate_unlocked(event: dict) -> dict:
             if exists and not ranged and fingerprint in seen:
                 result = {
                     "decision": "deny",
-                    "message": "This unchanged file was already read in full; use a ranged read or inspect its diff.",
+                    "message": (
+                        "This unchanged file was already read in full; use a "
+                        "ranged read or inspect its diff."
+                    ),
                 }
             elif exists and not ranged:
                 seen[fingerprint] = True
         if result["decision"] == "allow" and state["broad_reads"] in {4, 8}:
             result["context"] = (
-                "Several broad reads/searches have occurred. Narrow the search or delegate an independent investigation when available."
+                "Several broad reads/searches have occurred. Narrow the search "
+                "or delegate an independent investigation when available."
             )
     elif kind in {"pre_compact", "session_end"} and not disabled("summary"):
         result["context"] = (
             f"Session hygiene: {sum(counts.values())} stable events, "
-            f"{state.get('delegations', 0)} delegations, {counts.get('pre_compact', 0)} compactions."
+            f"{state.get('delegations', 0)} delegations, "
+            f"{counts.get('pre_compact', 0)} compactions."
         )
     save(path, state)
     return result
 
 
 def evaluate(event: dict) -> dict:
+    """Evaluate an event while serializing updates to its session state."""
     if disabled("all"):
         return {"decision": "allow"}
     path = state_path(event)
@@ -148,6 +161,7 @@ def evaluate(event: dict) -> dict:
 
 
 def main() -> int:
+    """Read one hook event from stdin and emit its JSON decision."""
     try:
         raw = json.load(sys.stdin)
         print(json.dumps(evaluate(normalize(raw))))

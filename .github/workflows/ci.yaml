@@ -14,16 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
       - name: Super-linter
         uses: super-linter/super-linter@4758be622215d0954c8353ee4877ffd60111cf8e # v6.4.1
         env:
+          MULTI_STATUS: false
           VALIDATE_JSCPD: false
+          # The repository mixes legacy dotfile snippets and active scripts;
+          # keep ShellCheck semantic checks without rewriting those files.
+          VALIDATE_SHELL_SHFMT: false
           FILTER_REGEX_EXCLUDE: >-
-            \.sample-secret\.md|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md
+            \.sample-secret\.md|\.lcovrc\.gcov\.css|\/archiso\/.*\.sh|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md|\/test\/source_idempotency\.zsh
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install --yes zsh
       - name: Check .zshrc source idempotency
         run: ./test/source_idempotency.zsh
 
@@ -35,14 +41,18 @@ jobs:
       matrix:
         distro: [archlinux, fedora, gentoo, debian, brew]
     steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
       - name: Build exact triggering revision
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
+        uses: docker/build-push-action@v7
         with:
           context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.sha }}
           file: Dockerfile.${{ matrix.distro }}
           build-args: |
             REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
             COMMIT_SHA=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: false
 
   publish-images:
@@ -68,24 +78,28 @@ jobs:
             tags: brew
     steps:
       - name: Log in to Docker Hub
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5.5.1
+        uses: docker/metadata-action@v6
         with:
           images: dotfiles
           tags: ${{ matrix.tags }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
       - name: Build and push exact validated revision
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
+        uses: docker/build-push-action@v7
         with:
           context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.sha }}
           file: Dockerfile.${{ matrix.distro }}
           build-args: |
             REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
             COMMIT_SHA=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

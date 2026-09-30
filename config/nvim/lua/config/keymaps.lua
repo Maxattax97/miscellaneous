@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 vim.g.mapleader = " "
 
 -- Window switching

@@ -49,7 +49,6 @@ link_overwritten_files=""
 
 link_source() {
     src="${MISC_DIR}/${1}"
-    overwrite="${2:-0}"
     dest="${HOME}/${3:-$1}"
 
     if [ -h "$dest" ]; then
@@ -95,7 +94,11 @@ setup_zsh() {
     fi
 
     if [[ ${current_shell##*/} != "zsh" ]]; then
-        chsh -s "$zsh_path" "$current_user"
+        if [ -n "${AUTOMATED}" ]; then
+            sudo chsh -s "$zsh_path" "$current_user"
+        else
+            chsh -s "$zsh_path" "$current_user"
+        fi
         echo "Default shell changed to $zsh_path. Log out and back in for it to take effect."
     else
         echo "Default shell is already zsh"
@@ -340,19 +343,24 @@ echo "Skipped files: ${link_skipped_files}"
 
 echo "Environment installation complete"
 
-confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
+if [ -n "${AUTOMATED}" ]; then
+    response='y'
+else
+    confirm "Would you like to attempt an install of common utilities? [y/N] " n || true
+fi
 case "$response" in
     [yY][eE][sS] | [yY])
         # TODO: install brew if we detect its a Mac
         # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         if [[ -x "$(command -v dnf)" ]]; then
-            # shell-gpt needs python3-devel on Fedora.
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
             sudo dnf install -y \
                 bat \
                 btop \
+                cargo \
+                chezmoi \
                 ctags \
                 curl \
                 dnf-plugins-core \
@@ -371,7 +379,6 @@ case "$response" in
                 nodejs-npm \
                 pipx \
                 python3 \
-                python3-devel \
                 python3-neovim \
                 python3-pip \
                 python3-virtualenv \
@@ -428,7 +435,6 @@ case "$response" in
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
             sudo emerge --noreplace \
-                app-misc/bat \
                 app-crypt/gnupg \
                 app-editors/neovim \
                 app-misc/fastfetch \
@@ -438,7 +444,7 @@ case "$response" in
                 dev-lang/python \
                 dev-lang/ruby \
                 dev-python/pip \
-                dev-python/pipx \
+                dev-python/uv \
                 dev-python/virtualenv \
                 dev-ruby/rubygems \
                 dev-util/ctags \
@@ -451,6 +457,7 @@ case "$response" in
                 net-misc/curl \
                 net-misc/keychain \
                 net-news/newsboat \
+                sys-apps/bat \
                 sys-apps/ripgrep \
                 sys-apps/util-linux \
                 sys-devel/gcc \
@@ -458,6 +465,7 @@ case "$response" in
                 x11-misc/xsel
         elif [[ -x "$(command -v apt-get)" ]]; then
             # git-delta is distributed as a release .deb, not through apt.
+            sudo apt-get update
             sudo apt-get install -y \
                 bat \
                 btop \
@@ -559,9 +567,21 @@ case "$response" in
         fi
 
         if [[ ! -x "$(command -v chezmoi)" ]]; then
-            previous_dir="$(pwd)"
-            cd "${HOME}" && curl -sfL https://git.io/chezmoi | sh
-            cd "$previous_dir" || exit
+            (
+                cd "${HOME}"
+                chezmoi_installer="$(mktemp)"
+                trap 'rm -f "${chezmoi_installer}"' EXIT
+                curl \
+                    --connect-timeout 15 \
+                    --max-time 120 \
+                    --retry 4 \
+                    --retry-delay 2 \
+                    --retry-max-time 180 \
+                    -fsSL \
+                    https://get.chezmoi.io \
+                    -o "${chezmoi_installer}"
+                sh "${chezmoi_installer}"
+            )
         fi
 
         if [[ ! -x "$(command -v rtk)" ]]; then
@@ -586,12 +606,25 @@ case "$response" in
             pipx install huggingface_hub
             pipx install isort
             pipx install molecule
-            pipx install neovim
             pipx install poetry
             pipx install pre-commit
-            pipx install shell-gpt
             pipx install thefuck
             pipx install tmuxp
+        elif [[ -x "$(command -v uv)" ]]; then
+            uv tool install --with-executables-from ansible-core,ansible-lint ansible
+            uv tool install ansible-navigator
+            uv tool install argcomplete
+            uv tool install bandit
+            uv tool install black
+            uv tool install flake8
+            uv tool install flake8-pyproject
+            uv tool install huggingface_hub
+            uv tool install isort
+            uv tool install molecule
+            uv tool install poetry
+            uv tool install pre-commit
+            uv tool install thefuck
+            uv tool install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 ansible \
@@ -605,11 +638,10 @@ case "$response" in
                 isort \
                 neovim \
                 poetry \
-                shell-gpt \
                 thefuck \
                 tmuxp
         else
-            echo "You need to install pipx / pip3"
+            echo "You need to install pipx / uv / pip3"
         fi
 
         # Official standalone Codex installer (no npm dependency).
@@ -638,9 +670,12 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v gem)" ]]; then
-            gem install \
-                neovim \
-                taskjuggler
+            if ! gem install --no-document neovim; then
+                echo "Unable to install the optional Neovim Ruby provider; continuing"
+            fi
+            if ! gem install --no-document taskjuggler; then
+                echo "Unable to install the optional TaskJuggler tooling; continuing"
+            fi
         else
             echo "You need to install gem"
         fi
@@ -651,48 +686,14 @@ case "$response" in
         # Pull GPG keys for max.ocull@protonmail.com
         gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
 
-        # Gentoo keys
-        gpg --keyserver hkps://keys.gentoo.org --receive-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910
-
-        # FreeBSD team keys
-        curl -s https://docs.freebsd.org/pgpkeys/pgpkeys.txt | gpg --import
-
-        # Linux Kernel
-        # https://www.kernel.org/signature.html
-        ## Linus Torvalds
-        gpg --receive-keys ABAF11C65A2970B130ABE3C479BE3E4300411886
-        ## Greg Kroah-Hartman
-        gpg --receive-keys 647F28654894E3BD457199BE38DBBDC86092693E
-        ## Sasha Levin
-        gpg --receive-keys E27E5D8A3403A2EF66873BBCDEA66FF797772CDC
-        ## Ben Hutchings
-        gpg --receive-keys AC2B29BD34A6AFDDB3F68F35E7BFC8EC95861109
-        ## Seth Forshee, maintainer of wireless-regdb who has a built-in key in the kernel
-        gpg --receive-keys 2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
-
-        # Arch Linux Official Keys
-        # https://archlinux.org/master-keys/
-        ## Florian Pritz
-        gpg --receive-keys 91FFE0700E80619CEB73235CA88E23E377514E00
-        ## Levente Polyak
-        gpg --receive-keys D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C
-        ## David Runge
-        gpg --receive-keys 2AC0A42EFB0B5CBC7A0402ED4DC95B6D7BE9892E
-        ## Johannes Löthberg
-        gpg --receive-keys 69E6471E3AE065297529832E6BA0F5A2037F4F41
-        ## Leonidas Spyropoulos
-        gpg --receive-keys 3572FA2A1B067F22C58AF155F8B821B42A6FDCD7
-
-        # AWS CLI Team
+        # AWS CLI Team. This key is required by the optional AWS CLI signature
+        # verification below; keep it in the installer keyring.
         gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
 
-        # Github CLI: opensource+cli@github.com
-        ## You may need this:
-        ## https://github.com/cli/cli/issues/9569
-        gpg --receive-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
-
-        # Veracrypt
-        gpg --receive-keys 5069A233D55A0EEB174A5FC3821ACD02680D16DE
+        # Do not bulk-import unrelated Gentoo, FreeBSD, kernel, Arch, GitHub
+        # CLI, or VeraCrypt keys here. None are used by this installer, and
+        # some keyservers publish keys without user IDs (which makes GnuPG
+        # fail with status 2 under `set -e`, as happened for Greg Kroah-Hartman).
 
         ;;
     *)
@@ -765,6 +766,9 @@ fi
 # Preserve the existing RTK integration when Headroom is declined. Headroom's
 # provider adapters supersede the managed RTK wrapper but never remove RTK.
 if [ "$headroom_active" -eq 0 ] && [[ -x "$(command -v rtk)" ]]; then
+    # RTK writes its managed instructions under ~/.claude.  The Brew image
+    # does not create that directory before running the installer.
+    mkdir -p "${HOME}/.claude"
     rtk init --global
 fi
 
@@ -785,7 +789,7 @@ case "$response" in
 
         rm -rf awscliv2.zip awscliv2.sig aws
 
-        aws --version
+        AWS_CONFIG_FILE=/dev/null "${HOME}/.local/bin/aws" --version
         ;;
     *)
         echo "Skipping AWS CLI installation"
@@ -1120,7 +1124,8 @@ case "$response" in
                 dex-autostart \
                 firefox \
                 flameshot \
-                google-noto-emoji-color-fonts \
+                fontawesome-fonts-all \
+                google-noto-color-emoji-fonts \
                 gparted \
                 inkscape \
                 libreoffice \
@@ -1146,6 +1151,8 @@ case "$response" in
                 brave-browser \
                 docker \
                 flameshot \
+                font-fontawesome \
+                font-noto-color-emoji \
                 inkscape \
                 iterm2 \
                 joplin \
@@ -1164,6 +1171,7 @@ case "$response" in
                 app-office/libreoffice \
                 app-text/zathura \
                 app-text/zathura-pdf-mupdf \
+                media-fonts/fontawesome \
                 media-fonts/noto-emoji \
                 media-gfx/flameshot \
                 media-gfx/inkscape \
@@ -1177,6 +1185,7 @@ case "$response" in
             sudo apt-get install \
                 dex \
                 flameshot \
+                fonts-font-awesome \
                 fonts-noto-color-emoji \
                 gparted \
                 inkscape \
@@ -1203,6 +1212,7 @@ case "$response" in
                 mpv \
                 nextcloud-client \
                 noto-fonts-emoji \
+                otf-font-awesome \
                 p7zip \
                 qalculate-gtk \
                 touchegg \
@@ -1220,6 +1230,7 @@ case "$response" in
             # FreeBSD does not have dex
             sudo pkg install \
                 flameshot \
+                font-awesome \
                 girara \
                 gnome-keyring \
                 inkscape \

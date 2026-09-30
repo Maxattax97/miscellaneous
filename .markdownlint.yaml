@@ -1,0 +1,4 @@
+---
+# Repository Markdown includes prose, links, badges, and YAML front matter;
+# enforcing a physical line width would make those less readable.
+MD013: false

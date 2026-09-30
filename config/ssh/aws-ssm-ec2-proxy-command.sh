@@ -40,9 +40,9 @@ ssh_public_key_path="$4"
 ssh_public_key="$(cat "${ssh_public_key_path}")"
 ssh_public_key_timeout=60
 
-if [[ "${ec2_instance_id}" == *"${REGION_SEPARATOR}"* ]]; then
-    export AWS_DEFAULT_REGION="${ec2_instance_id##*${REGION_SEPARATOR}}"
-    ec2_instance_id="${ec2_instance_id%%${REGION_SEPARATOR}*}"
+if [[ ${ec2_instance_id} == *"${REGION_SEPARATOR}"* ]]; then
+    export AWS_DEFAULT_REGION="${ec2_instance_id##*"${REGION_SEPARATOR}"}"
+    ec2_instance_id="${ec2_instance_id%%"${REGION_SEPARATOR}"*}"
 fi
 
 echo "Add public key ${ssh_public_key_path} for ${ssh_user} at instance ${ec2_instance_id} for ${ssh_public_key_timeout} seconds" > /dev/stderr

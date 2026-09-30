@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	-- Consider re-adding as fallback:
 	-- { "sheerun/vim-polyglot", enabled = false },

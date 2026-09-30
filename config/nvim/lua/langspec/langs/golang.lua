@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 local packages = { "golangci-lint" }
 if vim.fn.executable("go") == 1 then
 	-- We can only install gopls if Go is already installed on this system.
@@ -16,6 +17,7 @@ return {
 		"gosum",
 	},
 	linters = { go = { "golangcilint" } },
-	formatters = { go = { "gofumpt", "goimports", "golangci-lint" } }, -- "golines", -- Entegrata does not limit line length
+	-- "golines" is omitted because Entegrata does not limit line length.
+	formatters = { go = { "gofumpt", "goimports", "golangci-lint" } },
 	language_servers = { "gopls" },
 }

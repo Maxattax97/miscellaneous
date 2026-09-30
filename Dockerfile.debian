@@ -6,15 +6,17 @@ ARG COMMIT_SHA
 # hadolint ignore=DL3008
 RUN apt-get update && \
 	apt-get install --no-install-recommends -y \
+		ca-certificates \
 		curl \
 		git \
 		sudo \
 		coreutils && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m max && \
+	rm -rf /var/lib/apt/lists/* && \
+	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 ENV USER=max
 
@@ -22,14 +24,14 @@ ENV USER=max
 #RUN mkdir -p /home/max/src/miscellaneous
 #COPY --chown=max . /home/max/src/miscellaneous/
 
-RUN mkdir -p /home/max/src && \
-	git clone "$REPO_URL" /home/max/src/miscellaneous && \
-	cd /home/max/src/miscellaneous && git checkout --detach "$COMMIT_SHA"
+RUN mkdir -p /home/max/src
+WORKDIR /home/max/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -o pipefail -c "yes | \
-	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
-	apt-get clean"
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+	sudo apt-get clean"
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]

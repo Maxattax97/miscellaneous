@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 -- Discover vendored JSON Schemas in the current project, if any.
 -- Reads <cwd>/schemas/*/schema-map.json (the same maps the CI validator uses)
 -- and returns a { [schema_path] = { globs } } table for yamlls. Returns an empty

@@ -12,10 +12,11 @@ RUN pacman -Syu --noconfirm \
 	git \
 	sudo \
 	coreutils \
-	--needed
-
-RUN useradd -m max && \
+	--needed && \
+	useradd -m max && \
 	echo "max ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 
 # Skip using WORKDIR because we want to keep this overlay as lean as possible.
@@ -24,8 +25,10 @@ RUN git clone https://aur.archlinux.org/yay.git /tmp/yay && \
 	cd /tmp/yay && \
 	makepkg -si --noconfirm
 
-USER root
+USER 0
 RUN rm -rf /tmp/yay
+# The installer relies on the max account name for user-specific setup.
+# hadolint ignore=DL3066
 USER max
 ENV USER=max
 
@@ -33,17 +36,17 @@ ENV USER=max
 #RUN mkdir -p /home/max/src/miscellaneous
 #COPY --chown=max . /home/max/src/miscellaneous/
 
-RUN mkdir -p /home/max/src && \
-	git clone "$REPO_URL" /home/max/src/miscellaneous && \
-	cd /home/max/src/miscellaneous && git checkout --detach "$COMMIT_SHA"
+RUN mkdir -p /home/max/src
+WORKDIR /home/max/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/max/src/miscellaneous
-RUN /bin/sh -o pipefail -c "yes | \
-	AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
-	pacman -Scc --noconfirm && \
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/max/src/miscellaneous/install.sh && \
+	sudo pacman -Scc --noconfirm && \
 	yay -Scc --noconfirm && \
 	rm -rf /home/max/.cache/yay/* && \
-    rm -rf /var/cache/pacman/pkg/*"
+	sudo rm -rf /var/cache/pacman/pkg/*"
 
 WORKDIR /home/max
 ENTRYPOINT ["/bin/zsh"]

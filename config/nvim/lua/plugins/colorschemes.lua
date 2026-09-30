@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 return {
 	{
 		"scottmckendry/cyberdream.nvim",
@@ -23,8 +24,10 @@ return {
 					-- Color: yellow               #a68f01                ~        3
 					-- Color: orange               #dd7202                ~        9
 					-- Color: red                  #ff511a                ~        1
-					-- Color: magenta              #fe3bb9                ~        5 Color: violet               #cc62fe                ~        13
-					-- Color: blue                 #3294ff                ~        4 Color: cyan                 #07a38f                ~        6
+					-- Color: magenta              #fe3bb9                ~        5
+					-- Color: violet               #cc62fe                ~        13
+					-- Color: blue                 #3294ff                ~        4
+					-- Color: cyan                 #07a38f                ~        6
 					-- Color: green                #4ca340                ~        2
 					-- #Color:green                #719e07                ~        2
 					-- Color: back                 #262626                ~        8
@@ -55,7 +58,7 @@ return {
 		opts = {
 			style = "night",
 			transparent = true,
-			on_colors = function(colors)
+			on_colors = function(_colors)
 				-- colors = {
 				-- 	bg = "#1a1b26",
 				-- 	bg_dark = "#16161e",
@@ -137,7 +140,7 @@ return {
 				-- 	yellow = "#e0af68",
 				-- }
 			end,
-			on_highlights = function(highlights, colors)
+			on_highlights = function(_highlights, _colors)
 				-- customize highlights here
 			end,
 		},

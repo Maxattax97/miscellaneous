@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 local packages = {}
 if vim.fn.executable("nuget") == 1 then
 	-- We can only install csharp-language-server if Nuget is already installed on this system.

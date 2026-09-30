@@ -16,6 +16,8 @@ permission:
   task: deny
 ---
 
+# Review agent
+
 Review independently and do not modify files. Look for concrete correctness and
 security failures, invalid assumptions, architectural risks, missing edge cases,
 and high-value adversarial tests. Use available visual inputs when relevant.

@@ -41,7 +41,7 @@ getCharging() {
     device="$(upower -e | grep BAT)"
 
     if [ -n "$device" ]; then
-        state="$(upower -i $device | grep state | awk '{ printf $2  };')"
+        state="$(upower -i "$device" | grep state | awk '{ printf $2  };')"
         if [ "$state" = "charging" ]; then
             echo "1"
         else
@@ -54,8 +54,8 @@ getCharging() {
 }
 
 getActiveSSHSessions() {
-    lines="$(ps aux | grep sshd | wc -l)"
-    echo "$(((lines - 1) / 2))"
+    lines="$(pgrep -c sshd || true)"
+    echo "$((lines / 2))"
 }
 
 getLockedTime() {

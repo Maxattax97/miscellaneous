@@ -18,13 +18,13 @@ RUN brew install \
 #RUN mkdir -p /home/linuxbrew/src/miscellaneous
 #COPY . /home/linuxbrew/src/miscellaneous/
 
-RUN mkdir -p /home/linuxbrew/src && \
-	git clone "$REPO_URL" /home/linuxbrew/src/miscellaneous && \
-	cd /home/linuxbrew/src/miscellaneous && git checkout --detach "$COMMIT_SHA"
+RUN mkdir -p /home/linuxbrew/src
+WORKDIR /home/linuxbrew/src
+RUN git clone "$REPO_URL" miscellaneous
 
 WORKDIR /home/linuxbrew/src/miscellaneous
-RUN /bin/sh -c "yes | \
-	AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
+RUN git checkout --detach "$COMMIT_SHA" && \
+	/bin/sh -c "yes n | AUTOMATED=1 /home/linuxbrew/src/miscellaneous/install.sh && \
 	brew cleanup"
 
 WORKDIR /home/linuxbrew

@@ -1,3 +1,4 @@
+-- luacheck: globals vim
 -- Additional Filetypes
 local ft = vim.api.nvim_create_augroup("com_maxocull_nvim_filetypes", { clear = true })
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {

@@ -3,16 +3,17 @@ set -euo pipefail
 
 env_file="${HOME}/.config/private.env"
 
-if [[ ! -f "${env_file}" ]]; then
+if [[ ! -f ${env_file} ]]; then
     echo "Missing ${env_file}. Create it with VENICE_API_KEY set." >&2
     exit 1
 fi
 
 set -a
+# shellcheck source=/dev/null
 source "${env_file}"
 set +a
 
-if [[ -z "${VENICE_API_KEY:-}" ]]; then
+if [[ -z ${VENICE_API_KEY:-} ]]; then
     echo "VENICE_API_KEY is not set in ${env_file}." >&2
     exit 1
 fi
