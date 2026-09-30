@@ -53,6 +53,9 @@
       "git commit *": "deny"
     }
   },
+  "plugin": [
+    "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
+  ],
   "provider": {
     "ollama-remote": {
       "models": {

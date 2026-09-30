@@ -1,5 +1,42 @@
 {
   "hooks": {
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
     "PreToolUse": [
       {
         "hooks": [
@@ -11,6 +48,53 @@
           }
         ],
         "matcher": "^Bash$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "statusMessage": "Updating tmux agent activity",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
       }
     ]
   }

@@ -8,7 +8,9 @@ asc:~/aura/sc
 ch:~/.local/share/chezmoi
 ci:~/entegrata/ci-common
 cp:~/aura/sc/ran-cu-cp-service
+cru:~/entegrata/crucible
 dl:~/Downloads
+ds:~/entegrata/data-source
 e:~/entegrata
 ea:~/entegrata/external-admin
 edt:~/entegrata/dev-tools
@@ -18,7 +20,7 @@ fos:~/aura/sc/fos-data-testsuite
 gr:~/aura/gc/gorilla
 gtp:~/aura/sc/ran-gtp-rust-library
 gvcf:~/aura/sc/gvcf-transcoder-service
-iac:~/aura/sc/core-on-prem-k8s-iac
+iac:~/entegrata/iac-global
 m:~/src/miscellaneous
 map:~/entegrata/mapping
 mason:~/entegrata/mason
