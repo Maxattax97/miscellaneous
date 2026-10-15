@@ -20,66 +20,28 @@ their own sake.
 Never run `git commit`; leave commits to the user. This boundary is also enforced
 by Codex command rules and a pre-tool hook; it is not merely advisory.
 
-## Default execution and routing
+## Fixed model routing
 
-The normal root owner is GPT-5.6 Sol (`gpt-5.6-sol`) at `medium` reasoning.
-This is a default prior, not a requirement to use that model for all work.
-Prefer one context-owning agent when coherent understanding matters. The agent
-owning difficult reasoning should retain ownership through implementation and
-verification. Do not create delegation hierarchies merely because tools exist.
+Use only the following provider-specific model assignments:
 
-Choose capability and effort primarily by uncertainty, error blast radius,
-verification strength, reversibility, and independence of potential parallel work.
-Perceived difficulty, file count, and lines of code are secondary. Difficult work
-with deterministic verification may use a cheaper model; simple-looking work
-with weak verification and high blast radius may need a stronger model.
+| Provider | Primary: main chat thread | Secondary: subagents |
+| --- | --- | --- |
+| Claude | Opus 5.5 High | Haiku 5.5 Medium |
+| Codex | GPT-6.1 Sol Low | GPT-6 Luna Medium |
+| Open Source | MiMo-V2.6-Pro | MiMo-V2.6-Flash |
 
-## Luna
+The primary is mandatory for the main chat thread. Every subagent must use the
+secondary for the same provider. These are exclusive assignments, not defaults:
+do not consider or select other models or reasoning efforts, including for
+escalation, review, fallback, or quota pressure. Do not invent reasoning effort
+settings for the Open Source models.
 
-Use GPT-5.6 Luna (`gpt-5.6-luna`) at `high` for cheap, bounded, independently
-verifiable work: reconnaissance, searches and call-site mapping, mechanical edits,
-repetitive transformations, test and fixture generation, documentation,
-straightforward migrations, isolated fixes with strong tests, and independent
-factual investigations.
+For Codex subagents, explicitly select `gpt-6-luna` with `medium` reasoning.
+The Codex main thread uses `gpt-6.1-sol` with `low` reasoning.
 
-Use `max` when the task remains bounded and strongly verifiable but needs
-materially more reasoning. Do not repeatedly coach Luna through a bad trajectory.
-If it misunderstands the problem, repeats an error, cannot explain an important
-invariant, or needs substantial corrective prompting, escalate promptly.
-
-## Sol
-
-Use Sol `medium` for normal engineering judgment. Use `high` when uncertainty,
-correctness risk, or reasoning needs are materially elevated: difficult debugging,
-concurrency and lifecycle reasoning, architecture, API boundaries,
-security-sensitive behavior, subtle correctness, broad cross-component changes,
-and consequential code review.
-
-Sol `xhigh` and `max` are exceptional: require a clear reason the additional
-reasoning is worth the quota and latency. If Sol already owns the context and the
-next step is easy, usually let it finish instead of spawning for model purity.
-
-## Astra
-
-Use GPT-6 Astra (`gpt-6-astra`) as owner for high-entropy or unusually consequential
-work when its capability, efficiency, or long-horizon coherence is likely to
-materially improve the outcome. Examples include ambiguous causes or requirements,
-major architecture, large unfamiliar systems, difficult failures after a competent
-Sol attempt, security or correctness with high blast radius, long autonomous tasks
-with interacting decisions, and messy end-to-end projects requiring discovery of
-the actual problem.
-
-Start at `medium` unless risk or complexity clearly warrants `high`; use `high`
-for especially consequential work. Keep Astra responsible for difficult reasoning
-through implementation and verification, rather than only producing a plan for
-a weaker model to reconstruct. Avoid spending Astra quota on routine or mechanical
-work when no difficult context needs to be retained.
-
-## Terra
-
-GPT-5.6 Terra (`gpt-5.6-terra`) is a quota-pressure fallback when Sol quota is
-undesirable and Luna is demonstrably insufficient. It is not a default or
-permanent role. Do not assume access to quota balances or invent quota estimates.
+Prefer one context-owning main agent when coherent understanding matters. The
+main agent retains ownership through implementation and verification. Do not
+create delegation hierarchies merely because tools exist.
 
 ## Delegation
 
@@ -98,9 +60,9 @@ Verify its result before integrating it. Avoid duplicated reconstruction of larg
 contexts unless independent solutions are intentionally valuable.
 
 Prefer an owner with bounded reconnaissance, investigation, or mechanical agents.
-Do not build manager-to-manager-to-worker chains or a rigid Astra/Sol/Terra/Luna
-hierarchy. Use explicit spawn model and effort overrides when the runtime supports
-them and the task needs a different route from the defaults.
+Do not build manager-to-manager-to-worker chains or recursive delegation
+hierarchies. Use explicit spawn model and effort settings to enforce the fixed
+secondary assignment.
 
 ## Verification
 
@@ -113,33 +75,31 @@ Do not add an AI reviewer merely because one is available. Use independent model
 review when deterministic verification is insufficient or error blast radius
 justifies the compute.
 
-## Escalation and runtime limits
+## Failed delegation and runtime limits
 
-Escalate quickly instead of accumulating human supervision. If a cheaper model
-misunderstands the task, repeats an error, cannot explain an important invariant,
-produces a suspicious design, gets stuck after one substantive attempt, or needs
-substantial corrective prompting, move unresolved work to a stronger model.
-Route downward when remaining work becomes mechanical and strongly verifiable,
-provided the context-transfer cost is worthwhile.
+If a subagent misunderstands the task, repeats an error, cannot explain an
+important invariant, or gets stuck after one substantive attempt, the main agent
+should take over. Do not repeatedly coach a failing subagent or switch to an
+unlisted model or effort.
 
-Use only model identifiers and reasoning levels supported by the current runtime
-and account. `max` and `xhigh` are distinct values; do not invent aliases or assume
-API support means a Codex client supports `none`. Do not select `ultra` merely to
-enable delegation. Never claim to have switched models without runtime support.
-Instructions express routing judgment; they do not themselves change a running
-root model. If a stronger root is warranted and no native switching tool exists,
-briefly explain the limitation and recommend the supported client model switch,
-preserving the existing conversation and ownership where possible. Do not silently
-rewrite persistent defaults as a substitute for a task-local escalation.
+Use only supported runtime identifiers for the exact assignments above. If an
+assignment is unavailable, explain the limitation rather than substituting another
+model or effort. Never claim to have switched models without runtime support.
+Instructions do not themselves change the running main-thread model. Do not
+rewrite persistent defaults as a substitute for a task-local model switch.
 
 ## Human attention and stopping
 
 Human attention is more expensive than inference. Infer routine routing decisions
 without asking the user. Do not interrupt just to announce routing. Mention it
-when quota or cost is materially affected, a stronger root would substantially
-improve results, runtime limitations prevent the preferred route, or an important
+when quota or cost is materially affected, runtime limitations prevent the
+required assignment, or an important
 engineering tradeoff is exposed.
 
 Once the requested outcome and relevant verification criteria are satisfied, stop.
 Avoid speculative improvements, redundant reviews, unnecessary agents, and broader
 searches without meaningful expected value.
+
+# BEGIN miscellaneous-agent-toolkit
+Use the skills linked from ~/.agents/skills when relevant; preserve user changes.
+# END miscellaneous-agent-toolkit
