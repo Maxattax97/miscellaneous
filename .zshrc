@@ -2466,7 +2466,11 @@ zshrc_update_or_append() {
     fi
 
     # Add content
-    (echo "$start_marker"; echo "$content"; echo "$end_marker")>> "$file"
+    # Enable creation only inside this subshell; preserve the caller's noclobber.
+    (
+        setopt clobber
+        { echo "$start_marker"; echo "$content"; echo "$end_marker"; } >> "$file"
+    )
 }
 
 zshrc_sync_template() {
