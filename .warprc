@@ -5,6 +5,7 @@ appx:~/entegrata/appx
 ar:~/aura/r
 as3:~/aura/s3
 asc:~/aura/sc
+atom:~/entegrata/atom
 ch:~/.local/share/chezmoi
 ci:~/entegrata/ci-common
 cp:~/aura/sc/ran-cu-cp-service
@@ -16,9 +17,11 @@ ea:~/entegrata/external-admin
 edt:~/entegrata/dev-tools
 fal:~/ansible_collections/aura/fos/roles
 fl:/opt/flotilla
+forge:~/entegrata/forge
 fos:~/aura/sc/fos-data-testsuite
 gr:~/aura/gc/gorilla
 gtp:~/aura/sc/ran-gtp-rust-library
+guard:~/entegrata/guardian
 gvcf:~/aura/sc/gvcf-transcoder-service
 iac:~/entegrata/iac-global
 m:~/src/miscellaneous
