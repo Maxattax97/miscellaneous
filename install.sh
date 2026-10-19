@@ -171,6 +171,9 @@ link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
 
+mkdir -p "${HOME}/.config/herdr"
+link_source "config/herdr/config.toml" 1 ".config/herdr/config.toml"
+
 mkdir -p "${HOME}/.config/opencode"
 link_source "config/opencode/opencode.json" 1 ".config/opencode/opencode.json"
 link_source "config/opencode/AGENTS.md" 1 ".config/opencode/AGENTS.md"
@@ -410,6 +413,7 @@ case "$response" in
                 git-lfs \
                 gnupg \
                 gsed \
+                herdr \
                 keychain \
                 libtool \
                 make \
@@ -586,6 +590,10 @@ case "$response" in
 
         if [[ ! -x "$(command -v rtk)" ]]; then
             curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+        fi
+
+        if [[ ! -x "$(command -v herdr)" ]]; then
+            curl -fsSL https://herdr.dev/install.sh | sh
         fi
 
         if [[ -x "$(command -v pip2)" ]]; then

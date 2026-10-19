@@ -1,0 +1,26 @@
+onboarding = false
+
+# Prefix stays ctrl+b: the outer tmux owns ctrl+a, so the two never collide.
+[keys]
+# Mirror .tmux.conf: v splits right, b splits down, ctrl+p/n slide tabs.
+split_horizontal = ["prefix+minus", "prefix+b"]
+toggle_sidebar = "prefix+shift+b"
+move_tab_previous = "prefix+ctrl+p"
+move_tab_next = "prefix+ctrl+n"
+
+[ui]
+status_indicators = "symbols"
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+# tmux status-bar blue (colour033).
+[theme.custom]
+accent = "#0087ff"
+
+[ui.sound]
+enabled = true
+
+[ui.toast]
+delivery = "herdr"

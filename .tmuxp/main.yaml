@@ -43,4 +43,14 @@ windows:
         options:
           allow-rename: false
           automatic-rename: false
+  - window_name: LLM
+    environment:
+      DISABLE_AUTO_TITLE: "true"
+    options:
+      allow-rename: false
+      automatic-rename: false
+    panes:
+      - shell_command: herdr
+        environment:
+          DISABLE_AUTO_TITLE: "true"
   - focus: true

@@ -48,6 +48,12 @@ zshrc_probe() {
 }
 
 zshrc_enter_tmux() {
+    # herdr panes are already multiplexed; attaching tmux there recurses.
+    if [[ "$HERDR_ENV" = "1" ]]; then
+        zshrc_display_banner
+        return
+    fi
+
     if [[ -n "$(command -v tmux)" ]]; then
         local session_count
         session_count=$("${commands[tmux]}" ls 2>/dev/null | wc -l)
