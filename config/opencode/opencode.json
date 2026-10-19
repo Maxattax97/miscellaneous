@@ -36,6 +36,15 @@
   },
   "default_agent": "build",
   "mcp": {
+    "headroom": {
+      "command": [
+        "/home/max/.local/bin/headroom",
+        "mcp",
+        "serve"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
     "playwright": {
       "command": [
         "npx",
@@ -57,6 +66,29 @@
     "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
   ],
   "provider": {
+    "headroom": {
+      "models": {
+        "gpt-4.1": {
+          "limit": {
+            "context": 1048576,
+            "output": 32768
+          },
+          "name": "GPT-4.1"
+        },
+        "gpt-4o": {
+          "limit": {
+            "context": 128000,
+            "output": 16384
+          },
+          "name": "GPT-4o"
+        }
+      },
+      "name": "Headroom Proxy",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8787/v1"
+      }
+    },
     "ollama-remote": {
       "models": {
         "qwen3-coder:30b": {
