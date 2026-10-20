@@ -748,6 +748,19 @@ if confirm "Would you like to install the global agent toolkit? [y/N] " n; then
     echo "Agent toolkit installed (managed symlink/config blocks)."
 fi
 
+# Integrations report agent sessions to herdr so panes can resume them.
+if [[ -x "$(command -v herdr)" ]] && confirm "Would you like to install the herdr Codex/OpenCode integrations and skill? [y/N] " n; then
+    herdr integration install codex || echo "herdr Codex integration failed" >&2
+    herdr integration install opencode || echo "herdr OpenCode integration failed" >&2
+    if [[ -x "$(command -v npx)" ]]; then
+        # --agent is variadic, so it must come last.
+        npx --yes skills add herdrdev/herdr --global --yes --skill herdr --agent codex opencode \
+            || echo "herdr skill installation failed" >&2
+    else
+        echo "Skipping herdr skill: npx is not installed."
+    fi
+fi
+
 headroom_active=0
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
     if command -v pipx > /dev/null 2>&1; then

@@ -356,6 +356,12 @@ zshrc_setup_completion() {
         fi
     fi
 
+    if type herdr > /dev/null 2>&1; then
+        if [[ ! -s "${HOME}/.zsh_completions/_herdr" ]]; then
+            herdr completion zsh > "${HOME}/.zsh_completions/_herdr"
+        fi
+    fi
+
     if type activate-global-python-argcomplete > /dev/null 2>&1; then
         if [[ ! -s "${HOME}/.zsh_completions/_python-argcomplete" ]]; then
             activate-global-python-argcomplete --dest "${HOME}/.zsh_completions/"
