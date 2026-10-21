@@ -215,6 +215,12 @@ awk '
         if (!statusline) print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
         if (!statuscolors) print "status_line_use_colors = true"
     }
+    function freecad_mcp_defaults() {
+        print ""
+        print "[mcp_servers.freecad]"
+        print "command = \"uvx\""
+        print "args = [\"freecad-mcp\"]"
+    }
     skip_statusline {
         if ($0 ~ /]/) skip_statusline = 0
         next
@@ -231,6 +237,7 @@ awk '
         else section = "other"
         if (section == "agents") agents = 1
         if (section == "tui") tui = 1
+        if ($0 ~ /^\[mcp_servers\.freecad\][[:space:]]*$/) freecad_mcp = 1
         print
         next
     }
@@ -285,6 +292,7 @@ awk '
             print "[tui]"
             tui_defaults()
         }
+        if (!freecad_mcp) freecad_mcp_defaults()
     }
 ' "$codex_config" > "$codex_config_tmp"
 mv "$codex_config_tmp" "$codex_config"
@@ -307,7 +315,9 @@ link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 mkdir -p "${HOME}/.config/shell_gpt/roles/"
 link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
 
-# We link for both the regular and Flatpak versions of FreeCAD.
+# We link for both the regular and current/legacy Flatpak versions of FreeCAD.
+mkdir -p "${HOME}/.var/app/org.freecad.FreeCAD/config/FreeCAD"
+link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecad.FreeCAD/config/FreeCAD/user.cfg"
 mkdir -p "${HOME}/.var/app/org.freecadweb.FreeCAD/config/FreeCAD"
 link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/FreeCAD/user.cfg"
 mkdir -p "${HOME}/.config/FreeCAD"
@@ -602,6 +612,7 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v pipx)" ]]; then
+            pipx install uv
             pipx install ansible
             pipx install ansible-core
             pipx install ansible-lint

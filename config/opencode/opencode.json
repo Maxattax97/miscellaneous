@@ -36,6 +36,14 @@
   },
   "default_agent": "build",
   "mcp": {
+    "freecad": {
+      "command": [
+        "uvx",
+        "freecad-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
     "headroom": {
       "command": [
         "/home/max/.local/bin/headroom",
