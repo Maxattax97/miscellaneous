@@ -417,6 +417,9 @@ zshrc_setup_completion() {
 }
 
 zshrc_autoload() {
+    # Keep repeated sourcing from appending the same completion directories.
+    typeset -gU fpath
+
     # Used to debug the fpath variable.
     pretty_fpath() {
         old_IFS=$IFS     # Save the current IFS (Internal Field Separator)

@@ -5,6 +5,7 @@
 FROM archlinux:latest
 ARG REPO_URL
 ARG COMMIT_SHA
+ENV DOTFILES_CONTAINER=1
 
 RUN pacman -Syu --noconfirm \
 	base-devel \

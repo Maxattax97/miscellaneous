@@ -8,9 +8,6 @@ dot_config/btop/*.log
 dot_weechat/xfer
 dot_weechat/logs
 dot_weechat/*.log
-/.blackbox/pubring.gpg~
-/.blackbox/pubring.kbx~
-/.blackbox/secring.gpg
 /dot_config/ranger/bookmarks
 /dot_weechat/script/plugins.xml.gz
 

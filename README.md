@@ -18,14 +18,18 @@
 
 ## Installation
 
-Directly with `chezmoi`:
+The private key for GPG identity
+`9AC8DC8D17BA0401CBD0F4E16077844530A4A68E` must be available in your GPG
+keyring so `chezmoi` can decrypt the private configuration files.
+
+Install directly with `chezmoi`:
 
 ```bash
 chezmoi init --apply git@github.com:Maxattax97/miscellaneous.git
 ```
 
-Or, if you prefer to clone the repo yourself first, the bootstrap script now just
-sets this checkout as your `chezmoi` source and applies it:
+Or clone the repository yourself first. The bootstrap script uses that checkout
+as the `chezmoi` source and applies it:
 
 ```bash
 ./install.sh

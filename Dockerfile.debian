@@ -1,6 +1,7 @@
 FROM debian:sid-slim
 ARG REPO_URL
 ARG COMMIT_SHA
+ENV DOTFILES_CONTAINER=1
 
 # This is a very up-to-date image, so we aren't going to lock package versions.
 # hadolint ignore=DL3008

@@ -1,6 +1,7 @@
 FROM gentoo/stage3:amd64-openrc
 ARG REPO_URL
 ARG COMMIT_SHA
+ENV DOTFILES_CONTAINER=1
 
 # Copy our configurations in so it builds faster.
 COPY --chown=root:root config/portage/make.conf /etc/portage/make.conf
