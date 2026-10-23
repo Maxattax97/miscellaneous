@@ -858,7 +858,7 @@ case "$response" in
             sudo dnf config-manager addrepo --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
             # Add Github CLI repo
-            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
 
             # Update all the new repositories
             sudo dnf check-update --refresh
