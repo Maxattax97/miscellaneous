@@ -832,8 +832,13 @@ confirm "Would you like to add unofficial package repositories? [y/N] " n || tru
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-            sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+            # Avoid downloading the release RPMs again when they are already installed.
+            if ! rpm --quiet -q rpmfusion-free-release; then
+                sudo dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+            fi
+            if ! rpm --quiet -q rpmfusion-nonfree-release; then
+                sudo dnf install -y "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+            fi
 
             # Add repo for Brave
             sudo dnf config-manager addrepo --overwrite --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
@@ -853,9 +858,6 @@ case "$response" in
 
             # Add Copr repo for Bazel
             # This is WAY out of date. Do not use!
-
-            # Add Signal Desktop repo
-            sudo dnf config-manager addrepo --overwrite --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
             # Add Github CLI repo
             sudo dnf config-manager addrepo --overwrite --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
@@ -920,7 +922,9 @@ case "$response" in
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
-                    sudo dnf install -y signal-desktop
+                    sudo dnf install -y flatpak
+                    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+                    flatpak install --user -y flathub org.signal.Signal
                     ;;
                 *)
                     echo "Skipping Signal Desktop installation"
