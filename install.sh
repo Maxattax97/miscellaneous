@@ -836,11 +836,11 @@ case "$response" in
             sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
             # Add repo for Brave
-            sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
             sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
             # Add repo for Docker
-            sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
 
             # Import PGP key for VeraCrypt.
             sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
@@ -855,7 +855,7 @@ case "$response" in
             # This is WAY out of date. Do not use!
 
             # Add Signal Desktop repo
-            sudo dnf config-manager addrepo --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
+            sudo dnf config-manager addrepo --overwrite --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
 
             # Add Github CLI repo
             sudo dnf config-manager addrepo --overwrite --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
