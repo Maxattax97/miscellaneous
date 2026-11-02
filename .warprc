@@ -3,6 +3,7 @@ agc:~/aura/gc
 ans:~/aura/ns
 appx:~/entegrata/appx
 ar:~/aura/r
+arm:~/entegrata/arm
 as3:~/aura/s3
 asc:~/aura/sc
 atom:~/entegrata/atom
@@ -16,6 +17,7 @@ e:~/entegrata
 ea:~/entegrata/external-admin
 edt:~/entegrata/dev-tools
 fal:~/ansible_collections/aura/fos/roles
+firm:~/entegrata/firm
 fl:/opt/flotilla
 forge:~/entegrata/forge
 fos:~/aura/sc/fos-data-testsuite
@@ -31,3 +33,4 @@ s:~/src
 sr:~/src
 ster:~/entegrata/sterling
 up:~/aura/sc/ran-cu-up-service
+warden:~/entegrata/warden

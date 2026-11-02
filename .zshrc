@@ -2200,8 +2200,8 @@ zshrc_set_aliases() {
     alias Gd='git diff'
     alias Gds='git diff --staged'
 
-    alias Gp='git pull && git push'
-    alias Gpl='git pull'
+    alias Gp='git pull && git fetch origin --tags --force && git push'
+    alias Gpl='git pull && git fetch origin --tags --force'
     alias Gpu='git push'
 
     alias Gs='git status'
@@ -2269,6 +2269,9 @@ zshrc_set_default_programs() {
 
     export PAGER="less"
     export MANPAGER="less"
+
+    # occam's wt_new names worktree branches <prefix>/<ticket>.
+    export WT_BRANCH_PREFIX=maxocull
 
     if type brave > /dev/null 2>&1; then
         export BROWSER
