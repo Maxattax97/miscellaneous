@@ -5,3 +5,4 @@
 - Route work to the least expensive capable model or agent; reserve stronger models for ambiguous or high-risk work.
 - Preserve user changes, keep generated state out of the repository, and verify changes proportionally to risk.
 - Never parse private transcripts, log prompts, or expose credentials in tooling diagnostics.
+- Git follows the global policy in `config/codex/AGENTS.md` (`## Git`). This checkout stays on `master`; commit only from a sibling worktree branch.

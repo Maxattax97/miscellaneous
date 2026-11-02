@@ -190,9 +190,6 @@ link_source "config/codex/hooks.json" 1 ".codex/hooks.json"
 mkdir -p "${HOME}/.codex/rules"
 link_source "config/codex/rules/safety.rules" 1 ".codex/rules/safety.rules"
 
-mkdir -p "${HOME}/.codex/hooks"
-link_source "config/codex/hooks/pre_tool_use_safety.py" 1 ".codex/hooks/pre_tool_use_safety.py"
-
 codex_config="${HOME}/.codex/config.toml"
 if [ ! -e "$codex_config" ]; then
     cp "${MISC_DIR}/config/codex/config.toml" "$codex_config"

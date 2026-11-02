@@ -1,17 +1,42 @@
-# Repository-managed hard stops. Keep these separate from default.rules, which
-# Codex updates when the user approves command prefixes interactively.
+# Repository-managed git/gh policy. Keep separate from default.rules, which Codex
+# rewrites when the user approves prefixes. The strictest matching rule wins.
 
-prefix_rule(
-    pattern = ["git", "commit"],
-    decision = "forbidden",
-    justification = "Agents must leave commits to the user; inspect or stage changes instead.",
-    match = [
-        "git commit",
-        "git commit -m message",
-        "git commit --amend",
-    ],
-    not_match = [
-        "git status",
-        "git diff --cached",
-    ],
-)
+GIT_ALLOW = [
+    "status", "log", "diff", "show", "blame", "grep", "ls-files", "rev-parse",
+    "rev-list", "for-each-ref", "describe", "shortlog", "reflog show",
+    "config --get", "remote -v", "remote get-url", "fetch", "pull", "add",
+    "commit", "switch", "checkout", "branch", "worktree", "stash", "reset",
+    "merge", "rebase", "cherry-pick", "revert", "tag", "mv", "apply", "am",
+]
+GIT_PROMPT = [
+    "push", "reset --hard", "checkout --", "checkout .", "stash drop",
+    "stash clear", "branch -D",
+]
+GIT_FORBIDDEN = ["push --force", "push -f", "push --mirror", "push --delete", "push -d"]
+
+GH_ALLOW = [
+    "pr view", "pr list", "pr diff", "pr checks", "pr status", "issue view",
+    "issue list", "issue status", "run view", "run list", "repo view",
+    "release view", "release list", "workflow view", "workflow list", "search",
+    "auth status",
+]
+GH_FORBIDDEN = [
+    "pr merge", "repo delete", "repo archive", "repo rename", "release delete",
+    "run cancel", "run delete", "workflow disable", "issue delete",
+    "label delete", "gist delete", "secret delete", "variable delete",
+    "cache delete",
+]
+
+
+def rules(tool, decision, commands):
+    # rtk rewrites `git ...` to `rtk git ...`; cover both.
+    for prefix in [[tool], ["rtk", tool]]:
+        for command in commands:
+            prefix_rule(pattern = prefix + command.split(" "), decision = decision)
+
+
+rules("git", "allow", GIT_ALLOW)
+rules("git", "prompt", GIT_PROMPT)
+rules("git", "forbidden", GIT_FORBIDDEN)
+rules("gh", "allow", GH_ALLOW)
+rules("gh", "forbidden", GH_FORBIDDEN)

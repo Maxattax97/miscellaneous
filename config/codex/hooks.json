@@ -41,17 +41,6 @@
       {
         "hooks": [
           {
-            "command": "python3 \"${HOME}/.codex/hooks/pre_tool_use_safety.py\"",
-            "statusMessage": "Checking command safety policy",
-            "timeout": 5,
-            "type": "command"
-          }
-        ],
-        "matcher": "^Bash$"
-      },
-      {
-        "hooks": [
-          {
             "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,

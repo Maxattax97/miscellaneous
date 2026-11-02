@@ -18,9 +18,6 @@ reasoning effort settings for the Open Source models. If the required assignment
 is unavailable, explain the limitation rather than substituting another model.
 Instructions do not themselves switch the running model.
 
-Never run `git commit`; leave commits to the user. OpenCode permissions enforce
-this even when auto mode is enabled.
-
 Do not spawn subagents merely because they are available. Delegate independent,
 bounded, or strongly verifiable work without constructing recursive delegation
 hierarchies. Use the assigned secondary for independent, bounded work with clear acceptance
@@ -38,6 +35,20 @@ Take over failed delegated work promptly rather than spending human attention
 correcting a subagent.
 Infer routine routing decisions without asking the user. Stop when the requested
 outcomes and meaningful verification criteria are satisfied.
+
+## Git
+
+- No AI attribution in commits or PR bodies: no `Co-Authored-By:`, no
+  "Generated with" line.
+- Commit messages and PR titles use Conventional Commits: `type(scope): subject`,
+  type one of `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`,
+  `chore`. Subject at most 72 characters, imperative, no trailing period.
+- Stage by explicit path, never `git add -A`, `-u`, or `.`.
+- Local git (commit, branch, switch, worktree, stash, rebase, merge, tag) needs
+  no approval. Ask first when work would be lost: `reset --hard`, checkout or
+  restore of modified paths, `clean`, `stash drop/clear`, `branch -D`.
+- `git push` asks every time; force, mirror, and delete pushes are blocked.
+  gh reads are free, gh writes ask, and merges and deletes are blocked.
 
 # BEGIN miscellaneous-agent-toolkit
 Use the skills linked from ~/.agents/skills when relevant; preserve user changes.

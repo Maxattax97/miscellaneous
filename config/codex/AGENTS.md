@@ -15,10 +15,19 @@ Optimize total engineering throughput and correctness, in this priority order:
 Do not maximize capability, reasoning effort, agent count, or parallelism for
 their own sake.
 
-## Hard safety boundaries
+## Git
 
-Never run `git commit`; leave commits to the user. This boundary is also enforced
-by Codex command rules and a pre-tool hook; it is not merely advisory.
+- No AI attribution in commits or PR bodies: no `Co-Authored-By:`, no
+  "Generated with" line.
+- Commit messages and PR titles use Conventional Commits: `type(scope): subject`,
+  type one of `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`,
+  `chore`. Subject at most 72 characters, imperative, no trailing period.
+- Stage by explicit path, never `git add -A`, `-u`, or `.`.
+- Local git (commit, branch, switch, worktree, stash, rebase, merge, tag) needs
+  no approval. Ask first when work would be lost: `reset --hard`, checkout or
+  restore of modified paths, `clean`, `stash drop/clear`, `branch -D`.
+- `git push` asks every time; force, mirror, and delete pushes are blocked.
+  gh reads are free, gh writes ask, and merges and deletes are blocked.
 
 ## Fixed model routing
 

@@ -10,3 +10,4 @@ description: Prepare a clear, actionable handoff for another person or agent.
 3. Call out blockers, risks, assumptions, and unresolved questions.
 4. Provide exact next steps, commands, and acceptance criteria.
 5. Leave the workspace in a discoverable state and avoid hiding important context.
+6. List worktrees and branches you created and whether each has unpushed commits; remove a worktree only when nothing in it is unpushed.
