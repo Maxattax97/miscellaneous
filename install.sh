@@ -212,6 +212,12 @@ awk '
         if (!statusline) print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
         if (!statuscolors) print "status_line_use_colors = true"
     }
+    function freecad_mcp_defaults() {
+        print ""
+        print "[mcp_servers.freecad]"
+        print "command = \"uvx\""
+        print "args = [\"freecad-mcp\"]"
+    }
     skip_statusline {
         if ($0 ~ /]/) skip_statusline = 0
         next
@@ -228,6 +234,7 @@ awk '
         else section = "other"
         if (section == "agents") agents = 1
         if (section == "tui") tui = 1
+        if ($0 ~ /^\[mcp_servers\.freecad\][[:space:]]*$/) freecad_mcp = 1
         print
         next
     }
@@ -282,6 +289,7 @@ awk '
             print "[tui]"
             tui_defaults()
         }
+        if (!freecad_mcp) freecad_mcp_defaults()
     }
 ' "$codex_config" > "$codex_config_tmp"
 mv "$codex_config_tmp" "$codex_config"
@@ -304,7 +312,9 @@ link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 mkdir -p "${HOME}/.config/shell_gpt/roles/"
 link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
 
-# We link for both the regular and Flatpak versions of FreeCAD.
+# We link for both the regular and current/legacy Flatpak versions of FreeCAD.
+mkdir -p "${HOME}/.var/app/org.freecad.FreeCAD/config/FreeCAD"
+link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecad.FreeCAD/config/FreeCAD/user.cfg"
 mkdir -p "${HOME}/.var/app/org.freecadweb.FreeCAD/config/FreeCAD"
 link_source "config/FreeCAD/user.cfg" 1 ".var/app/org.freecadweb.FreeCAD/config/FreeCAD/user.cfg"
 mkdir -p "${HOME}/.config/FreeCAD"
@@ -599,6 +609,7 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v pipx)" ]]; then
+            pipx install uv
             pipx install ansible
             pipx install ansible-core
             pipx install ansible-lint
@@ -818,15 +829,20 @@ confirm "Would you like to add unofficial package repositories? [y/N] " n || tru
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-            sudo dnf install -y "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+            # Avoid downloading the release RPMs again when they are already installed.
+            if ! rpm --quiet -q rpmfusion-free-release; then
+                sudo dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+            fi
+            if ! rpm --quiet -q rpmfusion-nonfree-release; then
+                sudo dnf install -y "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+            fi
 
             # Add repo for Brave
-            sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
             sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
             # Add repo for Docker
-            sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
 
             # Import PGP key for VeraCrypt.
             sudo rpm --import https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc
@@ -840,11 +856,8 @@ case "$response" in
             # Add Copr repo for Bazel
             # This is WAY out of date. Do not use!
 
-            # Add Signal Desktop repo
-            sudo dnf config-manager addrepo --from-repofile="https://download.opensuse.org/repositories/network:im:signal/Fedora_$(rpm -E %fedora)/network:im:signal.repo"
-
             # Add Github CLI repo
-            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
+            sudo dnf config-manager addrepo --overwrite --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
 
             # Update all the new repositories
             sudo dnf check-update --refresh
@@ -906,7 +919,9 @@ case "$response" in
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
-                    sudo dnf install -y signal-desktop
+                    sudo dnf install -y flatpak
+                    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+                    flatpak install --user -y flathub org.signal.Signal
                     ;;
                 *)
                     echo "Skipping Signal Desktop installation"
