@@ -36,7 +36,7 @@ Use only the following provider-specific model assignments:
 | Provider | Primary: main chat thread | Secondary: subagents |
 | --- | --- | --- |
 | Claude | Opus 5.5 High | Haiku 5.5 Medium |
-| Codex | GPT-6.1 Sol Low | GPT-6 Luna Medium |
+| Codex | GPT-6.1 Terra Medium | GPT-6 Luna Medium |
 | Open Source | MiMo-V2.6-Pro | MiMo-V2.6-Flash |
 
 The primary is mandatory for the main chat thread. Every subagent must use the
@@ -46,7 +46,7 @@ escalation, review, fallback, or quota pressure. Do not invent reasoning effort
 settings for the Open Source models.
 
 For Codex subagents, explicitly select `gpt-6-luna` with `medium` reasoning.
-The Codex main thread uses `gpt-6.1-sol` with `low` reasoning.
+The Codex main thread uses `gpt-6.1-terra` with `medium` reasoning.
 
 Prefer one context-owning main agent when coherent understanding matters. The
 main agent retains ownership through implementation and verification. Do not
