@@ -23,6 +23,9 @@ CLAUDE.local.md
 # NOTE: You cannot add comments to the *end* of a line, only the beginning!
 # https://git-scm.com/docs/gitignore
 
+# Local agent state
+.serena/
+
 # Build directories
 /bin/
 /obj/

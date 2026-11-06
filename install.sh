@@ -200,13 +200,13 @@ fi
 codex_config_tmp="$(mktemp "${codex_config}.XXXXXX")"
 awk '
     function root_defaults() {
-        if (!model) print "model = \"gpt-5.6-sol\""
+        if (!model) print "model = \"gpt-6.1-terra\""
         if (!effort) print "model_reasoning_effort = \"medium\""
         if (!approvals) print "approvals_reviewer = \"auto_review\""
     }
     function agent_defaults() {
-        if (!submodel) print "default_subagent_model = \"gpt-5.6-luna\""
-        if (!subeffort) print "default_subagent_reasoning_effort = \"high\""
+        if (!submodel) print "default_subagent_model = \"gpt-6-luna\""
+        if (!subeffort) print "default_subagent_reasoning_effort = \"medium\""
     }
     function tui_defaults() {
         if (!statusline) print "status_line = [\"model-with-reasoning\", \"context-remaining\", \"current-dir\", \"five-hour-limit\", \"weekly-limit\", \"used-tokens\"]"
@@ -239,7 +239,7 @@ awk '
         next
     }
     section == "" && /^[[:space:]]*model[[:space:]]*=/ {
-        print "model = \"gpt-5.6-sol\""
+        print "model = \"gpt-6.1-terra\""
         model = 1
         next
     }
@@ -254,12 +254,12 @@ awk '
         next
     }
     section == "agents" && /^[[:space:]]*default_subagent_model[[:space:]]*=/ {
-        print "default_subagent_model = \"gpt-5.6-luna\""
+        print "default_subagent_model = \"gpt-6-luna\""
         submodel = 1
         next
     }
     section == "agents" && /^[[:space:]]*default_subagent_reasoning_effort[[:space:]]*=/ {
-        print "default_subagent_reasoning_effort = \"high\""
+        print "default_subagent_reasoning_effort = \"medium\""
         subeffort = 1
         next
     }
