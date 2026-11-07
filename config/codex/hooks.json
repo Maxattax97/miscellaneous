@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -16,7 +16,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -28,7 +28,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -41,7 +41,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -54,7 +54,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -66,7 +66,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/mocull/.codex/herdr-agent-state.sh' session",
+            "command": "if [ -f '/Users/mocull/.codex/herdr-agent-state.sh' ]; then bash '/Users/mocull/.codex/herdr-agent-state.sh' session; fi",
             "timeout": 10,
             "type": "command"
           }
@@ -77,7 +77,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex end; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
@@ -89,7 +89,7 @@
       {
         "hooks": [
           {
-            "command": "\"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin",
+            "command": "if [ -x \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" ]; then \"${AI_USAGE_HOME:-$HOME/.tmux/plugins/tmux-ai-usage}/scripts/ai-activity\" --agent codex begin; fi",
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
