@@ -16,7 +16,13 @@ import subprocess
 import sys
 
 MARKER = ".metadata_never_index"
-DEFAULT_TARGETS = ["~/src", "~/entegrata"]
+DEFAULT_TARGETS = [
+    "~/src",
+    "~/entegrata",
+    "~/go",
+    "~/Library/Caches/go-build",
+    "~/Library/Containers/com.docker.docker",
+]
 
 
 def exclude_spotlight(path: pathlib.Path) -> str:
@@ -57,22 +63,27 @@ def indexed_count(path: pathlib.Path) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("targets", nargs="*", default=DEFAULT_TARGETS)
+    parser.add_argument("targets", nargs="*")
     parser.add_argument(
         "--time-machine", action="store_true", help="also exclude from Time Machine"
     )
     args = parser.parse_args()
+    explicit = bool(args.targets)
+    targets = args.targets or DEFAULT_TARGETS
 
     if platform.system() != "Darwin":
         print("macOS only.", file=sys.stderr)
         return 1
 
     failed = False
-    for raw in args.targets:
+    excluded: list[pathlib.Path] = []
+    for raw in targets:
         path = pathlib.Path(raw).expanduser().resolve()
         if not path.is_dir():
-            print(f"{path}: not a directory, skipping", file=sys.stderr)
-            failed = True
+            # Defaults cover tools a machine may not have (Go, Docker).
+            if explicit:
+                print(f"{path}: not a directory, skipping", file=sys.stderr)
+                failed = True
             continue
 
         print(f"{path}")
@@ -80,12 +91,26 @@ def main() -> int:
         if args.time_machine:
             print(f"  time machine: {exclude_timemachine(path)}")
         print(f"  stale index:  {indexed_count(path)} entries")
+        excluded.append(path)
 
-    print(
-        "\nTo purge stale entries, add these paths under"
-        "\nSystem Settings > Siri & Spotlight > Spotlight Privacy."
-    )
+    print_privacy_guidance(excluded)
     return 1 if failed else 0
+
+
+def print_privacy_guidance(paths: list[pathlib.Path]) -> None:
+    if not paths:
+        return
+    print(
+        "\nThe markers stop new indexing only. To purge what Spotlight already"
+        "\nindexed, add each folder below to Spotlight's privacy list:"
+    )
+    for path in paths:
+        print(f"  {path}")
+    print(
+        "\n  macOS 15+:    System Settings > Spotlight > Search Privacy..."
+        "\n  macOS 13-14:  System Settings > Siri & Spotlight > Spotlight Privacy..."
+        "\n  Click +, press Cmd+Shift+G, paste a path, then Choose."
+    )
 
 
 if __name__ == "__main__":
