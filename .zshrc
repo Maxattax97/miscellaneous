@@ -938,6 +938,17 @@ zshrc_set_path() {
         fi
     fi
 
+    # The Nix installer appends its profiles; move them ahead of brew and /usr/bin.
+    local _nix_bin _rest
+    for _nix_bin in /nix/var/nix/profiles/default/bin "${HOME}/.nix-profile/bin"; do
+        if [ -d "$_nix_bin" ]; then
+            _rest=":${PATH}:"
+            _rest="${_rest//:${_nix_bin}:/:}"
+            _rest="${_rest#:}"
+            PATH="${_nix_bin}:${_rest%:}"
+        fi
+    done
+
     zshrc_add_path "${HOME}/.local/bin" before
 
     # Override system-installed Rust/Cargo.

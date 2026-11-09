@@ -130,6 +130,10 @@ link_source "config/ncmpcpp/config" 1 ".ncmpcpp/config"
 
 mkdir -p "${HOME}/.gnupg"
 link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS owns the reader through PC/SC; gpg's built-in CCID driver fights it.
+    link_source "config/gnupg/scdaemon.conf" 0 ".gnupg/scdaemon.conf"
+fi
 
 mkdir -p "${HOME}/.ssh"
 link_source "config/ssh/config" 0 ".ssh/config"
@@ -1504,6 +1508,10 @@ case "$response" in
         git config --global merge.tool nvimdiff
         git config --global merge.conflictStyle zdiff3
         git config --global --add difftool.prompt false
+
+        if [[ "$(uname)" == "Darwin" ]]; then
+            git config --global credential.helper osxkeychain
+        fi
 
         # Automatically set up remotes if they don't exist when pushing.
         git config --global push.autoSetupRemote true
