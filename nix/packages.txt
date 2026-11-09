@@ -48,6 +48,7 @@ qemu qemu
 ripgrep ripgrep
 rtk rtk
 scc scc
+shellcheck shellcheck
 shfmt shfmt
 tmux tmux
 usage usage
