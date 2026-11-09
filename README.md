@@ -22,6 +22,13 @@
 ./install.sh
 ```
 
+### Nix
+
+`install.sh` offers to install `nix/` as a Nix profile entry when `nix` is on the
+PATH. `nix/packages.txt` lists every tool and where it used to come from. On a
+machine that also has the Entegrata dev-tools flake, it installs `#personal`,
+which leaves out the tools that flake already provides; otherwise `#all`.
+
 ### `zsh`
 
 Open a fresh shell and let the zsh plugins automatically install. You may have to restart your shell, sometimes it breaks.

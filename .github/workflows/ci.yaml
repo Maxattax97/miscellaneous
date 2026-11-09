@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro: [archlinux, fedora, gentoo, debian, brew]
+        distro: [archlinux, fedora, gentoo, debian, brew, nix]
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4

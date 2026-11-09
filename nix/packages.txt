@@ -1,0 +1,90 @@
+# One line per tool: <brew-formula> <nix-attr> [flags,...]
+# "-" in the brew column means it came from another manager (pipx, npm, go, gem).
+# Flags: base = also in the Entegrata dev-tools flake, left out of #personal.
+# Read by flake.nix and install.sh.
+
+# Shared base (dev-tools supplies these on work machines)
+binutils binutils base
+curl curl base
+gh gh base
+git git base
+git-lfs git-lfs base
+gnupg gnupg base
+gsed gnused base
+jq jq base
+keychain keychain base
+libtool libtool base
+make gnumake base
+mise mise base
+node nodejs base
+pkg-config pkg-config base
+
+# brew formulae
+actionlint actionlint
+bat bat
+bat-extras bat-extras.core
+btop btop
+chezmoi chezmoi
+coreutils coreutils
+ctags universal-ctags
+fastfetch fastfetch
+ffmpeg ffmpeg
+findutils findutils
+fzf fzf
+git-crypt git-crypt
+git-delta delta
+kubectx kubectx
+lcov lcov
+ncdu ncdu
+neovim neovim
+newsboat newsboat
+opencode opencode
+p7zip p7zip
+pandoc pandoc
+python@3.14 python314
+qalculate-gtk qalculate-gtk
+libqalculate libqalculate
+qemu qemu
+ripgrep ripgrep
+rtk rtk
+scc scc
+shfmt shfmt
+tmux tmux
+usage usage
+virtualenv virtualenv
+weechat weechat
+zizmor zizmor
+zsh zsh
+
+# pipx / uv tools (thefuck, flake8-pyproject, headroom-ai, postgres-mcp stay on uv: not in nixpkgs)
+- ansible
+- ansible-lint
+- ansible-navigator
+- python3Packages.argcomplete
+- bandit
+- black
+- python3Packages.flake8
+- python3Packages.huggingface-hub
+- isort
+- molecule
+- poetry
+- pre-commit
+- shell-gpt
+- tmuxp
+- uv
+
+# npm globals
+- bazelisk
+- neovim-node-client
+- yarn
+
+# go install
+- gcov2lcov
+- go-tools
+- golangci-lint
+- gosec
+- govulncheck
+- osv-scanner
+
+# gems
+- taskjuggler
