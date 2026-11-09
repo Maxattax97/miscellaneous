@@ -357,6 +357,41 @@ echo "Skipped files: ${link_skipped_files}"
 
 echo "Environment installation complete"
 
+# Nix: one profile entry per flake, so this repo never depends on the work dev-tools flake.
+install_nix_packages() {
+    local attr=all
+    if nix profile list --json 2> /dev/null | grep -q 'dev-tools'; then
+        attr=personal
+    fi
+    if nix profile list --json 2> /dev/null | grep -q "\"${attr}\":"; then
+        nix profile upgrade "${attr}"
+    else
+        nix profile add "path:${MISC_DIR}/nix#${attr}"
+    fi
+    # Not in nixpkgs; uv keeps its own Python, so these survive brew and Nix upgrades.
+    if [[ -x "$(command -v uv)" ]]; then
+        uv tool install thefuck
+        uv tool install flake8-pyproject
+    fi
+}
+
+if [[ -x "$(command -v nix)" ]]; then
+    if [ -n "${AUTOMATED}" ]; then
+        response='y'
+    else
+        confirm "Would you like to install packages from the Nix flake (nix/)? [y/N] " n || true
+    fi
+    case "$response" in
+        [yY][eE][sS] | [yY])
+            install_nix_packages
+            NIX_PACKAGES=1
+            ;;
+        *)
+            echo "Skipping Nix packages"
+            ;;
+    esac
+fi
+
 if [ -n "${AUTOMATED}" ]; then
     response='y'
 else
@@ -612,7 +647,9 @@ case "$response" in
                 neovim
         fi
 
-        if [[ -x "$(command -v pipx)" ]]; then
+        if [ -n "${NIX_PACKAGES:-}" ]; then
+            echo "Python tools come from the Nix flake"
+        elif [[ -x "$(command -v pipx)" ]]; then
             pipx install uv
             pipx install ansible
             pipx install ansible-core
@@ -679,7 +716,9 @@ case "$response" in
         esac
 
         # TODO: install LTS node via NVM which is installed via ZSH.
-        if [[ -x "$(command -v npm)" ]]; then
+        if [ -n "${NIX_PACKAGES:-}" ]; then
+            echo "npm tools come from the Nix flake"
+        elif [[ -x "$(command -v npm)" ]]; then
             npm install -g neovim || sudo npm install -g neovim
             npm install -g @bazel/bazelisk || sudo npm install -g @bazel/bazelisk
 
