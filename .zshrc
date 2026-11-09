@@ -2087,33 +2087,35 @@ zshrc_set_aliases() {
     alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
     # Enable color support of ls and also add handy aliases.
-    export CLICOLOR=1 # For macOS VM's ... Dumb it's not enabled by default.
-    if [ -x /usr/bin/dircolors ]; then
+    # Detect the ls actually on PATH: GNU (Linux, Nix coreutils) or BSD (macOS /bin/ls).
+    export CLICOLOR=1 # BSD ls colors via CLICOLOR + LSCOLORS.
+    if command ls --version 2>/dev/null | grep -q 'GNU coreutils'; then
         if test -r ~/.dircolors; then
             eval "$(dircolors -b ~/.dircolors)"
+        elif [ "$(uname)" = "Darwin" ]; then
+            # GNU equivalent of LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd, so colors match BSD ls.
+            export LS_COLORS='di=1;34:ln=1;36:so=1;31:pi=1;33:ex=1;32:bd=1;34;46:cd=1;34;43:su=41:sg=46:tw=42:ow=43'
         else
             eval "$(dircolors -b)"
         fi
         alias ls='ls --color=auto'
         alias sl="sudo ls --color=auto"
+        alias l='ls -l --all --human-readable --time-style=long-iso --group-directories-first --color=auto'
         #alias dir='dir --color=auto'
         #alias vdir='vdir --color=auto'
-
-        alias grep='grep --color=auto'
-        alias fgrep='fgrep --color=auto'
-        alias egrep='egrep --color=auto'
 
         alias pacman='pacman --color=auto'
         alias yay='yay --color=auto'
     else
-        alias sl="sudo ls"
+        alias sl="sudo ls -G"
+        alias l="ls -l -a -h -G -D '%Y-%m-%d %H:%M'"
     fi
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 
     alias e="$EDITOR"
     alias se="sudoedit"
-
-    # some more ls aliases
-    alias l='ls -l --all --human-readable --time-style=long-iso --group-directories-first --color=auto'
 
     # Fix tmux 256 colors:
     #if type tmux-next > /dev/null 2>&1; then
