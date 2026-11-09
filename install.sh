@@ -370,7 +370,8 @@ install_nix_packages() {
     fi
     # Not in nixpkgs; uv keeps its own Python, so these survive brew and Nix upgrades.
     if [[ -x "$(command -v uv)" ]]; then
-        uv tool install thefuck
+        # thefuck imports distutils, which Python 3.12 removed.
+        uv tool install --python 3.11 thefuck
         uv tool install flake8-pyproject
     fi
 }
@@ -426,7 +427,7 @@ case "$response" in
                 newsboat \
                 nodejs \
                 nodejs-npm \
-                pipx \
+                uv \
                 python3 \
                 python3-neovim \
                 python3-pip \
@@ -466,7 +467,7 @@ case "$response" in
                 neovim \
                 newsboat \
                 node \
-                pipx \
+                uv \
                 pkg-config \
                 python \
                 ripgrep \
@@ -532,7 +533,6 @@ case "$response" in
                 newsboat \
                 nodejs \
                 npm \
-                pipx \
                 python3 \
                 python3-pip \
                 python3-pynvim \
@@ -566,7 +566,7 @@ case "$response" in
                 npm \
                 python \
                 python-pip \
-                python-pipx \
+                uv \
                 python-pynvim \
                 python-virtualenv \
                 ripgrep \
@@ -604,7 +604,7 @@ case "$response" in
                 node \
                 npm \
                 py311-pip \
-                py311-pipx \
+                uv \
                 py311-pynvim \
                 py311-virtualenv \
                 python \
@@ -638,6 +638,12 @@ case "$response" in
             curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
         fi
 
+        # Debian has no uv package; the standalone installer covers it and anything else without one.
+        if [[ ! -x "$(command -v uv)" ]]; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            PATH="${HOME}/.local/bin:${PATH}"
+        fi
+
         if [[ ! -x "$(command -v herdr)" ]]; then
             curl -fsSL https://herdr.dev/install.sh | sh
         fi
@@ -649,24 +655,6 @@ case "$response" in
 
         if [ -n "${NIX_PACKAGES:-}" ]; then
             echo "Python tools come from the Nix flake"
-        elif [[ -x "$(command -v pipx)" ]]; then
-            pipx install uv
-            pipx install ansible
-            pipx install ansible-core
-            pipx install ansible-lint
-            pipx install ansible-navigator
-            pipx install argcomplete
-            pipx install bandit
-            pipx install black
-            pipx install flake8
-            pipx install flake8-pyproject
-            pipx install huggingface_hub
-            pipx install isort
-            pipx install molecule
-            pipx install poetry
-            pipx install pre-commit
-            pipx install thefuck
-            pipx install tmuxp
         elif [[ -x "$(command -v uv)" ]]; then
             uv tool install --with-executables-from ansible-core,ansible-lint ansible
             uv tool install ansible-navigator
@@ -680,7 +668,7 @@ case "$response" in
             uv tool install molecule
             uv tool install poetry
             uv tool install pre-commit
-            uv tool install thefuck
+            uv tool install --python 3.11 thefuck
             uv tool install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
@@ -698,7 +686,7 @@ case "$response" in
                 thefuck \
                 tmuxp
         else
-            echo "You need to install pipx / uv / pip3"
+            echo "You need to install uv / pip3"
         fi
 
         # Official standalone Codex installer (no npm dependency).
@@ -814,8 +802,8 @@ fi
 
 headroom_active=0
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
-    if command -v pipx > /dev/null 2>&1; then
-        pipx install 'headroom-ai[all]' || pipx upgrade 'headroom-ai[all]'
+    if command -v uv > /dev/null 2>&1; then
+        uv tool install 'headroom-ai[all]' || uv tool upgrade headroom-ai
         if command -v headroom > /dev/null 2>&1; then
             if headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
                 && curl -fsS http://127.0.0.1:8787/readyz > /dev/null \
@@ -828,10 +816,10 @@ if confirm "Would you like to install Headroom for persistent Codex/OpenCode com
                 headroom install remove --profile coding || true
             fi
         else
-            echo "Headroom executable was not available after pipx installation." >&2
+            echo "Headroom executable was not available after uv installation." >&2
         fi
     else
-        echo "Skipping Headroom: pipx is not installed."
+        echo "Skipping Headroom: uv is not installed."
     fi
 fi
 
