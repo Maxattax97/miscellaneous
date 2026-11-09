@@ -1,5 +1,5 @@
 # One line per tool: <brew-formula> <nix-attr> [flags,...]
-# "-" in the brew column means it came from another manager (pipx, npm, go, gem).
+# "-" in the brew column means it came from another manager (uv, npm, go, gem).
 # Flags: base = also in the Entegrata dev-tools flake, left out of #personal.
 # Read by flake.nix and install.sh.
 
@@ -57,7 +57,7 @@ weechat weechat
 zizmor zizmor
 zsh zsh
 
-# pipx / uv tools (thefuck, flake8-pyproject, headroom-ai, postgres-mcp stay on uv: not in nixpkgs)
+# Python CLIs (thefuck, flake8-pyproject, headroom-ai, postgres-mcp use uv tool: not in nixpkgs)
 - ansible
 - ansible-lint
 - ansible-navigator
