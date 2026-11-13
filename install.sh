@@ -174,6 +174,10 @@ link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+if [[ "$(uname)" != "Darwin" ]]; then
+    # The st-style keybindings would replace Ghostty's Cmd shortcuts on macOS.
+    link_source "config/ghostty/" 1 ".config/ghostty"
+fi
 
 mkdir -p "${HOME}/.config/herdr"
 link_source "config/herdr/config.toml" 1 ".config/herdr/config.toml"

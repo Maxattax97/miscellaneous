@@ -1,0 +1,93 @@
+# Ghostty, tuned to look and behave like st (suckless simple terminal) on Linux.
+#
+# Colors and font come from this repo's .Xdefaults, which is what st reads
+# through its Xresources patch; everything else follows st's config.def.h.
+
+# Colors (.Xdefaults "Dark" solarized-gray palette, *.colorN entries)
+background = #1b1b1b
+foreground = #e2e2e2
+palette = 0=#1b1b1b
+palette = 1=#ff511a
+palette = 2=#4ca340
+palette = 3=#a68f01
+palette = 4=#3294ff
+palette = 5=#cc62fe
+palette = 6=#07a38f
+palette = 7=#ababab
+palette = 8=#474747
+palette = 9=#ff511a
+palette = 10=#4ca340
+palette = 11=#a68f01
+palette = 12=#3294ff
+palette = 13=#cc62fe
+palette = 14=#07a38f
+palette = 15=#e2e2e2
+
+# st draws the cursor in cursorColor with the glyph in the default
+# background. Ghostty has no equivalent of st's reverse-cursor color.
+cursor-color = #e2e2e2
+cursor-text = #1b1b1b
+
+# st marks a selection by swapping each cell's foreground and background.
+selection-foreground = cell-background
+selection-background = cell-foreground
+
+# st renders bold text in colors 0-7 with the bright colors 8-15.
+bold-color = bright
+
+# st.alpha: 0.9
+background-opacity = 0.9
+
+# Font (st.font: Hack Nerd Font Mono:pixelsize=12:antialias=true:autohint=true)
+font-family = Hack Nerd Font Mono
+# Ghostty sizes fonts in points; 9pt is 12px at the 96 DPI set by Xft.dpi.
+font-size = 9
+# st has no ligature support, so render every glyph on its own.
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+# autohint=true from st.font, plus full hinting from Xft.hintstyle: hintfull.
+freetype-load-flags = hinting,force-autohint,no-monochrome,autohint,no-light
+
+# Cursor: st's default is a steady block.
+cursor-style = block
+cursor-style-blink = false
+
+# Window: st.borderpx: 0 and no client-side chrome; the window manager owns
+# any decorations, and there are no tabs, overlays, or close prompts.
+window-padding-x = 0
+window-padding-y = 0
+window-decoration = server
+gtk-titlebar = false
+window-show-tab-bar = never
+resize-overlay = never
+confirm-close-surface = false
+
+# Each launch is its own process that exits with its window, like st.
+gtk-single-instance = false
+quit-after-last-window-closed = true
+
+# Keep shell integration from switching the cursor to a bar at the prompt.
+shell-integration-features = no-cursor
+
+# Clipboard: st*selectToClipboard: true copies selections to both PRIMARY
+# and CLIPBOARD; middle click pastes PRIMARY, right click does nothing.
+copy-on-select = both
+right-click-action = ignore
+# st pastes without confirmation and does not open URLs on click.
+clipboard-paste-protection = false
+link-url = false
+
+# Bell: st's bellvolume is 0, so a bell only sets the urgency hint.
+bell-features = no-system,no-audio,attention,no-title,no-border
+
+# Keybindings: only the shortcuts st ships in config.def.h (TERMMOD is
+# Ctrl+Shift). Ghostty's tab, split, and window bindings are dropped.
+keybind = clear
+keybind = ctrl+shift+page_up=increase_font_size:1
+keybind = ctrl+shift+page_down=decrease_font_size:1
+keybind = ctrl+shift+home=reset_font_size
+keybind = ctrl+shift+c=copy_to_clipboard
+keybind = ctrl+shift+v=paste_from_clipboard
+keybind = ctrl+shift+y=paste_from_selection
+keybind = shift+insert=paste_from_selection
