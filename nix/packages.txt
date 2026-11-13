@@ -1,7 +1,7 @@
 # One line per tool: <brew-formula> <nix-attr> [flags,...]
 # "-" in the brew column means it came from another manager (uv, npm, go, gem).
 # Flags: base = also in the Entegrata dev-tools flake, left out of #personal.
-# Read by flake.nix and install.sh.
+# Read by flake.nix.
 
 # Shared base (dev-tools supplies these on work machines)
 binutils binutils base
@@ -57,7 +57,7 @@ weechat weechat
 zizmor zizmor
 zsh zsh
 
-# Python CLIs (thefuck, flake8-pyproject, headroom-ai, postgres-mcp use uv tool: not in nixpkgs)
+# Python CLIs (thefuck and flake8-pyproject are not in nixpkgs; install.sh adds them with uv tool)
 - ansible
 - ansible-lint
 - ansible-navigator
