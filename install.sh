@@ -369,19 +369,15 @@ install_thefuck() {
     fi
 }
 
-# Print one "name<TAB>originalUrl<TAB>attrPath" line per Nix profile element.
-# jq comes from the flake itself, so fall back to the text listing before it exists.
+# Print one "name<TAB>originalUrl<TAB>attrPath<TAB>priority" line per Nix profile element.
+# jq comes from the flake itself, so run it through Nix before it is installed.
 nix_profile_elements() {
-    if [[ -x "$(command -v jq)" ]]; then
-        nix profile list --json \
-            | jq -r '.elements | to_entries[] | [.key, (.value.originalUrl // ""), (.value.attrPath // "")] | @tsv'
-    else
-        nix profile list | awk '
-            { key = $0; sub(/:.*/, "", key); val = $0; sub(/^[^:]*: */, "", val) }
-            key == "Name" { name = val }
-            key == "Flake attribute" { attr = val }
-            key == "Original flake URL" { printf "%s\t%s\t%s\n", name, val, attr }'
+    local jq=(jq)
+    if ! [[ -x "$(command -v jq)" ]]; then
+        jq=(nix run nixpkgs#jq --)
     fi
+    nix profile list --json \
+        | "${jq[@]}" -r '.elements | to_entries[] | [.key, (.value.originalUrl // ""), (.value.attrPath // ""), (.value.priority // 5)] | @tsv'
 }
 
 # Nix: one profile entry per flake, so this repo never depends on the work dev-tools flake.
@@ -389,19 +385,20 @@ nix_profile_elements() {
 # uses, so any tool both flakes ship resolves to dev-tools instead of aborting.
 NIX_PROFILE_PRIORITY=10
 install_nix_packages() {
-    local flake="path:${MISC_DIR}/nix" attr=all elements current="" name url attr_path
+    local flake="path:${MISC_DIR}/nix" attr=all elements current="" name url attr_path priority
     elements="$(nix_profile_elements)" || elements=""
     if printf '%s\n' "$elements" | awk -F '\t' '$2 ~ /(^|[\/:])dev-tools(\.git)?([\/?#]|$)/ { found = 1 } END { exit !found }'; then
         attr=personal
     fi
-    while IFS=$'\t' read -r name url attr_path; do
+    while IFS=$'\t' read -r name url attr_path priority; do
         if [ "$url" != "$flake" ] && [[ $url != "${flake}?"* ]]; then
             continue
         fi
-        if [[ $attr_path == *".${attr}" ]]; then
+        if [[ $attr_path == *".${attr}" ]] && [ "$priority" = "$NIX_PROFILE_PRIORITY" ]; then
             current="$name"
         else
-            # #all contains #personal, so switching sets must drop the other entry first.
+            # #all contains #personal, so switching sets must drop the other entry first;
+            # an entry at another priority is re-added so dev-tools still wins overlaps.
             nix profile remove "$name"
         fi
     done <<< "$elements"
@@ -873,7 +870,7 @@ fi
 headroom_active=0
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
     if command -v uv > /dev/null 2>&1; then
-        uv tool install 'headroom-ai[all]' || uv tool upgrade headroom-ai
+        uv tool install --upgrade 'headroom-ai[all]'
         if command -v headroom > /dev/null 2>&1; then
             if headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
                 && curl -fsS http://127.0.0.1:8787/readyz > /dev/null \
