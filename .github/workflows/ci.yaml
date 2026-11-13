@@ -6,6 +6,12 @@ on: # yamllint disable-line rule:truthy
   pull_request:
 permissions:
   contents: read
+# Pull request events expose a synthetic merge commit as github.sha, which a
+# fresh clone cannot check out; build the PR head from its own repository.
+env:
+  SOURCE_REPO: >-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+  SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
 
 jobs:
   lint:
@@ -25,6 +31,9 @@ jobs:
           # The repository mixes legacy dotfile snippets and active scripts;
           # keep ShellCheck semantic checks without rewriting those files.
           VALIDATE_SHELL_SHFMT: false
+          # Use the repository-root linter configs (.markdownlint.yaml, .flake8,
+          # .luacheckrc) instead of super-linter's .github/linters default.
+          LINTER_RULES_PATH: .
           FILTER_REGEX_EXCLUDE: >-
             \.sample-secret\.md|\.lcovrc\.gcov\.css|\/archiso\/.*\.sh|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md|\/test\/source_idempotency\.zsh
       - name: Install zsh
@@ -45,11 +54,11 @@ jobs:
       - name: Build exact triggering revision
         uses: docker/build-push-action@v7
         with:
-          context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.sha }}
+          context: ${{ github.server_url }}/${{ env.SOURCE_REPO }}.git#${{ env.SOURCE_SHA }}
           file: Dockerfile.${{ matrix.distro }}
           build-args: |
-            REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
-            COMMIT_SHA=${{ github.sha }}
+            REPO_URL=${{ github.server_url }}/${{ env.SOURCE_REPO }}.git
+            COMMIT_SHA=${{ env.SOURCE_SHA }}
           cache-from: type=gha,scope=${{ matrix.distro }}
           cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: false
@@ -92,11 +101,11 @@ jobs:
       - name: Build and push exact validated revision
         uses: docker/build-push-action@v7
         with:
-          context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.sha }}
+          context: ${{ github.server_url }}/${{ env.SOURCE_REPO }}.git#${{ env.SOURCE_SHA }}
           file: Dockerfile.${{ matrix.distro }}
           build-args: |
-            REPO_URL=${{ github.server_url }}/${{ github.repository }}.git
-            COMMIT_SHA=${{ github.sha }}
+            REPO_URL=${{ github.server_url }}/${{ env.SOURCE_REPO }}.git
+            COMMIT_SHA=${{ env.SOURCE_SHA }}
           cache-from: type=gha,scope=${{ matrix.distro }}
           cache-to: type=gha,mode=max,scope=${{ matrix.distro }},ignore-error=true
           push: true
