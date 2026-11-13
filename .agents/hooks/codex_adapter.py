@@ -9,7 +9,7 @@ from pathlib import Path
 raw = json.load(sys.stdin)
 if not isinstance(raw, dict):
     raw = {}
-hook_event = str(raw.get("hook_event_name", ""))
+hook_event = str(raw.get("hook_event_name", ""))  # pylint: disable=invalid-name
 event_names = {
     "PreToolUse": "pre_tool",
     "PreCompact": "pre_compact",

@@ -24,6 +24,7 @@ ENV USER=max
 
 # Verify the intentional passwordless sudo setup before running the installer.
 # hadolint ignore=DL3004
+# checkov:skip=CKV2_DOCKER_1:Deliberately exercises passwordless sudo.
 RUN sudo -n true && \
 	mkdir -p /home/max/src
 WORKDIR /home/max/src

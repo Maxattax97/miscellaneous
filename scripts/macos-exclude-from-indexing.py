@@ -7,6 +7,8 @@ not purged -- for that, add the path to the Spotlight Privacy list in System
 Settings, which deletes them immediately.
 """
 
+# pylint: disable=invalid-name  # Hyphenated name is the CLI command.
+
 from __future__ import annotations
 
 import argparse
@@ -26,6 +28,7 @@ DEFAULT_TARGETS = [
 
 
 def exclude_spotlight(path: pathlib.Path) -> str:
+    """Drop the Spotlight marker into path."""
     marker = path / MARKER
     if marker.exists():
         return "already excluded"
@@ -34,13 +37,17 @@ def exclude_spotlight(path: pathlib.Path) -> str:
 
 
 def exclude_timemachine(path: pathlib.Path) -> str:
+    """Add path to the Time Machine exclusion list."""
     check = subprocess.run(
-        ["tmutil", "isexcluded", str(path)], capture_output=True, text=True
+        ["tmutil", "isexcluded", str(path)], capture_output=True, text=True, check=False
     )
     if check.stdout.startswith("[Excluded]"):
         return "already excluded"
     add = subprocess.run(
-        ["tmutil", "addexclusion", str(path)], capture_output=True, text=True
+        ["tmutil", "addexclusion", str(path)],
+        capture_output=True,
+        text=True,
+        check=False,
     )
     return "excluded" if add.returncode == 0 else f"failed: {add.stderr.strip()}"
 
@@ -55,6 +62,7 @@ def indexed_count(path: pathlib.Path) -> str:
         ["mdfind", "-count", "-onlyin", str(path), "kMDItemContentType=='*'"],
         capture_output=True,
         text=True,
+        check=False,
     )
     if result.returncode != 0:
         return "?"
@@ -62,6 +70,7 @@ def indexed_count(path: pathlib.Path) -> str:
 
 
 def main() -> int:
+    """Exclude each target and report what changed."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("targets", nargs="*")
     parser.add_argument(
@@ -98,6 +107,7 @@ def main() -> int:
 
 
 def print_privacy_guidance(paths: list[pathlib.Path]) -> None:
+    """Explain how to purge entries Spotlight already indexed."""
     if not paths:
         return
     print(
