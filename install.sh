@@ -357,40 +357,75 @@ echo "Skipped files: ${link_skipped_files}"
 
 echo "Environment installation complete"
 
-# Nix: one profile entry per flake, so this repo never depends on the work dev-tools flake.
-install_nix_packages() {
-    local attr=all
-    if nix profile list --json 2> /dev/null | grep -q 'dev-tools'; then
-        attr=personal
-    fi
-    if nix profile list --json 2> /dev/null | grep -q "\"${attr}\":"; then
-        nix profile upgrade "${attr}"
-    else
-        nix profile add "path:${MISC_DIR}/nix#${attr}"
-    fi
-    # Not in nixpkgs; uv keeps its own Python, so these survive brew and Nix upgrades.
-    if [[ -x "$(command -v uv)" ]]; then
-        # thefuck imports distutils, which Python 3.12 removed.
-        uv tool install --python 3.11 thefuck
-        uv tool install flake8-pyproject
+# uv tool puts executables here (uv's own lookup order); later checks such as
+# `command -v headroom` need it on PATH during this run, not only in new shells.
+PATH="${UV_TOOL_BIN_DIR:-${XDG_BIN_HOME:-${HOME}/.local/bin}}:${PATH}"
+
+# thefuck imports distutils, which Python 3.12 removed. Distro uv builds may not
+# download interpreters on demand, so fetch 3.11 explicitly. It is optional.
+install_thefuck() {
+    if ! { uv python install 3.11 && uv tool install --python 3.11 thefuck; }; then
+        echo "Unable to install the optional thefuck tool; continuing"
     fi
 }
 
-if [[ -x "$(command -v nix)" ]]; then
-    if [ -n "${AUTOMATED}" ]; then
-        response='y'
+# Print one "name<TAB>originalUrl<TAB>attrPath" line per Nix profile element.
+# jq comes from the flake itself, so fall back to the text listing before it exists.
+nix_profile_elements() {
+    if [[ -x "$(command -v jq)" ]]; then
+        nix profile list --json \
+            | jq -r '.elements | to_entries[] | [.key, (.value.originalUrl // ""), (.value.attrPath // "")] | @tsv'
     else
-        confirm "Would you like to install packages from the Nix flake (nix/)? [y/N] " n || true
+        nix profile list | awk '
+            { key = $0; sub(/:.*/, "", key); val = $0; sub(/^[^:]*: */, "", val) }
+            key == "Name" { name = val }
+            key == "Flake attribute" { attr = val }
+            key == "Original flake URL" { printf "%s\t%s\t%s\n", name, val, attr }'
     fi
-    case "$response" in
-        [yY][eE][sS] | [yY])
-            install_nix_packages
-            NIX_PACKAGES=1
-            ;;
-        *)
-            echo "Skipping Nix packages"
-            ;;
-    esac
+}
+
+# Nix: one profile entry per flake, so this repo never depends on the work dev-tools flake.
+# The entry gets a lower priority (higher number) than the default 5 that dev-tools
+# uses, so any tool both flakes ship resolves to dev-tools instead of aborting.
+NIX_PROFILE_PRIORITY=10
+install_nix_packages() {
+    local flake="path:${MISC_DIR}/nix" attr=all elements current="" name url attr_path
+    elements="$(nix_profile_elements)" || elements=""
+    if printf '%s\n' "$elements" | awk -F '\t' '$2 ~ /(^|[\/:])dev-tools(\.git)?([\/?#]|$)/ { found = 1 } END { exit !found }'; then
+        attr=personal
+    fi
+    while IFS=$'\t' read -r name url attr_path; do
+        if [ "$url" != "$flake" ] && [[ $url != "${flake}?"* ]]; then
+            continue
+        fi
+        if [[ $attr_path == *".${attr}" ]]; then
+            current="$name"
+        else
+            # #all contains #personal, so switching sets must drop the other entry first.
+            nix profile remove "$name"
+        fi
+    done <<< "$elements"
+    if [ -n "$current" ]; then
+        nix profile upgrade "$current"
+    else
+        nix profile add --priority "$NIX_PROFILE_PRIORITY" "${flake}#${attr}"
+    fi
+    if [ -d "${HOME}/.nix-profile/bin" ]; then
+        PATH="${HOME}/.nix-profile/bin:${PATH}"
+    fi
+    # Not in nixpkgs; uv keeps its own Python, so these survive brew and Nix upgrades.
+    if [[ -x "$(command -v uv)" ]]; then
+        install_thefuck
+        uv tool install flake8-pyproject || echo "Unable to install flake8-pyproject; continuing"
+    fi
+}
+
+# Optional, so automation never installs it (see confirm).
+if [[ -x "$(command -v nix)" ]] && confirm "Would you like to install packages from the Nix flake (nix/)? [y/N] " n; then
+    install_nix_packages
+    NIX_PACKAGES=1
+else
+    echo "Skipping Nix packages"
 fi
 
 if [ -n "${AUTOMATED}" ]; then
@@ -403,80 +438,94 @@ case "$response" in
         # TODO: install brew if we detect its a Mac
         # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
+        # Each list starts with what the Nix flakes lack; the tools nix/packages.txt
+        # (or dev-tools) provides are added only when the Nix flake was not installed.
         if [[ -x "$(command -v dnf)" ]]; then
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv
-            sudo dnf install -y \
-                bat \
-                btop \
-                cargo \
-                chezmoi \
-                ctags \
-                curl \
-                dnf-plugins-core \
-                fastfetch \
-                gcc \
-                git \
-                git-delta \
-                git-crypt \
-                git-lfs \
-                gnupg2 \
-                keychain \
-                make \
-                neovim \
-                newsboat \
-                nodejs \
-                nodejs-npm \
-                uv \
-                python3 \
-                python3-neovim \
-                python3-pip \
-                python3-virtualenv \
-                ripgrep \
-                ruby-devel \
-                rubygems \
-                tmux \
-                util-linux-user \
-                weechat \
-                xsel \
-                zsh
+            packages=(
+                cargo
+                dnf-plugins-core
+                gcc
+                python3-neovim
+                python3-pip
+                ruby-devel
+                rubygems
+                util-linux-user
+                xsel
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    bat
+                    btop
+                    chezmoi
+                    ctags
+                    curl
+                    fastfetch
+                    git
+                    git-delta
+                    git-crypt
+                    git-lfs
+                    gnupg2
+                    keychain
+                    make
+                    neovim
+                    newsboat
+                    nodejs
+                    nodejs-npm
+                    uv
+                    python3
+                    python3-virtualenv
+                    ripgrep
+                    tmux
+                    weechat
+                    zsh
+                )
+            fi
+            sudo dnf install -y "${packages[@]}"
         elif [[ -x "$(command -v brew)" ]]; then
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
-            brew install \
-                bat \
-                binutils \
-                btop \
-                chezmoi \
-                ctags \
-                curl \
-                fastfetch \
-                findutils \
-                gcc \
-                gh \
-                git \
-                git-delta \
-                git-crypt \
-                git-lfs \
-                gnupg \
-                gsed \
-                herdr \
-                keychain \
-                libtool \
-                make \
-                neovim \
-                newsboat \
-                node \
-                uv \
-                pkg-config \
-                python \
-                ripgrep \
-                rtk \
-                tmux \
-                virtualenv \
-                weechat \
-                xsel \
-                zsh
+            packages=(
+                gcc
+                herdr
+                xsel
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    bat
+                    binutils
+                    btop
+                    chezmoi
+                    ctags
+                    curl
+                    fastfetch
+                    findutils
+                    gh
+                    git
+                    git-delta
+                    git-crypt
+                    git-lfs
+                    gnupg
+                    gsed
+                    keychain
+                    libtool
+                    make
+                    neovim
+                    newsboat
+                    node
+                    uv
+                    pkg-config
+                    python
+                    ripgrep
+                    rtk
+                    tmux
+                    virtualenv
+                    weechat
+                    zsh
+                )
+            fi
+            brew install "${packages[@]}"
 
             if [ -z "${AUTOMATED}" ]; then
                 brew install \
@@ -485,102 +534,121 @@ case "$response" in
 
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: npm, python3-neovim
-            sudo emerge --noreplace \
-                app-crypt/gnupg \
-                app-editors/neovim \
-                app-misc/fastfetch \
-                app-misc/tmux \
-                app-shells/zsh \
-                dev-build/make \
-                dev-lang/python \
-                dev-lang/ruby \
-                dev-python/pip \
-                dev-python/uv \
-                dev-python/virtualenv \
-                dev-ruby/rubygems \
-                dev-util/ctags \
-                dev-vcs/git \
-                dev-util/git-delta \
-                dev-vcs/git-crypt \
-                dev-vcs/git-lfs \
-                net-irc/weechat \
-                net-libs/nodejs \
-                net-misc/curl \
-                net-misc/keychain \
-                net-news/newsboat \
-                sys-apps/bat \
-                sys-apps/ripgrep \
-                sys-apps/util-linux \
-                sys-devel/gcc \
-                sys-process/btop \
+            packages=(
+                dev-lang/ruby
+                dev-python/pip
+                dev-ruby/rubygems
+                sys-apps/util-linux
+                sys-devel/gcc
                 x11-misc/xsel
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    app-crypt/gnupg
+                    app-editors/neovim
+                    app-misc/fastfetch
+                    app-misc/tmux
+                    app-shells/zsh
+                    dev-build/make
+                    dev-lang/python
+                    dev-python/uv
+                    dev-python/virtualenv
+                    dev-util/ctags
+                    dev-vcs/git
+                    dev-util/git-delta
+                    dev-vcs/git-crypt
+                    dev-vcs/git-lfs
+                    net-irc/weechat
+                    net-libs/nodejs
+                    net-misc/curl
+                    net-misc/keychain
+                    net-news/newsboat
+                    sys-apps/bat
+                    sys-apps/ripgrep
+                    sys-process/btop
+                )
+            fi
+            sudo emerge --noreplace "${packages[@]}"
         elif [[ -x "$(command -v apt-get)" ]]; then
             # git-delta is distributed as a release .deb, not through apt.
+            packages=(
+                gcc
+                python3-pip
+                python3-pynvim
+                ruby-rubygems
+                xsel
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    bat
+                    btop
+                    curl
+                    fastfetch
+                    git
+                    git-crypt
+                    git-lfs
+                    gpg
+                    keychain
+                    make
+                    neovim
+                    newsboat
+                    nodejs
+                    npm
+                    python3
+                    python3-virtualenv
+                    ripgrep
+                    tmux
+                    universal-ctags
+                    weechat
+                    zsh
+                )
+            fi
             sudo apt-get update
-            sudo apt-get install -y \
-                bat \
-                btop \
-                curl \
-                fastfetch \
-                gcc \
-                git \
-                git-crypt \
-                git-lfs \
-                gpg \
-                keychain \
-                make \
-                neovim \
-                newsboat \
-                nodejs \
-                npm \
-                python3 \
-                python3-pip \
-                python3-pynvim \
-                python3-virtualenv \
-                ripgrep \
-                ruby-rubygems \
-                tmux \
-                universal-ctags \
-                weechat \
-                xsel \
-                zsh
+            sudo apt-get install -y "${packages[@]}"
         elif [[ -x "$(command -v pacman)" ]]; then
-            sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
-                bat \
-                btop \
-                chezmoi \
-                ctags \
-                curl \
-                gcc \
-                git \
-                git-delta \
-                git-crypt \
-                git-lfs \
-                github-cli \
-                gnupg \
-                keychain \
-                make \
-                neovim \
-                newsboat \
-                nodejs \
-                npm \
-                python \
-                python-pip \
-                uv \
-                python-pynvim \
-                python-virtualenv \
-                ripgrep \
-                rubygems \
-                tmux \
-                weechat \
-                xsel \
-                zsh
+            packages=(
+                gcc
+                python-pip
+                python-pynvim
+                rubygems
+                xsel
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    bat
+                    btop
+                    chezmoi
+                    ctags
+                    curl
+                    git
+                    git-delta
+                    git-crypt
+                    git-lfs
+                    github-cli
+                    gnupg
+                    keychain
+                    make
+                    neovim
+                    newsboat
+                    nodejs
+                    npm
+                    python
+                    uv
+                    python-virtualenv
+                    ripgrep
+                    tmux
+                    weechat
+                    zsh
+                )
+            fi
+            sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" "${packages[@]}"
 
             if [[ -x "$(command -v yay)" ]]; then
-                yay -Syu "$AUTOMATED_PACMAN_FLAGS" \
-                    aws-cli-v2 \
-                    fastfetch \
-                    --needed
+                packages=(aws-cli-v2)
+                if [ -z "${NIX_PACKAGES:-}" ]; then
+                    packages+=(fastfetch)
+                fi
+                yay -Syu "$AUTOMATED_PACMAN_FLAGS" "${packages[@]}" --needed
             fi
         elif [[ -x "$(command -v pkg)" ]]; then
             sudo pkg install \
@@ -641,7 +709,6 @@ case "$response" in
         # Debian has no uv package; the standalone installer covers it and anything else without one.
         if [[ ! -x "$(command -v uv)" ]]; then
             curl -LsSf https://astral.sh/uv/install.sh | sh
-            PATH="${HOME}/.local/bin:${PATH}"
         fi
 
         if [[ ! -x "$(command -v herdr)" ]]; then
@@ -668,7 +735,7 @@ case "$response" in
             uv tool install molecule
             uv tool install poetry
             uv tool install pre-commit
-            uv tool install --python 3.11 thefuck
+            install_thefuck
             uv tool install tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
@@ -720,7 +787,9 @@ case "$response" in
             if ! gem install --no-document neovim; then
                 echo "Unable to install the optional Neovim Ruby provider; continuing"
             fi
-            if ! gem install --no-document taskjuggler; then
+            if [ -n "${NIX_PACKAGES:-}" ]; then
+                echo "TaskJuggler comes from the Nix flake"
+            elif ! gem install --no-document taskjuggler; then
                 echo "Unable to install the optional TaskJuggler tooling; continuing"
             fi
         else
