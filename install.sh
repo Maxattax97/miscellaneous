@@ -174,6 +174,15 @@ link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Link files rather than the directory so the optional macos include,
+    # which restores Ghostty's Cmd shortcuts, exists only on macOS.
+    mkdir -p "${HOME}/.config/ghostty"
+    link_source "config/ghostty/config" 1 ".config/ghostty/config"
+    link_source "config/ghostty-macos/config" 1 ".config/ghostty/macos"
+else
+    link_source "config/ghostty/" 1 ".config/ghostty"
+fi
 
 mkdir -p "${HOME}/.config/herdr"
 link_source "config/herdr/config.toml" 1 ".config/herdr/config.toml"
@@ -1190,8 +1199,8 @@ case "$response" in
                 flameshot \
                 font-fontawesome \
                 font-noto-color-emoji \
+                ghostty \
                 inkscape \
-                iterm2 \
                 joplin \
                 libreoffice \
                 mpv \
