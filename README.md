@@ -33,9 +33,9 @@ two when dev-tools comes or goes.
 
 The entry is added at priority 10, below the default 5 that dev-tools gets, so a
 tool both flakes ship resolves to dev-tools instead of failing the install.
-When the flake is installed, the common-utilities step skips the brew and
-distro packages it provides and installs only what Nix lacks (gcc, herdr,
-pinentry-mac, ruby, and similar).
+When the flake is installed, the common- and workstation-utilities steps skip
+the brew and distro packages it provides and install only what Nix lacks (gcc,
+herdr, pinentry-mac, ruby, and similar).
 
 `nix profile upgrade` re-reads `packages.txt` but keeps `nix/flake.lock`; to
 move to newer nixpkgs, run `nix flake update` in `nix/` and commit the lock.
