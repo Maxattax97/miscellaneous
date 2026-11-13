@@ -1199,8 +1199,8 @@ case "$response" in
                 flameshot \
                 font-fontawesome \
                 font-noto-color-emoji \
+                ghostty \
                 inkscape \
-                iterm2 \
                 joplin \
                 libreoffice \
                 mpv \
