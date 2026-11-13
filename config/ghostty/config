@@ -112,3 +112,7 @@ keybind = alt+k=scroll_page_lines:-1
 keybind = alt+j=scroll_page_lines:1
 keybind = alt+up=scroll_page_lines:-1
 keybind = alt+down=scroll_page_lines:1
+
+# On macOS, install.sh links ../ghostty-macos/config here to bring back the
+# Cmd shortcuts. The ? makes it optional, so Linux skips it.
+config-file = ?macos
