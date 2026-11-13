@@ -2,6 +2,10 @@
 # install.sh links it to ~/.config/ghostty/macos only on macOS, so Linux keeps
 # the st bindings alone.
 #
+# macOS uses 72-DPI points (1pt = 1 logical px), unlike Linux where Xft.dpi=96
+# makes 9pt = 12px, so match st's pixelsize=12 here.
+font-size = 12
+
 # The main config runs `keybind = clear`; this restores Ghostty 1.4.0's
 # default Cmd (super) shortcuts on top of the st bindings
 # (`ghostty +list-keybinds --default --plain | grep super`).
