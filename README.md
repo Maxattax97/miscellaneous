@@ -25,9 +25,20 @@
 ### Nix
 
 `install.sh` offers to install `nix/` as a Nix profile entry when `nix` is on the
-PATH. `nix/packages.txt` lists every tool and where it used to come from. On a
-machine that also has the Entegrata dev-tools flake, it installs `#personal`,
-which leaves out the tools that flake already provides; otherwise `#all`.
+PATH. It is opt-in: `AUTOMATED=1` runs skip it. `nix/packages.txt` lists every
+tool and where it used to come from. On a machine that also has the Entegrata
+dev-tools flake, it installs `#personal`, which leaves out the tools that flake
+already provides; otherwise `#all`. Rerunning the installer switches between the
+two when dev-tools comes or goes.
+
+The entry is added at priority 10, below the default 5 that dev-tools gets, so a
+tool both flakes ship resolves to dev-tools instead of failing the install.
+When the flake is installed, the common-utilities step skips the brew and
+distro packages it provides and installs only what Nix lacks (gcc, herdr,
+pinentry-mac, ruby, and similar).
+
+`nix profile upgrade` re-reads `packages.txt` but keeps `nix/flake.lock`; to
+move to newer nixpkgs, run `nix flake update` in `nix/` and commit the lock.
 
 ### `zsh`
 
