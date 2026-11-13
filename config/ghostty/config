@@ -43,7 +43,8 @@ background-opacity = 0.9
 font-family = Hack Nerd Font Mono
 # Ghostty sizes fonts in points; 9pt is 12px at the 96 DPI set by Xft.dpi.
 font-size = 9
-# st has no ligature support, so render every glyph on its own.
+# Hack Nerd Font Mono has no ligatures, so this looks the same as the
+# LukeSmithxyz/st ligatures patch; it only keeps glyphs apart in other fonts.
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
