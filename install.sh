@@ -30,6 +30,39 @@ confirm() {
     esac
 }
 
+# Install Homebrew formulae (or casks with a leading --cask).  --quiet hides the
+# "already installed" warnings on re-runs, and one failing package is retried
+# alone so it cannot abort the rest of the batch.
+brew_install() {
+    local kind="--formula" package failed=""
+    if [ "${1:-}" = "--cask" ]; then
+        kind="--cask"
+        shift
+    fi
+    if brew install --quiet "$kind" "$@"; then
+        return 0
+    fi
+    for package in "$@"; do
+        brew install --quiet "$kind" "$package" || failed+=" $package"
+    done
+    if [ -n "$failed" ]; then
+        echo "Homebrew could not install:${failed}; continuing" >&2
+    fi
+}
+
+# Install pipx applications that are not already present, continuing past
+# failures.  pipx lists normalized names (lowercase, '-' for '_' and '.').
+pipx_install_missing() {
+    local installed package name
+    installed="$(pipx list --short 2> /dev/null || true)"
+    for package in "$@"; do
+        name="$(printf '%s' "$package" | tr '[:upper:]_.' '[:lower:]--')"
+        if ! printf '%s\n' "$installed" | grep -q "^${name} "; then
+            pipx install "$package" || echo "pipx could not install ${package}; continuing" >&2
+        fi
+    done
+}
+
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
 else
@@ -45,15 +78,21 @@ TEXT_BLINK='\033[5m'
 
 link_skipped_files=""
 link_linked_files=""
-link_overwritten_files=""
+link_already_linked_count=0
 
 link_source() {
     src="${MISC_DIR}/${1}"
     dest="${HOME}/${3:-$1}"
 
     if [ -h "$dest" ]; then
-        #echo "Skipping $dest because it is already linked ..."
-        link_skipped_files+="$dest "
+        # Directory sources carry a trailing slash, so compare targets without it.
+        link_target="$(readlink "$dest")"
+        if [ "${link_target%/}" = "${src%/}" ]; then
+            link_already_linked_count=$((link_already_linked_count + 1))
+        else
+            echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting unmanaged link $dest -> $link_target.${TEXT_RESET}"
+            link_skipped_files+="$dest "
+        fi
     elif [ -f "$dest" ]; then
         echo -e "${TEXT_RED}${TEXT_BLINK}Not overwriting unmanaged file $dest.${TEXT_RESET}"
         link_skipped_files+="$dest "
@@ -89,8 +128,13 @@ setup_zsh() {
 
     current_user="${USER:-$(id -un)}"
     current_shell="${SHELL:-}"
-    if passwd_entry="$(getent passwd "$current_user")"; then
+    if command -v getent > /dev/null 2>&1 \
+        && passwd_entry="$(getent passwd "$current_user")"; then
         current_shell="${passwd_entry##*:}"
+    elif command -v dscl > /dev/null 2>&1 \
+        && dscl_entry="$(dscl . -read "/Users/${current_user}" UserShell 2> /dev/null)"; then
+        # macOS keeps login shells in Directory Services, not /etc/passwd.
+        current_shell="${dscl_entry##* }"
     fi
 
     if [[ ${current_shell##*/} != "zsh" ]]; then
@@ -313,8 +357,19 @@ link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.in
 link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 
 # We only want to copy the roles folder from sgpt; the .sgptrc file contains our OpenAI key
-mkdir -p "${HOME}/.config/shell_gpt/roles/"
-link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
+mkdir -p "${HOME}/.config/shell_gpt"
+shell_gpt_roles="${HOME}/.config/shell_gpt/roles"
+# Earlier installers created this directory empty; rmdir keeps any user roles.
+if [ -d "$shell_gpt_roles" ] && [ ! -h "$shell_gpt_roles" ]; then
+    rmdir "$shell_gpt_roles" 2> /dev/null || true
+fi
+if [ -d "$shell_gpt_roles" ] && [ ! -h "$shell_gpt_roles" ]; then
+    for role in "${MISC_DIR}"/config/shell_gpt/roles/*.json; do
+        link_source "config/shell_gpt/roles/${role##*/}" 1 ".config/shell_gpt/roles/${role##*/}"
+    done
+else
+    link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
+fi
 
 # We link for both the regular and current/legacy Flatpak versions of FreeCAD.
 mkdir -p "${HOME}/.var/app/org.freecad.FreeCAD/config/FreeCAD"
@@ -351,9 +406,13 @@ link_source "bin/reload-kde" 1
 link_source "bin/restart-kde" 1
 link_source "bin/logout-kde" 1
 
-echo "Overwritten files: ${link_overwritten_files}"
-echo "Linked files: ${link_linked_files}"
-echo "Skipped files: ${link_skipped_files}"
+echo "Already linked: ${link_already_linked_count} paths"
+if [ -n "${link_linked_files}" ]; then
+    echo "Linked files: ${link_linked_files}"
+fi
+if [ -n "${link_skipped_files}" ]; then
+    echo "Skipped unmanaged files: ${link_skipped_files}"
+fi
 
 echo "Environment installation complete"
 
@@ -407,7 +466,7 @@ case "$response" in
         elif [[ -x "$(command -v brew)" ]]; then
             # macOS has outdated version of curl, make, binutils, gcc
             # macOS login needs pinentry-mac in order to complete gpg git commit signing
-            brew install \
+            brew_install \
                 bat \
                 binutils \
                 btop \
@@ -443,7 +502,7 @@ case "$response" in
                 zsh
 
             if [ -z "${AUTOMATED}" ]; then
-                brew install \
+                brew_install \
                     pinentry-mac
             fi
 
@@ -613,23 +672,24 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v pipx)" ]]; then
-            pipx install uv
-            pipx install ansible
-            pipx install ansible-core
-            pipx install ansible-lint
-            pipx install ansible-navigator
-            pipx install argcomplete
-            pipx install bandit
-            pipx install black
-            pipx install flake8
-            pipx install flake8-pyproject
-            pipx install huggingface_hub
-            pipx install isort
-            pipx install molecule
-            pipx install poetry
-            pipx install pre-commit
-            pipx install thefuck
-            pipx install tmuxp
+            pipx_install_missing \
+                uv \
+                ansible \
+                ansible-core \
+                ansible-lint \
+                ansible-navigator \
+                argcomplete \
+                bandit \
+                black \
+                flake8 \
+                flake8-pyproject \
+                huggingface_hub \
+                isort \
+                molecule \
+                poetry \
+                pre-commit \
+                thefuck \
+                tmuxp
         elif [[ -x "$(command -v uv)" ]]; then
             uv tool install --with-executables-from ansible-core,ansible-lint ansible
             uv tool install ansible-navigator
@@ -774,22 +834,32 @@ if [[ -x "$(command -v herdr)" ]] && confirm "Would you like to install the herd
 fi
 
 headroom_active=0
+# Only Headroom releases with `headroom install` can manage the persistent
+# deployment.  Without a version floor, pip silently falls back to 0.2.15
+# (proxy only) when onnxruntime has no wheels for pipx's default Python, so
+# install with a Python that onnxruntime supports, fetching one if necessary.
+headroom_spec='headroom-ai[all]>=0.44'
+headroom_python='3.14'
+headroom_supported() {
+    command -v headroom > /dev/null 2>&1 && headroom install apply --help > /dev/null 2>&1
+}
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
     if command -v pipx > /dev/null 2>&1; then
-        pipx install 'headroom-ai[all]' || pipx upgrade 'headroom-ai[all]'
-        if command -v headroom > /dev/null 2>&1; then
-            if headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
-                && curl -fsS http://127.0.0.1:8787/readyz > /dev/null \
-                && headroom wrap codex -- --version > /dev/null \
-                && headroom wrap opencode -- --version > /dev/null; then
-                headroom_active=1
-                echo "Headroom is ready. Lifecycle: headroom install status|start|stop|restart|remove --profile coding"
-            else
-                echo "Headroom setup failed; rolling back the coding deployment." >&2
-                headroom install remove --profile coding || true
-            fi
+        if ! headroom_supported; then
+            pipx install --force --python "$headroom_python" --fetch-python missing "$headroom_spec" \
+                || echo "pipx could not install ${headroom_spec} with Python ${headroom_python}." >&2
+        fi
+        if ! headroom_supported; then
+            echo "Skipping Headroom: no installed headroom-ai provides 'headroom install'." >&2
+        elif headroom install apply --profile coding --preset persistent-service --scope provider --providers manual --target codex --target opencode \
+            && curl -fsS --retry 10 --retry-delay 1 --retry-connrefused http://127.0.0.1:8787/readyz > /dev/null \
+            && headroom wrap codex -- --version > /dev/null \
+            && headroom wrap opencode -- --version > /dev/null; then
+            headroom_active=1
+            echo "Headroom is ready. Lifecycle: headroom install status|start|stop|restart|remove --profile coding"
         else
-            echo "Headroom executable was not available after pipx installation." >&2
+            echo "Headroom setup failed; rolling back the coding deployment." >&2
+            headroom install remove --profile coding || true
         fi
     else
         echo "Skipping Headroom: pipx is not installed."
@@ -808,21 +878,30 @@ fi
 confirm "Would you like to install AWS CLI (v2)? [y/N] " n || true
 case "$response" in
     [yY][eE][sS] | [yY])
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig"
-
-        gpg --verify "awscliv2.sig" "awscliv2.zip"
-        unzip awscliv2.zip
-
-        if [ -d "${HOME}/.local/share/aws-cli" ]; then
-            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli" --update
+        # The signed bundle below only contains Linux x86_64 binaries.
+        if [[ "$(uname)" == "Darwin" ]]; then
+            if [[ -x "$(command -v brew)" ]]; then
+                brew_install awscli
+            else
+                echo "Skipping AWS CLI installation: Homebrew is not installed"
+            fi
         else
-            ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli"
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig" -o "awscliv2.sig"
+
+            gpg --verify "awscliv2.sig" "awscliv2.zip"
+            unzip awscliv2.zip
+
+            if [ -d "${HOME}/.local/share/aws-cli" ]; then
+                ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli" --update
+            else
+                ./aws/install --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/share/aws-cli"
+            fi
+
+            rm -rf awscliv2.zip awscliv2.sig aws
+
+            AWS_CONFIG_FILE=/dev/null "${HOME}/.local/bin/aws" --version
         fi
-
-        rm -rf awscliv2.zip awscliv2.sig aws
-
-        AWS_CONFIG_FILE=/dev/null "${HOME}/.local/bin/aws" --version
         ;;
     *)
         echo "Skipping AWS CLI installation"
@@ -1176,30 +1255,31 @@ case "$response" in
                 zathura-pdf-mupdf \
                 -y
         elif [[ -x "$(command -v brew)" ]]; then
-            brew install \
+            # The rar, flameshot, and mpv casks were disabled for failing the
+            # Gatekeeper check; unar extracts RAR archives and mpv is a formula.
+            brew_install \
                 ffmpeg \
                 minikube \
+                mpv \
                 p7zip \
                 qalculate-gtk \
                 qemu \
-                rar
+                unar
 
-            brew install --cask \
+            brew_install --cask \
                 brave-browser \
-                docker \
-                flameshot \
+                docker-desktop \
                 font-fontawesome \
                 font-noto-color-emoji \
                 inkscape \
                 iterm2 \
                 joplin \
                 libreoffice \
-                mpv \
                 nextcloud \
                 utm \
                 veracrypt \
                 vlc \
-                wireshark
+                wireshark-app
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
             sudo emerge --noreplace \
@@ -1297,7 +1377,8 @@ case "$response" in
             curl https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
         fi
 
-        if [[ ! -x "$(command -v veracrypt)" ]]; then
+        # The macOS cask installs an app bundle rather than a command.
+        if [[ ! -x "$(command -v veracrypt)" ]] && [ ! -d /Applications/VeraCrypt.app ]; then
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
@@ -1305,7 +1386,11 @@ case "$response" in
             fi
             case "$response" in
                 [yY][eE][sS] | [yY])
-                    xdg-open 'https://veracrypt.eu/en/Downloads.html'
+                    if [[ "$(uname)" == "Darwin" ]]; then
+                        open 'https://veracrypt.eu/en/Downloads.html'
+                    else
+                        xdg-open 'https://veracrypt.eu/en/Downloads.html'
+                    fi
                     ;;
                 *)
                     echo "Skipping VeraCrypt installation"
@@ -1315,9 +1400,10 @@ case "$response" in
 
         # Install yt-dlp, to nightly edition
         if [[ ! -x "$(command -v yt-dlp)" ]]; then
+            mkdir -p "${HOME}/.local/bin"
             curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o ~/.local/bin/yt-dlp
             chmod a+rx ~/.local/bin/yt-dlp
-            yt-dlp --update-to nightly
+            ~/.local/bin/yt-dlp --update-to nightly
         fi
         ;;
     *)
@@ -1388,7 +1474,8 @@ case "$response" in
         ;;
 esac
 
-if [ -n "${AUTOMATED}" ]; then
+# st needs X11 and GNU install(1), so it is not offered on macOS.
+if [ -n "${AUTOMATED}" ] || [[ "$(uname)" == "Darwin" ]]; then
     response='n'
 else
     confirm "Would you like to attempt an install of Suckless Terminal (st)? [y/N] " n || true
@@ -1536,7 +1623,11 @@ case "$response" in
                 ssh-add "${HOME}/.ssh/id_rsa"
             fi
 
-            xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+            if [[ "$(uname)" == "Darwin" ]]; then
+                pbcopy < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+            else
+                xsel --clipboard -i < "${HOME}/.ssh/id_rsa.pub" && echo "Key copied to clipboard"
+            fi
             cat "${HOME}/.ssh/id_rsa.pub"
         fi
         ;;
@@ -1582,7 +1673,11 @@ case "$response" in
     [yY][eE][sS] | [yY])
         (
             version="27.2"
-            file="protoc-${version}-linux-x86_64.zip"
+            if [[ "$(uname)" == "Darwin" ]]; then
+                file="protoc-${version}-osx-universal_binary.zip"
+            else
+                file="protoc-${version}-linux-x86_64.zip"
+            fi
             curl -LO "https://github.com/protocolbuffers/protobuf/releases/download/v${version}/${file}"
             unzip "${file}" -d "${HOME}/.local"
             rm -f "${file}"
@@ -1638,7 +1733,12 @@ esac
 # https://github.com/LuaLS/lua-language-server
 # https://repology.org/project/lua-language-server/versions
 
-confirm "Would you like to setup WiFi? [y/N] " n || true
+# WiFi regulatory setup edits Linux-only files with GNU sed.
+if [[ "$(uname)" == "Darwin" ]]; then
+    response='n'
+else
+    confirm "Would you like to setup WiFi? [y/N] " n || true
+fi
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
@@ -1704,7 +1804,12 @@ case "$response" in
         ;;
 esac
 
-confirm "Would you like to install /etc/ configurations with root? [y/N] " n || true
+# These are Linux system configurations (chrony, systemd, pacman, dnf).
+if [[ "$(uname)" == "Darwin" ]]; then
+    response='n'
+else
+    confirm "Would you like to install /etc/ configurations with root? [y/N] " n || true
+fi
 case "$response" in
     [yY][eE][sS] | [yY])
         sudo rm -f "/etc/chrony.conf"
@@ -1738,7 +1843,8 @@ case "$response" in
         ;;
 esac
 
-if [ -n "${AUTOMATED}" ]; then
+# This edits sshd_config with GNU sed and installs Xvfb, so it is Linux-only.
+if [ -n "${AUTOMATED}" ] || [[ "$(uname)" == "Darwin" ]]; then
     response='n'
 else
     confirm "Would you like to remotely share the clipboard over SSH on this system? [y/N] " n || true
