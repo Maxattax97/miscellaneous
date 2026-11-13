@@ -50,17 +50,36 @@ brew_install() {
     fi
 }
 
-# Install pipx applications that are not already present, continuing past
-# failures.  pipx lists normalized names (lowercase, '-' for '_' and '.').
-pipx_install_missing() {
-    local installed package name
-    installed="$(pipx list --short 2> /dev/null || true)"
-    for package in "$@"; do
-        name="$(printf '%s' "$package" | tr '[:upper:]_.' '[:lower:]--')"
-        if ! printf '%s\n' "$installed" | grep -q "^${name} "; then
-            pipx install "$package" || echo "pipx could not install ${package}; continuing" >&2
-        fi
-    done
+# uv tool puts executables here (uv's own lookup order); later checks such as
+# `command -v headroom` need it on PATH during this run, not only in new shells.
+PATH="${UV_TOOL_BIN_DIR:-${XDG_BIN_HOME:-${HOME}/.local/bin}}:${PATH}"
+
+# Whether a uv tool, or an older pipx install of it, is already present.  Both
+# list normalized names (lowercase, '-' for '_' and '.').
+uv_tool_installed() {
+    local name
+    name="$(printf '%s' "$1" | tr '[:upper:]_.' '[:lower:]--')"
+    uv tool list 2> /dev/null | grep -q "^${name} v" && return 0
+    command -v pipx > /dev/null 2>&1 && pipx list --short 2> /dev/null | grep -q "^${name} "
+}
+
+# Install a uv tool unless it is already present, continuing past failures.
+# Arguments after the package are passed to `uv tool install`.
+uv_tool_install_missing() {
+    local package="$1"
+    shift
+    if ! uv_tool_installed "$package"; then
+        uv tool install "$@" "$package" || echo "uv could not install ${package}; continuing" >&2
+    fi
+}
+
+# thefuck imports distutils, which Python 3.12 removed. Distro uv builds may not
+# download interpreters on demand, so fetch 3.11 explicitly. It is optional.
+install_thefuck() {
+    uv_tool_installed thefuck && return 0
+    if ! { uv python install 3.11 && uv tool install --python 3.11 thefuck; }; then
+        echo "Unable to install the optional thefuck tool; continuing"
+    fi
 }
 
 if [ -n "${AUTOMATED}" ]; then
@@ -450,7 +469,7 @@ case "$response" in
                 newsboat \
                 nodejs \
                 nodejs-npm \
-                pipx \
+                uv \
                 python3 \
                 python3-neovim \
                 python3-pip \
@@ -490,7 +509,7 @@ case "$response" in
                 neovim \
                 newsboat \
                 node \
-                pipx \
+                uv \
                 pkg-config \
                 python \
                 ripgrep \
@@ -556,7 +575,6 @@ case "$response" in
                 newsboat \
                 nodejs \
                 npm \
-                pipx \
                 python3 \
                 python3-pip \
                 python3-pynvim \
@@ -590,7 +608,7 @@ case "$response" in
                 npm \
                 python \
                 python-pip \
-                python-pipx \
+                uv \
                 python-pynvim \
                 python-virtualenv \
                 ripgrep \
@@ -628,7 +646,7 @@ case "$response" in
                 node \
                 npm \
                 py311-pip \
-                py311-pipx \
+                uv \
                 py311-pynvim \
                 py311-virtualenv \
                 python \
@@ -671,40 +689,27 @@ case "$response" in
                 neovim
         fi
 
-        if [[ -x "$(command -v pipx)" ]]; then
-            pipx_install_missing \
-                uv \
-                ansible \
-                ansible-core \
-                ansible-lint \
-                ansible-navigator \
-                argcomplete \
-                bandit \
-                black \
-                flake8 \
-                flake8-pyproject \
-                huggingface_hub \
-                isort \
-                molecule \
-                poetry \
-                pre-commit \
-                thefuck \
-                tmuxp
-        elif [[ -x "$(command -v uv)" ]]; then
-            uv tool install --with-executables-from ansible-core,ansible-lint ansible
-            uv tool install ansible-navigator
-            uv tool install argcomplete
-            uv tool install bandit
-            uv tool install black
-            uv tool install flake8
-            uv tool install flake8-pyproject
-            uv tool install huggingface_hub
-            uv tool install isort
-            uv tool install molecule
-            uv tool install poetry
-            uv tool install pre-commit
-            uv tool install thefuck
-            uv tool install tmuxp
+        # Debian has no uv package; the standalone installer covers it and anything else without one.
+        if [[ ! -x "$(command -v uv)" ]]; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            PATH="${HOME}/.local/bin:${PATH}"
+        fi
+
+        if [[ -x "$(command -v uv)" ]]; then
+            uv_tool_install_missing ansible --with-executables-from ansible-core,ansible-lint
+            uv_tool_install_missing ansible-navigator
+            uv_tool_install_missing argcomplete
+            uv_tool_install_missing bandit
+            uv_tool_install_missing black
+            uv_tool_install_missing flake8
+            uv_tool_install_missing flake8-pyproject
+            uv_tool_install_missing huggingface_hub
+            uv_tool_install_missing isort
+            uv_tool_install_missing molecule
+            uv_tool_install_missing poetry
+            uv_tool_install_missing pre-commit
+            install_thefuck
+            uv_tool_install_missing tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
                 ansible \
@@ -721,7 +726,7 @@ case "$response" in
                 thefuck \
                 tmuxp
         else
-            echo "You need to install pipx / uv / pip3"
+            echo "You need to install uv / pip3"
         fi
 
         # Official standalone Codex installer (no npm dependency).
@@ -835,19 +840,22 @@ fi
 
 headroom_active=0
 # Only Headroom releases with `headroom install` can manage the persistent
-# deployment.  Without a version floor, pip silently falls back to 0.2.15
-# (proxy only) when onnxruntime has no wheels for pipx's default Python, so
-# install with a Python that onnxruntime supports, fetching one if necessary.
+# deployment.  Without a version floor, the resolver falls back to 0.2.15
+# (proxy only) when onnxruntime has no wheels for the default Python (3.15 from
+# Homebrew), so install with a Python that onnxruntime supports.  --force
+# replaces an older headroom executable, including one pipx installed.
 headroom_spec='headroom-ai[all]>=0.44'
 headroom_python='3.14'
 headroom_supported() {
     command -v headroom > /dev/null 2>&1 && headroom install apply --help > /dev/null 2>&1
 }
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
-    if command -v pipx > /dev/null 2>&1; then
+    if command -v uv > /dev/null 2>&1; then
         if ! headroom_supported; then
-            pipx install --force --python "$headroom_python" --fetch-python missing "$headroom_spec" \
-                || echo "pipx could not install ${headroom_spec} with Python ${headroom_python}." >&2
+            # Distro uv builds may not download interpreters on demand.
+            { uv python install "$headroom_python" \
+                && uv tool install --force --python "$headroom_python" "$headroom_spec"; } \
+                || echo "uv could not install ${headroom_spec} with Python ${headroom_python}." >&2
         fi
         if ! headroom_supported; then
             echo "Skipping Headroom: no installed headroom-ai provides 'headroom install'." >&2
@@ -862,7 +870,7 @@ if confirm "Would you like to install Headroom for persistent Codex/OpenCode com
             headroom install remove --profile coding || true
         fi
     else
-        echo "Skipping Headroom: pipx is not installed."
+        echo "Skipping Headroom: uv is not installed."
     fi
 fi
 

@@ -404,12 +404,6 @@ zshrc_setup_completion() {
         fi
     fi
 
-    #if type pipx > /dev/null 2>&1; then
-        #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
-            #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
-        #fi
-    #fi
-
     # Takes a lot of extra time ...
     #if type molecule > /dev/null 2>&1; then
         # Because it may be in a venv, we will have to do this on-demand.
