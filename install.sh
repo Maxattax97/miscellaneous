@@ -82,6 +82,25 @@ install_thefuck() {
     fi
 }
 
+# Import a key by full fingerprint from keyserver.ubuntu.com.  A bare host name
+# means hkp on port 11371, so name hkps explicitly.  If dirmngr cannot reach the
+# keyserver, fetch the key over HTTPS with curl (the system resolver) and import
+# it only when it holds exactly the requested primary key.
+receive_keyserver_key() {
+    local fingerprint="$1" key_file primary_keys status=1
+    gpg --keyserver hkps://keyserver.ubuntu.com --receive-keys "$fingerprint" && return 0
+    key_file="$(mktemp)"
+    if curl -fsSL -o "$key_file" "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${fingerprint}"; then
+        primary_keys="$(gpg --batch --with-colons --import-options show-only --import "$key_file" 2> /dev/null \
+            | awk -F: '$1 == "pub" { primary = 1; next } primary && $1 == "fpr" { print $10; primary = 0 }')"
+        if [ "$primary_keys" = "$fingerprint" ] && gpg --batch --import "$key_file"; then
+            status=0
+        fi
+    fi
+    rm -f "${key_file:?}"
+    return "$status"
+}
+
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
 else
@@ -196,6 +215,8 @@ link_source "config/gnupg/gpg.conf" 0 ".gnupg/gpg.conf"
 if [[ "$(uname)" == "Darwin" ]]; then
     # macOS owns the reader through PC/SC; gpg's built-in CCID driver fights it.
     link_source "config/gnupg/scdaemon.conf" 0 ".gnupg/scdaemon.conf"
+    # dirmngr's own resolver ignores macOS DNS settings; see the file.
+    link_source "config/gnupg/dirmngr.conf" 0 ".gnupg/dirmngr.conf"
 fi
 
 mkdir -p "${HOME}/.ssh"
@@ -768,12 +789,17 @@ case "$response" in
         # Forcibly fix permissions on the GnuPG directory
         chmod u+rwx,go-rwx "${HOME}/.gnupg"
 
+        # Restart dirmngr so a running one picks up the dirmngr.conf linked above.
+        gpgconf --kill dirmngr 2> /dev/null || true
+
         # Pull GPG keys for max.ocull@protonmail.com
-        gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E
+        gpg --receive-keys 9AC8DC8D17BA0401CBD0F4E16077844530A4A68E \
+            || echo "Unable to fetch the max.ocull@protonmail.com GPG key; continuing"
 
         # AWS CLI Team. This key is required by the optional AWS CLI signature
         # verification below; keep it in the installer keyring.
-        gpg --keyserver keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+        receive_keyserver_key FB5DB77FD5C118B80511ADA8A6310ACC4672475C \
+            || echo "Unable to fetch the AWS CLI GPG key; AWS CLI signature verification will fail"
 
         # Do not bulk-import unrelated Gentoo, FreeBSD, kernel, Arch, GitHub
         # CLI, or VeraCrypt keys here. None are used by this installer, and
