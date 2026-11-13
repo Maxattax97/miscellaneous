@@ -59,8 +59,8 @@ PATH="${UV_TOOL_BIN_DIR:-${XDG_BIN_HOME:-${HOME}/.local/bin}}:${PATH}"
 uv_tool_installed() {
     local name
     name="$(printf '%s' "$1" | tr '[:upper:]_.' '[:lower:]--')"
-    uv tool list 2> /dev/null | grep -q "^${name} v" && return 0
-    command -v pipx > /dev/null 2>&1 && pipx list --short 2> /dev/null | grep -q "^${name} "
+    uv tool list 2> /dev/null | grep "^${name} v" > /dev/null && return 0
+    command -v pipx > /dev/null 2>&1 && pipx list --short 2> /dev/null | grep "^${name} " > /dev/null
 }
 
 # Install a uv tool unless it is already present, continuing past failures.
@@ -80,25 +80,6 @@ install_thefuck() {
     if ! { uv python install 3.11 && uv tool install --python 3.11 thefuck; }; then
         echo "Unable to install the optional thefuck tool; continuing"
     fi
-}
-
-# Import a key by full fingerprint from keyserver.ubuntu.com.  A bare host name
-# means hkp on port 11371, so name hkps explicitly.  If dirmngr cannot reach the
-# keyserver, fetch the key over HTTPS with curl (the system resolver) and import
-# it only when it holds exactly the requested primary key.
-receive_keyserver_key() {
-    local fingerprint="$1" key_file primary_keys status=1
-    gpg --keyserver hkps://keyserver.ubuntu.com --receive-keys "$fingerprint" && return 0
-    key_file="$(mktemp)"
-    if curl -fsSL -o "$key_file" "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${fingerprint}"; then
-        primary_keys="$(gpg --batch --with-colons --import-options show-only --import "$key_file" 2> /dev/null \
-            | awk -F: '$1 == "pub" { primary = 1; next } primary && $1 == "fpr" { print $10; primary = 0 }')"
-        if [ "$primary_keys" = "$fingerprint" ] && gpg --batch --import "$key_file"; then
-            status=0
-        fi
-    fi
-    rm -f "${key_file:?}"
-    return "$status"
 }
 
 if [ -n "${AUTOMATED}" ]; then
@@ -712,7 +693,7 @@ case "$response" in
 
         # Debian has no uv package; the standalone installer covers it and anything else without one.
         if [[ ! -x "$(command -v uv)" ]]; then
-            curl -LsSf https://astral.sh/uv/install.sh | sh
+            curl -LsSf https://astral.sh/uv/install.sh | env UV_NO_MODIFY_PATH=1 sh
             PATH="${HOME}/.local/bin:${PATH}"
         fi
 
@@ -798,7 +779,8 @@ case "$response" in
 
         # AWS CLI Team. This key is required by the optional AWS CLI signature
         # verification below; keep it in the installer keyring.
-        receive_keyserver_key FB5DB77FD5C118B80511ADA8A6310ACC4672475C \
+        # A bare keyserver host name means hkp on port 11371, so name hkps explicitly.
+        gpg --keyserver hkps://keyserver.ubuntu.com --receive-keys FB5DB77FD5C118B80511ADA8A6310ACC4672475C \
             || echo "Unable to fetch the AWS CLI GPG key; AWS CLI signature verification will fail"
 
         # Do not bulk-import unrelated Gentoo, FreeBSD, kernel, Arch, GitHub
