@@ -408,7 +408,8 @@ install_nix_packages() {
     if [ -n "$current" ]; then
         nix profile upgrade "$current"
     else
-        nix profile add --priority "$NIX_PROFILE_PRIORITY" "${flake}#${attr}"
+        nix profile add --priority "$NIX_PROFILE_PRIORITY" "${flake}#${attr}" \
+            || nix profile install --priority "$NIX_PROFILE_PRIORITY" "${flake}#${attr}"
     fi
     if [ -d "${HOME}/.nix-profile/bin" ]; then
         PATH="${HOME}/.nix-profile/bin:${PATH}"
@@ -1252,33 +1253,44 @@ fi
 case "$response" in
     [yY][eE][sS] | [yY])
         if [[ -x "$(command -v dnf)" ]]; then
-            sudo dnf install \
-                brave-browser \
-                dex-autostart \
-                firefox \
-                flameshot \
-                fontawesome-fonts-all \
-                google-noto-color-emoji-fonts \
-                gparted \
-                inkscape \
-                libreoffice \
-                mpv \
-                nextcloud-client \
-                p7zip \
-                qalculate-gtk \
-                touchegg \
-                veracrypt \
-                zathura \
-                zathura-pdf-mupdf \
-                -y
+            packages=(
+                brave-browser
+                dex-autostart
+                firefox
+                flameshot
+                fontawesome-fonts-all
+                google-noto-color-emoji-fonts
+                gparted
+                inkscape
+                libreoffice
+                mpv
+                nextcloud-client
+                touchegg
+                veracrypt
+                zathura
+                zathura-pdf-mupdf
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    p7zip
+                    qalculate-gtk
+                )
+            fi
+            sudo dnf install "${packages[@]}" -y
         elif [[ -x "$(command -v brew)" ]]; then
-            brew install \
-                ffmpeg \
-                minikube \
-                p7zip \
-                qalculate-gtk \
-                qemu \
+            packages=(
+                minikube
                 rar
+            )
+            if [ -z "${NIX_PACKAGES:-}" ]; then
+                packages+=(
+                    ffmpeg
+                    p7zip
+                    qalculate-gtk
+                    qemu
+                )
+            fi
+            brew install "${packages[@]}"
 
             brew install --cask \
                 brave-browser \
