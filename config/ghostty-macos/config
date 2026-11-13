@@ -6,6 +6,9 @@
 # makes 9pt = 12px, so match st's pixelsize=12 here.
 font-size = 12
 
+# Blur what shows through the shared config's background-opacity = 0.9.
+background-blur = 20
+
 # The main config runs `keybind = clear`; this restores Ghostty 1.4.0's
 # default Cmd (super) shortcuts on top of the st bindings
 # (`ghostty +list-keybinds --default --plain | grep super`).
