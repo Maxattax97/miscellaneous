@@ -138,7 +138,7 @@ zshrc_auto_window_title() {
                 fi
                 ;;
             *)
-                if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
+                if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
                     print -Pn "\e]2;$2:q\a" # set window name
                     print -Pn "\e]1;$1:q\a" # set tab name
                 else
