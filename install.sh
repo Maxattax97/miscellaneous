@@ -378,19 +378,15 @@ link_source "config/copyq/copyq_geometry.ini" 1 ".config/copyq/copyq_geometry.in
 link_source "config/copyq/copyq_tabs.ini" 1 ".config/copyq/copyq_tabs.ini"
 
 # We only want to copy the roles folder from sgpt; the .sgptrc file contains our OpenAI key
-mkdir -p "${HOME}/.config/shell_gpt"
 shell_gpt_roles="${HOME}/.config/shell_gpt/roles"
-# Earlier installers created this directory empty; rmdir keeps any user roles.
-if [ -d "$shell_gpt_roles" ] && [ ! -h "$shell_gpt_roles" ]; then
-    rmdir "$shell_gpt_roles" 2> /dev/null || true
+# sgpt writes default roles into this directory, so it must not resolve into the checkout.
+if [ -h "$shell_gpt_roles" ] && [ "$shell_gpt_roles" -ef "${MISC_DIR}/config/shell_gpt/roles" ]; then
+    rm "$shell_gpt_roles"
 fi
-if [ -d "$shell_gpt_roles" ] && [ ! -h "$shell_gpt_roles" ]; then
-    for role in "${MISC_DIR}"/config/shell_gpt/roles/*.json; do
-        link_source "config/shell_gpt/roles/${role##*/}" 1 ".config/shell_gpt/roles/${role##*/}"
-    done
-else
-    link_source "config/shell_gpt/roles/" 1 ".config/shell_gpt/roles"
-fi
+mkdir -p "$shell_gpt_roles"
+for role in "${MISC_DIR}"/config/shell_gpt/roles/*.json; do
+    link_source "config/shell_gpt/roles/${role##*/}" 1 ".config/shell_gpt/roles/${role##*/}"
+done
 
 # We link for both the regular and current/legacy Flatpak versions of FreeCAD.
 mkdir -p "${HOME}/.var/app/org.freecad.FreeCAD/config/FreeCAD"
