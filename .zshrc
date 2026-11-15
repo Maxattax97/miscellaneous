@@ -2301,7 +2301,11 @@ zshrc_set_default_programs() {
         BROWSER="$(command -v google-chrome-stable)"
     fi
 
-    if type st > /dev/null 2>&1; then
+    if [[ "$(uname)" == "Darwin" ]] && [[ -d /Applications/Ghostty.app ]]; then
+        # Ghostty is the default terminal on macOS; Linux keeps st below.
+        export TERMINAL
+        TERMINAL="/Applications/Ghostty.app/Contents/MacOS/ghostty"
+    elif type st > /dev/null 2>&1; then
         export TERMINAL
         TERMINAL="$(command -v st)"
     elif type urxvt-256color > /dev/null 2>&1; then

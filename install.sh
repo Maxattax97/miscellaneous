@@ -1179,6 +1179,7 @@ case "$response" in
                 -y
         elif [[ -x "$(command -v brew)" ]]; then
             brew install \
+                duti \
                 ffmpeg \
                 minikube \
                 p7zip \
@@ -1202,6 +1203,13 @@ case "$response" in
                 veracrypt \
                 vlc \
                 wireshark
+
+            # Make Ghostty the default app for shell scripts and executables.
+            # duti -s is idempotent, so re-running only reasserts the handlers.
+            if [[ "$(uname)" == "Darwin" ]] && [[ -x "$(command -v duti)" ]]; then
+                duti -s com.mitchellh.ghostty public.unix-executable all
+                duti -s com.mitchellh.ghostty com.apple.terminal.shell-script all
+            fi
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
             sudo emerge --noreplace \
