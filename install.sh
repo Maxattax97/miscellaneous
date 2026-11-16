@@ -1204,6 +1204,12 @@ case "$response" in
             if [[ -x "$(command -v nix)" ]] && ! nix profile list 2>/dev/null | grep -q 'flameshot'; then
                 nix profile add nixpkgs#flameshot
             fi
+
+            # Spotlight/Launchpad skip Nix profile symlinks; trampolines make them real apps.
+            if [[ -x "$(command -v nix)" ]] && [[ -d "$HOME/.nix-profile/Applications" ]]; then
+                nix run github:hraban/mac-app-util -- sync-trampolines \
+                    "$HOME/.nix-profile/Applications" "$HOME/Applications/Nix Trampolines"
+            fi
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
             sudo emerge --noreplace \
