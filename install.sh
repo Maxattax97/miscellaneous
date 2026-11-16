@@ -1187,7 +1187,6 @@ case "$response" in
             brew install --cask \
                 brave-browser \
                 docker \
-                flameshot \
                 font-fontawesome \
                 font-noto-color-emoji \
                 inkscape \
@@ -1200,6 +1199,11 @@ case "$response" in
                 veracrypt \
                 vlc \
                 wireshark
+
+            # The flameshot cask is disabled (fails Gatekeeper); nixpkgs builds it for darwin.
+            if [[ -x "$(command -v nix)" ]] && ! nix profile list 2>/dev/null | grep -q 'flameshot'; then
+                nix profile add nixpkgs#flameshot
+            fi
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
             sudo emerge --noreplace \
