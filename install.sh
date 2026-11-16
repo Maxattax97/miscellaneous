@@ -1205,10 +1205,15 @@ case "$response" in
                 nix profile add nixpkgs#flameshot
             fi
 
-            # Spotlight/Launchpad skip Nix profile symlinks; trampolines make them real apps.
+            # Spotlight/Launchpad skip Nix profile symlinks but index Finder aliases.
             if [[ -x "$(command -v nix)" ]] && [[ -d "$HOME/.nix-profile/Applications" ]]; then
-                nix run github:hraban/mac-app-util -- sync-trampolines \
-                    "$HOME/.nix-profile/Applications" "$HOME/Applications/Nix Trampolines"
+                nix_apps="$HOME/Applications/Nix Apps"
+                mkdir -p "$nix_apps"
+                find "$nix_apps" -maxdepth 1 -name '*.app' -exec rm -rf {} +
+                for app in "$HOME/.nix-profile/Applications/"*.app; do
+                    [[ -e "$app" ]] || continue
+                    nix shell nixpkgs#mkalias -c mkalias "$(readlink -f "$app")" "$nix_apps/$(basename "$app")"
+                done
             fi
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
