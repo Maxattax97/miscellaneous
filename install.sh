@@ -239,6 +239,15 @@ link_source "config/xmrig.json" 1 ".config/xmrig.json"
 link_source "config/redrum.ini" 1 ".config/redrum.ini"
 link_source "config/btop/" 1 ".config/btop"
 link_source "config/Kvantum/" 1 ".config/Kvantum"
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Link files rather than the directory so the optional macos include,
+    # which restores Ghostty's Cmd shortcuts, exists only on macOS.
+    mkdir -p "${HOME}/.config/ghostty"
+    link_source "config/ghostty/config" 1 ".config/ghostty/config"
+    link_source "config/ghostty-macos/config" 1 ".config/ghostty/macos"
+else
+    link_source "config/ghostty/" 1 ".config/ghostty"
+fi
 
 mkdir -p "${HOME}/.config/herdr"
 link_source "config/herdr/config.toml" 1 ".config/herdr/config.toml"
@@ -405,13 +414,6 @@ link_source "config/PrusaSlicer/physical_printer/" 1 ".config/PrusaSlicer/physic
 # awcli
 mkdir -p "${HOME}/.aws"
 link_source "config/aws/config" 0 ".aws/config"
-
-# macOS-specific
-if [[ "$(uname)" == "Darwin" ]]; then
-    # iTerm2: tell it to load preferences from the dotfiles repo
-    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${MISC_DIR}/config/iterm2"
-    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
-fi
 
 # Binaries / executables
 mkdir -p "${HOME}/bin/"
@@ -1270,6 +1272,7 @@ case "$response" in
             # The rar, flameshot, and mpv casks were disabled for failing the
             # Gatekeeper check; unar extracts RAR archives and mpv is a formula.
             brew_install \
+                duti \
                 ffmpeg \
                 minikube \
                 mpv \
@@ -1283,8 +1286,8 @@ case "$response" in
                 docker-desktop \
                 font-fontawesome \
                 font-noto-color-emoji \
+                ghostty \
                 inkscape \
-                iterm2 \
                 joplin \
                 libreoffice \
                 nextcloud \
@@ -1292,6 +1295,13 @@ case "$response" in
                 veracrypt \
                 vlc \
                 wireshark-app
+
+            # Make Ghostty the default app for shell scripts and executables.
+            # duti -s is idempotent, so re-running only reasserts the handlers.
+            if [[ "$(uname)" == "Darwin" ]] && [[ -x "$(command -v duti)" ]]; then
+                duti -s com.mitchellh.ghostty public.unix-executable all
+                duti -s com.mitchellh.ghostty com.apple.terminal.shell-script all
+            fi
         elif [[ -x "$(command -v emerge)" ]]; then
             # Possibly missing: brave-browser, touchegg
             sudo emerge --noreplace \
