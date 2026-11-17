@@ -64,8 +64,8 @@
     "claude-mem": {
       "type": "local",
       "command": [
-        "/nix/store/5yg5s9l9c46f7y8zwy3bbr4pxg97qqka-nodejs-slim-24.22.1/bin/node",
-        "/Users/mocull/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
+        "node",
+        "{env:HOME}/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
       ]
     }
   },
@@ -234,8 +234,7 @@
     }
   },
   "plugin": [
-    "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js",
-    "./plugins/claude-mem.js"
+    "{env:HOME}/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
   ],
   "provider": {
     "headroom": {

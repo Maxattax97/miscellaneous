@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex observation",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex observation",
             "timeout": 5
           }
         ]
@@ -64,8 +64,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex file-context",
-            "timeout": 30
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex file-context",
+            "timeout": 5
           }
         ]
       }
@@ -86,16 +86,7 @@
       {
         "hooks": [
           {
-            "command": "if [ -f '/Users/mocull/.codex/herdr-agent-state.sh' ]; then bash '/Users/mocull/.codex/herdr-agent-state.sh' session; fi",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash '/Users/mocull/.codex/herdr-agent-state.sh' session",
+            "command": "if [ -f \"$HOME/.codex/herdr-agent-state.sh\" ]; then bash \"$HOME/.codex/herdr-agent-state.sh\" session; fi",
             "timeout": 10,
             "type": "command"
           }
@@ -136,7 +127,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex context",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex context",
             "timeout": 20
           }
         ]
@@ -157,7 +148,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex summarize",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex summarize",
             "timeout": 60
           }
         ]
@@ -178,7 +169,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex session-init",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex session-init",
             "timeout": 20
           }
         ]
@@ -189,7 +180,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex post-compact",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex post-compact",
             "timeout": 20
           }
         ]
@@ -200,7 +191,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "'/Users/mocull/.local/bin/claude-mem' hook codex subagent-context",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex subagent-context",
             "timeout": 20
           }
         ]
