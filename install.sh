@@ -73,15 +73,6 @@ uv_tool_install_missing() {
     fi
 }
 
-# thefuck imports distutils, which Python 3.12 removed. Distro uv builds may not
-# download interpreters on demand, so fetch 3.11 explicitly. It is optional.
-install_thefuck() {
-    uv_tool_installed thefuck && return 0
-    if ! { uv python install 3.11 && uv tool install --python 3.11 thefuck; }; then
-        echo "Unable to install the optional thefuck tool; continuing"
-    fi
-}
-
 if [ -n "${AUTOMATED}" ]; then
     AUTOMATED_PACMAN_FLAGS="--noconfirm"
 else
@@ -708,7 +699,6 @@ case "$response" in
             uv_tool_install_missing molecule
             uv_tool_install_missing poetry
             uv_tool_install_missing pre-commit
-            install_thefuck
             uv_tool_install_missing tmuxp
         elif [[ -x "$(command -v pip3)" ]]; then
             pip3 install --user \
@@ -723,7 +713,6 @@ case "$response" in
                 isort \
                 neovim \
                 poetry \
-                thefuck \
                 tmuxp
         else
             echo "You need to install uv / pip3"
