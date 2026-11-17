@@ -453,6 +453,7 @@ zshrc_autoload() {
     fi
 
     autoload -Uz compinit && compinit
+    [ -s "${HOME}/.bun/_bun" ] && source "${HOME}/.bun/_bun"
     autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
     autoload -Uz promptinit && promptinit
     autoload -Uz add-zsh-hook
@@ -973,6 +974,11 @@ zshrc_set_path() {
 
     zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin" before
     zshrc_add_path "${HOME}/.yarn/bin" before
+
+    if [ -d "${HOME}/.bun" ]; then
+        export BUN_INSTALL="${HOME}/.bun"
+        zshrc_add_path "${BUN_INSTALL}/bin" before
+    fi
 
     # Miscellaneous paths
     zshrc_add_path "${HOME}/.SpaceVim/bin" before
