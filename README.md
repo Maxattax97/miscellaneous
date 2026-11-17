@@ -58,6 +58,7 @@ This repository contains configurations for:
 - `chrony`
 - `copyq`
 - `dunst`
+- `ghostty`
 - `lcov`
 - `mpd`
 - `ncmpcpp`
