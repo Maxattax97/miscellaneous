@@ -60,6 +60,13 @@
       ],
       "enabled": true,
       "type": "local"
+    },
+    "claude-mem": {
+      "type": "local",
+      "command": [
+        "/nix/store/5yg5s9l9c46f7y8zwy3bbr4pxg97qqka-nodejs-slim-24.22.1/bin/node",
+        "/Users/mocull/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
+      ]
     }
   },
   "model": "venice/z-ai-glm-5-3-flash",
@@ -227,7 +234,8 @@
     }
   },
   "plugin": [
-    "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
+    "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js",
+    "./plugins/claude-mem.js"
   ],
   "provider": {
     "headroom": {
