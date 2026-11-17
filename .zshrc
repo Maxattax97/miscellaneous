@@ -919,14 +919,13 @@ zshrc_set_path() {
             export CPPFLAGS
         fi
 
-        if type gsed > /dev/null 2>&1; then
-            # Make the gsed application universal for this system!
-            if [ ! -e "${HOME}/.local/bin/sed" ]; then
-                mkdir -p "${HOME}/.local/bin"
-                ln -s "$(command -v gsed)" "${HOME}/.local/bin/sed"
-                echo "NOTE: GNU gsed is now linked to sed in ${HOME}/.local/bin; you are no longer using BSD sed!"
-            fi
+        # Link sed to gsed; repair a link left dangling or stale when gsed moves (e.g. Homebrew to Nix).
+        gsed_path="$(command -v gsed 2> /dev/null)"
+        if [[ "$gsed_path" == /* ]] && [[ "$(readlink "${HOME}/.local/bin/sed" 2> /dev/null)" != "$gsed_path" ]]; then
+            mkdir -p "${HOME}/.local/bin"
+            ln -sfn "$gsed_path" "${HOME}/.local/bin/sed"
         fi
+        unset gsed_path
     fi
 
     # The Nix installer appends its profiles; move them ahead of brew and /usr/bin.
