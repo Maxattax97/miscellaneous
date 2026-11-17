@@ -31,7 +31,7 @@
     {
       packages = forAll (pkgs: rec {
         all = env pkgs "misc-all" (_: true);
-        # For machines that also install the Entegrata dev-tools flake as its own profile entry.
+        # For profiles that also hold a separate toolchain flake providing the `base` tools.
         personal = env pkgs "misc-personal" (r: !lib.elem "base" (flags r));
         default = all;
       });

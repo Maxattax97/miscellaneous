@@ -382,9 +382,10 @@ nix_profile_elements() {
         | "${jq[@]}" -r '.elements | to_entries[] | [.key, (.value.originalUrl // ""), (.value.attrPath // ""), (.value.priority // 5)] | @tsv'
 }
 
-# Nix: one profile entry per flake, so this repo never depends on the work dev-tools flake.
-# The entry gets a lower priority (higher number) than the default 5 that dev-tools
-# uses, so any tool both flakes ship resolves to dev-tools instead of aborting.
+# Nix: one profile entry per flake, so this repo never depends on a separate toolchain
+# flake (detected by a flake URL ending in dev-tools). The entry gets a lower priority
+# (higher number) than Nix's default 5, so any tool both flakes ship resolves to that
+# flake instead of aborting.
 NIX_PROFILE_PRIORITY=10
 install_nix_packages() {
     local flake="path:${MISC_DIR}/nix" attr=all elements current="" name url attr_path priority
@@ -400,7 +401,7 @@ install_nix_packages() {
             current="$name"
         else
             # #all contains #personal, so switching sets must drop the other entry first;
-            # an entry at another priority is re-added so dev-tools still wins overlaps.
+            # an entry at another priority is re-added so the toolchain flake still wins overlaps.
             nix profile remove "$name"
         fi
     done <<< "$elements"
@@ -439,7 +440,7 @@ case "$response" in
         # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # TODO: Verify weechat plugins are installed (probably aren't).
         # Each list starts with what the Nix flakes lack; the tools nix/packages.txt
-        # (or dev-tools) provides are added only when the Nix flake was not installed.
+        # (or the toolchain flake) provides are added only when the Nix flake was not installed.
         if [[ -x "$(command -v dnf)" ]]; then
             # gem needs ruby-devel on Fedora.
             # Not sure if other distros offer python3-virtualenv

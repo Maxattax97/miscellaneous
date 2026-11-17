@@ -1,9 +1,9 @@
 # One line per tool: <brew-formula> <nix-attr> [flags,...]
 # "-" in the brew column means it came from another manager (uv, npm, go, gem).
-# Flags: base = also in the Entegrata dev-tools flake, left out of #personal.
+# Flags: base = also provided by a separate toolchain flake, left out of #personal.
 # Read by flake.nix.
 
-# Shared base (dev-tools supplies these on work machines)
+# Shared base (a separate toolchain flake may supply these)
 binutils binutils base
 curl curl base
 gh gh base

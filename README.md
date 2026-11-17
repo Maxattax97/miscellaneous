@@ -26,13 +26,14 @@
 
 `install.sh` offers to install `nix/` as a Nix profile entry when `nix` is on the
 PATH. It is opt-in: `AUTOMATED=1` runs skip it. `nix/packages.txt` lists every
-tool and where it used to come from. On a machine that also has the Entegrata
-dev-tools flake, it installs `#personal`, which leaves out the tools that flake
-already provides; otherwise `#all`. Rerunning the installer switches between the
-two when dev-tools comes or goes.
+tool and where it used to come from. When the profile also has a separate
+toolchain flake (a profile entry whose flake URL ends in `dev-tools`), it
+installs `#personal`, which leaves out the `base` tools that flake already
+provides; otherwise `#all`. Rerunning the installer switches between the two
+when that flake comes or goes.
 
-The entry is added at priority 10, below the default 5 that dev-tools gets, so a
-tool both flakes ship resolves to dev-tools instead of failing the install.
+The entry is added at priority 10, below Nix's default of 5, so a tool both
+flakes ship resolves to the toolchain flake instead of failing the install.
 When the flake is installed, the common- and workstation-utilities steps skip
 the brew and distro packages it provides and install only what Nix lacks (gcc,
 herdr, pinentry-mac, ruby, and similar).
