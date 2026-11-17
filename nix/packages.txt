@@ -70,7 +70,6 @@ zsh zsh
 - molecule
 - poetry
 - pre-commit
-- shell-gpt
 - tmuxp
 - uv
 

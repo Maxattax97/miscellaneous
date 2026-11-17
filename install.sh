@@ -807,7 +807,11 @@ case "$response" in
             pipx_uninstall uv
             hash -r
         fi
-        pipx_uninstall thefuck
+        # No longer used; drop copies earlier installs left behind.
+        pipx_uninstall thefuck shell-gpt
+        if [[ -x "$(command -v uv)" ]] && uv_tool_installed shell-gpt; then
+            uv tool uninstall shell-gpt > /dev/null || echo "uv could not uninstall shell-gpt; continuing" >&2
+        fi
 
         if [ -n "${NIX_PACKAGES:-}" ]; then
             echo "Python tools come from the Nix flake"
