@@ -54,22 +54,41 @@ brew_install() {
 # `command -v headroom` need it on PATH during this run, not only in new shells.
 PATH="${UV_TOOL_BIN_DIR:-${XDG_BIN_HOME:-${HOME}/.local/bin}}:${PATH}"
 
-# Whether a uv tool, or an older pipx install of it, is already present.  Both
-# list normalized names (lowercase, '-' for '_' and '.').
-uv_tool_installed() {
-    local name
-    name="$(printf '%s' "$1" | tr '[:upper:]_.' '[:lower:]--')"
-    uv tool list 2> /dev/null | grep "^${name} v" > /dev/null && return 0
-    command -v pipx > /dev/null 2>&1 && pipx list --short 2> /dev/null | grep "^${name} " > /dev/null
+# Print a package's normalized name (lowercase, '-' for '_' and '.'), the form
+# that both `uv tool list` and `pipx list --short` print.
+normalized_package_name() {
+    printf '%s' "$1" | tr '[:upper:]_.' '[:lower:]--'
 }
 
-# Install a uv tool unless it is already present, continuing past failures.
-# Arguments after the package are passed to `uv tool install`.
+# Whether uv already manages a tool.
+uv_tool_installed() {
+    uv tool list 2> /dev/null | grep "^$(normalized_package_name "$1") v" > /dev/null
+}
+
+# Uninstall pipx copies of tools that uv now manages, so uv can own their
+# executables.  pipx tools this script does not manage are left alone.
+pipx_uninstall_managed() {
+    local package name
+    command -v pipx > /dev/null 2>&1 || return 0
+    for package in "$@"; do
+        name="$(normalized_package_name "$package")"
+        if pipx list --short 2> /dev/null | grep "^${name} " > /dev/null; then
+            echo "Moving ${package} from pipx to uv"
+            pipx uninstall "$name" > /dev/null || echo "pipx could not uninstall ${package}; continuing" >&2
+        fi
+    done
+}
+
+# Install a uv tool unless uv already manages it, replacing any pipx copy and
+# continuing past failures.  --force takes over executables another installer
+# left in the shared bin directory.  Arguments after the package are passed to
+# `uv tool install`.
 uv_tool_install_missing() {
     local package="$1"
     shift
     if ! uv_tool_installed "$package"; then
-        uv tool install "$@" "$package" || echo "uv could not install ${package}; continuing" >&2
+        pipx_uninstall_managed "$package"
+        uv tool install --force "$@" "$package" || echo "uv could not install ${package}; continuing" >&2
     fi
 }
 
@@ -687,6 +706,8 @@ case "$response" in
         fi
 
         if [[ -x "$(command -v uv)" ]]; then
+            # ansible-core and ansible-lint provide ansible's executables; pipx installed them separately.
+            pipx_uninstall_managed ansible-core ansible-lint
             uv_tool_install_missing ansible --with-executables-from ansible-core,ansible-lint
             uv_tool_install_missing ansible-navigator
             uv_tool_install_missing argcomplete
@@ -837,8 +858,8 @@ headroom_active=0
 # Only Headroom releases with `headroom install` can manage the persistent
 # deployment.  Without a version floor, the resolver falls back to 0.2.15
 # (proxy only) when onnxruntime has no wheels for the default Python (3.15 from
-# Homebrew), so install with a Python that onnxruntime supports.  --force
-# replaces an older headroom executable, including one pipx installed.
+# Homebrew), so install with a Python that onnxruntime supports.  A pipx copy is
+# replaced so that uv owns Headroom too.
 headroom_spec='headroom-ai[all]>=0.44'
 headroom_python='3.14'
 headroom_supported() {
@@ -846,7 +867,8 @@ headroom_supported() {
 }
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
     if command -v uv > /dev/null 2>&1; then
-        if ! headroom_supported; then
+        if ! uv_tool_installed headroom-ai || ! headroom_supported; then
+            pipx_uninstall_managed headroom-ai
             # Distro uv builds may not download interpreters on demand.
             { uv python install "$headroom_python" \
                 && uv tool install --force --python "$headroom_python" "$headroom_spec"; } \
