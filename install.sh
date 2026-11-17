@@ -1430,6 +1430,56 @@ case "$response" in
                 vlc \
                 wireshark-app
 
+            # The flameshot cask is disabled (fails Gatekeeper); nixpkgs builds it for darwin.
+            if [[ -x "$(command -v nix)" ]] && ! nix profile list 2>/dev/null | grep -q 'flameshot'; then
+                nix profile add nixpkgs#flameshot
+            fi
+
+            if [[ -x "$HOME/.nix-profile/bin/flameshot" ]]; then
+                flameshot_plist="$HOME/Library/LaunchAgents/org.flameshot.daemon.plist"
+                mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs"
+                cat > "$flameshot_plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.flameshot.daemon</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$HOME/.nix-profile/bin/flameshot</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>StandardOutPath</key>
+    <string>$HOME/Library/Logs/flameshot.log</string>
+    <key>StandardErrorPath</key>
+    <string>$HOME/Library/Logs/flameshot.log</string>
+</dict>
+</plist>
+EOF
+                launchctl bootout "gui/$(id -u)/org.flameshot.daemon" 2>/dev/null || true
+                launchctl bootstrap "gui/$(id -u)" "$flameshot_plist"
+            fi
+
+            # Spotlight/Launchpad skip Nix profile symlinks but index Finder aliases.
+            if [[ -x "$(command -v nix)" ]] && [[ -d "$HOME/.nix-profile/Applications" ]]; then
+                nix_apps="$HOME/Applications/Nix Apps"
+                mkdir -p "$nix_apps"
+                find "$nix_apps" -maxdepth 1 -name '*.app' -exec rm -rf {} +
+                for app in "$HOME/.nix-profile/Applications/"*.app; do
+                    [[ -e "$app" ]] || continue
+                    nix shell nixpkgs#mkalias -c mkalias "$(readlink -f "$app")" "$nix_apps/$(basename "$app")"
+                done
+            fi
+
             # Make Ghostty the default app for shell scripts and executables.
             # duti -s is idempotent, so re-running only reasserts the handlers.
             if [[ "$(uname)" == "Darwin" ]] && [[ -x "$(command -v duti)" ]]; then
