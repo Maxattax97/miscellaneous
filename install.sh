@@ -65,30 +65,33 @@ uv_tool_installed() {
     uv tool list 2> /dev/null | grep "^$(normalized_package_name "$1") v" > /dev/null
 }
 
-# Uninstall pipx copies of tools that uv now manages, so uv can own their
-# executables.  pipx tools this script does not manage are left alone.
-pipx_uninstall_managed() {
+# Uninstall the named packages from pipx, if pipx has them.  pipx removes only
+# executables that link into its own venvs, so uv-owned ones survive.
+pipx_uninstall() {
     local package name
     command -v pipx > /dev/null 2>&1 || return 0
     for package in "$@"; do
         name="$(normalized_package_name "$package")"
         if pipx list --short 2> /dev/null | grep "^${name} " > /dev/null; then
-            echo "Moving ${package} from pipx to uv"
+            echo "Removing ${package} from pipx"
             pipx uninstall "$name" > /dev/null || echo "pipx could not uninstall ${package}; continuing" >&2
         fi
     done
 }
 
-# Install a uv tool unless uv already manages it, replacing any pipx copy and
-# continuing past failures.  --force takes over executables another installer
+# Install a uv tool unless uv already manages it, then drop any pipx copy;
+# failures continue and keep the pipx copy.  --force takes over executables another installer
 # left in the shared bin directory.  Arguments after the package are passed to
 # `uv tool install`.
 uv_tool_install_missing() {
     local package="$1"
     shift
     if ! uv_tool_installed "$package"; then
-        pipx_uninstall_managed "$package"
-        uv tool install --force "$@" "$package" || echo "uv could not install ${package}; continuing" >&2
+        if uv tool install --force "$@" "$package"; then
+            pipx_uninstall "$package"
+        else
+            echo "uv could not install ${package}; continuing" >&2
+        fi
     fi
 }
 
@@ -705,10 +708,17 @@ case "$response" in
             PATH="${HOME}/.local/bin:${PATH}"
         fi
 
+        # A pipx uv would shadow the uv installed above, so drop it once another uv is on PATH.
+        if type -aP uv | grep -v "^$(pipx environment --value PIPX_BIN_DIR 2> /dev/null)/uv$" > /dev/null; then
+            pipx_uninstall uv
+            hash -r
+        fi
+        pipx_uninstall thefuck
+
         if [[ -x "$(command -v uv)" ]]; then
-            # ansible-core and ansible-lint provide ansible's executables; pipx installed them separately.
-            pipx_uninstall_managed ansible-core ansible-lint
             uv_tool_install_missing ansible --with-executables-from ansible-core,ansible-lint
+            # ansible-core and ansible-lint provide ansible's executables; pipx installed them separately.
+            uv_tool_installed ansible && pipx_uninstall ansible-core ansible-lint
             uv_tool_install_missing ansible-navigator
             uv_tool_install_missing argcomplete
             uv_tool_install_missing bandit
@@ -868,11 +878,13 @@ headroom_supported() {
 if confirm "Would you like to install Headroom for persistent Codex/OpenCode compression? [y/N] " n; then
     if command -v uv > /dev/null 2>&1; then
         if ! uv_tool_installed headroom-ai || ! headroom_supported; then
-            pipx_uninstall_managed headroom-ai
             # Distro uv builds may not download interpreters on demand.
-            { uv python install "$headroom_python" \
-                && uv tool install --force --python "$headroom_python" "$headroom_spec"; } \
-                || echo "uv could not install ${headroom_spec} with Python ${headroom_python}." >&2
+            if uv python install "$headroom_python" \
+                && uv tool install --force --python "$headroom_python" "$headroom_spec"; then
+                pipx_uninstall headroom-ai
+            else
+                echo "uv could not install ${headroom_spec} with Python ${headroom_python}." >&2
+            fi
         fi
         if ! headroom_supported; then
             echo "Skipping Headroom: no installed headroom-ai provides 'headroom install'." >&2
