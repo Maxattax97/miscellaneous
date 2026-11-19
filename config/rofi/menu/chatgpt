@@ -6,7 +6,9 @@ fi
 
 notify-send -a "ChatGPT" "Awaiting response from OpenAI servers ..." -i "$HOME/.config/rofi/openai.svg"
 
-ANSWER=$("$HOME/.local/bin/sgpt" "$INPUT")
+# rofi may not inherit the login PATH; sgpt comes from Nix or uv.
+PATH="$HOME/.nix-profile/bin:$HOME/.local/bin:$PATH"
+ANSWER=$(sgpt "$INPUT")
 yad --info --text="$ANSWER"
 
 #($TERMINAL $PAGER $file) &

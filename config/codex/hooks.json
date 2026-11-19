@@ -35,6 +35,16 @@
           }
         ],
         "matcher": ".*"
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex observation",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -48,6 +58,16 @@
           }
         ],
         "matcher": ".*"
+      },
+      {
+        "matcher": "^Bash$|^mcp__.+__(read|view|cat)(_file|_files)?$|^Grep$|^Glob$|^memory_search$|^memory$|^mcp__.+__memory_search$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex file-context",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SessionEnd": [
@@ -66,9 +86,49 @@
       {
         "hooks": [
           {
-            "command": "if [ -f '/Users/mocull/.codex/herdr-agent-state.sh' ]; then bash '/Users/mocull/.codex/herdr-agent-state.sh' session; fi",
+            "command": "if [ -f \"$HOME/.codex/herdr-agent-state.sh\" ]; then bash \"$HOME/.codex/herdr-agent-state.sh\" session; fi",
             "timeout": 10,
             "type": "command"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "gh-axi",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "chrome-devtools-axi",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "lavish-axi",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex context",
+            "timeout": 20
           }
         ]
       }
@@ -83,6 +143,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex summarize",
+            "timeout": 60
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -93,6 +162,37 @@
             "statusMessage": "Updating tmux agent activity",
             "timeout": 5,
             "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex session-init",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex post-compact",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.local/bin/claude-mem\" hook codex subagent-context",
+            "timeout": 20
           }
         ]
       }

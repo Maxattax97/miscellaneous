@@ -60,6 +60,13 @@
       ],
       "enabled": true,
       "type": "local"
+    },
+    "claude-mem": {
+      "type": "local",
+      "command": [
+        "node",
+        "{env:HOME}/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
+      ]
     }
   },
   "model": "venice/z-ai-glm-5-3-flash",
@@ -227,7 +234,7 @@
     }
   },
   "plugin": [
-    "/Users/mocull/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
+    "{env:HOME}/.tmux/plugins/tmux-ai-usage/plugins/opencode.js"
   ],
   "provider": {
     "headroom": {

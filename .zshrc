@@ -138,7 +138,7 @@ zshrc_auto_window_title() {
                 fi
                 ;;
             *)
-                if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
+                if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
                     print -Pn "\e]2;$2:q\a" # set window name
                     print -Pn "\e]1;$1:q\a" # set tab name
                 else
@@ -404,12 +404,6 @@ zshrc_setup_completion() {
         fi
     fi
 
-    #if type pipx > /dev/null 2>&1; then
-        #if [ ! -s "${HOME}/.zsh_completions/_pipx" ]; then
-            #register-python-argcomplete pipx > "${HOME}/.zsh_completions/_pipx"
-        #fi
-    #fi
-
     # Takes a lot of extra time ...
     #if type molecule > /dev/null 2>&1; then
         # Because it may be in a venv, we will have to do this on-demand.
@@ -459,6 +453,7 @@ zshrc_autoload() {
     fi
 
     autoload -Uz compinit && compinit
+    [ -s "${HOME}/.bun/_bun" ] && source "${HOME}/.bun/_bun"
     autoload -Uz bashcompinit && bashcompinit # TODO: I don't think this is working right.
     autoload -Uz promptinit && promptinit
     autoload -Uz add-zsh-hook
@@ -787,9 +782,6 @@ zshrc_zplug() {
         # Really annoying and doesn't seem to work right?
         #zplug "hkupty/ssh-agent"
 
-        zplug "plugins/thefuck", from:oh-my-zsh
-        bindkey "^f" fuck-command-line
-
         zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
 
         if ! zplug check; then
@@ -928,14 +920,13 @@ zshrc_set_path() {
             export CPPFLAGS
         fi
 
-        if type gsed > /dev/null 2>&1; then
-            # Make the gsed application universal for this system!
-            if [ ! -e "${HOME}/.local/bin/sed" ]; then
-                mkdir -p "${HOME}/.local/bin"
-                ln -s "$(command -v gsed)" "${HOME}/.local/bin/sed"
-                echo "NOTE: GNU gsed is now linked to sed in ${HOME}/.local/bin; you are no longer using BSD sed!"
-            fi
+        # Link sed to gsed; repair a link left dangling or stale when gsed moves (e.g. Homebrew to Nix).
+        gsed_path="$(command -v gsed 2> /dev/null)"
+        if [[ "$gsed_path" == /* ]] && [[ "$(readlink "${HOME}/.local/bin/sed" 2> /dev/null)" != "$gsed_path" ]]; then
+            mkdir -p "${HOME}/.local/bin"
+            ln -sfn "$gsed_path" "${HOME}/.local/bin/sed"
         fi
+        unset gsed_path
     fi
 
     # The Nix installer appends its profiles; move them ahead of brew and /usr/bin.
@@ -983,6 +974,11 @@ zshrc_set_path() {
 
     zshrc_add_path "${HOME}/.config/yarn/global/node_modules/.bin" before
     zshrc_add_path "${HOME}/.yarn/bin" before
+
+    if [ -d "${HOME}/.bun" ]; then
+        export BUN_INSTALL="${HOME}/.bun"
+        zshrc_add_path "${BUN_INSTALL}/bin" before
+    fi
 
     # Miscellaneous paths
     zshrc_add_path "${HOME}/.SpaceVim/bin" before
@@ -2093,33 +2089,35 @@ zshrc_set_aliases() {
     alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
     # Enable color support of ls and also add handy aliases.
-    export CLICOLOR=1 # For macOS VM's ... Dumb it's not enabled by default.
-    if [ -x /usr/bin/dircolors ]; then
+    # Detect the ls actually on PATH: GNU (Linux, Nix coreutils) or BSD (macOS /bin/ls).
+    export CLICOLOR=1 # BSD ls colors via CLICOLOR + LSCOLORS.
+    if command ls --version 2>/dev/null | grep -q 'GNU coreutils'; then
         if test -r ~/.dircolors; then
             eval "$(dircolors -b ~/.dircolors)"
+        elif [ "$(uname)" = "Darwin" ]; then
+            # GNU equivalent of LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd, so colors match BSD ls.
+            export LS_COLORS='di=1;34:ln=1;36:so=1;31:pi=1;33:ex=1;32:bd=1;34;46:cd=1;34;43:su=41:sg=46:tw=42:ow=43'
         else
             eval "$(dircolors -b)"
         fi
         alias ls='ls --color=auto'
         alias sl="sudo ls --color=auto"
+        alias l='ls -l --all --human-readable --time-style=long-iso --group-directories-first --color=auto'
         #alias dir='dir --color=auto'
         #alias vdir='vdir --color=auto'
-
-        alias grep='grep --color=auto'
-        alias fgrep='fgrep --color=auto'
-        alias egrep='egrep --color=auto'
 
         alias pacman='pacman --color=auto'
         alias yay='yay --color=auto'
     else
-        alias sl="sudo ls"
+        alias sl="sudo ls -G"
+        alias l="ls -l -a -h -G -D '%Y-%m-%d %H:%M'"
     fi
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 
     alias e="$EDITOR"
     alias se="sudoedit"
-
-    # some more ls aliases
-    alias l='ls -l --all --human-readable --time-style=long-iso --group-directories-first --color=auto'
 
     # Fix tmux 256 colors:
     #if type tmux-next > /dev/null 2>&1; then

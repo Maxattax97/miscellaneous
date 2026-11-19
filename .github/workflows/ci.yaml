@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Super-linter
-        uses: super-linter/super-linter@4758be622215d0954c8353ee4877ffd60111cf8e # v6.4.1
+        uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
           MULTI_STATUS: false
           VALIDATE_JSCPD: false
@@ -34,12 +34,26 @@ jobs:
           # Use the repository-root linter configs (.markdownlint.yaml, .flake8,
           # .luacheckrc) instead of super-linter's .github/linters default.
           LINTER_RULES_PATH: .
+          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
           FILTER_REGEX_EXCLUDE: >-
             \.sample-secret\.md|\.lcovrc\.gcov\.css|\/archiso\/.*\.sh|\/config\/(shell_gpt\/roles\/|weechat\/.*(pl|py|lua)|awesome\/.*lua)|\/scripts\/supermicro_ipmi\.sh|notes\/.*\.md|\/test\/source_idempotency\.zsh
       - name: Install zsh
         run: sudo apt-get update && sudo apt-get install --yes zsh
       - name: Check .zshrc source idempotency
         run: ./test/source_idempotency.zsh
+
+  nix-flake-check:
+    name: Check Nix flake
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Install Nix
+        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
+      - name: Evaluate every system's packages
+        run: nix flake check --all-systems ./nix
 
   validate-images:
     name: Validate ${{ matrix.distro }} image
