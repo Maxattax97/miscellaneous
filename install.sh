@@ -380,6 +380,7 @@ case "$response" in
                 dnf-plugins-core \
                 fastfetch \
                 gcc \
+                gh \
                 git \
                 git-delta \
                 git-crypt \
@@ -906,16 +907,6 @@ case "$response" in
                     ;;
             esac
 
-            confirm "Would you like to install Github CLI? [y/N] " n || true
-            case "$response" in
-                [yY][eE][sS] | [yY])
-                    sudo dnf install -y gh
-                    ;;
-                *)
-                    echo "Skipping Github CLI installation"
-                    ;;
-            esac
-
             if [ -n "${AUTOMATED}" ]; then
                 response='n'
             else
@@ -1171,7 +1162,6 @@ case "$response" in
                 p7zip \
                 qalculate-gtk \
                 touchegg \
-                veracrypt \
                 zathura \
                 zathura-pdf-mupdf \
                 -y
@@ -1346,7 +1336,15 @@ case "$response" in
 
             if [[ -x "$(command -v pacman)" ]]; then
                 sudo pacman -Syu --needed "$AUTOMATED_PACMAN_FLAGS" \
-                    gnome-browser-connector
+                    gnome-browser-connector \
+                    gnome-shell-extension-appindicator \
+                    gnome-shell-extension-gsconnect
+            elif [[ -x "$(command -v dnf)" ]]; then
+                sudo dnf install \
+                    gnome-shell-extension-appindicator \
+                    gnome-shell-extension-blur-my-shell \
+                    gnome-shell-extension-gsconnect \
+                    -y
             fi
 
             extensions=(
@@ -1357,11 +1355,40 @@ case "$response" in
                 "HeadsetControl@lauinger-clan.de"
             )
 
+            shell_version="$(gnome-shell --version | awk '{print $3}' | cut -d. -f1)"
+            ext_tmp="$(mktemp -d)"
+
             for extension in "${extensions[@]}"; do
-                # TODO: Need to download the extensions first.
-                # gnome-extensions install "$extension"
-                gnome-extensions enable "$extension"
+                # Check the filesystem, not `gnome-extensions list`: the running shell doesn't see
+                # distro-packaged extensions installed moments ago, which caused duplicate downloads.
+                if [[ ! -d "/usr/share/gnome-shell/extensions/${extension}" && ! -d "${HOME}/.local/share/gnome-shell/extensions/${extension}" ]]; then
+                    # Not packaged by the distro; fetch the build for this shell version from extensions.gnome.org.
+                    download_url="$(curl -fsSL "https://extensions.gnome.org/extension-info/?uuid=${extension}&shell_version=${shell_version}" \
+                        | python3 -c 'import json,sys; print(json.load(sys.stdin).get("download_url") or "")' || true)"
+                    if [[ -z "$download_url" ]]; then
+                        echo "WARNING: no ${extension} build for GNOME Shell ${shell_version}; skipping"
+                        continue
+                    fi
+                    curl -fsSL -o "${ext_tmp}/${extension}.zip" "https://extensions.gnome.org${download_url}"
+                    gnome-extensions install --force "${ext_tmp}/${extension}.zip"
+                fi
             done
+            rm -rf "$ext_tmp"
+
+            # Newly installed extensions are not visible to the running shell until the next login,
+            # so `gnome-extensions enable` would fail. Add them to the enabled list directly instead.
+            gsettings set org.gnome.shell disable-user-extensions false
+            gsettings set org.gnome.shell enabled-extensions "$(
+                gsettings get org.gnome.shell enabled-extensions | python3 -c '
+import ast, sys
+raw = sys.stdin.read().strip().removeprefix("@as ")
+current = ast.literal_eval(raw) if raw else []
+for ext in sys.argv[1:]:
+    if ext not in current:
+        current.append(ext)
+print(repr(current))
+' "${extensions[@]}"
+            )"
 
             # Clear the bookmarks file
             printf "" > "${HOME}/.config/gtk-3.0/bookmarks"
@@ -1838,6 +1865,13 @@ case "$response" in
                 all-repository-fonts \
                 ttf-ms-fonts \
                 --needed
+        elif [[ -x "$(command -v dnf)" ]]; then
+            sudo dnf install \
+                dejavu-sans-fonts \
+                google-carlito-fonts \
+                google-roboto-slab-fonts \
+                liberation-fonts \
+                -y
         fi
         ./scripts/font-install.sh
 

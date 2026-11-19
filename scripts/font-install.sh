@@ -48,15 +48,16 @@ curl -Lo _fonts/HelveticaNeueThinItalic.ttf 'https://github.com/Maxattax97/Helve
 curl -Lo _fonts/HelveticaNeueUltraLight.ttf 'https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueUltraLight.ttf'
 curl -Lo _fonts/HelveticaNeueUltraLightItalic.ttf 'https://github.com/Maxattax97/Helvetica-Neue/raw/gh-pages/HelveticaNeueUltraLightItalic.ttf'
 
-curl -Lo _fonts/RobotoSlab.zip 'https://fonts.google.com/download?family=Roboto%20Slab'
-curl -Lo _fonts/Roboto.zip 'https://fonts.google.com/download?family=Roboto'
+# Google Fonts' download endpoint now returns HTML, so pull Roboto from its GitHub release.
+curl -Lo _fonts/Roboto.zip 'https://github.com/googlefonts/roboto-3-classic/releases/download/v3.016/Roboto_v3.016.zip'
+unzip -j _fonts/Roboto.zip 'android/static/Roboto-*.ttf' -d _fonts/
+rm -f _fonts/Roboto.zip
 
-unzip _fonts/RobotoSlab.zip -d _fonts/
-mv _fonts/static/* _fonts/
-rm -rf _fonts/RobotoSlab.zip _fonts/LICENSE.txt _fonts/README.txt _fonts/RobotoSlab-VariableFont_wght.ttf _fonts/static/
-
-unzip _fonts/Roboto.zip -d _fonts/
-rm -rf _fonts/Roboto.zip _fonts/LICENSE.txt
+# Selawik: Microsoft's open-source, metric-compatible stand-in for Segoe UI.
+# fontconfig/fonts.conf aliases Segoe UI (and friends) to it so Microsoft sites don't fall back to serif.
+curl -Lo _fonts/Selawik.zip 'https://github.com/microsoft/Selawik/releases/download/1.01/Selawik_Release.zip'
+unzip -j _fonts/Selawik.zip '*.ttf' -d _fonts/
+rm -f _fonts/Selawik.zip
 
 if [ -d "/Library/Fonts/" ]; then
 	# This is for Mac.
