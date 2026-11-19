@@ -1,11 +1,6 @@
-; Use :sort
-;
-; Use this command to test associations and where they are found:
-;     XDG_UTILS_DEBUG_LEVEL=2 xdg-mime query default 'application/zstd'
-;
-; https://wiki.archlinux.org/title/XDG_MIME_Applications#mimeapps.list
-
 [Added Associations]
+x-scheme-handler/sms=org.gnome.Shell.Extensions.GSConnect.desktop;
+x-scheme-handler/tel=org.gnome.Shell.Extensions.GSConnect.desktop;
 x-scheme-handler/mailto=brave-browser.desktop
 x-scheme-handler/webcal=brave-browser.desktop
 

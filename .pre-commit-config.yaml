@@ -42,20 +42,17 @@ repos:
     rev: v0.11.0
     hooks:
       - id: shellcheck
-  - repo: https://github.com/ansible/ansible-lint
-    # put latest release tag from
-    # https://github.com/ansible-community/ansible-lint/releases/
-    rev: v26.2.0
+  - repo: local
     hooks:
       - id: ansible-lint
-        # The upstream hook otherwise runs for every commit and scans the whole
-        # repository, even when no Ansible files were staged.
-        always_run: false
+        name: ansible-lint
+        # uv supplies a pinned Python, so host Python upgrades cannot break
+        # the hook; bump ansible-lint and its Python together.
+        entry: uvx --python 3.14 --from ansible-lint==26.2.0 --with jmespath ansible-lint --fix --format pep8
+        language: system
+        pass_filenames: false
         files: (^|/)(playbooks?|roles|tasks|handlers|group_vars|host_vars)/.*\.ya?ml$|(^|/)(site|main)\.ya?ml$
         exclude: ^\.pre-commit-config\.yaml$
-        args: [--fix, --format, pep8]
-        additional_dependencies:
-          - jmespath
   - repo: https://github.com/PyCQA/isort
     rev: 6.1.0
     hooks:
